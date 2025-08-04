@@ -36,25 +36,25 @@
 
          $chunk_size = (Agent::isMobile()) ? 1 : 3;
 
-         $galleries = Gallery::where('status', 'published')->get();
+        //  $galleries = Gallery::where('status', 'published')->get();
 
-         $events = Tournament::with('sponsors')
-                                      ->where('visibility_status', 'Published')
-                                      ->orderBy('created_at', 'desc')
-                                      ->take(6)
-                                      ->get();
+        //  $events = Tournament::with('sponsors')
+        //                               ->where('visibility_status', 'Published')
+        //                               ->orderBy('created_at', 'desc')
+        //                               ->take(6)
+        //                               ->get();
 
-         $sponsors = Sponsor::orderBy('order_number')->get();
-         $sponsorData = $sponsors->groupBy('sponsor_size');
+        //  $sponsors = Sponsor::orderBy('order_number')->get();
+        //  $sponsorData = $sponsors->groupBy('sponsor_size');
 
          // Ambil event terdekat yang statusnya 'registration' atau 'ongoing'
-         $next_match = Tournament::where('visibility_status', 'Published')
-                                 ->whereIn('status', ['registration', 'ongoing']) // Hanya yang masih dibuka pendaftaran atau sedang berjalan
-                                 ->orderBy('registration_start', 'asc') // Urutkan dari yang paling awal
-                                 ->first(); // Ambil satu saja
+    //      $next_match = Tournament::where('visibility_status', 'Published')
+    //                              ->whereIn('status', ['registration', 'ongoing']) // Hanya yang masih dibuka pendaftaran atau sedang berjalan
+    //                              ->orderBy('registration_start', 'asc') // Urutkan dari yang paling awal
+    //                              ->first(); // Ambil satu saja
 
-         return view('front.index', compact('latest_articles', 'populer_articles', 'chunk_size', 'galleries', 'events', 'sponsorData', 'next_match'));
-     }
+    //      return view('front.index', compact('latest_articles', 'populer_articles', 'chunk_size', 'events', 'sponsorData', 'next_match'));
+    //  }
 
      /**
       * Display the articles listing page with filtering.
