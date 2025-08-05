@@ -1,4 +1,4 @@
-<!-- @extends('../layouts/master')
+@extends('../layouts/master')
 
 @section('content')
 
@@ -493,6 +493,8 @@
     </div>
 </div>
 
+
+
 @endsection
 
 @push('styles')
@@ -645,28 +647,4 @@
             });
         }
     </script>
-@endpush -->
-
-@extends('layouts.master')
-
-@section('content')
-    {{-- KODE LAMA DIKOMENTARI SEMENTARA, BIARKAN SAJA --}}
-    {{--
-    <section class="position-relative hero-section">
-        ... semua kode lama ada di sini ...
-    </section>
-    --}}
-
-    {{-- KODE BARU MENGGUNAKAN KOMPONEN --}}
-    <x-homepage.navbar />
-    <x-homepage.hero-section />
-    <x-homepage.layanan-section />
-
-    {{-- Mengirim variabel $latest_articles dari Controller ke dalam komponen --}}
-    <x-homepage.artikel-section :articles="$latest_articles" /> 
-
-    <x-homepage.footer />
-
-@endsection
-
-{{-- Bagian @push('styles') dan @push('scripts') bisa Anda biarkan atau hapus jika tidak diperlukan lagi --}}
+@endpush
