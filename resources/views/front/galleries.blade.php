@@ -1,4 +1,4 @@
-@extends('../layouts/master_nav')
+@extends('layouts.master_nav')
 @section('content')
 <style>
     /* Main Colors */
