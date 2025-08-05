@@ -1,173 +1,133 @@
-@extends('layouts.master')
-
-@section('title', 'Indiegologi - Homepage')
-
-@push('styles')
-    {{-- SwiperJS CSS untuk Carousel --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <style>
-        .swiper-slide { height: auto; }
-        .card { display: flex; flex-direction: column; height: 100%; }
-        .card-body { flex-grow: 1; }
-        .swiper-button-next, .swiper-button-prev { color: #0d6efd; }
-    </style>
-@endpush
+@extends('layouts.admin')
 
 @section('content')
+<div class="container-fluid px-4" style="min-height: 100vh;">
 
-    {{-- 1. Navbar --}}
-    <nav class="navbar navbar-expand-lg bg-white py-3 sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-4" href="#">Indiegologi</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active fw-medium" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="#">Layanan</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="#">Artikel</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="#">Tentang Kami</a></li>
-                </ul>
-                <a href="#" class="btn btn-primary rounded-pill fw-medium px-4">Konsultasi Gratis</a>
-            </div>
-        </div>
-    </nav>
-
-    {{-- 2. Hero Section --}}
-    <section class="container py-5 my-md-5">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-3">Empowering Ideas Through Innovative Technology</h1>
-                <p class="lead text-muted mb-4">We are a team of passionate developers, designers, and strategists dedicated to helping you achieve your goals.</p>
-                <a href="#" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-medium">Konsultasi Gratis</a>
-            </div>
-            <div class="col-lg-6 mt-4 mt-lg-0">
-                <img src="{{ asset('assets/img/hero_image.png') }}" class="img-fluid" alt="Team discussing ideas">
-            </div>
-        </div>
-    </section>
-
-    {{-- 3. Artikel Populer Section (Carousel) --}}
-    <section class="container py-5">
-        <div class="text-center"><h2 class="fw-bold mb-5">Artikel Populer</h2></div>
-        <div class="swiper popular-articles-swiper">
-            <div class="swiper-wrapper">
-                @if(isset($latest_articles) && $latest_articles->count() > 0)
-                    @foreach ($latest_articles as $article)
-                        <div class="swiper-slide pb-3">
-                            <div class="card border-0 shadow-sm h-100">
-                                <img src="{{ asset('storage/' . $article->thumbnail) }}" class="card-img-top" alt="{{ $article->title }}" style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold">{{ Str::limit($article->title, 50) }}</h5>
-                                    <p class="card-text text-muted">{{ Str::limit($article->description, 70) }}</p>
-                                    <a href="#" class="btn btn-outline-primary">Baca Selengkapnya</a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    {{-- Data Dummy jika artikel kosong --}}
-                    @for ($i = 0; $i < 5; $i++)
-                    <div class="swiper-slide pb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center d-flex align-items-center justify-content-center">
-                                <p class="text-muted">Contoh Artikel {{ $i + 1 }}</p>
-                            </div>
-                        </div>
+    {{-- Header --}}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid #f4b704;">
+                <div class="d-flex align-items-center">
+                    <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
+                         style="width: 70px; height: 70px; background-color: rgba(244, 183, 4, 0.1);">
+                        <i class="fas fa-tags fs-2" style="color: #f4b704;"></i>
                     </div>
-                    @endfor
-                @endif
-            </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-        </div>
-    </section>
-
-    {{-- 4. Layanan Kami Section (Hanya 3) --}}
-    <section class="py-5 bg-light">
-        <div class="container text-center">
-            <h2 class="fw-bold mb-5">Layanan Kami</h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-3 col-md-6 mb-4"><div class="card border-0 shadow-sm h-100"><div class="card-body p-5"><h5 class="card-title fw-bold">Web Development</h5></div></div></div>
-                <div class="col-lg-3 col-md-6 mb-4"><div class="card border-0 shadow-sm h-100"><div class="card-body p-5"><h5 class="card-title fw-bold">UI/UX Design</h5></div></div></div>
-                <div class="col-lg-3 col-md-6 mb-4"><div class="card border-0 shadow-sm h-100"><div class="card-body p-5"><h5 class="card-title fw-bold">IT Consultant</h5></div></div></div>
-            </div>
-        </div>
-    </section>
-
-    {{-- 5. Suara Dari Mereka Section (Carousel) --}}
-    <section class="container py-5">
-        <div class="text-center"><h2 class="fw-bold mb-5">Suara Dari Mereka</h2></div>
-        <div class="swiper testimonials-swiper">
-            <div class="swiper-wrapper">
-                @for ($i = 0; $i < 5; $i++) {{-- Data Dummy --}}
-                    <div class="swiper-slide pb-3">
-                        <div class="card border-0 shadow-sm h-100"><div class="card-body p-4 text-center"><p class="fst-italic">"Layanannya luar biasa, sangat membantu proyek kami!"</p><h6 class="fw-bold mt-3">- Klien {{ $i + 1 }}</h6></div></div>
+                    <div>
+                        <h2 class="fs-3 fw-bold mb-1" style="color: #f4b704;">Manajemen Referral</h2>
+                        <p class="text-muted mb-0">Kelola kode referral untuk promosi.</p>
                     </div>
-                @endfor
+                </div>
             </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
         </div>
-    </section>
+    </div>
 
-    {{-- 6. Sketch Telling Section (Carousel) --}}
-     <section class="container py-5">
-        <div class="text-center"><h2 class="fw-bold mb-5">Sketch Telling</h2></div>
-        <div class="swiper sketch-telling-swiper">
-            <div class="swiper-wrapper">
-                @if(isset($latest_sketches) && $latest_sketches->count() > 0)
-                    @foreach ($latest_sketches as $sketch)
-                        <div class="swiper-slide pb-3">
-                            <div class="card border-0 shadow-sm h-100">
-                                <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-img-top" alt="{{ $sketch->title }}" style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold">{{ Str::limit($sketch->title, 50) }}</h5>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    {{-- Data Dummy jika sketsa kosong --}}
-                    @for ($i = 0; $i < 5; $i++)
-                    <div class="swiper-slide pb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center d-flex align-items-center justify-content-center">
-                                <p class="text-muted">Contoh Sketsa {{ $i + 1 }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    @endfor
-                @endif
+    {{-- Add Button --}}
+    <div class="row mb-4">
+        <div class="col-md-12 d-flex justify-content-end">
+            <a href="{{ route('admin.referral-codes.create') }}" class="btn btn-sporty-primary d-flex align-items-center px-4 py-2">
+                <i class="fas fa-plus me-2"></i>
+                <span class="fw-semibold">Tambah Kode Referral</span>
+            </a>
+        </div>
+    </div>
+
+    {{-- Table --}}
+    <div class="card border-0 rounded-4 shadow-sm">
+        <div class="card-body p-4">
+            @if(session('success'))
+                <div class="alert alert-success rounded-3 alert-custom-success mb-4"><i class="fas fa-check-circle me-2"></i>{{ session('success') }}</div>
+            @endif
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="py-3">Kode</th>
+                            <th class="py-3">Diskon</th>
+                            <th class="py-3">Maks Penggunaan</th>
+                            <th class="py-3">Digunakan</th>
+                            <th class="py-3">Status</th>
+                            <th class="py-3">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($referralCodes as $code)
+                            <tr style="border-bottom: 1px solid #f0f0f0;">
+                                <td class="py-3 fw-semibold text-break">{{ $code->code }}</td>
+                                <td class="py-3">{{ $code->discount_percentage }}%</td>
+                                <td class="py-3">{{ $code->max_uses ?? 'Tidak Terbatas' }}</td>
+                                <td class="py-3">{{ $code->current_uses }}</td>
+                                <td class="py-3">
+                                    @php
+                                        $status = 'Aktif';
+                                        $statusClass = 'badge-status-published'; // Menggunakan class badge artikel untuk konsistensi
+                                        $now = now();
+                                        if ($code->valid_until && $now->isAfter($code->valid_until)) {
+                                            $status = 'Kedaluwarsa';
+                                            $statusClass = 'badge-status-draft';
+                                        } elseif ($code->max_uses && $code->current_uses >= $code->max_uses) {
+                                            $status = 'Habis';
+                                            $statusClass = 'badge-status-draft';
+                                        }
+                                    @endphp
+                                    <span class="badge {{ $statusClass }}">{{ $status }}</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ route('admin.referral-codes.edit', $code->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3" style="border-color: #f4b704; color: #f4b704;" title="Edit Kode">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('admin.referral-codes.destroy', $code->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger rounded-pill px-3" style="border-color: #cb2786; color: #cb2786;" title="Hapus Kode">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
+                                    <i class="fas fa-box-open me-2"></i>Tidak ada kode referral yang ditemukan.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
+
+            {{-- Pagination --}}
+            <div class="d-flex justify-content-center mt-4">
+                {{ $referralCodes->links() }}
+            </div>
         </div>
-    </section>
+    </div>
+</div>
 
-@endsection
-
-@push('scripts')
-    {{-- Script untuk SwiperJS --}}
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const swiperConfig = {
-                loop: true,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                breakpoints: {
-                    640: { slidesPerView: 1, spaceBetween: 20 },
-                    768: { slidesPerView: 2, spaceBetween: 30 },
-                    1024: { slidesPerView: 3, spaceBetween: 40 },
-                }
-            };
-            new Swiper('.popular-articles-swiper', swiperConfig);
-            new Swiper('.testimonials-swiper', swiperConfig);
-            new Swiper('.sketch-telling-swiper', swiperConfig);
+<script>
+    function confirmDelete(event, form) {
+        event.preventDefault();
+        Swal.fire({
+            title: "Yakin ingin menghapus kode ini?",
+            text: "Anda tidak akan bisa mengembalikannya!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#cb2786",
+            cancelButtonColor: "#808080",
+            confirmButtonText: "Ya, Hapus Sekarang!",
+            cancelButtonText: "Batalkan",
+            customClass: {
+                popup: 'rounded-4',
+                confirmButton: 'rounded-pill px-4',
+                cancelButton: 'rounded-pill px-4'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
         });
-    </script>
-@endpush
+    }
+</script>
+@endsection
