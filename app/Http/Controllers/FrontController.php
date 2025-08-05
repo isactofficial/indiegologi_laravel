@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Sketch;
-use App\Models\ConsultationService; // Pastikan Model Layanan di-import
+use App\Models\ConsultationService;
 use Illuminate\Http\Request;
-use App\Models\Event; // Pastikan Model Event di-import
-use Illuminate\Support\Facades\DB; // Pastikan DB di-import
-use Illuminate\Support\Facades\Auth; // Pastikan Auth di-import
-use Illuminate\Support\Facades\Route; // Pastikan Route di-import
+use App\Models\Event;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 class FrontController extends Controller
 {
@@ -18,6 +18,13 @@ class FrontController extends Controller
         // Ambil 6 artikel terbaru
         $latest_articles = Article::where('status', 'published')
                                 ->latest()
+                                ->take(6)
+                                ->get();
+
+        // Ambil 6 artikel terpopuler (berdasarkan views)
+        // Pastikan kolom 'views' ada di tabel 'articles'
+        $popular_articles = Article::where('status', 'published')
+                                ->orderBy('views', 'desc')
                                 ->take(6)
                                 ->get();
 
@@ -31,7 +38,7 @@ class FrontController extends Controller
         $services = ConsultationService::take(3)->get();
 
         // Kirim semua data ke view
-        return view('front.index', compact('latest_articles', 'latest_sketches', 'services'));
+        return view('front.index', compact('latest_articles', 'popular_articles', 'latest_sketches', 'services'));
     }
 
     public function articles()
@@ -44,6 +51,8 @@ class FrontController extends Controller
     public function showArticle(Article $article)
     {
         // Tampilkan artikel berdasarkan slug
+        // Tambahkan logika untuk menambah views
+        $article->increment('views');
         return view('front.articles.show', compact('article'));
     }
 
