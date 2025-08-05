@@ -34,7 +34,6 @@
 
     <div class="main-wrapper d-flex flex-column min-vh-100">
         @yield('content')
-        @include('layouts.footer')
     </div>
 
     {{-- Bootstrap & Font Awesome JS --}}

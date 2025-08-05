@@ -36,7 +36,8 @@ Route::get('/storage-link', function () {
 Route::middleware('log.visit')->group(function () {
     Route::get('/', [FrontController::class, 'index'])->name('front.index');
     Route::get('/articles', [FrontController::class, 'articles'])->name('front.articles');
-    Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name('front.articles.show');
+    Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name(name: 'front.articles.show');
+    Route::get('/galleries', [FrontController::class, 'galleries'])->name('front.galleries');
     Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact');
 
     // Event Listing (front-facing) - Sekarang ditangani oleh FrontController

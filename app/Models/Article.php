@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Sluggable\HasSlug; // Import HasSlug
 use Spatie\Sluggable\SlugOptions; // Import SlugOptions
 use Illuminate\Database\Eloquent\Factories\HasFactory; // Tambahkan ini jika belum ada
+use App\Models\Subheading; // Pastikan model Subheading di-import
+use App\Models\Comment; // Pastikan model Comment di-import
+use Illuminate\Database\Eloquent\Relations\HasMany; // Import HasMany untuk relasi
 
 class Article extends Model
 {
