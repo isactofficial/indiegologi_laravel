@@ -13,7 +13,7 @@ class FrontController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
