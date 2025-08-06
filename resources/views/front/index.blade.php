@@ -64,32 +64,159 @@
         </div>
     </section>
 
-    {{-- 2. Artikel Populer (Satu Artikel Menonjol) --}}
-    <section class="container py-5 my-5" style="margin-top: 150px;">
-        <h2 class="text-center fw-bold mb-5" style="color: #0C2C5A;">Artikel Terpopuler Pilihan Kami</h2>
-        <p style="text-align: center;" >Lihat artikel-artikel yang paling banyak dibaca dan disukai oleh komunitas Indiegologi.</p>
-        <div class="row align-items-center bg-white rounded-3 p-4 shadow-sm border border-light">
-            <div class="col-lg-5 mb-4 mb-lg-0">
-                @if(isset($popular_articles[0]))
-                    <img src="{{ asset('storage/' . $popular_articles[0]->thumbnail) }}" alt="Thumbnail Artikel Populer" class="img-fluid rounded-3">
-                @else
-                    <img src="https://via.placeholder.com/600x400.png?text=Artikel+Populer" alt="Placeholder" class="img-fluid rounded-3">
-                @endif
+    {{-- 2. Artikel Populer (Slider Satu Artikel Menonjol) --}}
+    <section class="container py-5 my-5" style="margin-top: 80px;">
+        <h2 class="text-center fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Artikel Terpopuler Pilihan Kami</h2>
+        <p class="text-center mb-5" style="color:#4a5a6a;">Lihat artikel-artikel yang paling banyak dibaca dan disukai oleh komunitas Indiegologi.</p>
+        <div class="swiper featured-popular-article-swiper">
+            <div class="swiper-wrapper">
+                @forelse ($popular_articles as $article)
+                    <div class="swiper-slide">
+                        <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center bg-white rounded-4 shadow-sm border border-light featured-popular-card">
+                            <div class="flex-shrink-0 mb-4 mb-lg-0 me-lg-5 featured-popular-img-wrap">
+                                <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail Artikel Populer" class="img-fluid rounded-3 featured-popular-img">
+                            </div>
+                            <div class="flex-grow-1 text-lg-start text-center featured-popular-content">
+                                <h3 class="fw-bold mb-2 featured-popular-title">{{ Str::limit($article->title, 60) }}</h3>
+                                <p class="text-muted mb-2 featured-popular-date">{{ optional($article->created_at)->format('d F Y') }}</p>
+                                <p class="mb-3 featured-popular-desc">{{ Str::limit(strip_tags($article->content), 120) }}</p>
+                                <a href="{{ route('front.articles.show', $article->slug) }}" class="btn btn-link text-decoration-none fw-semibold p-0 featured-popular-link">Baca Selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="swiper-slide">
+                        <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center bg-white rounded-4 shadow-sm border border-light featured-popular-card">
+                            <div class="flex-shrink-0 mb-4 mb-lg-0 me-lg-5 featured-popular-img-wrap">
+                                <img src="https://via.placeholder.com/600x400.png?text=Artikel+Populer" alt="Placeholder" class="img-fluid rounded-3 featured-popular-img">
+                            </div>
+                            <div class="flex-grow-1 text-lg-start text-center featured-popular-content">
+                                <h3 class="fw-bold mb-2 featured-popular-title">Judul Artikel Populer</h3>
+                                <p class="text-muted mb-2 featured-popular-date">Tanggal</p>
+                                <p class="mb-3 featured-popular-desc">Deskripsi singkat tentang artikel populer. Konten ini memberikan gambaran tentang apa yang dibahas dalam artikel tersebut.</p>
+                                <a href="#" class="btn btn-link text-decoration-none fw-semibold p-0 featured-popular-link">Baca Selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                @endforelse
             </div>
-            <div class="col-lg-7">
-                <h3 class="fw-bold fs-4">
-                    {{ isset($popular_articles[0]) ? Str::limit($popular_articles[0]->title, 80) : 'Judul Artikel Populer' }}
-                </h3>
-                <p class="text-muted small">
-                    {{ isset($popular_articles[0]) ? optional($popular_articles[0]->created_at)->format('d F Y') : 'Tanggal' }}
-                </p>
-                <p>
-                    {{ isset($popular_articles[0]) ? Str::limit($popular_articles[0]->content, 200) : 'Deskripsi singkat tentang artikel populer. Konten ini memberikan gambaran tentang apa yang dibahas dalam artikel tersebut.' }}
-                </p>
-               <a href="{{ isset($popular_articles[0]) ? route('front.articles.show', $popular_articles[0]->slug) : '#' }}" class="btn btn-link text-decoration-none fw-semibold p-0 text-primary">Baca Selengkapnya <i class="bi bi-arrow-right"></i></a>
-            </div>
+            <div class="swiper-button-prev featured-popular-prev" style="left:-30px;"></div>
+            <div class="swiper-button-next featured-popular-next" style="right:-30px;"></div>
         </div>
     </section>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Swiper('.featured-popular-article-swiper', {
+                loop: true,
+                navigation: {
+                    nextEl: '.featured-popular-next',
+                    prevEl: '.featured-popular-prev',
+                },
+                slidesPerView: 1,
+                spaceBetween: 0,
+                autoHeight: true,
+            });
+        });
+    </script>
+    @endpush
+
+    @push('styles')
+    <style>
+        .featured-popular-article-swiper .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+        .featured-popular-article-swiper {
+            overflow: hidden !important;
+        }
+        .featured-popular-card {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 400px;
+            padding: 48px 56px;
+        }
+        .featured-popular-img-wrap {
+            max-width: 380px;
+        }
+        .featured-popular-img {
+            max-height: 340px;
+            width: 100%;
+            object-fit: cover;
+            background: #f7f7f7;
+        }
+        .featured-popular-content {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .featured-popular-title {
+            font-size: 2.6rem;
+            color: #18305b;
+            line-height: 1.1;
+        }
+        .featured-popular-date {
+            font-size: 1.2rem;
+        }
+        .featured-popular-desc {
+            color: #4a5a6a;
+            font-size: 1.25rem;
+        }
+        .featured-popular-link {
+            color: #b0b0b0;
+            font-size: 1.4rem;
+        }
+        .featured-popular-article-swiper {
+            overflow: visible !important;
+        }
+        .featured-popular-article-swiper .swiper-button-next,
+        .featured-popular-article-swiper .swiper-button-prev {
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            width: 48px;
+            height: 48px;
+            color: #555;
+            border: 4px solid #666;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.2s, box-shadow 0.2s;
+            z-index: 2;
+        }
+        .featured-popular-article-swiper .swiper-button-prev {
+            left: -60px !important;
+        }
+        .featured-popular-article-swiper .swiper-button-next {
+            right: -60px !important;
+        }
+        .featured-popular-article-swiper .swiper-button-next:after,
+        .featured-popular-article-swiper .swiper-button-prev:after {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #555;
+        }
+        .featured-popular-article-swiper .swiper-button-next:hover,
+        .featured-popular-article-swiper .swiper-button-prev:hover {
+            opacity: 0.7;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+        }
+        @media (max-width: 991.98px) {
+            .featured-popular-article-swiper .d-flex {
+                flex-direction: column !important;
+                text-align: center !important;
+            }
+            .featured-popular-article-swiper .me-lg-5 {
+                margin-right: 0 !important;
+            }
+        }
+    </style>
+    @endpush
 
     {{-- 3. Artikel Terbaru (Slider) --}}
     <section class="container py-5 my-5">
@@ -158,21 +285,21 @@
         </div>
         <div class="swiper testimonials-swiper">
             <div class="swiper-wrapper">
-                @for ($i = 0; $i < 5; $i++)
-                    <div class="swiper-slide pb-3">
-                        <div class="card border-0 shadow-sm h-100 p-4 testimonial-card">
-                            <div class="d-flex align-items-center mb-3">
-                                <img src="{{ asset('assets/avatar.png') }}" width="60" height="60" class="rounded-circle me-3 border border-2 border-primary">
-                                <div>
-                                    <h6 class="fw-bold mb-0">Haekal</h6>
-                                    <small class="text-muted">Pemulih Jiwa</small>
-                                </div>
-                            </div>
-                            <p class="fst-italic mb-0">"Pendekatan yang personal dan efektif. Saya melihat perubahan besar dalam diri saya. Indiegologi benar-benar membantu saya menemukan jalan."</p>
-                            <i class="bi bi-quote quote-icon"></i>
-                        </div>
+            @for ($i = 0; $i < 3; $i++)
+                <div class="swiper-slide pb-3">
+                <div class="card border-0 shadow-sm h-100 p-4 testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                    <img src="{{ asset('assets/avatar.png') }}" width="60" height="60" class="rounded-circle me-3 border border-2 border-primary">
+                    <div>
+                        <h6 class="fw-bold mb-0">Haekal</h6>
+                        <small class="text-muted">Pemulih Jiwa</small>
                     </div>
-                @endfor
+                    </div>
+                    <p class="fst-italic mb-0">"Pendekatan yang personal dan efektif. Saya melihat perubahan besar dalam diri saya. Indiegologi benar-benar membantu saya menemukan jalan."</p>
+                    <i class="bi bi-quote quote-icon"></i>
+                </div>
+                </div>
+            @endfor
             </div>
             <div class="swiper-button-next testimonials-next"></div>
             <div class="swiper-button-prev testimonials-prev"></div>
