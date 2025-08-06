@@ -44,7 +44,7 @@ class FrontController extends Controller
     public function articles()
     {
         // Ambil semua artikel yang sudah diterbitkan
-        $articles = Article::where('status', 'published')->latest()->get();
+        $articles = Article::where('status', 'published')->latest()->paginate(6);
         return view('front.articles', compact('articles'));
     }
 
@@ -53,7 +53,29 @@ class FrontController extends Controller
         // Tampilkan artikel berdasarkan slug
         // Tambahkan logika untuk menambah views
         $article->increment('views');
-        return view('front.articles.show', compact('article'));
+        return view('front.articles', compact('article'));
+    }
+
+    public function sketch()
+    {
+        // Ambil semua sketsa yang sudah diterbitkan
+        $sketches = sketch::where('status', 'published')->latest()->paginate(6);
+        return view('front.sketch', compact('sketches'));
+    }
+
+    public function showDetail(sketch $sketch)
+    {
+        // Tampilkan sketsa berdasarkan slug
+        // Tambahkan logika untuk menambah views
+        $sketch->increment('views');
+        return view('front.sketch_detail', compact('sketch'));
+    }
+
+    public function layanan()
+    {
+        // Ambil semua layanan
+        $services = ConsultationService::latest()->paginate(6);
+        return view('front.layanan', compact('layanan'));
     }
 
     public function contact()
@@ -61,9 +83,4 @@ class FrontController extends Controller
         return view('front.contact');
     }
 
-    public function register(Request $request, Event $event)
-    {
-        // Logika pendaftaran event
-        // ...
-    }
 }

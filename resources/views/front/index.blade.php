@@ -141,6 +141,8 @@
     <section class="container py-5 my-5">
         <div class="text-center">
             <h2 class="fw-bold mb-3">Suara dari Mereka yang Telah Berproses Bersama Kami</h2>
+            <p>Dengarkan pengalaman otentik dari klien kami yang telah menemukan kebahagiaan, kejelasan, dan keseimbangan hidup <br>
+            yang nyaman dan berkesan bersama Indiegologi.</p>
         </div>
         <div class="swiper testimonials-swiper">
             <div class="swiper-wrapper">
@@ -292,7 +294,7 @@
     }
 
     .hero-section .carousel-item {
-        height: 100vh;
+        height: 90vh;
         background-size: cover;
         background-position: center;
         position: relative;

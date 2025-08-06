@@ -1,4 +1,4 @@
-@extends('../layouts/master_nav')
+@extends('layouts.app')
 
 @section('content')
 
