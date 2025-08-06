@@ -1,4 +1,4 @@
-@extends('layouts.master_nav')
+@extends('layouts.app')
 @section('content')
 <style>
     /* Main Colors */
@@ -217,7 +217,8 @@
     </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"> {{-- Grid for galleries --}}
-        @forelse ($galleries as $gallery)
+        @forelse ($layanan as $layanan)
+        {{-- UBAH INI: Gunakan SLUG untuk tautan detail galeri --}}
         <div class="col">
             <div class="card gallery-item-card h-100">
                 <img src="{{ asset('storage/' . $gallery->thumbnail) }}" class="card-img-top gallery-thumbnail" alt="{{ $gallery->title }}">

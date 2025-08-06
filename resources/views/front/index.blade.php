@@ -12,9 +12,11 @@
                     <div class="overlay"></div>
                     <div class="carousel-caption d-flex flex-column justify-content-center h-100">
                         <div class="container text-start text-white">
-                            <p class="mb-2">Indiegologi</p>
-                            <h1 class="display-4 fw-bold">Healing Healing Menemukan Kedamaian Batin yang Mendalam</h1>
-                            <a href="#" class="btn btn-light rounded-pill px-4 mt-3">Pelajari Lebih Lanjut</a>
+                            <h1 class="display-4 fw-bold">Hypno Healing: Menemukan <br>Kedamaian Batin yang Mendalam</h1>
+                            <p class="mb-2">Teknik relaksasi dan sugesti positif untuk mengatasi kecemasan, fobia, dan trauma, membuka potensi penyembuhan diri.</p>
+                            <br>
+                            <br>
+                            <a href="#" class="btn btn-primary rounded-pill px-4 py-2">Pelajari Lebih Lanjut</a>
                         </div>
                     </div>
                 </div>
@@ -22,9 +24,11 @@
                     <div class="overlay"></div>
                     <div class="carousel-caption d-flex flex-column justify-content-center h-100">
                         <div class="container text-start text-white">
-                            <p class="mb-2">Indiegologi</p>
                             <h1 class="display-4 fw-bold">Jelajahi Diri Anda Melalui Jurnal Reflektif</h1>
-                            <a href="#" class="btn btn-light rounded-pill px-4 mt-3">Pelajari Lebih Lanjut</a>
+                            <p class="mb-2">Indiegologi</p>
+                            <br>
+                            <br>
+                            <a href="#" class="btn btn-primary rounded-pill px-4 py-2">Pelajari Lebih Lanjut</a>
                         </div>
                     </div>
                 </div>
@@ -32,9 +36,11 @@
                     <div class="overlay"></div>
                     <div class="carousel-caption d-flex flex-column justify-content-center h-100">
                         <div class="container text-start text-white">
-                            <p class="mb-2">Indiegologi</p>
                             <h1 class="display-4 fw-bold">Seni Menghargai Proses Hidup</h1>
-                            <a href="#" class="btn btn-light rounded-pill px-4 mt-3">Pelajari Lebih Lanjut</a>
+                            <p class="mb-2">Indiegologi</p>
+                            <br>
+                            <br>
+                            <a href="#" class="btn btn-primary rounded-pill px-4 py-2">Pelajari Lebih Lanjut</a>
                         </div>
                     </div>
                 </div>
@@ -60,7 +66,8 @@
 
     {{-- 2. Artikel Populer (Satu Artikel Menonjol) --}}
     <section class="container py-5 my-5" style="margin-top: 150px;">
-        <h2 class="text-center fw-bold mb-5">Artikel Terpopuler Pilihan Kami</h2>
+        <h2 class="text-center fw-bold mb-5" style="color: #0C2C5A;">Artikel Terpopuler Pilihan Kami</h2>
+        <p style="text-align: center;" >Lihat artikel-artikel yang paling banyak dibaca dan disukai oleh komunitas Indiegologi.</p>
         <div class="row align-items-center bg-white rounded-3 p-4 shadow-sm border border-light">
             <div class="col-lg-5 mb-4 mb-lg-0">
                 @if(isset($popular_articles[0]))
@@ -87,8 +94,8 @@
     {{-- 3. Artikel Terbaru (Slider) --}}
     <section class="container py-5 my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold mb-0">Artikel Terbaru</h2>
-            <a href="{{ route('front.articles') }}" class="btn btn-link text-primary fw-semibold text-decoration-none">Lihat Semua Artikel</a>
+            <!-- <h2 class="fw-bold mb-0">Artikel Terbaru</h2>
+            <a href="{{ route('front.articles') }}" class="btn btn-link text-primary fw-semibold text-decoration-none">Lihat Semua Artikel</a> -->
         </div>
         <div class="swiper latest-articles-swiper">
             <div class="swiper-wrapper">
@@ -115,35 +122,37 @@
     {{-- 4. Artikel Populer (Slider 3 Kolom) --}}
     <section class="container py-5 my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold mb-0">Artikel Populer</h2>
-           <a href="{{ route('front.articles') }}" class="btn btn-link text-primary fw-semibold text-decoration-none">Lihat Semua Artikel</a>
+            <!-- <h2 class="fw-bold mb-0">Artikel Populer</h2> -->
         </div>
         <div class="swiper popular-articles-swiper">
             <div class="swiper-wrapper">
                 @forelse ($popular_articles as $article)
-                    <div class="swiper-slide pb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <img src="{{ asset('storage/' . $article->thumbnail) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="fw-bold">{{ Str::limit($article->title, 50) }}</h5>
-                                <p class="text-muted small">{{ optional($article->created_at)->format('d F Y') }}</p>
-                                <a href="{{ route('front.articles.show', $article->slug) }}" class="stretched-link text-decoration-none fw-semibold">Baca Selengkapnya</a>
-                            </div>
+                <div class="swiper-slide pb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <img src="{{ asset('storage/' . $article->thumbnail) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="fw-bold">{{ Str::limit($article->title, 50) }}</h5>
+                            <p class="text-muted small">{{ optional($article->created_at)->format('d F Y') }}</p>
+                            <a href="{{ route('front.articles.show', $article->slug) }}" class="stretched-link text-decoration-none fw-semibold">Baca Selengkapnya</a>
                         </div>
                     </div>
+                </div>
                 @empty
-                    <div class="swiper-slide"><p class="text-center text-muted">Belum ada artikel populer.</p></div>
+                <div class="swiper-slide"><p class="text-center text-muted">Belum ada artikel populer.</p></div>
                 @endforelse
             </div>
             <div class="swiper-button-next popular-articles-next"></div>
             <div class="swiper-button-prev popular-articles-prev"></div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ route('front.articles') }}" class="btn btn-primary rounded-pill px-4 py-2">Lihat Semua Artikel</a>
         </div>
     </section>
 
     {{-- 5. Testimoni Section --}}
     <section class="container py-5 my-5">
         <div class="text-center">
-            <h2 class="fw-bold mb-3">Suara dari Mereka yang Telah Berproses Bersama Kami</h2>
+            <h2 class="fw-bold mb-3" style="color: #0C2C5A;">Suara dari Mereka yang Telah Berproses Bersama Kami</h2>
             <p>Dengarkan pengalaman otentik dari klien kami yang telah menemukan kebahagiaan, kejelasan, dan keseimbangan hidup <br>
             yang nyaman dan berkesan bersama Indiegologi.</p>
         </div>
@@ -173,30 +182,33 @@
     {{-- 6. Sketch Telling (Slider) --}}
     <section class="container py-5 my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold mb-1">Sketch Telling</h2>
-                <p class="text-muted mb-0">Lihatlah kisah-kisah yang kami visualisasikan</p>
+            <div class="w-100 text-center">
+                <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Sketch Telling</h2>
+                <p class="text-muted mb-0 text-center">Lihatlah kisah-kisah yang kami visualisasikan</p>
             </div>
-            <a href="#" class="btn btn-link text-primary fw-semibold text-decoration-none">Lihat Semua Sketch</a>
         </div>
         <div class="swiper sketch-telling-swiper">
             <div class="swiper-wrapper">
                 @forelse ($latest_sketches as $sketch)
-                    <div class="swiper-slide pb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                <div class="swiper-slide pb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
                             <div class="card-body text-center">
                                 <h5 class="fw-bold">{{ Str::limit($sketch->title, 50) }}</h5>
                             </div>
                         </div>
                     </div>
-                @empty
+                    @empty
                     <div class="swiper-slide"><p class="text-center text-muted">Belum ada sketsa.</p></div>
-                @endforelse
+                    @endforelse
+                </div>
+                <div class="swiper-button-next sketch-next"></div>
+                <div class="swiper-button-prev sketch-prev"></div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{{ route('front.sketch') }}" class="btn btn-primary rounded-pill px-4 py-2 text-center mt-4">Lihat Semua Sketch</a>
+                </div>
             </div>
-            <div class="swiper-button-next sketch-next"></div>
-            <div class="swiper-button-prev sketch-prev"></div>
-        </div>
     </section>
 
     {{-- 7. Layanan Kami --}}
@@ -219,8 +231,8 @@
                     <p class="text-muted">Belum ada layanan tersedia.</p>
                 @endforelse
             </div>
-            <div class="mt-4">
-                <a href="#" class="btn btn-primary">Lihat Semua Promo</a>
+            <div class="text-center mt-4">
+                <a href="#" class="btn btn-primary rounded-pill px-4 py-2">Lihat Semua Promo</a>
             </div>
         </div>
     </section>
@@ -297,7 +309,7 @@
     }
 
     .hero-section .carousel-item {
-        height: 90vh;
+        height: 100vh;
         background-size: cover;
         background-position: center;
         position: relative;
@@ -319,15 +331,24 @@
         bottom: 0;
         display: flex;
         align-items: center;
-        justify-content: start;
-        padding-left: 15%;
-        padding-right: 15%;
-        text-align: left;
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+        text-align: center;
         transform: none;
+    }
+
+    .hero-section .carousel-caption .container {
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
     }
 
     .hero-section .carousel-caption h1 {
         font-size: 3.5rem;
+
     }
 
     /* Mengatur posisi dan style indikator */
@@ -357,6 +378,8 @@
     .hero-section .carousel-control-next {
         display: none;
     }
+
+    .btn
 
     .swiper-button-next, .swiper-button-prev {
         color: #ccc !important;
