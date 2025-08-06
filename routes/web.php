@@ -37,7 +37,8 @@ Route::middleware('log.visit')->group(function () {
     Route::get('/', [FrontController::class, 'index'])->name('front.index');
     Route::get('/articles', [FrontController::class, 'articles'])->name('front.articles');
     Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name(name: 'front.articles.show');
-   Route::get('/layanan', [FrontController::class, 'layanan'])->name('front.layanan');
+    Route::get ('/popular-articles', [FrontController::class, 'popularArticles'])->name('front.popular.articles');
+    Route::get('/layanan', [FrontController::class, 'layanan'])->name('front.layanan');
     Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact');
 
     // Event Listing (front-facing) - Sekarang ditangani oleh FrontController
