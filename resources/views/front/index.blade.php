@@ -79,7 +79,7 @@
                 <p>
                     {{ isset($popular_articles[0]) ? Str::limit($popular_articles[0]->content, 200) : 'Deskripsi singkat tentang artikel populer. Konten ini memberikan gambaran tentang apa yang dibahas dalam artikel tersebut.' }}
                 </p>
-                <a href="#" class="btn btn-link text-decoration-none fw-semibold p-0 text-primary">Baca Selengkapnya <i class="bi bi-arrow-right"></i></a>
+               <a href="{{ isset($popular_articles[0]) ? route('front.articles.show', $popular_articles[0]->slug) : '#' }}" class="btn btn-link text-decoration-none fw-semibold p-0 text-primary">Baca Selengkapnya <i class="bi bi-arrow-right"></i></a>
             </div>
         </div>
     </section>
@@ -88,7 +88,7 @@
     <section class="container py-5 my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold mb-0">Artikel Terbaru</h2>
-            <a href="#" class="btn btn-link text-primary fw-semibold text-decoration-none">Lihat Semua Artikel</a>
+            <a href="{{ route('front.articles') }}" class="btn btn-link text-primary fw-semibold text-decoration-none">Lihat Semua Artikel</a>
         </div>
         <div class="swiper latest-articles-swiper">
             <div class="swiper-wrapper">
@@ -99,7 +99,7 @@
                             <div class="card-body">
                                 <h5 class="fw-bold">{{ Str::limit($article->title, 50) }}</h5>
                                 <p class="text-muted small">{{ optional($article->created_at)->format('d F Y') }}</p>
-                                <a href="#" class="stretched-link text-decoration-none fw-semibold">Baca Selengkapnya</a>
+                                <a href="{{ route('front.articles.show', $article->slug) }}" class="stretched-link text-decoration-none fw-semibold">Baca Selengkapnya</a>
                             </div>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
     <section class="container py-5 my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold mb-0">Artikel Populer</h2>
-            <a href="#" class="btn btn-link text-primary fw-semibold text-decoration-none">Lihat Semua Artikel</a>
+           <a href="{{ route('front.articles') }}" class="btn btn-link text-primary fw-semibold text-decoration-none">Lihat Semua Artikel</a>
         </div>
         <div class="swiper popular-articles-swiper">
             <div class="swiper-wrapper">
@@ -127,7 +127,7 @@
                             <div class="card-body">
                                 <h5 class="fw-bold">{{ Str::limit($article->title, 50) }}</h5>
                                 <p class="text-muted small">{{ optional($article->created_at)->format('d F Y') }}</p>
-                                <a href="#" class="stretched-link text-decoration-none fw-semibold">Baca Selengkapnya</a>
+                                <a href="{{ route('front.articles.show', $article->slug) }}" class="stretched-link text-decoration-none fw-semibold">Baca Selengkapnya</a>
                             </div>
                         </div>
                     </div>
