@@ -11,25 +11,21 @@ class FrontController extends Controller
 {
     public function index()
     {
-        // Ambil 6 artikel terbaru
         $latest_articles = Article::where('status', 'published')
-                                ->latest()
-                                ->take(6)
-                                ->get();
+            ->latest()
+            ->take(6)
+            ->get();
 
-        // Ambil 6 artikel terpopuler (berdasarkan views)
         $popular_articles = Article::where('status', 'published')
-                                ->orderBy('views', 'desc')
-                                ->take(6)
-                                ->get();
+            ->orderBy('views', 'desc')
+            ->take(6)
+            ->get();
 
-        // Ambil 6 sketsa terbaru
         $latest_sketches = Sketch::where('status', 'published')
-                                ->latest()
-                                ->take(6)
-                                ->get();
+            ->latest()
+            ->take(6)
+            ->get();
 
-        // Ambil 3 layanan
         $services = ConsultationService::take(3)->get();
 
         return view('front.index', compact(
@@ -42,10 +38,9 @@ class FrontController extends Controller
 
     public function articles()
     {
-        // Ambil semua artikel yang sudah diterbitkan
         $articles = Article::where('status', 'published')
-                        ->latest()
-                        ->paginate(6);
+            ->latest()
+            ->paginate(6);
 
         return view('front.articles', compact('articles'));
     }
@@ -57,15 +52,17 @@ class FrontController extends Controller
         return view('front.article_show', compact('article'));
     }
 
-    public function sketch()
+    // Menampilkan semua sketsa per halaman
+    public function sketches_show()
     {
         $sketches = Sketch::where('status', 'published')
-                        ->latest()
-                        ->paginate(6);
+            ->latest()
+            ->paginate(6);
 
         return view('front.sketch', compact('sketches'));
     }
 
+    // Menampilkan detail sketsa berdasarkan slug
     public function showDetail(Sketch $sketch)
     {
         $sketch->increment('views');
