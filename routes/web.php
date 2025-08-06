@@ -41,9 +41,11 @@ Route::middleware('log.visit')->group(function () {
     Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact');
 
     // Event Listing (front-facing) - Sekarang ditangani oleh FrontController
-Route::get('/sketches', [FrontController::class, 'sketch'])->name('front.sketch');
+Route::get('/sketches', [FrontController::class, 'sketches_show'])->name('front.sketch');
+
     // Event/Tournament Details (front-facing) - Sekarang ditangani oleh FrontController
-Route::get('/showDetail', [FrontController::class, 'showDetail'])->name('front.sketches.detail');
+Route::get('/sketches/{sketch:slug}', [FrontController::class, 'showDetail'])->name('front.sketches.detail');
+
 });
 
 // Authentication Routes
