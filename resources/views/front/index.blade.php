@@ -7,12 +7,6 @@
     {{-- 1. Hero Section --}}
     <section class="hero-section">
         <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
-            </div>
-
             <div class="carousel-inner">
                 <div class="carousel-item active" style="background-image: url('{{ asset('assets/carousel/christina-wocintechchat-com-eF7HN40WbAQ-unsplash.jpg') }}');">
                     <div class="overlay"></div>
@@ -53,11 +47,16 @@
                 <span class="carousel-control-next-icon"></span>
                 <span class="visually-hidden">Next</span>
             </button>
+            <div class="carousel-indicators mt-3">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+            </div>
         </div>
     </section>
 
     {{-- 2. Artikel Populer (Satu Artikel Menonjol) --}}
-    <section class="container py-5 my-5" style="margin-top: 120px;">
+    <section class="container py-5 my-5" style="margin-top: 150px;">
         <h2 class="text-center fw-bold mb-5">Artikel Terpopuler Pilihan Kami</h2>
         <div class="row align-items-center bg-white rounded-3 p-4 shadow-sm border border-light">
             <div class="col-lg-5 mb-4 mb-lg-0">
@@ -293,7 +292,7 @@
     }
 
     .hero-section .carousel-item {
-        height: 80vh;
+        height: 100vh;
         background-size: cover;
         background-position: center;
         position: relative;
@@ -338,6 +337,16 @@
     .carousel-indicators .active {
         opacity: 1;
     }
+
+    .hero-section .carousel-indicators {
+        bottom: -300px;
+    }
+
+    /* Untuk menghilangkan panah navigasi */
+.hero-section .carousel-control-prev,
+.hero-section .carousel-control-next {
+    display: none;
+}
 
     .swiper-button-next, .swiper-button-prev {
         color: #ccc !important;
