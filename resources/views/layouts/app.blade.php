@@ -15,7 +15,7 @@
 
     {{-- Custom CSS Files --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/event_detail.css') }}">
 
     {{-- Gaya Kustom Global dan Perbaikan Navbar --}}
     <style>
@@ -39,7 +39,7 @@
             background-color: rgba(255, 255, 255, 0.85); /* Warna putih semi-transparan */
             backdrop-filter: saturate(180%) blur(5px);
             -webkit-backdrop-filter: saturate(180%) blur(15px); /* Untuk support Safari */
-            
+
             /* Posisi tetap di atas */
             position: fixed;
             top: 0;
@@ -143,11 +143,11 @@
     {{-- Konten Utama --}}
     {{-- Tidak perlu wrapper khusus, biarkan body yang diberi padding --}}
     @yield('content')
-    
+
     {{-- Footer tetap di bawah --}}
-    
+
         @include('layouts.footer')
-    
+
 
 
     {{-- JS Libraries --}}
@@ -161,7 +161,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Logika untuk mengubah navbar saat scroll sudah dihapus.
             // Hanya menyisakan logika untuk link aktif.
-            
+
             const currentLocation = window.location.href;
             const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
             navLinks.forEach(link => {
@@ -172,6 +172,6 @@
             });
         });
     </script>
-    
+
 </body>
 </html>

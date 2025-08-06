@@ -39,6 +39,14 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Tambahkan navigasi titik-titik di sini --}}
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+
             <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
                 <span class="visually-hidden">Previous</span>
@@ -47,11 +55,6 @@
                 <span class="carousel-control-next-icon"></span>
                 <span class="visually-hidden">Next</span>
             </button>
-            <div class="carousel-indicators mt-3">
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
-            </div>
         </div>
     </section>
 
@@ -290,7 +293,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 <style>
     .hero-section {
-        margin-bottom: 180px;
+        margin-bottom: 250px;
     }
 
     .hero-section .carousel-item {
@@ -327,28 +330,33 @@
         font-size: 3.5rem;
     }
 
-    .carousel-indicators [data-bs-target] {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: #fff;
-        opacity: 0.5;
-        transition: opacity 0.3s ease;
-    }
-
-    .carousel-indicators .active {
-        opacity: 1;
-    }
-
+    /* Mengatur posisi dan style indikator */
     .hero-section .carousel-indicators {
-        bottom: -300px;
+        position: absolute;
+        top: 140%;
+        margin-bottom: 0;
+    }
+
+    .hero-section .carousel-indicators button {
+        width: 8px; /* Ukuran titik */
+        height: 8px; /* Ukuran titik */
+        margin: 0 4px;
+        border-radius: 50%; /* Membuat bentuk bulat */
+        background-color: #fff;
+        opacity: 0.5; /* Transparansi titik yang tidak aktif */
+        transition: opacity 0.3s ease;
+        border: none; /* Menghilangkan border */
+    }
+
+    .hero-section .carousel-indicators .active {
+        opacity: 1; /* Titik aktif menjadi solid */
     }
 
     /* Untuk menghilangkan panah navigasi */
-.hero-section .carousel-control-prev,
-.hero-section .carousel-control-next {
-    display: none;
-}
+    .hero-section .carousel-control-prev,
+    .hero-section .carousel-control-next {
+        display: none;
+    }
 
     .swiper-button-next, .swiper-button-prev {
         color: #ccc !important;
