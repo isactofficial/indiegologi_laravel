@@ -1,4 +1,4 @@
-@extends('../layouts/master_nav') {{-- Pastikan ini mengacu pada master layout Anda --}}
+@extends('layouts.app')
 
 @section('title', 'Semua Event KAMCUP')
 

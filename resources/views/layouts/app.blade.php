@@ -121,8 +121,8 @@
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
                     <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.index') }}">HOME</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.articles') }}">BERITA</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.galleries') }}">LAYANAN</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.events.index') }}">EVENT</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.layanan') }}">LAYANAN</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.sketch') }}">SKETCH</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.contact') }}">CONTACT US</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('profile.index') }}">PROFILE</a></li>
                     @guest

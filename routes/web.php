@@ -36,14 +36,14 @@ Route::get('/storage-link', function () {
 Route::middleware('log.visit')->group(function () {
     Route::get('/', [FrontController::class, 'index'])->name('front.index');
     Route::get('/articles', [FrontController::class, 'articles'])->name('front.articles');
-    Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name(name: 'front.articles.show');
-    Route::get('/galleries', [FrontController::class, 'galleries'])->name('front.galleries');
+    Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name(name: 'front.articles_show');
+    Route::get('/front', [FrontController::class, 'layanan'])->name('front.layanan');
     Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact');
 
     // Event Listing (front-facing) - Sekarang ditangani oleh FrontController
-    Route::get('/events', [FrontController::class, 'events'])->name('front.events.index');
+    Route::get('/front', [FrontController::class, 'sketch'])->name('front.sketch');
     // Event/Tournament Details (front-facing) - Sekarang ditangani oleh FrontController
-    Route::get('/events/{event:slug}', [FrontController::class, 'showEvent'])->name('front.events.show');
+Route::get('/front', [FrontController::class, 'showDetail'])->name('front.sketches.detail');
 });
 
 // Authentication Routes
@@ -75,22 +75,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-
-    // Team Management (User facing) - {team} parameter is encrypted ID
-    Route::get('/tim/buat', [TeamController::class, 'create'])->name('team.create');
-    Route::post('/tim', [TeamController::class, 'store'])->name('team.store');
-    // Using encrypted ID for team in edit/update/delete
-    Route::get('/tim/{team}/edit', [TeamController::class, 'edit'])->name('team.edit');
-    Route::put('/tim/{team}', [TeamController::class, 'update'])->name('team.update');
-    Route::delete('/tim/{team}', [TeamController::class, 'destroy'])->name('team.destroy'); // Added destroy for team
-
-    // Team Member Management (User facing) - {team} and {member} parameters are encrypted IDs
-    Route::get('/tim/{team}/anggota/buat', [TeamMemberController::class, 'create'])->name('team.members.create');
-    Route::post('/tim/{team}/anggota', [TeamMemberController::class, 'store'])->name('team.members.store');
-    // Using encrypted IDs for team member edit/update/delete
-    Route::get('/tim/{team}/anggota/{member}/edit', [TeamMemberController::class, 'edit'])->name('team.members.edit');
-    Route::put('/tim/{team}/anggota/{member}', [TeamMemberController::class, 'update'])->name('team.members.update');
-    Route::delete('/tim/{team}/anggota/{member}', [TeamMemberController::class, 'destroy'])->name('team.members.destroy');
 
     // Event Registration (User facing) - Uses event slug as per front-facing URL, but sends event ID in AJAX body
     Route::post('/events/{event:slug}/register', [FrontController::class, 'register'])->name('front.events.register');
