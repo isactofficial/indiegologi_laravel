@@ -1,4 +1,4 @@
-@extends('../layouts/master')
+@extends('layouts.app')
 
 @section('content')
 
@@ -226,7 +226,7 @@
             };
 
             $.ajax({
-                url: '{{ route('front.add-to-cart') }}',
+                url: '#',
                 type: 'POST',
                 data: formData,
                 success: function(response) {
@@ -255,3 +255,4 @@
 </script>
 
 @endsection
+
