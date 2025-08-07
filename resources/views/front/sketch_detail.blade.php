@@ -12,7 +12,7 @@
     </div>
 
     {{-- Judul --}}
-    <h1 class="fw-bold mb-2">{{ $sketch->title }}</h1>
+    <h1 style="color: #0C2C5A;" class="fw-bold mb-2">{{ $sketch->title }}</h1>
 
     {{-- Informasi Author dan Tanggal --}}
     <div class="text-muted mb-4 d-flex align-items-center gap-2">
@@ -28,10 +28,11 @@
         style="width: 100%; max-height: 600px; object-fit: cover;">
 
     {{-- Deskripsi --}}
-    <div class="bg-primary text-white p-4 rounded">
-        <p class="mb-0">
-            {!! nl2br(e($sketch->content)) !!}
+    <div style="background-color: #0C2C5A; color: white; padding: 16px; border-radius: 4px;"">
+        <p class=" mb-0">
+        {!! nl2br(e($sketch->content)) !!}
         </p>
     </div>
+
 </div>
 @endsection
