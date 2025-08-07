@@ -223,7 +223,7 @@
             <div class="swiper-button-prev latest-articles-prev"></div>
         </div>
         <div class="text-center mt-4">
-            <a href="{{ route('front.articles') }}" class="btn btn-primary rounded-pill px-4 py-2">Lihat Semua Artikel</a>
+            <a href="{{ route('front.articles') }}" class="btn btn-primary  px-4 py-2">Lihat Semua Artikel</a>
         </div>
     </section>
 
