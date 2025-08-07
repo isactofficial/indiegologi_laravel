@@ -16,7 +16,7 @@
                             <p class="mb-2">Teknik relaksasi dan sugesti positif untuk mengatasi kecemasan, fobia, dan trauma, membuka potensi penyembuhan diri.</p>
                             <br>
                             <br>
-                            <a href="#" class="btn btn-primary rounded-pill px-4 py-2">Pelajari Lebih Lanjut</a>
+                            <a href="#" class="btn btn-primary  px-4 py-2">Pelajari Lebih Lanjut</a>
                         </div>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
                             <p class="mb-2">Indiegologi</p>
                             <br>
                             <br>
-                            <a href="#" class="btn btn-primary rounded-pill px-4 py-2">Pelajari Lebih Lanjut</a>
+                            <a href="#" class="btn btn-primary  px-4 py-2">Pelajari Lebih Lanjut</a>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                             <p class="mb-2">Indiegologi</p>
                             <br>
                             <br>
-                            <a href="#" class="btn btn-primary rounded-pill px-4 py-2">Pelajari Lebih Lanjut</a>
+                            <a href="#" class="btn btn-primary  px-4 py-2">Pelajari Lebih Lanjut</a>
                         </div>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                             <div class="flex-grow-1 text-lg-start text-center featured-popular-content">
                                 <h3 class="fw-bold mb-2 featured-popular-title">{{ Str::limit($article->title, 60) }}</h3>
                                 <p class="text-muted mb-2 featured-popular-date">{{ optional($article->created_at)->format('d F Y') }}</p>
-                                <p class="mb-3 featured-popular-desc">{{ Str::limit(strip_tags($article->content), 120) }}</p>
+                               <p class="mb-3 featured-popular-desc">{{ Str::words(strip_tags($article->content), 15, '...') }}</p>
                                 <a href="{{ route('front.articles.show', $article->slug) }}" class="btn btn-link text-decoration-none fw-semibold p-0 featured-popular-link">Baca Selengkapnya</a>
                             </div>
                         </div>
@@ -235,7 +235,7 @@
                             <img src="{{ asset('storage/' . $article->thumbnail) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="fw-bold">{{ Str::limit($article->title, 50) }}</h5>
-                                <p class="text-muted small">{{ optional($article->created_at)->format('d F Y') }}</p>
+                                <p class="card-text flex-grow-1">{{ Str::words(strip_tags($article->content), 15, '...') }}</p>
                                 <a href="{{ route('front.articles.show', $article->slug) }}" class="stretched-link text-decoration-none fw-semibold">Baca Selengkapnya</a>
                             </div>
                         </div>
@@ -276,7 +276,7 @@
             <div class="swiper-button-prev latest-articles-prev"></div>
         </div>
         <div class="text-center mt-4">
-            <a href="{{ route('front.articles') }}" class="btn btn-primary rounded-pill px-4 py-2">Lihat Semua Artikel</a>
+            <a href="{{ route('front.articles') }}" class="btn btn-primary  px-4 py-2">Lihat Semua Artikel</a>
         </div>
     </section>
 
@@ -336,7 +336,7 @@
                 <div class="swiper-button-prev sketch-prev"></div>
                 </div>
                 <div class="text-center mt-4">
-                    <a href="{{ route('front.sketch') }}" class="btn btn-primary rounded-pill px-4 py-2 text-center mt-4">Lihat Semua Sketch</a>
+                    <a href="{{ route('front.sketch') }}" class="btn btn-primary  px-4 py-2 text-center mt-4">Lihat Semua Sketch</a>
                 </div>
             </div>
     </section>
@@ -362,7 +362,7 @@
                 @endforelse
             </div>
             <div class="text-center mt-4">
-                <a href="#" class="btn btn-primary rounded-pill px-4 py-2">Lihat Semua Promo</a>
+                <a href="#" class="btn btn-primary  px-4 py-2">Lihat Semua Promo</a>
             </div>
         </div>
     </section>
