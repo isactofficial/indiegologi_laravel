@@ -64,6 +64,8 @@
         </div>
     </section>
 
+    <div style="overflow-x: hidden;">
+
     {{-- 2. Artikel Populer (Slider Satu Artikel Menonjol) --}}
     <section class="container py-5 my-5" style="margin-top: 80px;">
         <h2 class="text-center fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Artikel Terpopuler Pilihan Kami</h2>
@@ -104,6 +106,7 @@
             <div class="swiper-button-next featured-popular-next" style="right:-30px;"></div>
         </div>
     </section>
+</div>
 
     @push('scripts')
     <script>
@@ -248,28 +251,29 @@
 
     {{-- 4. Artikel Populer (Slider 3 Kolom) --}}
     <section class="container py-5 my-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <!-- <h2 class="fw-bold mb-0">Artikel Populer</h2> -->
+         <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- <h2 class="fw-bold mb-0">Artikel Terbaru</h2>
+            <a href="{{ route('front.articles') }}" class="btn btn-link text-primary fw-semibold text-decoration-none">Lihat Semua Artikel</a> -->
         </div>
-        <div class="swiper popular-articles-swiper">
+        <div class="swiper latest-articles-swiper">
             <div class="swiper-wrapper">
-                @forelse ($popular_articles as $article)
-                <div class="swiper-slide pb-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <img src="{{ asset('storage/' . $article->thumbnail) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="fw-bold">{{ Str::limit($article->title, 50) }}</h5>
-                            <p class="text-muted small">{{ optional($article->created_at)->format('d F Y') }}</p>
-                            <a href="{{ route('front.articles.show', $article->slug) }}" class="stretched-link text-decoration-none fw-semibold">Baca Selengkapnya</a>
+                @forelse ($latest_articles as $article)
+                    <div class="swiper-slide pb-3">
+                        <div class="card border-0 shadow-sm h-100">
+                            <img src="{{ asset('storage/' . $article->thumbnail) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="fw-bold">{{ Str::limit($article->title, 50) }}</h5>
+                                <p class="text-muted small">{{ optional($article->created_at)->format('d F Y') }}</p>
+                                <a href="{{ route('front.articles.show', $article->slug) }}" class="stretched-link text-decoration-none fw-semibold">Baca Selengkapnya</a>
+                            </div>
                         </div>
                     </div>
-                </div>
                 @empty
-                <div class="swiper-slide"><p class="text-center text-muted">Belum ada artikel populer.</p></div>
+                    <div class="swiper-slide"><p class="text-center text-muted">Belum ada artikel terbaru.</p></div>
                 @endforelse
             </div>
-            <div class="swiper-button-next popular-articles-next"></div>
-            <div class="swiper-button-prev popular-articles-prev"></div>
+            <div class="swiper-button-next latest-articles-next"></div>
+            <div class="swiper-button-prev latest-articles-prev"></div>
         </div>
         <div class="text-center mt-4">
             <a href="{{ route('front.articles') }}" class="btn btn-primary rounded-pill px-4 py-2">Lihat Semua Artikel</a>
@@ -279,27 +283,26 @@
     {{-- 5. Testimoni Section --}}
     <section class="container py-5 my-5">
         <div class="text-center">
-            <h2 class="fw-bold mb-3" style="color: #0C2C5A;">Suara dari Mereka yang Telah Berproses Bersama Kami</h2>
-            <p>Dengarkan pengalaman otentik dari klien kami yang telah menemukan kebahagiaan, kejelasan, dan keseimbangan hidup <br>
-            yang nyaman dan berkesan bersama Indiegologi.</p>
+            <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Suara dari Mereka yang Telah Berproses Bersama Kami</h2>
+            <p style="font-size:1.15rem; color:#4a5a6a;">Dengarkan pengalaman otentik dari klien kami yang telah menemukan kebahagiaan, kejelasan, dan keseimbangan hidup yang <b>nyaman</b> dan <b>berkesan</b> bersama Indiegologi.</p>
         </div>
-        <div class="swiper testimonials-swiper">
+        <div class="swiper testimonials-swiper mt-5">
             <div class="swiper-wrapper">
-            @for ($i = 0; $i < 3; $i++)
-                <div class="swiper-slide pb-3">
-                <div class="card border-0 shadow-sm h-100 p-4 testimonial-card">
-                    <div class="d-flex align-items-center mb-3">
-                    <img src="{{ asset('assets/avatar.png') }}" width="60" height="60" class="rounded-circle me-3 border border-2 border-primary">
-                    <div>
-                        <h6 class="fw-bold mb-0">Haekal</h6>
-                        <small class="text-muted">Pemulih Jiwa</small>
+                @for ($i = 0; $i < 3; $i++)
+                <div class="swiper-slide">
+                    <div class="testimonial-square-card position-relative overflow-hidden shadow-sm mx-auto">
+                        <img src="{{ asset('assets/testimoni-bg.jpg') }}" alt="Testimoni" class="testimonial-bg-img">
+                        <div class="testimonial-overlay"></div>
+                        <div class="testimonial-quote-icon text-start">&#10077;</div>
+                        <div class="testimonial-content text-center text-white position-absolute top-50 start-50 translate-middle w-100 px-4">
+                            <div class="testimonial-name fw-bold" style="font-size:2.1rem;">Haekal</div>
+                            <div class="testimonial-job mb-2" style="font-size:1.2rem;font-style:italic;">Pengusaha</div>
+                            <div class="testimonial-text fw-semibold fst-italic" style="font-size:1.1rem;line-height:1.5;">"Pendekatan yang personal dan efektif. Saya melihat perubahan positif yang signifikan dalam hidup saya."</div>
+                        </div>
+                        <div class="testimonial-quote-icon testimonial-quote-bottom text-end">&#10078;</div>
                     </div>
-                    </div>
-                    <p class="fst-italic mb-0">"Pendekatan yang personal dan efektif. Saya melihat perubahan besar dalam diri saya. Indiegologi benar-benar membantu saya menemukan jalan."</p>
-                    <i class="bi bi-quote quote-icon"></i>
                 </div>
-                </div>
-            @endfor
+                @endfor
             </div>
             <div class="swiper-button-next testimonials-next"></div>
             <div class="swiper-button-prev testimonials-prev"></div>
@@ -369,26 +372,25 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Swiper untuk Artikel Terpopuler Pilihan Kami (Hanya satu slide terlihat)
+            new Swiper('.featured-popular-article-swiper', {
+                loop: true, // Membuat slider berulang
+                slidesPerView: 1, // Hanya satu slide yang terlihat
+                spaceBetween: 0, // Tidak ada jarak antar slide
+                centeredSlides: true, // Slide aktif berada di tengah
+                navigation: {
+                    nextEl: '.featured-popular-next',
+                    prevEl: '.featured-popular-prev',
+                },
+                autoHeight: true, // Sesuaikan tinggi slider dengan konten
+            });
+
             // Swiper untuk Artikel Terbaru
             new Swiper('.latest-articles-swiper', {
                 loop: true,
                 navigation: {
                     nextEl: '.latest-articles-next',
                     prevEl: '.latest-articles-prev',
-                },
-                breakpoints: {
-                    640: { slidesPerView: 1, spaceBetween: 20 },
-                    768: { slidesPerView: 2, spaceBetween: 30 },
-                    1024: { slidesPerView: 3, spaceBetween: 40 },
-                }
-            });
-
-            // Swiper untuk Artikel Populer
-            new Swiper('.popular-articles-swiper', {
-                loop: true,
-                navigation: {
-                    nextEl: '.popular-articles-next',
-                    prevEl: '.popular-articles-prev',
                 },
                 breakpoints: {
                     640: { slidesPerView: 1, spaceBetween: 20 },
@@ -431,17 +433,16 @@
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 <style>
+    /* 1. Hero Section Styles */
     .hero-section {
-        margin-bottom: 250px;
+        margin-bottom: 300px;
     }
-
     .hero-section .carousel-item {
         height: 100vh;
         background-size: cover;
         background-position: center;
         position: relative;
     }
-
     .hero-section .overlay {
         position: absolute;
         top: 0;
@@ -450,21 +451,14 @@
         height: 100%;
         background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.2), transparent);
     }
-
     .hero-section .carousel-caption {
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        top: 0; left: 0; right: 0; bottom: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding-left: 0;
-        padding-right: 0;
         text-align: center;
         transform: none;
     }
-
     .hero-section .carousel-caption .container {
         text-align: center;
         justify-content: center;
@@ -472,62 +466,120 @@
         display: flex;
         flex-direction: column;
     }
-
     .hero-section .carousel-caption h1 {
         font-size: 3.5rem;
-
     }
-
-    /* Mengatur posisi dan style indikator */
     .hero-section .carousel-indicators {
         position: absolute;
         top: 140%;
         margin-bottom: 0;
     }
-
     .hero-section .carousel-indicators button {
-        width: 8px; /* Ukuran titik */
-        height: 8px; /* Ukuran titik */
-        margin: 0 4px;
-        border-radius: 50%; /* Membuat bentuk bulat */
+        width: 8px; height: 8px; margin: 0 4px;
+        border-radius: 50%;
         background-color: #fff;
-        opacity: 0.5; /* Transparansi titik yang tidak aktif */
-        transition: opacity 0.3s ease;
-        border: none; /* Menghilangkan border */
+        opacity: 0.5;
+        border: none;
     }
-
     .hero-section .carousel-indicators .active {
-        opacity: 1; /* Titik aktif menjadi solid */
+        opacity: 1;
     }
-
-    /* Untuk menghilangkan panah navigasi */
     .hero-section .carousel-control-prev,
     .hero-section .carousel-control-next {
         display: none;
     }
 
-    .btn
-
-    .swiper-button-next, .swiper-button-prev {
-        color: #ccc !important;
-        --swiper-navigation-size: 20px;
-    }
-
-    .testimonial-card {
+    /* 2. Featured Popular Article Slider Styles */
+    .featured-popular-article-swiper {
         position: relative;
-        text-align: left;
     }
-
-    .testimonial-card img {
+    .featured-popular-card {
+        width: 100%;
+        max-width: 1050px;
+        min-height: 400px;
+        padding: 48px 56px;
+    }
+    .featured-popular-img-wrap { max-width: 380px; }
+    .featured-popular-img {
+        max-height: 340px;
+        width: 100%;
         object-fit: cover;
     }
-
-    .testimonial-card .quote-icon {
-        position: absolute;
-        bottom: 1rem;
-        right: 1rem;
-        font-size: 3rem;
-        color: #f0f0f0;
+    .featured-popular-title {
+        font-size: 2.6rem;
+        color: #18305b;
+        line-height: 1.1;
     }
+    .featured-popular-date { font-size: 1.2rem; }
+    .featured-popular-desc { color: #4a5a6a; font-size: 1.25rem; }
+    .featured-popular-link { color: #b0b0b0; font-size: 1.4rem; }
+
+    /* 3. Testimonial Styles */
+    .testimonial-square-card {
+        width: 340px; height: 340px; border-radius: 8px;
+        background: #fff; box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+        position: relative; overflow: hidden; margin: 0 auto 20px;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .testimonial-bg-img {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover; z-index: 1;
+        filter: blur(1px) brightness(0.85);
+    }
+    .testimonial-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
+        background: linear-gradient(180deg,rgba(0,0,0,0.25) 60%,rgba(0,0,0,0.45) 100%);
+    }
+    .testimonial-content { z-index: 3; }
+    .testimonial-name { font-family: 'Montserrat', Arial, sans-serif; letter-spacing: 1px; }
+    .testimonial-job { color: #fff; opacity: 0.85; }
+    .testimonial-text { color: #fff; font-size: 1.08rem; font-style: italic; }
+    .testimonial-quote-icon {
+        position: absolute; font-size: 2.2rem; color: #fff;
+        z-index: 4; opacity: 0.85;
+    }
+    .testimonial-quote-icon.text-start { top: 18px; left: 18px; }
+    .testimonial-quote-icon.text-end { bottom: 18px; right: 18px; }
+    
+    @media (max-width: 991.98px) {
+        .testimonial-square-card { width: 90vw; max-width: 340px; height: 340px; }
+    }
+
+    /* 4. [PERBAIKAN UTAMA] CSS Umum untuk SEMUA Tombol Panah Slider */
+    .swiper-button-next,
+    .swiper-button-prev {
+        /* Kunci untuk posisi tengah vertikal */
+        top: 50%;
+        transform: translateY(-50%);
+        
+        /* Gaya standar untuk semua panah */
+        background-color: white;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        color: #18305b !important;
+        transition: opacity 0.2s;
+    }
+    /* Mengatur ukuran ikon di dalam tombol */
+    .swiper-button-next::after,
+    .swiper-button-prev::after {
+        font-size: 1.2rem;
+        font-weight: 900;
+    }
+    /* Sembunyikan panah jika dinonaktifkan (awal/akhir slide) */
+    .swiper-button-disabled {
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    /* 5. [PERBAIKAN KHUSUS] Posisi panah untuk slider Featured Popular */
+    .featured-popular-prev {
+        left: -20px; /* Atur posisi horizontal spesifik */
+    }
+    .featured-popular-next {
+        right: -20px; /* Atur posisi horizontal spesifik */
+    }
+
 </style>
 @endpush
