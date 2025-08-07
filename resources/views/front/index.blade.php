@@ -227,11 +227,11 @@
         </div>
     </section>
 
-    {{-- 5. Testimoni Section --}}
+{{-- 5. Testimoni Section --}}
     <section class="container py-5 my-5">
         <div class="text-center">
-            <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Suara dari Mereka yang Telah Berproses Bersama Kami</h2>
-            <p style="font-size:1.15rem; color:#4a5a6a;">Dengarkan pengalaman otentik dari klien kami yang telah menemukan kebahagiaan, kejelasan, dan keseimbangan hidup yang <b>nyaman</b> dan <b>berkesan</b> bersama Indiegologi.</p>
+            <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Kisah Inspiratif dari Keluarga Indiegologi</h2>
+            <p style="font-size:1.15rem; color:#6c757d;">Dengarkan cerita tulus dari mereka yang telah berproses bersama kami, menemukan kebahagiaan, kejelasan, dan **cinta diri** yang sejati.</p>
         </div>
         <div class="swiper testimonials-swiper mt-5">
             <div class="swiper-wrapper">
@@ -240,13 +240,19 @@
                     <div class="testimonial-square-card position-relative overflow-hidden shadow-sm mx-auto">
                         <img src="{{ asset('assets/testimoni-bg.jpg') }}" alt="Testimoni" class="testimonial-bg-img">
                         <div class="testimonial-overlay"></div>
-                        <div class="testimonial-quote-icon text-start">&#10077;</div>
-                        <div class="testimonial-content text-center text-white position-absolute top-50 start-50 translate-middle w-100 px-4">
-                            <div class="testimonial-name fw-bold" style="font-size:2.1rem;">Haekal</div>
-                            <div class="testimonial-job mb-2" style="font-size:1.2rem;font-style:italic;">Pengusaha</div>
-                            <div class="testimonial-text fw-semibold fst-italic" style="font-size:1.1rem;line-height:1.5;">"Pendekatan yang personal dan efektif. Saya melihat perubahan positif yang signifikan dalam hidup saya."</div>
+
+                        {{-- Mengganti warna ikon kutipan menjadi hitam --}}
+                        <div class="testimonial-quote-icon testimonial-quote-top-left" style="color: #212529;">&#10077;</div>
+
+                        <div class="testimonial-content text-center text-white w-100 px-4 position-absolute bottom-0 start-50 translate-middle-x pb-4">
+                            <div class="testimonial-name fw-bold" style="font-size: 1.8rem;">Haekal</div>
+                            <div class="testimonial-job mb-2" style="font-size: 1.1rem; font-style: italic; opacity: 0.8;">Pengusaha</div>
+                            <div class="testimonial-text fw-semibold fst-italic" style="font-size: 0.95rem; line-height: 1.4;">"Pendekatan yang personal dan efektif. Saya melihat perubahan positif yang signifikan dalam hidup saya."</div>
                         </div>
-                        <div class="testimonial-quote-icon testimonial-quote-bottom text-end">&#10078;</div>
+
+
+                        <div class="testimonial-quote-icon testimonial-quote-bottom-right" style="color: #212529;">&#10078;</div>
+
                     </div>
                 </div>
                 @endfor
@@ -461,36 +467,95 @@
     .featured-popular-desc { color: #4a5a6a; font-size: 1.25rem; }
     .featured-popular-link { color: #b0b0b0; font-size: 1.4rem; }
 
-    /* 3. Testimonial Styles */
-    .testimonial-square-card {
-        width: 340px; height: 340px; border-radius: 8px;
-        background: #fff; box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-        position: relative; overflow: hidden; margin: 0 auto 20px;
-        display: flex; align-items: center; justify-content: center;
-    }
-    .testimonial-bg-img {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        object-fit: cover; z-index: 1;
-        filter: blur(1px) brightness(0.85);
-    }
-    .testimonial-overlay {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
-        background: linear-gradient(180deg,rgba(0,0,0,0.25) 60%,rgba(0,0,0,0.45) 100%);
-    }
-    .testimonial-content { z-index: 3; }
-    .testimonial-name { font-family: 'Montserrat', Arial, sans-serif; letter-spacing: 1px; }
-    .testimonial-job { color: #fff; opacity: 0.85; }
-    .testimonial-text { color: #fff; font-size: 1.08rem; font-style: italic; }
-    .testimonial-quote-icon {
-        position: absolute; font-size: 2.2rem; color: #fff;
-        z-index: 4; opacity: 0.85;
-    }
-    .testimonial-quote-icon.text-start { top: 18px; left: 18px; }
-    .testimonial-quote-icon.text-end { bottom: 18px; right: 18px; }
+/* 3. Testimonial Styles */
+.testimonial-square-card {
+    width: 340px;
+    height: 340px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto 20px;
+    padding-bottom: 40px; /* Menambahkan ruang di bawah untuk ikon quote */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    @media (max-width: 991.98px) {
-        .testimonial-square-card { width: 90vw; max-width: 340px; height: 340px; }
+.testimonial-bg-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    filter: blur(1px) brightness(0.7);
+}
+
+.testimonial-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.45) 100%);
+}
+
+.testimonial-content {
+    z-index: 3;
+    top: auto;
+    bottom: 50px; /* Nilai ini disesuaikan agar teks lebih tinggi dari ikon bawah */
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 100%;
+}
+
+.testimonial-name {
+    font-family: 'Poppins', Arial, sans-serif;
+    letter-spacing: 0;
+}
+
+.testimonial-job {
+    color: #fff;
+    opacity: 0.85;
+}
+
+.testimonial-text {
+    color: #fff;
+    font-size: 0.95rem;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.testimonial-quote-icon {
+    position: absolute;
+    font-size: 2.2rem;
+    color: #212529; /* Warna hitam sesuai permintaan */
+    z-index: 4;
+    opacity: 0.7;
+    font-family: serif;
+}
+
+.testimonial-quote-top-left {
+    top: 15px;
+    left: 20px;
+}
+
+.testimonial-quote-bottom-right {
+    bottom: 20px; /* Nilai ini diturunkan sedikit untuk menghindari tabrakan */
+    right: 20px;
+}
+
+@media (max-width: 991.98px) {
+    .testimonial-square-card {
+        width: 90vw;
+        max-width: 340px;
+        height: 340px;
     }
+}
 
         .featured-popular-article-swiper .swiper-slide {
             display: flex;
