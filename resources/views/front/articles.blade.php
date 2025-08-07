@@ -3,7 +3,9 @@
 @section('content')
 
 <div class="container py-5 mt-5 pt-lg-0">
-    <h2 class="fw-bold mb-4 text-center section-title-articles">Semua Artikel Seputar Olahraga & Komunitas</h2>
+    <h2 class="fw-bold mb-4 text-center section-title-articles">Wawasan & Inspirasi Terbaru dari Indiegologi</h2>
+
+    <p class="text-center mb-5 text-muted">Jelajahi kumpulan artikel inspiratif dan informatif yang kami kurasi, dirancang untuk mendukung perjalanan kesejahteraan dan pertumbuhan pribadi Anda.</p>
 
     <div class="mb-4 d-flex justify-content-end">
         <form action="{{ route('front.articles') }}" method="GET">
@@ -19,7 +21,6 @@
     <div class="row row-cols-2 row-cols-md-3 g-3 g-md-4">
         @forelse($articles as $article)
             <div class="col">
-                {{-- UBAH INI: Gunakan SLUG untuk tautan detail artikel --}}
                 <a href="{{ route('front.articles.show', $article->slug) }}" class="article-link">
                     <div class="card h-100 border-0 shadow-sm card-hover-zoom overflow-hidden">
                         <div class="ratio ratio-4x3 article-thumbnail-wrapper">
@@ -98,37 +99,36 @@
 
 @push('styles')
 <style>
-    /* Main Colors from your provided code */
+    /* Main Colors for INDIEGOLOGI */
     :root {
-        --primary-color: #002061; /* Biru Tua/Navy */
-        --secondary-color: #fdbf06; /* Kuning Cerah/Emas */
-        --accent-color: #c92788; /* Pink Keunguan/Magenta */
-        --text-dark: #333;
-        --text-light: #666;
+        --indiegologi-primary: #0C2C5A; /* Sesuai dengan warna utama yang Anda berikan */
+        --indiegologi-secondary: #f8f9fa; /* Warna terang untuk kontras */
+        --indiegologi-dark: #212529; /* Warna gelap untuk teks */
+        --indiegologi-muted: #6c757d; /* Warna abu-abu untuk teks deskripsi */
     }
 
     /* General Styling */
     body {
-        font-family: 'Open Sans', sans-serif;
-        color: var(--text-dark);
+        font-family: 'Poppins', sans-serif; /* Menggunakan font yang konsisten */
+        color: var(--indiegologi-dark);
+        background-color: var(--indiegologi-secondary);
     }
 
     a {
         text-decoration: none;
-        color: var(--primary-color);
+        color: var(--indiegologi-primary);
     }
 
     /* Custom Text Colors based on Brand Identity */
-    .text-primary-custom { color: var(--primary-color) !important; }
-    .text-secondary-custom { color: var(--secondary-color) !important; }
-    .text-accent-custom { color: var(--accent-color) !important; }
+    .text-primary-custom { color: var(--indiegologi-primary) !important; }
+    .text-muted { color: var(--indiegologi-muted) !important; }
 
     /* Section Title */
     .section-title-articles {
         font-family: 'Poppins', sans-serif;
         font-weight: 700;
         font-size: 2.5rem;
-        color: var(--primary-color);
+        color: var(--indiegologi-primary);
         margin-top: 8rem;
         position: relative;
         padding-bottom: 15px;
@@ -142,7 +142,7 @@
         bottom: 0;
         width: 80px;
         height: 5px;
-        background-color: var(--secondary-color);
+        background-color: var(--indiegologi-primary); /* Menggunakan warna primary untuk garis bawah */
         border-radius: 2px;
     }
 
@@ -150,13 +150,14 @@
     .form-select {
         width: 200px;
         display: inline-block;
-        border: 1px solid var(--primary-color);
-        color: var(--primary-color);
+        border: 1px solid var(--indiegologi-primary);
+        color: var(--indiegologi-primary);
+        font-weight: 500;
     }
 
     .form-select:focus {
-        border-color: var(--accent-color);
-        box-shadow: 0 0 0 0.25rem rgba(201, 39, 136, 0.25);
+        border-color: var(--indiegologi-primary);
+        box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.25); /* Menggunakan alpha dari primary-color */
     }
 
     /* Article Cards */
@@ -181,7 +182,7 @@
     }
 
     .article-thumbnail-wrapper {
-        background-color: var(--primary-color);
+        background-color: var(--indiegologi-primary);
     }
 
     .article-thumbnail {
@@ -197,11 +198,11 @@
     .card-title {
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
-        color: var(--primary-color);
+        color: var(--indiegologi-primary);
     }
 
     .card-text.description-text {
-        color: var(--text-light);
+        color: var(--indiegologi-muted);
     }
 
     /* Text clamping for titles */
@@ -224,41 +225,40 @@
         margin-bottom: 0;
     }
 
-    /* --- Custom Pagination Styles (Adapted from Gallery, maintaining article colors) --- */
+    /* --- Custom Pagination Styles --- */
     .pagination {
         list-style: none;
         display: flex;
         justify-content: center;
         padding: 0;
         margin: 0;
-        /* Using primary-color and secondary-color from article page's :root */
-        --pagination-link-color: var(--primary-color); /* Matches `border` and `color` in your ref */
-        --pagination-active-bg: var(--primary-color); /* Matches `background-color` and `border-color` in active state */
-        --pagination-active-color: white; /* Text color for active page */
-        --pagination-hover-bg: var(--secondary-color); /* Matches `background-color` and `border-color` on hover */
-        --pagination-hover-color: white; /* Text color on hover */
-        --pagination-border-color: var(--primary-color); /* Default border color */
-        --pagination-disabled-color: rgba(0, 32, 97, 0.4); /* Matches `color` for disabled */
-        --pagination-disabled-border: rgba(0, 32, 97, 0.2); /* Matches `border-color` for disabled */
+
+        --pagination-link-color: var(--indiegologi-primary);
+        --pagination-active-bg: var(--indiegologi-primary);
+        --pagination-active-color: white;
+        --pagination-hover-bg: rgba(12, 44, 90, 0.8); /* Warna primary dengan sedikit opacity */
+        --pagination-hover-color: white;
+        --pagination-border-color: var(--indiegologi-primary);
+        --pagination-disabled-color: rgba(12, 44, 90, 0.4);
+        --pagination-disabled-border: rgba(12, 44, 90, 0.2);
     }
 
     .pagination .page-item {
-        margin: 0 5px; /* Spacing between pagination items */
+        margin: 0 5px;
     }
 
     .pagination .page-link {
-        border-radius: 8px; /* Rounded corners for links */
+        border-radius: 8px;
         padding: 10px 15px;
-        min-width: 40px; /* Ensures consistent width */
+        min-width: 40px;
         text-align: center;
         font-weight: 500;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 40px; /* Consistent height */
+        height: 40px;
 
-        /* Applying colors from the new variables */
         color: var(--pagination-link-color);
         background-color: transparent;
         border: 1px solid var(--pagination-border-color);
@@ -268,25 +268,25 @@
         background-color: var(--pagination-active-bg);
         border-color: var(--pagination-active-bg);
         color: var(--pagination-active-color);
-        font-weight: bold; /* Make active page number bold */
-        box-shadow: 0 4px 8px rgba(0, 32, 97, 0.2); /* Subtle shadow for active page (using primary-color with opacity) */
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(12, 44, 90, 0.2);
     }
 
     .pagination .page-link:hover:not(.active) {
         background-color: var(--pagination-hover-bg);
         border-color: var(--pagination-hover-bg);
         color: var(--pagination-hover-color);
-        transform: translateY(-2px); /* Slight lift on hover */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .pagination .page-item.disabled .page-link {
         color: var(--pagination-disabled-color);
         pointer-events: none;
         border-color: var(--pagination-disabled-border);
-        background-color: transparent; /* Ensure disabled background is transparent */
-        transform: none; /* Remove hover effect */
-        box-shadow: none; /* Remove hover effect */
+        background-color: transparent;
+        transform: none;
+        box-shadow: none;
     }
 
     /* Responsive adjustments for small screens */
@@ -318,7 +318,7 @@
 
     /* Media query for very small screens or where navbar might overlap title */
     @media (max-width: 575.98px) {
-        .hero-section-articles { /* Not directly present, but good to keep if it exists elsewhere */
+        .hero-section-articles {
             padding-bottom: 2rem;
         }
     }

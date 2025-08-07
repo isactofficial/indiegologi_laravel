@@ -2,25 +2,21 @@
 
 @section('content')
 
-<div class="container px-4 px-lg-5">
+<div class="container py-5 mt-5 pt-lg-0">
     <div class="row justify-content-center">
-        <div class="col-lg-12">
-
-            <!-- Back Button -->
-            <div class="d-flex justify-content-between mb-4 mt-4">
+        <div class="col-lg-12 pt-5"> <div class="d-flex justify-content-between mb-4 mt-4">
                 <a href="{{ route('front.index') }}" class="btn px-4 py-2"
-                style="background-color: #F0F5FF; color: #5B93FF; border-radius: 8px;">
+                style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 8px;">
                     <i class="fas fa-arrow-left me-2"></i> Kembali
                 </a>
             </div>
 
 
-            <!-- Article Header -->
             <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <span class="badge rounded-pill px-3 py-2"
-                          style="background-color: {{ $article->status == 'Published' ? '#E6F7F1' : '#f5f5f5' }};
-                                color: {{ $article->status == 'Published' ? '#36b37e' : '#6c757d' }};">
+                         style="background-color: {{ $article->status == 'Published' ? '#D6E4FF' : '#f5f5f5' }};
+                                color: {{ $article->status == 'Published' ? '#0C2C5A' : '#6c757d' }};">
                         {{ $article->status }}
                     </span>
                     <div class="text-muted small">
@@ -28,15 +24,15 @@
                     </div>
                 </div>
 
-                <h1 class="fw-bold mb-3 article-text">{{ $article->title }}</h1>
+                <h1 class="fw-bold mb-3 article-text" style="color: #0C2C5A;">{{ $article->title }}</h1>
 
                 <div class="d-flex align-items-center mb-4">
                     <div class="d-flex justify-content-center align-items-center rounded-circle me-3"
-                         style="width: 40px; height: 40px; background-color: #F0F5FF;">
-                        <i class="fas fa-user" style="color: #5B93FF;"></i>
+                         style="width: 40px; height: 40px; background-color: #D6E4FF;">
+                        <i class="fas fa-user" style="color: #0C2C5A;"></i>
                     </div>
                     <div>
-                        <p class="mb-0 fw-medium">{{ $article->author }}</p>
+                        <p class="mb-0 fw-medium" style="color: #0C2C5A;">{{ $article->author }}</p>
                         <p class="text-muted small mb-0">Author</p>
                     </div>
                 </div>
@@ -51,21 +47,18 @@
             </div>
 
 
-            <!-- Article Content -->
             <div class="mb-4">
-                <!-- Description Section -->
                 <div class="article-description mb-4">
                     <div class="p-3 rounded-3" style="background-color: #F8FAFD;">
                         <p class="lead mb-0" style="color: #5F738C;">{{ $article->description }}</p>
                     </div>
                 </div>
 
-                <!-- Main Content -->
                 @if($article->subheadings->count())
                     <div class="article-content">
                         @foreach($article->subheadings as $subheading)
                             <div class="subheading-section mb-4">
-                                <h3 class="fw-bold mb-3 article-text" style="color: #3A4A5C; padding-bottom: 10px; border-bottom: 2px solid #F0F5FF;">
+                                <h3 class="fw-bold mb-3 article-text" style="color: #0C2C5A; padding-bottom: 10px; border-bottom: 2px solid #e3e9f4;">
                                     {{ $subheading->title }}
                                 </h3>
                                 @foreach($subheading->paragraphs as $paragraph)
@@ -79,45 +72,42 @@
                 @endif
             </div>
 
-            <!-- Comments Section -->
             <div class="card border-0 rounded-4 shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <h3 class="fw-bold fs-5 mb-4 article-text">Komentar ({{ $article->comments->count() }})</h3>
+                    <h3 class="fw-bold fs-5 mb-4 article-text" style="color: #0C2C5A;">Komentar ({{ $article->comments->count() }})</h3>
 
-                    <!-- Comment Form -->
                     @auth
                         <form action="{{ route('comments.store', $article->id) }}" method="POST" class="mb-4">
                             @csrf
                             <div class="form-group">
                                 <textarea name="content" rows="3" class="form-control @error('content') is-invalid @enderror"
-                                    placeholder="Tulis komentar Anda..."></textarea>
+                                          placeholder="Tulis komentar Anda..." style="border-color: #0C2C5A;"></textarea>
                                 @error('content')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="submit" class="btn btn-primary mt-2">
+                            <button type="submit" class="btn btn-primary mt-2" style="background-color: #0C2C5A; border-color: #0C2C5A;">
                                 <i class="fas fa-paper-plane me-2"></i>Kirim Komentar
                             </button>
                         </form>
                     @else
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2 article-text"></i>
-                            Silakan <a href="{{ route('login') }}">login</a> untuk memberikan komentar.
+                            <i class="fas fa-info-circle me-2 article-text" style="color: #0C2C5A;"></i>
+                            Silakan <a href="{{ route('login') }}" style="color: #0C2C5A;">login</a> untuk memberikan komentar.
                         </div>
                     @endauth
 
-                    <!-- Comments List -->
                     <div class="comments-list">
                         @forelse($article->comments()->with('user')->latest()->get() as $comment)
                             <div class="comment-item border-bottom py-3">
                                 <div class="d-flex align-items-start">
                                     <div class="d-flex justify-content-center align-items-center rounded-circle me-3"
-                                         style="width: 40px; height: 40px; background-color: #F0F5FF;">
-                                        <i class="fas fa-user" style="color: #5B93FF;"></i>
+                                         style="width: 40px; height: 40px; background-color: #D6E4FF;">
+                                        <i class="fas fa-user" style="color: #0C2C5A;"></i>
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <h6 class="mb-0 fw-medium">{{ $comment->user->name }}</h6>
+                                            <h6 class="mb-0 fw-medium" style="color: #0C2C5A;">{{ $comment->user->name }}</h6>
                                             <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
                                         </div>
                                         <p class="mb-2" style="color: #5F738C;">{{ $comment->content }}</p>
@@ -125,9 +115,10 @@
                                         @auth
                                             @if(auth()->id() === $comment->user_id)
                                                 <div class="comment-actions">
-                                                    <button class="btn btn-sm btn-link text-primary edit-comment"
+                                                    <button class="btn btn-sm btn-link"
                                                             data-comment-id="{{ $comment->id }}"
-                                                            data-content="{{ $comment->content }}">
+                                                            data-content="{{ $comment->content }}"
+                                                            style="color: #0C2C5A;">
                                                         <i class="fas fa-edit"></i> Edit
                                                     </button>
                                                     <form action="{{ route('comments.destroy', $comment->id) }}"
@@ -173,9 +164,9 @@
     }
     .btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(108, 99, 255, 0.3);
+    box-shadow: 0 4px 8px rgba(12, 44, 90, 0.3);
 }
- .comment-item:last-child {
+   .comment-item:last-child {
         border-bottom: none !important;
     }
 
