@@ -151,16 +151,7 @@ body {
     margin-bottom: 35px; /* More space below title */
 }
 
-.section-title::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 90px; /* Longer underline */
-    height: 6px; /* Thicker underline */
-    background-color: var(--collab-primary); /* **UPDATED: BTN Blue for underline** */
-    border-radius: 3px;
-}
+
 
 /* Updated see all button styling */
 .see-all-btn {
