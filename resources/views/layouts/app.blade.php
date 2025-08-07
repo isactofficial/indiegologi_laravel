@@ -112,7 +112,7 @@
     <nav class="navbar navbar-expand-lg py-3">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{{ route('front.index') }}">
-                <img src="{{ asset('assets/img/logo5.png') }}" alt="Indiegologi Logo" style="height: 50px;">
+                <h1 class="text-primary fw-bold m-0 p-0" style="font-size: 2rem;">INDIEGOLOGI</h1>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
