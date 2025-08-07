@@ -432,7 +432,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 <style>
     .hero-section {
-        margin-bottom: 250px;
+        margin-bottom: 300px;
     }
 
     .hero-section .carousel-item {
