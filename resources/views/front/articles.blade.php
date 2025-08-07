@@ -26,9 +26,14 @@
                         <div class="ratio ratio-4x3 article-thumbnail-wrapper">
                             <img src="{{ asset('storage/' . $article->thumbnail) }}" class="card-img-top object-fit-cover article-thumbnail" alt="{{ $article->title }}">
                         </div>
-                       <div class="card-body">
+                       <div class="card-body d-flex flex-column">
                             <h5 class="card-title fw-semibold title-text text-primary-custom">{{ $article->title }}</h5>
-                            <p class="card-text description-text text-muted">{{ $article->description }}</p>
+
+                            {{-- Menampilkan deskripsi dengan batasan kata --}}
+                            <p class="card-text description-text text-muted mb-2">{{ Str::words(strip_tags($article->description), 15, '...') }}</p>
+
+                            {{-- Jika Anda ingin menambahkan tanggal, bisa ditaruh di sini --}}
+                            <small class="text-secondary mt-auto">{{ optional($article->created_at)->format('d F Y') }}</small>
                         </div>
                     </div>
                 </a>
@@ -122,6 +127,7 @@
     /* Custom Text Colors based on Brand Identity */
     .text-primary-custom { color: var(--indiegologi-primary) !important; }
     .text-muted { color: var(--indiegologi-muted) !important; }
+    .text-secondary { color: var(--indiegologi-muted) !important; } /* Menyesuaikan warna secondary */
 
     /* Section Title */
     .section-title-articles {
