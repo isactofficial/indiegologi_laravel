@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Indiegologi')</title>
@@ -19,93 +20,107 @@
 
     {{-- Gaya Kustom Global dan Perbaikan Navbar --}}
     <style>
-        :root {
-            --indiegologi-primary: #0C2C5A;
-            --indiegologi-secondary: #6c757d;
-            --indiegologi-light: #f8f9fa;
-            --indiegologi-dark: #212529;
-            --navbar-height: 5px; /* Definisikan tinggi navbar di sini */
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--indiegologi-light);
-            /* (PENTING) Beri padding atas agar konten tidak tertutup navbar fixed */
-            padding-top: var(--navbar-height);
-        }
+    :root {
+        --indiegologi-primary: #0C2C5A;
+        --indiegologi-secondary: #6c757d;
+        --indiegologi-light: #f8f9fa;
+        --indiegologi-dark: #212529;
+        --navbar-height: 5px;
+        /* Definisikan tinggi navbar di sini */
+    }
 
-        /* === GAYA NAVBAR BARU: FROSTED GLASS (SESUAI FIGMA) === */
-        .navbar {
-            /* Efek kaca buram */
-            background-color: rgba(255, 255, 255, 0.85); /* Warna putih semi-transparan */
-            backdrop-filter: saturate(180%) blur(5px);
-            -webkit-backdrop-filter: saturate(180%) blur(15px); /* Untuk support Safari */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--indiegologi-light);
+        /* (PENTING) Beri padding atas agar konten tidak tertutup navbar fixed */
+        padding-top: var(--navbar-height);
+    }
 
-            /* Posisi tetap di atas */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1030;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
+    /* === GAYA NAVBAR BARU: FROSTED GLASS (SESUAI FIGMA) === */
+    .navbar {
+        /* Efek kaca buram */
+        background-color: rgba(255, 255, 255, 0.85);
+        /* Warna putih semi-transparan */
+        backdrop-filter: saturate(180%) blur(5px);
+        -webkit-backdrop-filter: saturate(180%) blur(15px);
+        /* Untuk support Safari */
 
-        .navbar .nav-link {
-            color: var(--indiegologi-dark); /* Warna teks link menjadi gelap */
-            font-weight: 500;
-            position: relative;
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
+        /* Posisi tetap di atas */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1030;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
 
-        .navbar .nav-link:hover,
-        .navbar .nav-link.active {
-            color: var(--indiegologi-primary) !important; /* Warna saat aktif/hover */
-        }
+    .navbar .nav-link {
+        color: var(--indiegologi-dark);
+        /* Warna teks link menjadi gelap */
+        font-weight: 500;
+        position: relative;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        transition: color 0.3s ease;
+    }
 
-        .navbar .btn-outline-primary {
-            /* Sesuaikan style tombol dengan desain baru */
-        }
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+        color: var(--indiegologi-primary) !important;
+        /* Warna saat aktif/hover */
+    }
 
-        /* Hilangkan underline, fokus pada perubahan warna saja agar lebih clean */
-        .navbar .nav-link::after {
-            display: none;
-        }
-        /* === AKHIR GAYA NAVBAR BARU === */
+    .navbar .btn-outline-primary {
+        /* Sesuaikan style tombol dengan desain baru */
+    }
 
-        .btn-primary {
-            background-color: var(--indiegologi-primary);
-            border-color: var(--indiegologi-primary);
-        }
-        .btn-primary:hover {
-            background-color: #082142;
-            border-color: #082142;
-        }
-        .btn-outline-primary {
-            color: var(--indiegologi-primary);
-            border-color: var(--indiegologi-primary);
-        }
-        .btn-outline-primary:hover {
-            background-color: var(--indiegologi-primary);
-            color: #fff;
-        }
-        .text-primary {
-            color: var(--indiegologi-primary) !important;
-        }
-        .alert-fixed {
-            position: fixed;
-            top: calc(var(--navbar-height) + 20px); /* Posisikan alert di bawah navbar */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1050;
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+    /* Hilangkan underline, fokus pada perubahan warna saja agar lebih clean */
+    .navbar .nav-link::after {
+        display: none;
+    }
+
+    /* === AKHIR GAYA NAVBAR BARU === */
+
+    .btn-primary {
+        background-color: var(--indiegologi-primary);
+        border-color: var(--indiegologi-primary);
+    }
+
+    .btn-primary:hover {
+        background-color: #082142;
+        border-color: #082142;
+    }
+
+    .btn-outline-primary {
+        color: var(--indiegologi-primary);
+        border-color: var(--indiegologi-primary);
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--indiegologi-primary);
+        color: #fff;
+    }
+
+    .text-primary {
+        color: var(--indiegologi-primary) !important;
+    }
+
+    .alert-fixed {
+        position: fixed;
+        top: calc(var(--navbar-height) + 20px);
+        /* Posisikan alert di bawah navbar */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1050;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
     </style>
 
     @stack('styles')
 </head>
+
 <body>
 
     {{-- Navbar (HTML tetap sama, hanya CSS yang berubah) --}}
@@ -114,26 +129,32 @@
             <a class="navbar-brand d-flex align-items-center" href="{{ route('front.index') }}">
                 <h1 class="text-primary fw-bold m-0 p-0" style="font-size: 2rem;">INDIEGOLOGI</h1>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
                     <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.index') }}">HOME</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.articles') }}">BERITA</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.layanan') }}">LAYANAN</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.sketch') }}">SKETCH</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.contact') }}">CONTACT US</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('profile.index') }}">PROFILE</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.articles') }}">BERITA</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.layanan') }}">LAYANAN</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.sketch') }}">SKETCH</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.contact') }}">CONTACT
+                            US</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('profile.index') }}">PROFILE</a>
+                    </li>
                     @guest
-                        <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('login') }}">LOGIN</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('login') }}">LOGIN</a></li>
                     @else
-                        <li class="nav-item">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="btn btn-outline-primary ms-lg-3">LOGOUT</button>
-                            </form>
-                        </li>
+                    <li class="nav-item">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-primary ms-lg-3">LOGOUT</button>
+                        </form>
+                    </li>
                     @endguest
                 </ul>
             </div>
@@ -146,7 +167,7 @@
 
     {{-- Footer tetap di bawah --}}
 
-        @include('layouts.footer')
+    @include('layouts.footer')
 
 
 
@@ -158,20 +179,21 @@
     @stack('scripts')
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Logika untuk mengubah navbar saat scroll sudah dihapus.
-            // Hanya menyisakan logika untuk link aktif.
+    document.addEventListener('DOMContentLoaded', function() {
+        // Logika untuk mengubah navbar saat scroll sudah dihapus.
+        // Hanya menyisakan logika untuk link aktif.
 
-            const currentLocation = window.location.href;
-            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.href === currentLocation) {
-                    link.classList.add('active');
-                }
-            });
+        const currentLocation = window.location.href;
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.href === currentLocation) {
+                link.classList.add('active');
+            }
         });
+    });
     </script>
 
 </body>
+
 </html>
