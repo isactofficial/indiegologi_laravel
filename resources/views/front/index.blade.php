@@ -12,14 +12,12 @@
             <div class="carousel-item active"
                 style="background-image: url('{{ asset('assets/carousel/christina-wocintechchat-com-eF7HN40WbAQ-unsplash.jpg') }}');">
                 <div class="overlay"></div>
-                <div class="carousel-caption d-flex flex-column justify-content-center h-100">
-                    <div class="container text-start text-white">
-                        <h1 class="display-4 fw-bold">Temukan Diri Sejati Anda <br>dengan Hypno Healing</h1>
-                        <p class="lead mb-2 text-white-50">Jalani proses penyembuhan diri yang **penuh perhatian** dan
-                            **nyaman** bersama kami, untuk menemukan kedamaian batin yang mendalam.</p>
-                        <br>
-                        <br>
-                        <a href="#" class="btn btn-light  px-4 py-2 fw-semibold">Mulai Perjalanan Anda</a>
+                <div class="carousel-caption">
+                    <div class="container">
+                        {{-- Menghapus <br> agar lebih responsif --}}
+                        <h1 class="hero-title">Temukan Diri Sejati Anda dengan Hypno Healing</h1>
+                        <p class="hero-subtitle">Jalani proses penyembuhan diri yang penuh perhatian dan nyaman bersama kami, untuk menemukan kedamaian batin yang mendalam.</p>
+                        <a href="#" class="btn btn-light hero-button">Mulai Perjalanan Anda</a>
                     </div>
                 </div>
             </div>
@@ -28,14 +26,11 @@
             <div class="carousel-item"
                 style="background-image: url('{{ asset('assets/carousel/kobu-agency-7okkFhxrxNw-unsplash.jpg') }}');">
                 <div class="overlay"></div>
-                <div class="carousel-caption d-flex flex-column justify-content-center h-100">
-                    <div class="container text-start text-white">
-                        <h1 class="display-4 fw-bold">Jurnal Reflektif: <br>Kisah Anda, Karya Anda</h1>
-                        <p class="lead mb-2 text-white-50">Ekspresikan perjalanan emosional Anda dengan **elegan** dan
-                            **personal**, mendokumentasikan setiap langkah menuju **cinta diri**.</p>
-                        <br>
-                        <br>
-                        <a href="#" class="btn btn-light  px-4 py-2 fw-semibold">Pelajari Tentang Kami</a>
+                <div class="carousel-caption">
+                    <div class="container">
+                        <h1 class="hero-title">Jurnal Reflektif: Kisah Anda, Karya Anda</h1>
+                        <p class="hero-subtitle">Ekspresikan perjalanan emosional Anda dengan elegan dan personal, mendokumentasikan setiap langkah menuju cinta diri.</p>
+                        <a href="#" class="btn btn-light hero-button">Pelajari Tentang Kami</a>
                     </div>
                 </div>
             </div>
@@ -44,20 +39,16 @@
             <div class="carousel-item"
                 style="background-image: url('{{ asset('assets/carousel/maranda-vandergriff-7aakZdIl4vg-unsplash.jpg') }}');">
                 <div class="overlay"></div>
-                <div class="carousel-caption d-flex flex-column justify-content-center h-100">
-                    <div class="container text-start text-white">
-                        <h1 class="display-4 fw-bold">Seni Menghargai <br>Setiap Proses Hidup</h1>
-                        <p class="lead mb-2 text-white-50">Panduan **penuh kasih** untuk membantu Anda menemukan
-                            keindahan dan **kekuatan** di setiap tahap kehidupan.</p>
-                        <br>
-                        <br>
-                        <a href="#" class="btn btn-light  px-4 py-2 fw-semibold">Temukan Artikel Kami</a>
+                <div class="carousel-caption">
+                    <div class="container">
+                        <h1 class="hero-title">Seni Menghargai Setiap Proses Hidup</h1>
+                        <p class="hero-subtitle">Panduan penuh kasih untuk membantu Anda menemukan keindahan dan kekuatan di setiap tahap kehidupan.</p>
+                        <a href="#" class="btn btn-light hero-button">Temukan Artikel Kami</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- Tambahkan navigasi titik-titik di sini --}}
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"
                 aria-label="Slide 1"></button>
@@ -98,7 +89,6 @@
                             <h3 class="fw-bold mb-2 featured-popular-title" style="color: #0C2C5A;">
                                 {{ Str::limit($article->title, 60) }}</h3>
 
-                            {{-- Menampilkan deskripsi singkat dari kolom 'description' --}}
                             <p class="mb-3 featured-popular-desc" style="color:#4a5a6a; font-size:1.15rem;">
                                 {{ Str::words(strip_tags($article->description), 15, '...') }}</p>
 
@@ -122,7 +112,6 @@
                             <h3 class="fw-bold mb-2 featured-popular-title" style="color: #0C2C5A;">Judul Artikel
                                 Pilihan Kami</h3>
 
-                            {{-- Deskripsi placeholder --}}
                             <p class="mb-3 featured-popular-desc" style="color:#4a5a6a; font-size:1.15rem;">Deskripsi
                                 singkat yang menginspirasi dan tulus untuk Anda.</p>
 
@@ -140,23 +129,6 @@
     </section>
 </div>
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    new Swiper('.featured-popular-article-swiper', {
-        loop: true,
-        navigation: {
-            nextEl: '.featured-popular-next',
-            prevEl: '.featured-popular-prev',
-        },
-        slidesPerView: 1,
-        spaceBetween: 0,
-        autoHeight: true,
-    });
-});
-</script>
-@endpush
-
 {{-- 3. Artikel Terbaru (Slider) --}}
 <section class="container py-5 my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -169,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function() {
             @forelse ($latest_articles as $article)
             <div class="swiper-slide pb-3">
                 <div class="card border-0 shadow-sm h-100">
-                    {{-- Gunakan div pembungkus untuk rasio aspek --}}
                     <div class="article-img-container">
                         <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}"
                             class="card-img-top">
@@ -279,7 +250,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <img src="{{ asset('assets/testimoni-bg.jpg') }}" alt="Testimoni" class="testimonial-bg-img">
                     <div class="testimonial-overlay"></div>
 
-                    {{-- Mengganti warna ikon kutipan menjadi hitam --}}
                     <div class="testimonial-quote-icon testimonial-quote-top-left" style="color: #212529;">&#10077;
                     </div>
 
@@ -344,7 +314,12 @@ document.addEventListener('DOMContentLoaded', function() {
 {{-- 7. Layanan Kami --}}
 <section class="py-5 my-5 bg-light">
     <div class="container text-center">
-        <h2 class="fw-bold mb-5">Layanan Kami</h2>
+        <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Layanan Kami</h2>
+        <p class="text-muted mb-0 text-center">Pilihan sesi konseling yang fleksibel dan disesuaikan dengan kebutuhan Anda</p>
+        <br>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center mb-4">
         <div class="row justify-content-center">
             @forelse ($services as $service)
             <div class="col-lg-4 col-md-6 mb-4">
@@ -353,6 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="bi bi-star-fill text-primary mb-3 fs-3"></i>
                         <h5 class="fw-bold mb-3">{{ $service->title }}</h5>
                         <p class="text-muted">{{ Str::limit($service->short_description, 100) }}</p>
+                        <p class="text-secondary mb-3">Rp {{ number_format($service->price, 0, ',', '.') }}</p>
                         <a href="#" class="btn btn-outline-primary mt-3">Pilih Paket Ini</a>
                     </div>
                 </div>
@@ -362,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
             @endforelse
         </div>
         <div class="text-center mt-4">
-            <a href="#" class="btn btn-primary  px-4 py-2">Lihat Semua Promo</a>
+            <a href="#" class="btn btn-primary  px-4 py-2">Lihat Semua layanan</a>
         </div>
     </div>
 </section>
@@ -370,22 +346,23 @@ document.addEventListener('DOMContentLoaded', function() {
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Swiper untuk Artikel Terpopuler Pilihan Kami (Hanya satu slide terlihat)
     new Swiper('.featured-popular-article-swiper', {
-        loop: true, // Membuat slider berulang
-        slidesPerView: 1, // Hanya satu slide yang terlihat
-        spaceBetween: 0, // Tidak ada jarak antar slide
-        centeredSlides: true, // Slide aktif berada di tengah
+        loop: true,
+        slidesPerView: 1,
+        spaceBetween: 0,
+        centeredSlides: true,
         navigation: {
             nextEl: '.featured-popular-next',
             prevEl: '.featured-popular-prev',
         },
-        autoHeight: true, // Sesuaikan tinggi slider dengan konten
+        autoHeight: true,
     });
 
-    // Swiper untuk Artikel Terbaru
+    // Swiper untuk Artikel Terbaru dan Populer (3 kolom)
     new Swiper('.latest-articles-swiper', {
         loop: true,
         navigation: {
@@ -393,18 +370,9 @@ document.addEventListener('DOMContentLoaded', function() {
             prevEl: '.latest-articles-prev',
         },
         breakpoints: {
-            640: {
-                slidesPerView: 1,
-                spaceBetween: 20
-            },
-            768: {
-                slidesPerView: 2,
-                spaceBetween: 30
-            },
-            1024: {
-                slidesPerView: 3,
-                spaceBetween: 40
-            },
+            640: { slidesPerView: 1, spaceBetween: 20 },
+            768: { slidesPerView: 2, spaceBetween: 30 },
+            1024: { slidesPerView: 3, spaceBetween: 40 },
         }
     });
 
@@ -416,18 +384,9 @@ document.addEventListener('DOMContentLoaded', function() {
             prevEl: '.testimonials-prev',
         },
         breakpoints: {
-            640: {
-                slidesPerView: 1,
-                spaceBetween: 20
-            },
-            768: {
-                slidesPerView: 2,
-                spaceBetween: 30
-            },
-            1024: {
-                slidesPerView: 3,
-                spaceBetween: 40
-            },
+            640: { slidesPerView: 1, spaceBetween: 20 },
+            768: { slidesPerView: 2, spaceBetween: 30 },
+            1024: { slidesPerView: 3, spaceBetween: 40 },
         }
     });
 
@@ -439,18 +398,9 @@ document.addEventListener('DOMContentLoaded', function() {
             prevEl: '.sketch-prev',
         },
         breakpoints: {
-            640: {
-                slidesPerView: 1,
-                spaceBetween: 20
-            },
-            768: {
-                slidesPerView: 2,
-                spaceBetween: 30
-            },
-            1024: {
-                slidesPerView: 3,
-                spaceBetween: 40
-            },
+            640: { slidesPerView: 1, spaceBetween: 20 },
+            768: { slidesPerView: 2, spaceBetween: 30 },
+            1024: { slidesPerView: 3, spaceBetween: 40 },
         }
     });
 });
@@ -460,26 +410,30 @@ document.addEventListener('DOMContentLoaded', function() {
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 <style>
-/* 1. Hero Section Styles */
+/* 1. [FINAL REVISION] Hero Section Styles */
 .hero-section {
-    margin-top: 65px;
-    margin-bottom: 300px;
+    position: relative;
+    height: 100vh;
+    min-height: 650px;
+    color: #fff;
+}
+
+.hero-section .carousel,
+.hero-section .carousel-inner,
+.hero-section .carousel-item {
+    height: 100%;
 }
 
 .hero-section .carousel-item {
-    height: 100vh;
     background-size: cover;
     background-position: center;
-    position: relative;
 }
 
 .hero-section .overlay {
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2), transparent);
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
 }
 
 .hero-section .carousel-caption {
@@ -487,49 +441,60 @@ document.addEventListener('DOMContentLoaded', function() {
     left: 0;
     right: 0;
     bottom: 0;
+    height: 100%;
+    padding: 0;
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    transform: none;
 }
 
 .hero-section .carousel-caption .container {
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
+    text-align: left;
 }
 
-.hero-section .carousel-caption h1 {
-    font-size: 3.5rem;
+.hero-title {
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 700;
+    line-height: 1.2;
+    max-width: 20ch;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 55ch;
+    margin-bottom: 2.25rem;
+}
+
+.hero-button {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
 }
 
 .hero-section .carousel-indicators {
-    position: absolute;
-    top: 140%;
-    margin-bottom: 0;
+    bottom: 1.5rem;
 }
 
 .hero-section .carousel-indicators button {
-    width: 8px;
-    height: 8px;
-    margin: 0 4px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background-color: #fff;
-    opacity: 0.5;
+    background-color: rgba(255, 255, 255, 0.5);
     border: none;
+    opacity: 1;
 }
 
 .hero-section .carousel-indicators .active {
-    opacity: 1;
+    background-color: #fff;
 }
 
 .hero-section .carousel-control-prev,
 .hero-section .carousel-control-next {
     display: none;
 }
+
 
 /* 2. Featured Popular Article Slider Styles */
 .featured-popular-article-swiper {
@@ -584,7 +549,6 @@ document.addEventListener('DOMContentLoaded', function() {
     overflow: hidden;
     margin: 0 auto 20px;
     padding-bottom: 40px;
-    /* Menambahkan ruang di bawah untuk ikon quote */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -615,7 +579,6 @@ document.addEventListener('DOMContentLoaded', function() {
     z-index: 3;
     top: auto;
     bottom: 50px;
-    /* Nilai ini disesuaikan agar teks lebih tinggi dari ikon bawah */
     left: 50%;
     transform: translate(-50%, 0);
     width: 100%;
@@ -642,7 +605,6 @@ document.addEventListener('DOMContentLoaded', function() {
     position: absolute;
     font-size: 2.2rem;
     color: #212529;
-    /* Warna hitam sesuai permintaan */
     z-index: 4;
     opacity: 0.7;
     font-family: serif;
@@ -655,16 +617,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .testimonial-quote-bottom-right {
     bottom: 20px;
-    /* Nilai ini diturunkan sedikit untuk menghindari tabrakan */
     right: 20px;
-}
-
-@media (max-width: 991.98px) {
-    .testimonial-square-card {
-        width: 90vw;
-        max-width: 340px;
-        height: 340px;
-    }
 }
 
 .featured-popular-article-swiper .swiper-slide {
@@ -765,25 +718,11 @@ document.addEventListener('DOMContentLoaded', function() {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
 }
 
-@media (max-width: 991.98px) {
-    .featured-popular-article-swiper .d-flex {
-        flex-direction: column !important;
-        text-align: center !important;
-    }
-
-    .featured-popular-article-swiper .me-lg-5 {
-        margin-right: 0 !important;
-    }
-}
-
-/* 4. [PERBAIKAN UTAMA] CSS Umum untuk SEMUA Tombol Panah Slider */
+/* 4. [FINAL REVISION] CSS Umum untuk SEMUA Tombol Panah Slider */
 .swiper-button-next,
 .swiper-button-prev {
-    /* Kunci untuk posisi tengah vertikal */
     top: 50%;
     transform: translateY(-50%);
-
-    /* Gaya standar untuk semua panah */
     background-color: white;
     width: 44px;
     height: 44px;
@@ -793,40 +732,31 @@ document.addEventListener('DOMContentLoaded', function() {
     transition: opacity 0.2s;
 }
 
-/* Mengatur ukuran ikon di dalam tombol */
 .swiper-button-next::after,
 .swiper-button-prev::after {
     font-size: 1.2rem;
     font-weight: 900;
 }
 
-/* Sembunyikan panah jika dinonaktifkan (awal/akhir slide) */
 .swiper-button-disabled {
     opacity: 0;
     pointer-events: none;
 }
 
-/* 5. [PERBAIKAN KHUSUS] Posisi panah untuk slider Featured Popular */
+/* 5. Posisi panah untuk slider Featured Popular */
 .featured-popular-prev {
     left: -20px;
-    /* Atur posisi horizontal spesifik */
 }
 
 .featured-popular-next {
     right: -20px;
-    /* Atur posisi horizontal spesifik */
 }
 
-
-
-/* Ganti seluruh style untuk .card .article-img-container dan .card-img-top */
 .card .article-img-container {
-    /* Rasio 16:9 */
     padding-top: 65.25%;
     position: relative;
     overflow: hidden;
     background-color: #f0f0f0;
-    /* Opsional: Warna latar belakang jika gambar gagal dimuat */
 }
 
 .card .article-img-container img {
@@ -836,6 +766,55 @@ document.addEventListener('DOMContentLoaded', function() {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* ============== [FINAL REVISION] RESPONSIVE MEDIA QUERIES ============== */
+
+@media (max-width: 992px) {
+    .featured-popular-article-swiper .d-flex {
+        flex-direction: column !important;
+        text-align: center !important;
+    }
+
+    .featured-popular-article-swiper .me-lg-5 {
+        margin-right: 0 !important;
+    }
+
+    .testimonial-square-card {
+        width: 90vw;
+        max-width: 340px;
+        height: 340px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 600px;
+    }
+
+    .hero-section .overlay {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%);
+    }
+
+    .hero-section .carousel-caption {
+        align-items: flex-end;
+    }
+
+    .hero-section .carousel-caption .container {
+        text-align: center;
+        padding-bottom: 6rem; /* Naikkan posisi teks dari bawah */
+    }
+
+    .hero-title,
+    .hero-subtitle {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 95%; /* Izinkan teks sedikit lebih lebar di mobile */
+    }
+
+    .hero-subtitle {
+        margin-bottom: 2.5rem;
+    }
 }
 </style>
 @endpush
