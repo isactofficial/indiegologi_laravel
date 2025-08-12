@@ -52,14 +52,23 @@
 </style>
 
 <div class="container-profile py-5">
-
+    <!-- Notifikasi berhasil update data -->
+    @if(session('success'))
+    <div class="alert alert-success text-center">
+        {{ session('success') }}
+    </div>
+    @endif
     {{-- Profile Title --}}
     <div class="text-center mb-4">
         <div class="profile-title mb-3">Profile</div>
         <div class="mx-auto rounded-circle overflow-hidden shadow" style="width:120px; height:120px; background:#ccc;">
-            @if($user->profile && $user->profile->profile_photo)
-            <img src="{{ asset('storage/'.$user->profile->profile_photo) }}" alt="Profile Photo"
+            @if(optional($user->profile)->profile_photo)
+            <img src="{{ asset('storage/' . $user->profile->profile_photo) }}" alt="Profile Photo"
                 class="w-100 h-100 object-fit-cover">
+            @else
+            <span class="d-flex align-items-center justify-content-center h-100 text-muted">
+                No Photo
+            </span>
             @endif
         </div>
     </div>
@@ -73,49 +82,45 @@
                 <div class="info-label">Name</div>
                 <div class="info-value">{{ $user->name }}</div>
             </div>
-            <a href="{{ route('profile.edit') }}" class="change-btn">Change</a>
         </div>
         <div class="info-row">
             <div>
                 <div class="info-label">Birthdate</div>
-                <div class="info-value">{{ $user->profile->birthdate ?? '-' }}</div>
+                <div class="info-value">{{ optional($user->profile)->birthdate ?? '-' }}</div>
             </div>
-            <a href="{{ route('profile.edit') }}" class="change-btn">Change</a>
         </div>
         <div class="info-row">
             <div>
                 <div class="info-label">Gender</div>
-                <div class="info-value">{{ $user->profile->gender ?? '-' }}</div>
+                <div class="info-value">{{ optional($user->profile)->gender ?? '-' }}</div>
             </div>
-            <a href="{{ route('profile.edit') }}" class="change-btn">Change</a>
         </div>
         <div class="info-row">
             <div>
                 <div class="info-label">Email</div>
                 <div class="info-value">{{ $user->email }}</div>
             </div>
-            <a href="{{ route('profile.edit') }}" class="change-btn">Change</a>
         </div>
         <div class="info-row">
             <div>
                 <div class="info-label">Phone Number</div>
-                <div class="info-value">{{ $user->profile->phone_number ?? '-' }}</div>
+                <div class="info-value">{{ optional($user->profile)->phone_number ?? '-' }}</div>
             </div>
-            <a href="{{ route('profile.edit') }}" class="change-btn">Change</a>
         </div>
         <div class="info-row">
             <div>
                 <div class="info-label">Social Media</div>
-                <div class="info-value">{{ $user->profile->social_media ?? '-' }}</div>
+                <div class="info-value">{{ optional($user->profile)->social_media ?? '-' }}</div>
             </div>
-            <a href="{{ route('profile.edit') }}" class="change-btn">Change</a>
         </div>
-        <div class="info-row" style="border-bottom:none;">
-            <div>
-                <div class="info-label">Short Description</div>
-                <div class="info-value">{{ $user->profile->description ?? '-' }}</div>
-            </div>
-            <a href="{{ route('profile.edit') }}" class="change-btn">Change</a>
+        <div class="mb-3">
+            <p class="info-label mb-1">Short Description</p>
+            <p class="info-value">{{ optional($user->profile)->description ?? '-' }}</p>
+        </div>
+
+        {{-- Tombol Edit --}}
+        <div class="text-left mt-4">
+            <a href="{{ route('profile.edit') }}" class="btn btn-primary mt-3">Edit Profile</a>
         </div>
     </div>
 

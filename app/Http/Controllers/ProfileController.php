@@ -38,62 +38,50 @@ class ProfileController extends Controller
      * Update the user's basic profile information.
      */
     public function update(Request $request)
-    {
-        $user = Auth::user();
+{
+    $user = auth()->user();
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'birthdate' => 'nullable|date|before_or_equal:today',
-            'gender' => ['nullable', Rule::in(['male', 'female', 'other'])],
-            'phone_number' => 'nullable|string|max:255',
-            'social_media' => 'nullable|string|max:255',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'clear_profile_photo' => 'nullable|boolean',
-        ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'birthdate' => 'nullable|date',
+        'gender' => 'nullable|string|in:male,female,other',
+        'phone_number' => 'nullable|string|max:20',
+        'social_media' => 'nullable|string|max:255',
+        'description' => 'nullable|string|max:500',
+        'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        try {
-            DB::beginTransaction();
+    // Update user basic info
+    $user->name = $request->name;
+    $user->save();
 
-            // Update name di tabel users
-            if ($user->name !== $request->name) {
-                $user->name = $request->name;
-                $user->save();
-            }
+    // Update profile info
+    $profile = $user->profile ?? new Profile(['user_id' => $user->id]);
+    $profile->birthdate = $request->birthdate;
+    $profile->gender = $request->gender;
+    $profile->phone_number = $request->phone_number;
+    $profile->social_media = $request->social_media;
+    $profile->description = $request->description;
 
-            // Update data profil
-            $profile = $user->profile ?? new Profile();
-            $profile->user_id = $user->id;
-            $profile->name = $request->name;
-            $profile->birthdate = $request->birthdate;
-            $profile->gender = $request->gender;
-            $profile->phone_number = $request->phone_number;
-            $profile->social_media = $request->social_media;
-
-            // Upload foto profil
-            if ($request->hasFile('profile_photo')) {
-                if ($profile->profile_photo && Storage::disk('public')->exists($profile->profile_photo)) {
-                    Storage::disk('public')->delete($profile->profile_photo);
-                }
-                $profile->profile_photo = $request->file('profile_photo')->store('profile_photos', 'public');
-            } elseif ($request->boolean('clear_profile_photo')) {
-                if ($profile->profile_photo && Storage::disk('public')->exists($profile->profile_photo)) {
-                    Storage::disk('public')->delete($profile->profile_photo);
-                }
-                $profile->profile_photo = null;
-            }
-
-            $user->profile()->save($profile);
-
-            DB::commit();
-
-            return redirect()->route('profile.index')->with('success', 'Profil berhasil diperbarui.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error("Error updating profile: " . $e->getMessage(), [
-                'user_id' => $user->id,
-                'request_data' => $request->except('profile_photo')
-            ]);
-            return back()->withInput()->with('error', 'Gagal memperbarui profil: ' . $e->getMessage());
+    // Handle photo upload
+    if ($request->has('clear_profile_photo') && $request->clear_profile_photo) {
+        if ($profile->profile_photo && \Storage::exists('public/'.$profile->profile_photo)) {
+            \Storage::delete('public/'.$profile->profile_photo);
         }
+        $profile->profile_photo = null;
     }
+
+    if ($request->hasFile('profile_photo')) {
+        if ($profile->profile_photo && \Storage::exists('public/'.$profile->profile_photo)) {
+            \Storage::delete('public/'.$profile->profile_photo);
+        }
+        $profile->profile_photo = $request->file('profile_photo')->store('profile_photos', 'public');
+    }
+
+    $profile->save();
+
+    return redirect()
+        ->route('profile.index')
+        ->with('success', 'Profile berhasil diperbarui!');
+}
 }

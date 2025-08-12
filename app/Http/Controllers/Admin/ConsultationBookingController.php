@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ConsultationBooking;
 use App\Models\ConsultationService;
 use App\Models\ReferralCode;
 use App\Models\Invoice;
@@ -13,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use PDF;
+use App\Models\ConsultationBooking;
 
 class ConsultationBookingController extends Controller
 {
