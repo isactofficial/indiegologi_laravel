@@ -7,6 +7,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    {{-- 2. Import file CSS yang sudah dimodifikasi --}}
     <link rel="stylesheet" href="{{ asset('css/service-details.css') }}">
 @endpush
 
@@ -27,12 +28,14 @@
                         @forelse($services as $service)
                             <div class="accordion-item mb-3 rounded-4 shadow-sm">
                                 <h2 class="accordion-header" id="heading-{{ $service->id }}">
-                                    <div class="accordion-button collapsed rounded-4">
+                                    <div class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse"
+                                         data-bs-target="#collapse-{{ $service->id }}" aria-expanded="false"
+                                         aria-controls="collapse-{{ $service->id }}">
                                         <div class="d-flex justify-content-between align-items-center w-100">
                                             <div class="d-flex align-items-center">
                                                 <img src="{{ asset('storage/' . $service->thumbnail) }}"
-                                                    alt="{{ $service->title }}" class="d-none d-md-block rounded-3 me-3"
-                                                    style="width: 100px; height: 100px; object-fit: cover;">
+                                                     alt="{{ $service->title }}" class="d-none d-md-block rounded-3 me-3"
+                                                     style="width: 100px; height: 100px; object-fit: cover;">
                                                 <div>
                                                     <h5 class="fw-bold mb-1">
                                                         {{ $service->title }}</h5>
@@ -40,20 +43,20 @@
                                                         {{ Str::limit($service->short_description, 70) }}</p>
                                                 </div>
                                             </div>
-                                            <button class="btn-details-toggle collapsed" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#collapse-{{ $service->id }}"
-                                                aria-expanded="false" aria-controls="collapse-{{ $service->id }}">
+                                            <button class="btn-details-toggle" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $service->id }}"
+                                                    aria-expanded="false" aria-controls="collapse-{{ $service->id }}">
                                                 Baca Selengkapnya
                                             </button>
                                         </div>
                                     </div>
                                 </h2>
                                 <div id="collapse-{{ $service->id }}" class="accordion-collapse collapse"
-                                    aria-labelledby="heading-{{ $service->id }}" data-bs-parent="#servicesAccordion">
+                                     aria-labelledby="heading-{{ $service->id }}" data-bs-parent="#servicesAccordion">
                                     <div class="accordion-body p-4">
                                         <div class="service-block" data-service-id="{{ $service->id }}"
-                                            data-price="{{ $service->price }}"
-                                            data-hourly-price="{{ $service->hourly_price }}">
+                                             data-price="{{ $service->price }}"
+                                             data-hourly-price="{{ $service->hourly_price }}">
                                             <div class="row mb-4">
                                                 <div class="col-12">
                                                     <h6 class="fw-judul">Deskripsi Produk:</h6>
@@ -68,33 +71,34 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="mb-3"><label for="booked_date-{{ $service->id }}"
-                                                                class="form-label">Tanggal:</label><input type="date"
-                                                                id="booked_date-{{ $service->id }}" class="form-control"
-                                                                required></div>
+                                                                                  class="form-label">Tanggal:</label><input type="date"
+                                                                                                                            id="booked_date-{{ $service->id }}" class="form-control"
+                                                                                                                            required></div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="mb-3"><label for="booked_time-{{ $service->id }}"
-                                                                class="form-label">Jam Mulai:</label><input type="time"
-                                                                id="booked_time-{{ $service->id }}" class="form-control"
-                                                                required></div>
+                                                                                  class="form-label">Jam Mulai:</label><input type="time"
+                                                                                                                              id="booked_time-{{ $service->id }}" class="form-control"
+                                                                                                                              required></div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="mb-3"><label for="hours-{{ $service->id }}"
-                                                                class="form-label">Jumlah Jam</label><input type="number"
-                                                                id="hours-{{ $service->id }}"
-                                                                class="form-control hours-input" value="0"
-                                                                min="0" required></div>
+                                                                                  class="form-label">Jumlah Jam</label><input type="number"
+                                                                                                                              id="hours-{{ $service->id }}"
+                                                                                                                              class="form-control hours-input" value="0"
+                                                                                                                              min="0" required></div>
                                                     </div>
                                                     <div class="col-12">
                                                         <div class="mb-3"><label for="session_type-{{ $service->id }}"
-                                                                class="form-label">Pilihan Sesi</label><select
-                                                                id="session_type-{{ $service->id }}"
-                                                                class="form-select session-type-select">
+                                                                                  class="form-label">Pilihan Sesi</label><select
+                                                                    id="session_type-{{ $service->id }}"
+                                                                    class="form-select session-type-select">
                                                                 <option value="Online">Online</option>
                                                                 <option value="Offline">Offline</option>
                                                             </select></div>
                                                         <div class="mb-3 offline-address-container" style="display:none;">
-                                                            <textarea id="offline_address-{{ $service->id }}" class="form-control" placeholder="Sleman Utara DIY"></textarea>
+                                                            <label class="form-label">Alamat Sesi Offline:</label>
+                                                            <div class="offline-address-text">Sleman Utara, DIY, Indonesia</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -105,20 +109,20 @@
                                                     <h6 class="fw-bold">Pilihan Pembayaran</h6>
                                                     <div class="form-check mb-2">
                                                         <input class="form-check-input" type="radio"
-                                                            name="payment_type-{{ $service->id }}"
-                                                            id="payment-full-{{ $service->id }}" value="full_payment"
-                                                            checked>
+                                                               name="payment_type-{{ $service->id }}"
+                                                               id="payment-full-{{ $service->id }}" value="full_payment"
+                                                               checked>
                                                         <label class="form-check-label"
-                                                            for="payment-full-{{ $service->id }}">Bayar Penuh (Rp
-                                                            {{ number_format($service->price, 0, ',', '.') }})</label>
+                                                               for="payment-full-{{ $service->id }}">Bayar Penuh (Rp
+                                                                {{ number_format($service->price, 0, ',', '.') }})</label>
                                                     </div>
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="radio"
-                                                            name="payment_type-{{ $service->id }}"
-                                                            id="payment-dp-{{ $service->id }}" value="dp">
+                                                               name="payment_type-{{ $service->id }}"
+                                                               id="payment-dp-{{ $service->id }}" value="dp">
                                                         <label class="form-check-label"
-                                                            for="payment-dp-{{ $service->id }}">Bayar DP 50% (Rp
-                                                            {{ number_format($service->price / 2, 0, ',', '.') }})</label>
+                                                               for="payment-dp-{{ $service->id }}">Bayar DP 50% (Rp
+                                                                {{ number_format($service->price / 2, 0, ',', '.') }})</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -128,20 +132,20 @@
                                                     <h6 class="fw-bold">Saya bersedia dihubungi via:</h6>
                                                     <div class="form-check mb-2">
                                                         <input class="form-check-input" type="radio"
-                                                            name="contact_preference-{{ $service->id }}"
-                                                            id="contact-chatcall-{{ $service->id }}"
-                                                            value="chat_and_call" checked>
+                                                               name="contact_preference-{{ $service->id }}"
+                                                               id="contact-chatcall-{{ $service->id }}"
+                                                               value="chat_and_call" checked>
                                                         <label class="form-check-label"
-                                                            for="contact-chatcall-{{ $service->id }}">Telepon &
-                                                            WhatsApp</label>
+                                                               for="contact-chatcall-{{ $service->id }}">Telepon &
+                                                                WhatsApp</label>
                                                     </div>
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="radio"
-                                                            name="contact_preference-{{ $service->id }}"
-                                                            id="contact-chatonly-{{ $service->id }}" value="chat_only">
+                                                               name="contact_preference-{{ $service->id }}"
+                                                               id="contact-chatonly-{{ $service->id }}" value="chat_only">
                                                         <label class="form-check-label"
-                                                            for="contact-chatonly-{{ $service->id }}">Hanya
-                                                            WhatsApp</label>
+                                                               for="contact-chatonly-{{ $service->id }}">Hanya
+                                                                WhatsApp</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -152,17 +156,16 @@
                                                 <div class="row justify-content-between align-items-start mb-3">
                                                     <div class="col-auto">
                                                         <div class="final-price-display">
-                                                            <span
-                                                                class="final-price">{{ number_format($service->price, 0, ',', '.') }}</span>
+                                                            <span class="final-price">{{ number_format($service->price, 0, ',', '.') }}</span>
                                                         </div>
                                                         <div class="d-none"><span class="initial-price"></span><span
-                                                                class="discount-amount"></span></div>
+                                                                    class="discount-amount"></span></div>
                                                     </div>
                                                     <div class="col-auto">
                                                         @auth
                                                             <button type="button"
-                                                                class="btn btn-primary px-4 py-2 select-service-btn"
-                                                                data-service-id="{{ $service->id }}">Pilih Layanan</button>
+                                                                    class="btn btn-primary px-4 py-2 select-service-btn"
+                                                                    data-service-id="{{ $service->id }}">Pilih Layanan</button>
                                                         @else
                                                             <p class="text-danger mb-0">Silakan <a href="{{ route('login') }}">login</a> untuk memilih layanan.</p>
                                                         @endauth
@@ -171,13 +174,13 @@
 
                                                 <div class="referral-section text-center">
                                                     <label for="referral_code-{{ $service->id }}"
-                                                        class="form-label d-block mb-2">Punya Kode Referral untuk Layanan
+                                                           class="form-label d-block mb-2">Punya Kode Referral untuk Layanan
                                                         Ini?</label>
                                                     <div class="input-group">
                                                         <input type="text" id="referral_code-{{ $service->id }}"
-                                                            class="form-control referral-code-input">
+                                                               class="form-control referral-code-input">
                                                         <button class="btn apply-referral-btn" type="button"
-                                                            data-service-id="{{ $service->id }}">Apply</button>
+                                                                data-service-id="{{ $service->id }}">Apply</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -246,9 +249,9 @@
                 const block = $(this).closest('.service-block');
                 const container = block.find('.offline-address-container');
                 if ($(this).val() === 'Offline') {
-                    container.show().find('textarea').attr('required', true);
+                    container.show();
                 } else {
-                    container.hide().find('textarea').attr('required', false);
+                    container.hide();
                 }
             });
 
@@ -296,7 +299,8 @@
                     booked_date: block.find('#booked_date-' + serviceId).val(),
                     booked_time: block.find('#booked_time-' + serviceId).val(),
                     session_type: block.find('#session_type-' + serviceId).val(),
-                    offline_address: block.find('#offline_address-' + serviceId).val(),
+                    // Alamat kini diambil dari teks yang ditampilkan, bukan dari input
+                    offline_address: block.find('.offline-address-text').text(),
                     referral_code: referralCode,
                     contact_preference: block.find('input[name="contact_preference-' + serviceId +
                         '"]:checked').val(),
@@ -306,7 +310,6 @@
                 };
 
                 $.ajax({
-                    // [INI PERBAIKANNYA] Mengarahkan ke route yang benar
                     url: '{{ route("front.cart.add") }}',
                     type: 'POST',
                     data: formData,
@@ -329,7 +332,6 @@
                 });
             });
 
-            // Inisialisasi awal untuk semua blok accordion
             $('.service-block').each(function() {
                 calculatePrices($(this));
             });
