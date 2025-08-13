@@ -53,6 +53,8 @@
     .navbar-brand h1 {
         font-size: 1.75rem;
         font-weight: 700;
+        color: var(--indiegologi-primary) !important;
+        transition: color 0.3s ease;
     }
 
     .navbar .nav-link {

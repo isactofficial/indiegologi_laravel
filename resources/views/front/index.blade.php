@@ -231,114 +231,41 @@
         <div class="swiper-button-prev latest-articles-prev"></div>
     </div>
     <div class="text-center mt-4">
-        <a href="{{ route('front.articles') }}" class="btn btn-primary  px-4 py-2">Lihat Semua Artikel</a>
+        <a href="{{ route('front.articles') }}" class="btn btn-primary px-4 py-2" style="background-color: #0C2C5A; border-color: #0C2C5A;">Lihat Semua Artikel</a>
     </div>
 </section>
 
 {{-- 5. Testimoni Section --}}
-<section class="container py-5 my-5">
-    <div class="text-center">
-        <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Kisah Inspiratif dari Keluarga Indiegologi
-        </h2>
-        <p style="font-size:1.15rem; color:#6c757d;">Dengarkan cerita tulus dari mereka yang telah berproses bersama
-            kami, menemukan kebahagiaan, kejelasan, dan **cinta diri** yang sejati.</p>
-    </div>
-    <div class="swiper testimonials-swiper mt-5">
-        <div class="swiper-wrapper">
-            @for ($i = 0; $i < 3; $i++) <div class="swiper-slide">
-                <div class="testimonial-square-card position-relative overflow-hidden shadow-sm mx-auto">
-                    <img src="{{ asset('assets/testimoni-bg.jpg') }}" alt="Testimoni" class="testimonial-bg-img">
-                    <div class="testimonial-overlay"></div>
-
-                    <div class="testimonial-quote-icon testimonial-quote-top-left" style="color: #212529;">&#10077;
-                    </div>
-
-                    <div
-                        class="testimonial-content text-center text-white w-100 px-4 position-absolute bottom-0 start-50 translate-middle-x pb-4">
-                        <div class="testimonial-name fw-bold" style="font-size: 1.8rem;">Haekal</div>
-                        <div class="testimonial-job mb-2" style="font-size: 1.1rem; font-style: italic; opacity: 0.8;">
-                            Pengusaha</div>
-                        <div class="testimonial-text fw-semibold fst-italic"
-                            style="font-size: 0.95rem; line-height: 1.4;">"Pendekatan yang personal dan efektif. Saya
-                            melihat perubahan positif yang signifikan dalam hidup saya."</div>
-                    </div>
-
-
-                    <div class="testimonial-quote-icon testimonial-quote-bottom-right" style="color: #212529;">&#10078;
-                    </div>
-
-                </div>
-        </div>
-        @endfor
-    </div>
-    <div class="swiper-button-next testimonials-next"></div>
-    <div class="swiper-button-prev testimonials-prev"></div>
-    </div>
-</section>
-
-{{-- 6. Sketch Telling (Slider) --}}
-<section class="container py-5 my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="w-100 text-center">
-            <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Sketch Telling</h2>
-            <p class="text-muted mb-0 text-center">Lihatlah kisah-kisah yang kami visualisasikan</p>
-        </div>
-    </div>
-    <div class="swiper sketch-telling-swiper">
-        <div class="swiper-wrapper">
-            @forelse ($latest_sketches as $sketch)
-            <div class="swiper-slide pb-3">
-                <div class="card border-0 shadow-sm h-100">
-                    <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-img-top"
-                        style="height: 200px; object-fit: cover;">
-                    <div class="card-body text-center">
-                        <h5 class="fw-bold">{{ Str::limit($sketch->title, 50) }}</h5>
-                    </div>
-                </div>
-            </div>
-            @empty
-            <div class="swiper-slide">
-                <p class="text-center text-muted">Belum ada sketsa.</p>
-            </div>
-            @endforelse
-        </div>
-        <div class="swiper-button-next sketch-next"></div>
-        <div class="swiper-button-prev sketch-prev"></div>
-    </div>
-    <div class="text-center mt-4">
-        <a href="{{ route('front.sketch') }}" class="btn btn-primary  px-4 py-2 text-center mt-4">Lihat Semua Sketch</a>
-    </div>
-    </div>
-</section>
-
-{{-- 7. Layanan Kami --}}
 <section class="py-5 my-5 bg-light">
     <div class="container text-center">
         <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Layanan Kami</h2>
         <p class="text-muted mb-0 text-center">Pilihan sesi konseling yang fleksibel dan disesuaikan dengan kebutuhan Anda</p>
-        <br>
     </div>
-    <div class="container">
-        <div class="row justify-content-center mb-4">
-        <div class="row justify-content-center">
+    <div class="container mt-5">
+        <div class="row g-4 justify-content-center">
             @forelse ($services as $service)
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body p-4 d-flex flex-column justify-content-between">
-                        <i class="bi bi-star-fill text-primary mb-3 fs-3"></i>
+                <div class="card border-0 shadow-sm h-100 text-center card-hover">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="mb-3">
+                            <i class="bi bi-star-fill fs-2" style="color: #0C2C5A;"></i>
+                        </div>
                         <h5 class="fw-bold mb-3">{{ $service->title }}</h5>
-                        <p class="text-muted">{{ Str::limit($service->short_description, 100) }}</p>
-                        <p class="text-secondary mb-3">Rp {{ number_format($service->price, 0, ',', '.') }}</p>
-                        <a href="#" class="btn btn-outline-primary mt-3">Pilih Paket Ini</a>
+                        <p class="text-muted small">{{ Str::limit($service->short_description, 100) }}</p>
+                        <p class="fw-bold fs-4 my-3" style="color: #0C2C5A;">Rp {{ number_format($service->price, 0, ',', '.') }}</p>
+                        <a href="{{ route('front.layanan') }}" class="btn btn-outline-primary mt-auto stretched-link" style="color:#f8f9fa; background-color: #0C2C5A; border-color: #0C2C5A;">Pilih Paket Ini</a>
                     </div>
                 </div>
             </div>
             @empty
-            <p class="text-muted">Belum ada layanan tersedia.</p>
+            <div class="col-12">
+                <p class="text-muted text-center">Belum ada layanan tersedia.</p>
+            </div>
             @endforelse
         </div>
-        <div class="text-center mt-4">
-            <a href="#" class="btn btn-primary  px-4 py-2">Lihat Semua layanan</a>
+        <div class="text-center mt-5">
+            {{-- Tombol ini tetap solid/penuh --}}
+            <a href="{{ route('front.layanan') }}" class="btn btn-primary px-4 py-2" style=" background-color: #0C2C5A; border-color: #0C2C5A;">Lihat Semua Layanan</a>
         </div>
     </div>
 </section>

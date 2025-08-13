@@ -18,7 +18,7 @@
     --collab-cta-kamcup: var(--kamcup-primary); /* **NEW: Kamcup Primary for specific Kamcup-focused CTAs** */
 
     /* Custom color for all buttons and the "PARTNER & SPONSOR KAMI" section downwards */
-    --custom-blue: #0F62FF;
+    --custom-blue: #0C2C5A;
     --custom-blue-darken: #004ac2; /* A darker shade for hover effects */
 
     /* Specific color for box shadow */
@@ -28,7 +28,7 @@
     --text-light: #ffffff;
     --text-muted: #6c757d;
     --light-bg: #f8f9fa;
-    --dark-bg-overlay: rgba(41, 102, 177, 0.85); /* Increased opacity for BTN Blue overlay */
+    --dark-bg-overlay: #0C2C5A; /* Increased opacity for BTN Blue overlay */
 
     /* Old style colors for reference / integration (now mostly superseded by collab colors) */
     --old-text-color: #0C2C5A; /* Specific color from old style, now generally covered by --text-dark or --collab-primary */
