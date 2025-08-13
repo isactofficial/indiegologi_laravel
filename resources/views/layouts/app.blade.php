@@ -17,7 +17,6 @@
     {{-- Custom CSS Files --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
-    {{-- [FINAL REVISION V6] Gaya Kustom Global dan Navbar Profesional --}}
     <style>
     :root {
         --indiegologi-primary: #0C2C5A;
@@ -33,7 +32,6 @@
         padding-top: var(--navbar-height);
     }
 
-    /* === GAYA NAVBAR PREMIUM V6 === */
     .navbar.fixed-top {
         background-color: rgba(255, 255, 255, 0.7);
         backdrop-filter: saturate(180%) blur(15px);
@@ -104,7 +102,6 @@
         padding-right: 3rem;
     }
 
-    /* [BARU] Perbaikan Tampilan Mobile Offcanvas */
     .navbar-toggler {
         border: none;
     }
@@ -131,7 +128,6 @@
             padding-right: 1rem;
         }
     }
-    /* === AKHIR GAYA NAVBAR === */
     </style>
 
     @stack('styles')
@@ -145,15 +141,14 @@
                 <h1 class="text-primary m-0 p-0">INDIEGOLOGI</h1>
             </a>
             
-            {{-- [DIUBAH] Tombol Toggler untuk Offcanvas --}}
             <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNavbar"
                 aria-controls="mobileNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            {{-- Navbar Desktop --}}
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
+                    {{-- ... menu items ... --}}
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">HOME</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">BERITA</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">LAYANAN</a></li>
@@ -172,15 +167,15 @@
                                     @php
                                         $cartCount = \App\Models\CartItem::where('user_id', auth()->id())->count();
                                     @endphp
-                                    @if($cartCount > 0)
-                                        <span class="badge rounded-pill bg-danger cart-badge">{{ $cartCount }}</span>
-                                    @endif
+                                    {{-- [INI PERBAIKANNYA] Menambahkan id="cart-count-badge" --}}
+                                    <span class="badge rounded-pill bg-danger cart-badge {{ $cartCount == 0 ? 'd-none' : '' }}" id="cart-count-badge">
+                                        {{ $cartCount }}
+                                    </span>
                                 </a>
                                 <div class="dropdown">
                                     <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil">
                                         <i class="bi bi-person-circle"></i>
                                     </a>
-                                    {{-- [DIUBAH] Dropdown disederhanakan --}}
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDropdown">
                                         <li><a class="dropdown-item" href="{{ route('profile.index') }}">Lihat Profil</a></li>
                                         <li><hr class="dropdown-divider"></li>

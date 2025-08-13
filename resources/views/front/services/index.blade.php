@@ -27,7 +27,6 @@
                         @forelse($services as $service)
                             <div class="accordion-item mb-3 rounded-4 shadow-sm">
                                 <h2 class="accordion-header" id="heading-{{ $service->id }}">
-                                    {{-- PERUBAHAN HTML: Mengubah <button> menjadi <div> agar tidak bisa diklik --}}
                                     <div class="accordion-button collapsed rounded-4">
                                         <div class="d-flex justify-content-between align-items-center w-100">
                                             <div class="d-flex align-items-center">
@@ -41,7 +40,6 @@
                                                         {{ Str::limit($service->short_description, 70) }}</p>
                                                 </div>
                                             </div>
-                                            {{-- PERUBAHAN HTML: Mengubah <span> menjadi <button> dan memindahkan atribut pemicu --}}
                                             <button class="btn-details-toggle collapsed" type="button"
                                                 data-bs-toggle="collapse" data-bs-target="#collapse-{{ $service->id }}"
                                                 aria-expanded="false" aria-controls="collapse-{{ $service->id }}">
@@ -308,7 +306,8 @@
                 };
 
                 $.ajax({
-                    url: '#',
+                    // [INI PERBAIKANNYA] Mengarahkan ke route yang benar
+                    url: '{{ route("front.cart.add") }}',
                     type: 'POST',
                     data: formData,
                     success: function(response) {
