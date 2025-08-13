@@ -57,9 +57,6 @@ class FrontController extends Controller
 
     public function addToCart(Request $request)
     {
-        // [LANGKAH DEBUGGING] Tampilkan semua data yang masuk dan hentikan kode.
-        dd($request->all());
-
         if (!Auth::check()) {
             return response()->json(['success' => false, 'message' => 'Anda harus login untuk menambahkan layanan.'], 401);
         }
