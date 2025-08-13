@@ -807,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     .hero-title,
     .hero-subtitle {
-        margin-left: auto;
+        margin-l    eft: auto;
         margin-right: auto;
         max-width: 95%; /* Izinkan teks sedikit lebih lebar di mobile */
     }

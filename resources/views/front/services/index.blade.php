@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
-@section('content')
+@section('title', 'Layanan Kami')
 
-<section class="container py-5">
+@section('content')
+<section class="container" style="margin-top: 120px;">
     <div class="row">
-        <div class="col-12">
-            <h1 class="fw-bold section-title"><span class="main-text">LAYANAN</span> <span class="highlight-text">KAMI</span></h1>
+        <div class="col-12 text-center">
+            <h1 class="fw-bold section-title">LAYANAN <span class="highlight-text">KAMI</span></h1>
             <p class="lead text-muted">Jelajahi berbagai layanan konsultasi yang kami tawarkan.</p>
         </div>
     </div>
@@ -16,18 +17,20 @@
         @forelse($services as $service)
             <div class="accordion-item mb-3 rounded-4 shadow-sm">
                 <h2 class="accordion-header" id="heading-{{ $service->id }}">
+                    {{-- [PERUBAHAN DI SINI] Menambahkan kelas responsif --}}
                     <button class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $service->id }}" aria-expanded="false" aria-controls="collapse-{{ $service->id }}">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('storage/' . $service->thumbnail) }}" alt="{{ $service->title }}" class="rounded-3 me-3" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div>
-                                <h5 class="fw-bold mb-1">{{ $service->title }}</h5>
-                                <p class="text-muted mb-0">{{ Str::limit($service->short_description, 100) }}</p>
+                        <div class="d-flex flex-column flex-md-row align-items-md-center w-100">
+                            <img src="{{ asset('storage/' . $service->thumbnail) }}" alt="{{ $service->title }}" class="rounded-3 mb-2 mb-md-0 me-md-3 service-thumbnail-responsive">
+                            <div class="flex-grow-1 text-center text-md-start">
+                                <h5 class="fw-bold mb-1 service-title-responsive">{{ $service->title }}</h5>
+                                <p class="text-muted mb-0 small">{{ Str::limit($service->short_description, 100) }}</p>
                             </div>
                         </div>
                     </button>
                 </h2>
                 <div id="collapse-{{ $service->id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ $service->id }}" data-bs-parent="#servicesAccordion">
                     <div class="accordion-body">
+                        {{-- Konten form di dalam accordion tidak perlu diubah --}}
                         <div class="service-block" data-service-id="{{ $service->id }}" data-price="{{ $service->price }}" data-hourly-price="{{ $service->hourly_price }}">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -45,7 +48,7 @@
                                         <input type="time" id="booked_time-{{ $service->id }}" name="booked_time-{{ $service->id }}" class="form-control" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="hours-{{ $service->id }}" class="form-label">Jumlah Jam</label>
+                                        <label for="hours-{{ $service->id }}" class="form-label">Jam Tambahan</label>
                                         <input type="number" id="hours-{{ $service->id }}" name="hours-{{ $service->id }}" class="form-control hours-input" value="0" min="0" required>
                                     </div>
                                 </div>
@@ -65,12 +68,12 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="contact_preference-{{ $service->id }}" class="form-label">Preferensi Kontak</label>
-                                        <div class="form-check">
+                                        <label class="form-label">Preferensi Kontak</label>
+                                        <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="contact_preference-{{ $service->id }}" id="contact-chatonly-{{ $service->id }}" value="chat_only" checked>
                                             <label class="form-check-label" for="contact-chatonly-{{ $service->id }}">Chat Only</label>
                                         </div>
-                                        <div class="form-check">
+                                        <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="contact_preference-{{ $service->id }}" id="contact-chatcall-{{ $service->id }}" value="chat_and_call">
                                             <label class="form-check-label" for="contact-chatcall-{{ $service->id }}">Chat & Call</label>
                                         </div>
@@ -78,11 +81,11 @@
                                 </div>
                                 <div class="col-12 mb-3">
                                     <h6 class="fw-bold">Pilih Pembayaran</h6>
-                                    <div class="form-check">
+                                    <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="payment_type-{{ $service->id }}" id="payment-full-{{ $service->id }}" value="full_payment" checked>
                                         <label class="form-check-label" for="payment-full-{{ $service->id }}">Full Payment</label>
                                     </div>
-                                    <div class="form-check">
+                                    <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="payment_type-{{ $service->id }}" id="payment-dp-{{ $service->id }}" value="dp">
                                         <label class="form-check-label" for="payment-dp-{{ $service->id }}">DP (50%)</label>
                                     </div>
@@ -101,7 +104,7 @@
                                 </div>
                                 <div class="col-12 text-center mt-3">
                                     @auth
-                                        <button type="button" class="btn btn-lg btn-primary select-service-btn" data-service-id="{{ $service->id }}">Pilih Layanan</button>
+                                        <button type="button" class="btn btn-lg btn-primary select-service-btn" data-service-id="{{ $service->id }}">Pilih Layanan Ini</button>
                                     @else
                                         <p class="text-danger mb-0">Silakan <a href="{{ route('login') }}">login</a> untuk memilih layanan.</p>
                                     @endauth
@@ -118,7 +121,33 @@
         @endforelse
     </div>
 </div>
+@endsection
 
+@push('styles')
+<style>
+    /* Style tambahan untuk tampilan mobile yang lebih baik */
+    @media (max-width: 767.98px) {
+        .service-thumbnail-responsive {
+            width: 100%; /* Gambar memenuhi lebar di mobile */
+            height: 120px; /* Atur tinggi gambar agar proporsional */
+            object-fit: cover;
+        }
+        .service-title-responsive {
+            font-size: 1.1rem; /* Perkecil sedikit judul di mobile */
+        }
+    }
+
+    @media (min-width: 768px) {
+        .service-thumbnail-responsive {
+            width: 80px; /* Ukuran gambar kembali normal di desktop */
+            height: 80px;
+        }
+    }
+</style>
+@endpush
+
+@push('scripts')
+{{-- JavaScript tidak perlu diubah --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -153,18 +182,12 @@
             block.find('.final-price').text('Rp ' + finalPrice.toLocaleString('id-ID'));
         }
 
-        // --- Event Listeners ---
-        $('.accordion-body').on('change', '.hours-input, .session-type-select, .referral-code-input', function() {
+        $('.hours-input').on('input', function() {
             const block = $(this).closest('.service-block');
             calculatePrices(block);
         });
 
-        $('.accordion-body').on('input', '.hours-input', function() {
-            const block = $(this).closest('.service-block');
-            calculatePrices(block);
-        });
-
-        $('.accordion-body').on('change', '.session-type-select', function() {
+        $('.session-type-select').on('change', function() {
             const block = $(this).closest('.service-block');
             const container = block.find('.offline-address-container');
             if ($(this).val() === 'Offline') {
@@ -174,16 +197,20 @@
             }
         });
 
-        $('.accordion-body').on('click', '.apply-referral-btn', function() {
+        $('.apply-referral-btn').on('click', function() {
             const block = $(this).closest('.service-block');
             const serviceId = block.data('service-id');
             const referralCodeInput = block.find('.referral-code-input').val().toUpperCase();
 
-            if (appliedReferrals[serviceId]) {
-                delete appliedReferrals[serviceId];
+            delete appliedReferrals[serviceId];
+
+            if (!referralCodeInput) {
+                Swal.fire('Perhatian!', 'Masukkan kode referral terlebih dahulu.', 'info');
+                calculatePrices(block);
+                return;
             }
 
-            if (serviceId && referralCodeInput && referralCodesData[referralCodeInput]) {
+            if (referralCodesData[referralCodeInput]) {
                 const code = referralCodesData[referralCodeInput];
                 const isValid = !code.valid_until || new Date(code.valid_until) > new Date();
                 const hasUses = !code.max_uses || code.current_uses < code.max_uses;
@@ -198,11 +225,7 @@
                     Swal.fire('Gagal!', 'Kode referral tidak valid atau sudah habis.', 'error');
                 }
             } else {
-                if (referralCodeInput) {
-                    Swal.fire('Gagal!', 'Kode referral tidak ditemukan.', 'error');
-                } else {
-                    Swal.fire('Perhatian!', 'Masukkan kode referral terlebih dahulu.', 'info');
-                }
+                Swal.fire('Gagal!', 'Kode referral tidak ditemukan.', 'error');
             }
             calculatePrices(block);
         });
@@ -224,35 +247,47 @@
                 payment_type: block.find('input[name="payment_type-' + serviceId + '"]:checked').val(),
                 _token: '{{ csrf_token() }}'
             };
+            
+            if (!formData.booked_date || !formData.booked_time) {
+                Swal.fire('Gagal!', 'Tanggal dan Waktu jadwal harus diisi.', 'error');
+                return;
+            }
 
             $.ajax({
-                url: '#',
+                url: '{{ route('front.cart.add') }}',
                 type: 'POST',
                 data: formData,
                 success: function(response) {
-                    Swal.fire('Berhasil!', response.message, 'success');
-                    const cartCountElement = $('#cart-count');
-                    cartCountElement.text(response.cart_count);
-                    cartCountElement.show();
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: response.message,
+                        icon: 'success',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                    });
+
+                    const cartBadge = document.querySelector('.badge.bg-danger');
+                    if (cartBadge) {
+                        cartBadge.textContent = response.cart_count;
+                        cartBadge.classList.remove('d-none');
+                    }
                 },
                 error: function(response) {
-                     let errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
-                     if (response.responseJSON && response.responseJSON.message) {
-                         errorMessage = response.responseJSON.message;
-                     } else if (response.responseJSON && response.responseJSON.errors) {
-                         errorMessage = 'Validasi gagal: ' + Object.values(response.responseJSON.errors).flat().join(' ');
-                     }
-                     Swal.fire('Gagal!', errorMessage, 'error');
+                    let errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
+                    if (response.responseJSON && response.responseJSON.message) {
+                        errorMessage = response.responseJSON.message;
+                    }
+                    Swal.fire('Gagal!', errorMessage, 'error');
                 }
             });
         });
 
-        // Inisialisasi awal untuk semua blok accordion
         $('.service-block').each(function() {
             calculatePrices($(this));
         });
     });
 </script>
-
-@endsection
-
+@endpush
