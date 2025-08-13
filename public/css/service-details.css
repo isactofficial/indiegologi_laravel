@@ -1,12 +1,17 @@
 :root {
-    --brand-magenta: #d83a7a;
-    --brand-yellow: #ffc107;
-    --brand-teal: #0d8094;
-    --brand-dark-teal: #0b5b67;
+    --primary-color: #0c2c5a;
+    --accent-color: #f4b704; /* Warna aksen emas */
+    --light-color: #f8f9fa;
     --form-bg-color: aliceblue;
     --text-color-dark: #212529;
     --text-color-muted: #6c757d;
-    --default-border-radius: 0.375rem;
+    --default-border-radius: 4px;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: var(--light-color);
+    color: var(--text-color-dark);
 }
 
 .container-title {
@@ -14,66 +19,88 @@
     padding-top: 155px;
 }
 
+.service-details-page {
+    padding-bottom: 80px;
+    text-align: center;
+    background-color: var(--light-color);
+    margin-top: 20px;
+}
+
 .section-title {
     font-family: "Playfair Display", serif;
     font-size: 2.8rem;
     font-weight: 700;
-    color: #0c2c5a;
-    margin-bottom: 0px;
-    padding-bottom: 0px;
+    color: var(--primary-color);
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 .ampersand-style {
     font-family: "Playfair Display", serif;
-    color: #0c2c5a;
+    color: var(--accent-color);
     font-weight: 700;
 }
 
 .section-desc {
-    font-family: "Playfair Display", serif;
+    font-family: "Poppins", sans-serif;
     font-size: 1.1rem;
-    color: #6c757d;
+    color: var(--text-color-muted);
     max-width: 700px;
     margin: 0 auto 50px auto;
     line-height: 1.6;
-    margin-top: 0%;
+    margin-top: 0;
     padding-bottom: 86px;
-}
-
-.service-details-page {
-    font-family: "Poppins", sans-serif;
-    padding-bottom: 80px;
-    text-align: center;
-    background-color: #f7fafc;
-    margin-top: 20px;
-}
-
-.highlight-text {
-    color: var(--brand-teal);
 }
 
 .form-section {
     background-color: var(--form-bg-color);
     padding: 1.5rem;
     border-radius: 0.5rem;
-    font-family: "Semantic";
+    font-family: "Poppins", sans-serif;
 }
 
 .fw-judul {
     font-family: "Playfair Display", serif;
-    color: var(--brand-teal);
+    color: var(--primary-color);
     font-weight: 700;
 }
 
 .accordion-item {
     border: 1px solid #e9ecef;
+    transition: all 0.3s ease-in-out;
+    border-radius: var(--default-border-radius);
 }
 
-/* 3. Gaya Accordion & Tombol Detail (DISESUAIKAN) */
+.accordion-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
 .accordion-button h5 {
     font-family: "Playfair Display", serif;
-    color: var(--brand-teal);
+    color: var(--primary-color);
     font-weight: 700;
+}
+
+.accordion-button p {
+    color: var(--text-color-muted);
+}
+
+.accordion-button {
+    transition: all 0.3s ease-in-out;
+    border-radius: var(--default-border-radius);
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.accordion-button:not(.collapsed) h5,
+.accordion-button:not(.collapsed) p {
+    color: white !important;
 }
 
 .btn-details-toggle {
@@ -82,35 +109,21 @@
     font-weight: 600;
     font-size: 0.9rem;
     white-space: nowrap;
-    transition: background-color 0.2s, color 0.2s;
-    border: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* PERUBAHAN CSS: Menargetkan tombol langsung berdasarkan status .collapsed */
-.btn-details-toggle.collapsed {
-    background-color: #0c2c5a;
-    color: #ffffff;
-}
-
-.btn-details-toggle:not(.collapsed) {
-    background-color: var(--brand-yellow);
-    color: #0c2c5a;
-}
-
-/* PERUBAHAN CSS: Menghapus pseudo-element ::after karena teks di-handle oleh JS */
-/* .accordion-button.collapsed .btn-details-toggle::after { ... } DIHAPUS */
-/* .accordion-button:not(.collapsed) .btn-details-toggle::after { ... } DIHAPUS */
-
-.accordion-button:not(.collapsed) {
-    color: inherit;
-    background-color: transparent;
+    transition: all 0.3s ease;
     box-shadow: none;
+    border: 1px solid var(--primary-color);
+    background-color: transparent;
+    color: var(--primary-color);
 }
 
-/* Mencegah kursor pointer di seluruh header, karena sudah tidak berfungsi sebagai tombol */
+.accordion-button:not(.collapsed) .btn-details-toggle {
+    border-color: white;
+    color: white;
+}
+
 .accordion-button {
-    cursor: default;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
 }
 
 .accordion-button::after {
@@ -121,30 +134,29 @@
     box-shadow: none;
 }
 
-.accordion-button {
-    padding: 1rem 1.25rem;
-}
-
 .accordion-body {
     text-align: left;
+    background-color: #ffffff;
+    border-bottom-left-radius: var(--default-border-radius);
+    border-bottom-right-radius: var(--default-border-radius);
 }
 
-/* 4. Gaya Tombol Aksi */
 .btn-primary {
-    background-color: var(--brand-teal);
+    background-color: var(--accent-color);
     border: none;
     border-radius: var(--default-border-radius);
     font-weight: 500;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: var(--primary-color);
+    transition: background-color 0.3s ease;
 }
 
 .btn-primary:hover {
-    background-color: var(--brand-dark-teal);
+    background-color: #e6a700;
 }
 
-/* 5. Gaya Form & Pilihan Custom (DISESUAIKAN) */
 .form-section h6 {
-    color: var(--brand-teal);
+    color: var(--primary-color);
 }
 
 .form-check-input {
@@ -158,6 +170,7 @@
     line-height: 18px;
     display: inline-block;
     user-select: none;
+    color: var(--primary-color);
 }
 
 .form-check-label::before {
@@ -167,14 +180,33 @@
     top: 0;
     width: 18px;
     height: 18px;
-    border: 1px solid #ced4da;
+    border: 1px solid var(--text-color-muted);
     background-color: #fff;
     transition: all 0.2s;
+    border-radius: var(--default-border-radius);
 }
 
 .form-check-input:checked + .form-check-label::before {
-    border-color: var(--brand-yellow);
-    background-color: var(--brand-yellow);
+    border-color: var(--accent-color);
+    background-color: var(--accent-color);
+}
+
+.form-check-label::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 9px;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.form-check-input:checked + .form-check-label::after {
+    opacity: 1;
 }
 
 .payment-options .form-check-label::before {
@@ -182,12 +214,11 @@
 }
 
 .contact-options .form-check-label::before {
-    border-radius: 0.15rem;
+    border-radius: var(--default-border-radius);
 }
 
-/* 6. Gaya Tampilan Harga & Label Referral (DISESUAIKAN) */
 .final-price-display {
-    color: #0c2c5a;
+    color: var(--primary-color);
     font-size: 1.4rem;
     vertical-align: middle;
     font-weight: 600;
@@ -197,49 +228,61 @@
     margin-right: 0.2rem;
 }
 
-
-/* 7. Alignment Input Radio */
 .payment-options .form-check,
 .contact-options .form-check {
-    margin-left: -28px;
+    margin-left: 0;
 }
 
-/* Gaya Bagian Referral */
 .referral-section .form-label {
-    font-family: "Montserrat", sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 500;
-    color: #212529;
+    color: var(--text-color-dark);
     font-size: 0.95rem;
 }
 
 .referral-section .input-group {
     max-width: 300px;
     margin: 0 auto;
-    border: 1px solid #dee2e6;
-    /* Menambahkan border abu-abu */
+    border: 1px solid var(--text-color-muted);
     border-radius: var(--default-border-radius);
-    /* Menyamakan sudut lengkung */
     overflow: hidden;
-    /* Memastikan sudut tombol mengikuti container */
+    transition: border-color 0.3s ease;
 }
 
-/* Menghilangkan border pada input karena sudah ada di container */
+.referral-section .input-group:focus-within {
+    border-color: var(--primary-color);
+}
+
 .referral-section .form-control {
     border: none;
 }
 
 .referral-section .form-control:focus {
     box-shadow: none;
-    /* Menghilangkan shadow biru saat input aktif */
 }
 
 .referral-section .apply-referral-btn {
-    background-color: #e9ecef;
-    /* Warna abu-abu muda */
-    color: #6c757d;
-    /* Warna teks abu-abu tua */
+    background-color: var(--accent-color);
+    color: var(--primary-color);
     border: none;
-    border-left: 1px solid #dee2e6;
-    /* Garis pemisah antara input dan tombol */
-    font-family: "Montserrat", sans-serif;
+    border-left: 1px solid var(--primary-color);
+    font-family: "Poppins", sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.referral-section .apply-referral-btn:hover {
+    background-color: #e6a700;
+}
+
+/* Style untuk alamat yang tidak bisa diedit */
+.offline-address-text {
+    padding: 0.75rem;
+    border: 1px solid #e9ecef; /* Border lembut */
+    border-radius: var(--default-border-radius);
+    background-color: #f7fafc; /* Latar belakang sangat terang */
+    color: var(--text-color-dark);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: left;
 }
