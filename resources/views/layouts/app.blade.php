@@ -5,117 +5,133 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Indiegologi')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
-    {{-- Libraries CSS (Bootstrap, Font Awesome, etc.) --}}
+    {{-- Libraries CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     {{-- Custom CSS Files --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/event_detail.css') }}">
 
-    {{-- Gaya Kustom Global dan Perbaikan Navbar --}}
+    {{-- [FINAL REVISION V6] Gaya Kustom Global dan Navbar Profesional --}}
     <style>
     :root {
         --indiegologi-primary: #0C2C5A;
         --indiegologi-secondary: #6c757d;
         --indiegologi-light: #f8f9fa;
         --indiegologi-dark: #212529;
-        --navbar-height: 5px;
-        /* Definisikan tinggi navbar di sini */
+        --navbar-height: 80px;
     }
 
     body {
         font-family: 'Poppins', sans-serif;
         background-color: var(--indiegologi-light);
-        /* (PENTING) Beri padding atas agar konten tidak tertutup navbar fixed */
         padding-top: var(--navbar-height);
     }
 
-    /* === GAYA NAVBAR BARU: FROSTED GLASS (SESUAI FIGMA) === */
-    .navbar {
-        /* Efek kaca buram */
-        background-color: rgba(255, 255, 255, 0.85);
-        /* Warna putih semi-transparan */
-        backdrop-filter: saturate(180%) blur(5px);
+    /* === GAYA NAVBAR PREMIUM V6 === */
+    .navbar.fixed-top {
+        background-color: rgba(255, 255, 255, 0.7);
+        backdrop-filter: saturate(180%) blur(15px);
         -webkit-backdrop-filter: saturate(180%) blur(15px);
-        /* Untuk support Safari */
+        border-bottom: 1px solid transparent;
+        transition: transform 0.3s ease-in-out, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .navbar.scrolled {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
 
-        /* Posisi tetap di atas */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 1030;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    .navbar-hidden {
+        transform: translateY(-100%);
+    }
+
+    .navbar-brand h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
     }
 
     .navbar .nav-link {
-        color: var(--indiegologi-dark);
-        /* Warna teks link menjadi gelap */
+        color: #343a40;
         font-weight: 500;
         position: relative;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        transition: color 0.3s ease;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        transition: color 0.3s ease, transform 0.3s ease;
     }
 
-    .navbar .nav-link:hover,
+    .navbar .nav-link:hover {
+        color: var(--indiegologi-primary);
+        transform: scale(1.05);
+    }
+
     .navbar .nav-link.active {
         color: var(--indiegologi-primary) !important;
-        /* Warna saat aktif/hover */
+        font-weight: 700;
+    }
+    
+    .cart-badge {
+        position: absolute;
+        top: -5px;
+        right: -8px;
+        font-size: 0.6em;
+        padding: 0.3em 0.5em;
+        border: 2px solid white;
+    }
+    
+    .navbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
-    .navbar .btn-outline-primary {
-        /* Sesuaikan style tombol dengan desain baru */
+    .nav-separator {
+        height: 24px;
+        width: 1px;
+        background-color: #dee2e6;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
     }
 
-    /* Hilangkan underline, fokus pada perubahan warna saja agar lebih clean */
-    .navbar .nav-link::after {
-        display: none;
+    .navbar .container-fluid {
+        padding-left: 3rem;
+        padding-right: 3rem;
     }
 
-    /* === AKHIR GAYA NAVBAR BARU === */
-
-    .btn-primary {
-        background-color: var(--indiegologi-primary);
-        border-color: var(--indiegologi-primary);
+    /* [BARU] Perbaikan Tampilan Mobile Offcanvas */
+    .navbar-toggler {
+        border: none;
+    }
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+    .offcanvas-header {
+        border-bottom: 1px solid #dee2e6;
+    }
+    .offcanvas-body .nav-link {
+        font-size: 1.2rem;
+        padding: 0.75rem 0;
+    }
+    .offcanvas-body .logout-btn {
+        width: 100%;
+        margin-top: 1rem;
+        padding: 0.75rem;
+        font-weight: 600;
     }
 
-    .btn-primary:hover {
-        background-color: #082142;
-        border-color: #082142;
+    @media (max-width: 991.98px) {
+        .navbar .container-fluid {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
     }
-
-    .btn-outline-primary {
-        color: var(--indiegologi-primary);
-        border-color: var(--indiegologi-primary);
-    }
-
-    .btn-outline-primary:hover {
-        background-color: var(--indiegologi-primary);
-        color: #fff;
-    }
-
-    .text-primary {
-        color: var(--indiegologi-primary) !important;
-    }
-
-    .alert-fixed {
-        position: fixed;
-        top: calc(var(--navbar-height) + 20px);
-        /* Posisikan alert di bawah navbar */
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1050;
-        width: 80%;
-        max-width: 600px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+    /* === AKHIR GAYA NAVBAR === */
     </style>
 
     @stack('styles')
@@ -123,77 +139,148 @@
 
 <body>
 
-    {{-- Navbar (HTML tetap sama, hanya CSS yang berubah) --}}
-    <nav class="navbar navbar-expand-lg py-3">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{{ route('front.index') }}">
-                <h1 class="text-primary fw-bold m-0 p-0" style="font-size: 2rem;">INDIEGOLOGI</h1>
+    <nav class="navbar navbar-expand-lg fixed-top py-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ route('front.index') }}">
+                <h1 class="text-primary m-0 p-0">INDIEGOLOGI</h1>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            
+            {{-- [DIUBAH] Tombol Toggler untuk Offcanvas --}}
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNavbar"
+                aria-controls="mobileNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
+            {{-- Navbar Desktop --}}
             <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.index') }}">HOME</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.articles') }}">BERITA</a>
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">BERITA</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">LAYANAN</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">SKETCH</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">CONTACT US</a></li>
+                    
+                    <li class="nav-item d-none d-lg-block">
+                        <div class="nav-separator"></div>
                     </li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.layanan') }}">LAYANAN</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.sketch') }}">SKETCH</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('front.contact') }}">CONTACT
-                            US</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('profile.index') }}">PROFILE</a>
-                    </li>
-                    @guest
-                    <li class="nav-item"><a class="nav-link fw-medium" href="{{ route('login') }}">LOGIN</a></li>
-                    @else
+
                     <li class="nav-item">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-primary ms-lg-3">LOGOUT</button>
-                        </form>
+                        <div class="navbar-actions">
+                            @auth
+                                <a class="nav-link position-relative fs-5" href="{{ route('front.cart.view') }}" title="Keranjang">
+                                    <i class="bi bi-cart"></i>
+                                    @php
+                                        $cartCount = \App\Models\CartItem::where('user_id', auth()->id())->count();
+                                    @endphp
+                                    @if($cartCount > 0)
+                                        <span class="badge rounded-pill bg-danger cart-badge">{{ $cartCount }}</span>
+                                    @endif
+                                </a>
+                                <div class="dropdown">
+                                    <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil">
+                                        <i class="bi bi-person-circle"></i>
+                                    </a>
+                                    {{-- [DIUBAH] Dropdown disederhanakan --}}
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDropdown">
+                                        <li><a class="dropdown-item" href="{{ route('profile.index') }}">Lihat Profil</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item">LOGOUT</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            @else
+                                <a class="btn btn-primary px-4" href="{{ route('login') }}">LOGIN</a>
+                            @endguest
+                        </div>
                     </li>
-                    @endguest
                 </ul>
             </div>
         </div>
     </nav>
 
-    {{-- Konten Utama --}}
-    {{-- Tidak perlu wrapper khusus, biarkan body yang diberi padding --}}
-    @yield('content')
+    {{-- [BARU] Offcanvas untuk Tampilan Mobile --}}
+    <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="mobileNavbar" aria-labelledby="mobileNavbarLabel">
+        <div class="offcanvas-header">
+            @auth
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-person-circle fs-2 me-2"></i>
+                    <div>
+                        <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel">{{ Auth::user()->name }}</h5>
+                        <small class="text-muted">{{ Auth::user()->email }}</small>
+                    </div>
+                </div>
+            @else
+                <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel">Menu</h5>
+            @endauth
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">HOME</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">BERITA</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">LAYANAN</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">SKETCH</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">CONTACT US</a></li>
+                @auth
+                    <li class="nav-item"><a class="nav-link" href="{{ route('profile.index') }}">PROFIL SAYA</a></li>
+                @endauth
+            </ul>
 
-    {{-- Footer tetap di bawah --}}
+            <div class="mt-auto">
+                @auth
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-danger logout-btn">LOGOUT</button>
+                    </form>
+                @else
+                    <a class="btn btn-primary logout-btn" href="{{ route('login') }}">LOGIN</a>
+                @endguest
+            </div>
+        </div>
+    </div>
+
+    <main>
+        @yield('content')
+    </main>
 
     @include('layouts.footer')
 
-
-
     {{-- JS Libraries --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.querySelector('.navbar.fixed-top');
+            if (navbar) {
+                let lastScrollTop = 0;
+                window.addEventListener('scroll', function() {
+                    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    
+                    if (scrollTop > 10) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
+
+                    if (window.innerWidth >= 992) {
+                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) {
+                            navbar.classList.add('navbar-hidden');
+                        } else {
+                            navbar.classList.remove('navbar-hidden');
+                        }
+                    }
+                    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+                });
+            }
+        });
+    </script>
 
     @stack('scripts')
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Logika untuk mengubah navbar saat scroll sudah dihapus.
-        // Hanya menyisakan logika untuk link aktif.
-
-        const currentLocation = window.location.href;
-        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.href === currentLocation) {
-                link.classList.add('active');
-            }
-        });
-    });
-    </script>
-
 </body>
-
 </html>

@@ -2,83 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash; // Import the Hash facade
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
-    // Display login page
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    // Handle the login process
     public function login(Request $request)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required'
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        // Attempt to log in the user using Laravel's built-in Auth
-        // Laravel's Auth::attempt automatically handles the hashing
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('redirect.dashboard');
+            return redirect()->intended('/dashboard');
         }
 
-        // If login fails, return back with an error
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
 
-    // Display register page
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    // Handle the registration process
     public function register(Request $request)
     {
-        $request->validate([
-            'name'     => 'required',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password), // Use Hash::make to hash the password
-            'role'     => 'reader', // default role
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
         ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
+        Auth::login($user);
+
+        return redirect('/dashboard');
     }
 
-    // Logout
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        // [INI PERUBAHANNYA] Mengarahkan ke homepage setelah logout
+        return redirect('/');
     }
 
-    // Redirect based on role
     public function redirectDashboard()
     {
         $role = Auth::user()->role;
-
-        return match ($role) {
-            'admin'  => redirect('/admin/dashboard'),
-            'author' => redirect('/author/dashboard'),
-            'reader' => redirect('/'),
-            default  => abort(403),
-        };
+        switch ($role) {
+            case 'admin':
+                return redirect()->route('admin.dashboard');
+            case 'author':
+                return redirect()->route('author.dashboard');
+            case 'reader':
+                return redirect()->route('reader.dashboard');
+            default:
+                return redirect('/');
+        }
     }
 }

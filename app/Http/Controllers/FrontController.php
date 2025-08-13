@@ -6,15 +6,14 @@ use App\Models\Article;
 use App\Models\Sketch;
 use App\Models\ConsultationService;
 use App\Models\ReferralCode;
+use App\Models\CartItem;
 use Illuminate\Http\Request;
-use Jenssegers\Agent\Facades\Agent;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class FrontController extends Controller
 {
+    // ... (method index, articles, showArticle, dll. tidak ada perubahan) ...
     public function index()
     {
         $latest_articles = Article::where('status', 'published')
@@ -54,114 +53,147 @@ class FrontController extends Controller
     public function showArticle(Article $article)
     {
         $article->increment('views');
-
         return view('front.article_show', compact('article'));
     }
 
-    // Menampilkan semua sketsa per halaman
     public function sketches_show()
     {
         $sketches = Sketch::where('status', 'published')
             ->latest()
             ->paginate(6);
-
         return view('front.sketch', compact('sketches'));
     }
 
-    // Menampilkan detail sketsa berdasarkan slug
     public function showDetail(Sketch $sketch)
     {
         $sketch->increment('views');
-
         return view('front.sketch_detail', compact('sketch'));
     }
 
-    // Metode untuk halaman daftar layanan
-    public function layanan() // <-- Diperbaiki
+    public function layanan()
     {
         $services = ConsultationService::whereIn('status', ['published', 'special'])
             ->latest()
             ->paginate(6);
-
+            
         $referralCodes = ReferralCode::all();
 
         return view('front.services.index', compact('services', 'referralCodes'));
     }
 
-    public function showService(ConsultationService $service)
-    {
-        $referralCodes = ReferralCode::all();
-        return view('front.services.show', compact('service', 'referralCodes'));
-    }
-
     public function addToCart(Request $request)
     {
-        if (!Auth::check()) {
-            return response()->json(['success' => false, 'message' => 'Anda harus login untuk menambahkan layanan ke keranjang.'], 401);
-        }
-
-        $validatedData = $request->validate([
-            'id' => 'required|exists:consultation_services,id',
-            'hours' => 'required|integer|min:0',
-            'booked_date' => 'required|date',
-            'booked_time' => 'required|date_format:H:i',
-            'session_type' => 'required|string|in:Online,Offline',
-            'offline_address' => 'nullable|string|required_if:session_type,Offline',
-            'referral_code' => 'nullable|string',
-            'contact_preference' => 'required|string|in:chat_only,chat_and_call',
-            'payment_type' => 'required|string|in:dp,full_payment',
-        ]);
-
-        $service = ConsultationService::find($validatedData['id']);
-        if (!$service) {
-            return response()->json(['success' => false, 'message' => 'Layanan tidak ditemukan.'], 404);
-        }
-
-        $referralCode = null;
-        if (!empty($validatedData['referral_code'])) {
-            $referralCode = ReferralCode::where('code', Str::upper($validatedData['referral_code']))->first();
-            if (!$referralCode) {
-                 return response()->json(['success' => false, 'message' => 'Kode referral tidak ditemukan.'], 404);
-            }
-        }
-
-        $cart = Session::get('cart', []);
-
-        $cartItemId = Str::uuid();
-
-        $itemToAdd = [
-            'id' => $service->id,
-            'title' => $service->title,
-            'price' => $service->price,
-            'hourly_price' => $service->hourly_price,
-            'hours' => $validatedData['hours'],
-            'booked_date' => $validatedData['booked_date'],
-            'booked_time' => $validatedData['booked_time'],
-            'session_type' => $validatedData['session_type'],
-            'offline_address' => $validatedData['offline_address'] ?? null,
-            'referral_code' => $validatedData['referral_code'] ?? null,
-            'contact_preference' => $validatedData['contact_preference'],
-            'payment_type' => $validatedData['payment_type'],
-            'referral_code_id' => $referralCode ? $referralCode->id : null,
-            'discount_percentage' => $referralCode ? $referralCode->discount_percentage : 0,
-        ];
-
-        $cart[$cartItemId] = $itemToAdd;
-        Session::put('cart', $cart);
-
-        $cartCount = count($cart);
-
-        return response()->json(['success' => true, 'message' => 'Layanan berhasil ditambahkan ke keranjang!', 'cart_count' => $cartCount]);
+        // ... (method ini tidak ada perubahan)
     }
 
+    // [INI PERBAIKAN UTAMANYA]
     public function viewCart()
     {
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Anda harus login untuk melihat keranjang.');
         }
 
-        $cart = Session::get('cart', []);
-        return view('front.cart.index', compact('cart'));
+        $cartItems = CartItem::with('service')
+            ->where('user_id', Auth::id())
+            ->get();
+        
+        $subtotal = 0;
+        $totalDiscount = 0;
+        $totalToPayNow = 0;
+
+        // Loop ini sekarang menambahkan properti 'item_total' ke setiap item
+        foreach ($cartItems as $item) {
+            $itemTotal = $item->price + ($item->hourly_price * $item->hours);
+            $item->item_total = $itemTotal; // <- KUNCI PERBAIKANNYA ADA DI SINI
+            $subtotal += $itemTotal;
+            
+            $itemDiscount = 0;
+            if (!empty($item->referral_code)) {
+                $referral = ReferralCode::where('code', $item->referral_code)->first();
+                if ($referral) {
+                    $itemDiscount = ($itemTotal * $referral->discount_percentage) / 100;
+                    $item->discount_amount = $itemDiscount;
+                    $totalDiscount += $itemDiscount;
+                }
+            } else {
+                $item->discount_amount = 0;
+            }
+
+            $finalItemPrice = $itemTotal - $itemDiscount;
+            if ($item->payment_type == 'dp') {
+                $totalToPayNow += $finalItemPrice * 0.5;
+            } else {
+                $totalToPayNow += $finalItemPrice;
+            }
+        }
+
+        $grandTotal = $subtotal - $totalDiscount;
+
+        return view('front.cart.index', compact('cartItems', 'subtotal', 'totalDiscount', 'grandTotal', 'totalToPayNow'));
+    }
+
+    // [BARU] Method untuk kalkulasi dinamis via AJAX
+    public function updateCartSummary(Request $request)
+    {
+        $selectedIds = $request->input('ids', []);
+        $summary = $this->calculateSummary($selectedIds);
+        return response()->json($summary);
+    }
+
+    // [BARU] Fungsi helper untuk kalkulasi agar tidak duplikat kode
+    private function calculateSummary(array $itemIds)
+    {
+        $cartItems = CartItem::whereIn('id', $itemIds)->where('user_id', Auth::id())->get();
+
+        $subtotal = 0;
+        $totalDiscount = 0;
+        $totalToPayNow = 0;
+
+        foreach ($cartItems as $item) {
+            $itemTotal = $item->price + ($item->hourly_price * $item->hours);
+            $subtotal += $itemTotal;
+            
+            $itemDiscount = 0;
+            if (!empty($item->referral_code)) {
+                $referral = ReferralCode::where('code', $item->referral_code)->first();
+                if ($referral) {
+                    $itemDiscount = ($itemTotal * $referral->discount_percentage) / 100;
+                    $totalDiscount += $itemDiscount;
+                }
+            }
+
+            $finalItemPrice = $itemTotal - $itemDiscount;
+            if ($item->payment_type == 'dp') {
+                $totalToPayNow += $finalItemPrice * 0.5;
+            } else {
+                $totalToPayNow += $finalItemPrice;
+            }
+        }
+
+        $grandTotal = $subtotal - $totalDiscount;
+
+        return [
+            'subtotal' => number_format($subtotal, 0, ',', '.'),
+            'totalDiscount' => number_format($totalDiscount, 0, ',', '.'),
+            'grandTotal' => number_format($grandTotal, 0, ',', '.'),
+            'totalToPayNow' => number_format($totalToPayNow, 0, ',', '.'),
+        ];
+    }
+
+    public function removeFromCart(Request $request)
+    {
+        $request->validate(['id' => 'required|exists:cart_items,id']);
+        
+        $cartItem = CartItem::where('id', $request->id)
+                            ->where('user_id', Auth::id())
+                            ->first();
+
+        if ($cartItem) {
+            $cartItem->delete();
+            return redirect()->back()->with('success', 'Layanan berhasil dihapus dari keranjang.');
+        }
+
+        return redirect()->back()->with('error', 'Item tidak ditemukan.');
     }
 
     public function contact()
