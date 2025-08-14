@@ -91,7 +91,7 @@ body {
 
 .hero-section .btn-outline-light:hover {
     background-color: var(--text-light);
-    color: var(--collab-primary); /* **UPDATED: Text color to BTN Blue for contrast** */
+    color: var(--old-text-primary); /* **UPDATED: Text color to BTN Blue for contrast** */
     box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
 }
 
@@ -133,8 +133,8 @@ body {
 }
 
 .hero-content .hero-btn:hover {
-    background-color: var(--custom-blue-darken); /* Darken custom blue on hover */
-    border-color: var(--custom-blue-darken);
+    background-color: var(--custom-blue); /* Darken custom blue on hover */
+    border-color: var(--custom-blue);
     color: var(--text-light);
     transform: translateY(-4px); /* More lift effect on hover */
     box-shadow: 0 10px 25px rgba(0,0,0,0.4);
@@ -164,7 +164,7 @@ body {
 }
 
 .see-all-btn:hover {
-    background-color: var(--custom-blue-darken); /* Darken custom blue on hover */
+    background-color: var(--custom-blue); /* Darken custom blue on hover */
     color: var(--text-light);
     box-shadow: 0 4px 10px rgba(15, 98, 255, 0.4); /* Shadow using custom blue */
 }

@@ -190,7 +190,9 @@
                                     </ul>
                                 </div>
                             @else
-                                <a class="btn btn-primary px-4" href="{{ route('login') }}">LOGIN</a>
+                                <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">
+                                    LOGIN
+                                </a>
                             @endguest
                         </div>
                     </li>
