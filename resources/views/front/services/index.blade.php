@@ -105,28 +105,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="form-section payment-options mb-4">
-                                                <div class="col-12">
-                                                    <h6 class="fw-bold">Pilihan Pembayaran</h6>
-                                                    <div class="form-check mb-2">
-                                                        <input class="form-check-input" type="radio"
-                                                            name="payment_type-{{ $service->id }}"
-                                                            id="payment-full-{{ $service->id }}" value="full_payment"
-                                                            checked>
-                                                        <label class="form-check-label"
-                                                            for="payment-full-{{ $service->id }}">Bayar Penuh (Rp
-                                                            {{ number_format($service->price, 0, ',', '.') }})</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio"
-                                                            name="payment_type-{{ $service->id }}"
-                                                            id="payment-dp-{{ $service->id }}" value="dp">
-                                                        <label class="form-check-label"
-                                                            for="payment-dp-{{ $service->id }}">Bayar DP 50% (Rp
-                                                            {{ number_format($service->price / 2, 0, ',', '.') }})</label>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <input type="hidden" name="payment_type-{{ $service->id }}" id="payment-full-{{ $service->id }}" value="full_payment">
 
                                             <div class="form-section contact-options mb-4">
                                                 <div class="col-12">
