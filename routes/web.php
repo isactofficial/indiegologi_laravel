@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\SketchController;
 use App\Http\Controllers\Admin\ReferralCodeController;
 use App\Http\Controllers\Admin\ConsultationServiceController;
 use App\Http\Controllers\Admin\ConsultationBookingController;
+use App\Http\Controllers\InvoiceController;
 
 // Route for storage link
 Route::get('/storage-link', function () {
@@ -131,6 +132,9 @@ Route::middleware(['auth', 'role:reader'])->group(function () {
         return view('dashboard.reader');
     })->name('reader.dashboard');
 });
+
+// This route will display the invoice to the user
+Route::get('/invoice/{consultationBooking}', [InvoiceController::class, 'show'])->name('invoice.show');
 
 // Google OAuth routes
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');

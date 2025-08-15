@@ -114,7 +114,8 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            return redirect()->route('profile.index')->with('success', 'Booking Anda berhasil dibuat! Silakan selesaikan pembayaran.');
+            return redirect()->route('invoice.show', ['consultationBooking' => $booking->id])
+                             ->with('success', 'Pesanan berhasil dibuat! Silakan selesaikan pembayaran Anda.');
 
         } catch (\Exception $e) {
             DB::rollBack();
