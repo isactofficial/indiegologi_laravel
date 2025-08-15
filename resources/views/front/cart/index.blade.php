@@ -51,7 +51,7 @@
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(12, 44, 90, 0.1);
     }
-    
+
     .item-details-list {
         list-style: none; padding: 0; margin: 0; font-size: 0.9rem;
     }
@@ -94,7 +94,7 @@
             top: 120px;
         }
     }
-    
+
     /* [UBAH] Tombol Checkout Utama yang Menonjol */
     .btn-checkout {
         background-color: var(--brand-primary);
@@ -122,7 +122,7 @@
 @section('content')
 <div class="cart-page">
     <div class="container" style="padding-top: 6rem; padding-bottom: 6rem;">
-        
+
         @if ($cartItems->isEmpty())
             <div class="text-center py-5">
                 <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
@@ -175,7 +175,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         {{-- Kolom Rincian Biaya & Aksi --}}
                                         <div class="col-md-5 border-md-start ps-md-4">
                                             <ul class="list-group list-group-flush price-details-list small">
@@ -197,19 +197,19 @@
                                                 @php $itemDiscount = $item->item_subtotal - $item->final_item_price; @endphp
                                                 @if ($itemDiscount > 0)
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span style="color: var(--brand-danger);">Diskon:</span> 
+                                                    <span style="color: var(--brand-danger);">Diskon:</span>
                                                     <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
                                                 </li>
                                                 @endif
                                             </ul>
-                                            
+
                                             <hr class="my-2" style="border-color: var(--brand-border);">
 
                                             <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                <span>Total Item:</span> 
+                                                <span>Total Item:</span>
                                                 <span>Rp {{ number_format($item->final_item_price, 0, ',', '.') }}</span>
                                             </p>
-                                            
+
                                             <div class="d-flex justify-content-between align-items-center">
                                                 {{-- [UBAH] Mengganti class tombol agar sesuai brand --}}
                                                 <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
@@ -262,7 +262,7 @@
                     </div>
                 </div>
             </form>
-            
+
             <form id="remove-item-form" action="{{ route('front.cart.remove') }}" method="POST" style="display: none;">
                 @csrf
                 <input type="hidden" name="id" id="remove-item-id">
