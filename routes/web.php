@@ -15,7 +15,9 @@ use App\Http\Controllers\Admin\SketchController;
 use App\Http\Controllers\Admin\ReferralCodeController;
 use App\Http\Controllers\Admin\ConsultationServiceController;
 use App\Http\Controllers\Admin\ConsultationBookingController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\InvoiceController;
+
 
 // Route for storage link
 Route::get('/storage-link', function () {
@@ -95,6 +97,9 @@ Route::middleware(['auth'])->group(function () {
     // Checkout Route
     Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
 });
+
+// Language Switch Route
+ Route::get('lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
 
 // --- Admin Routes ---
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {

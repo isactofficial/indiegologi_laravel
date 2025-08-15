@@ -3,17 +3,18 @@
 @section('content')
 
 <div class="container py-5 mt-5 pt-lg-0">
-    <h2 class="fw-bold mb-4 text-center section-title-articles">Wawasan & Inspirasi Terbaru dari Indiegologi</h2>
-
-    <p class="text-center mb-5 text-muted">Jelajahi kumpulan artikel inspiratif dan informatif yang kami kurasi, dirancang untuk mendukung perjalanan kesejahteraan dan pertumbuhan pribadi Anda.</p>
+    {{-- Teks ini sekarang bisa diterjemahkan --}}
+    <h2 class="fw-bold mb-4 text-center section-title-articles">{{ __('articles.page_title') }}</h2>
+    <p class="text-center mb-5 text-muted">{{ __('articles.page_subtitle') }}</p>
 
     <div class="mb-4 d-flex justify-content-end">
         <form action="{{ route('front.articles') }}" method="GET">
             <select name="filter" class="form-select border-primary-custom text-primary-custom" onchange="this.form.submit()">
-                <option value="">Sort by</option>
-                <option value="latest" {{ request('filter') == 'latest' ? 'selected' : '' }}>Latest</option>
-                <option value="popular" {{ request('filter') == 'popular' ? 'selected' : '' }}>Popular</option>
-                <option value="author" {{ request('filter') == 'author' ? 'selected' : '' }}>By Author</option>
+                {{-- Teks ini sekarang bisa diterjemahkan --}}
+                <option value="">{{ __('articles.sort_by') }}</option>
+                <option value="latest" {{ request('filter') == 'latest' ? 'selected' : '' }}>{{ __('articles.sort_latest') }}</option>
+                <option value="popular" {{ request('filter') == 'popular' ? 'selected' : '' }}>{{ __('articles.sort_popular') }}</option>
+                <option value="author" {{ request('filter') == 'author' ? 'selected' : '' }}>{{ __('articles.sort_author') }}</option>
             </select>
         </form>
     </div>
@@ -27,12 +28,9 @@
                             <img src="{{ asset('storage/' . $article->thumbnail) }}" class="card-img-top object-fit-cover article-thumbnail" alt="{{ $article->title }}">
                         </div>
                        <div class="card-body d-flex flex-column">
+                            {{-- INI TIDAK DIUBAH: Tetap mengambil data asli dari database --}}
                             <h5 class="card-title fw-semibold title-text text-primary-custom">{{ $article->title }}</h5>
-
-                            {{-- Menampilkan deskripsi dengan batasan kata --}}
                             <p class="card-text description-text text-muted mb-2">{{ Str::words(strip_tags($article->description), 15, '...') }}</p>
-
-                            {{-- Jika Anda ingin menambahkan tanggal, bisa ditaruh di sini --}}
                             <small class="text-secondary mt-auto">{{ optional($article->created_at)->format('d F Y') }}</small>
                         </div>
                     </div>
@@ -40,62 +38,15 @@
             </div>
         @empty
             <div class="col-12">
-                <p class="text-center text-primary-custom">No articles found.</p>
+                {{-- Teks ini sekarang bisa diterjemahkan --}}
+                <p class="text-center text-primary-custom">{{ __('articles.no_articles_found') }}</p>
             </div>
         @endforelse
     </div>
 
-    {{-- Custom Pagination --}}
+    {{-- Pagination (tidak ada teks yang perlu diubah di sini) --}}
     <div class="mt-4 d-flex justify-content-center">
-        <nav aria-label="Page navigation for Articles">
-            <ul class="pagination">
-                {{-- Previous Page Link --}}
-                @if ($articles->onFirstPage())
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;</span>
-                    </li>
-                @else
-                    <li class="page-item">
-                        <a class="page-link" href="{{ $articles->previousPageUrl() . '&filter=' . request('filter') }}" rel="prev">&laquo;</a>
-                    </li>
-                @endif
-
-                {{-- Pagination Elements --}}
-                @php
-                    $currentPage = $articles->currentPage();
-                    $lastPage = $articles->lastPage();
-                    $pageRange = 5; // Number of page links to show
-
-                    $startPage = max(1, $currentPage - floor($pageRange / 2));
-                    $endPage = min($lastPage, $currentPage + floor($pageRange / 2));
-
-                    // Adjust range if current page is near start or end
-                    if ($currentPage <= floor($pageRange / 2) && $lastPage >= $pageRange) {
-                        $endPage = $pageRange;
-                    }
-                    if ($currentPage > ($lastPage - floor($pageRange / 2)) && $lastPage >= $pageRange) {
-                        $startPage = max(1, $lastPage - $pageRange + 1);
-                    }
-                @endphp
-
-                @for ($i = $startPage; $i <= $endPage; $i++)
-                    <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
-                        <a class="page-link" href="{{ $articles->url($i) . '&filter=' . request('filter') }}">{{ $i }}</a>
-                    </li>
-                @endfor
-
-                {{-- Next Page Link --}}
-                @if ($articles->hasMorePages())
-                    <li class="page-item">
-                        <a class="page-link" href="{{ $articles->nextPageUrl() . '&filter=' . request('filter') }}" rel="next">&raquo;</a>
-                    </li>
-                @else
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;</span>
-                    </li>
-                @endif
-            </ul>
-        </nav>
+        {{ $articles->links() }}
     </div>
 
 </div>
@@ -104,32 +55,25 @@
 
 @push('styles')
 <style>
-    /* Main Colors for INDIEGOLOGI */
+    /* CSS Anda tetap sama seperti sebelumnya, tidak perlu diubah */
     :root {
-        --indiegologi-primary: #0C2C5A; /* Sesuai dengan warna utama yang Anda berikan */
-        --indiegologi-secondary: #f8f9fa; /* Warna terang untuk kontras */
-        --indiegologi-dark: #212529; /* Warna gelap untuk teks */
-        --indiegologi-muted: #6c757d; /* Warna abu-abu untuk teks deskripsi */
+        --indiegologi-primary: #0C2C5A;
+        --indiegologi-secondary: #f8f9fa;
+        --indiegologi-dark: #212529;
+        --indiegologi-muted: #6c757d;
     }
-
-    /* General Styling */
     body {
-        font-family: 'Poppins', sans-serif; /* Menggunakan font yang konsisten */
+        font-family: 'Poppins', sans-serif;
         color: var(--indiegologi-dark);
         background-color: var(--indiegologi-secondary);
     }
-
     a {
         text-decoration: none;
         color: var(--indiegologi-primary);
     }
-
-    /* Custom Text Colors based on Brand Identity */
     .text-primary-custom { color: var(--indiegologi-primary) !important; }
     .text-muted { color: var(--indiegologi-muted) !important; }
-    .text-secondary { color: var(--indiegologi-muted) !important; } /* Menyesuaikan warna secondary */
-
-    /* Section Title */
+    .text-secondary { color: var(--indiegologi-muted) !important; }
     .section-title-articles {
         font-family: 'Poppins', sans-serif;
         font-weight: 700;
@@ -139,7 +83,6 @@
         position: relative;
         padding-bottom: 15px;
     }
-
     .section-title-articles::after {
         content: '';
         position: absolute;
@@ -148,11 +91,9 @@
         bottom: 0;
         width: 80px;
         height: 5px;
-        background-color: var(--indiegologi-primary); /* Menggunakan warna primary untuk garis bawah */
+        background-color: var(--indiegologi-primary);
         border-radius: 2px;
     }
-
-    /* Filter Dropdown */
     .form-select {
         width: 200px;
         display: inline-block;
@@ -160,58 +101,41 @@
         color: var(--indiegologi-primary);
         font-weight: 500;
     }
-
     .form-select:focus {
         border-color: var(--indiegologi-primary);
-        box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.25); /* Menggunakan alpha dari primary-color */
+        box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.25);
     }
-
-    /* Article Cards */
     .article-link {
         display: block;
     }
-
     .card {
         border: none;
         border-radius: 0.75rem;
         overflow: hidden;
     }
-
     .card-hover-zoom {
         transition: transform 0.4s ease, box-shadow 0.3s ease;
     }
-
     .card-hover-zoom:hover {
         transform: scale(1.03);
         z-index: 2;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
-
     .article-thumbnail-wrapper {
         background-color: var(--indiegologi-primary);
     }
-
     .article-thumbnail {
         object-fit: cover;
         width: 100%;
         height: 100%;
     }
-
-    .card-body {
-        padding: 1.25rem;
-    }
-
+    .card-body { padding: 1.25rem; }
     .card-title {
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
         color: var(--indiegologi-primary);
     }
-
-    .card-text.description-text {
-        color: var(--indiegologi-muted);
-    }
-
-    /* Text clamping for titles */
+    .card-text.description-text { color: var(--indiegologi-muted); }
     .title-text {
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -220,8 +144,6 @@
         text-overflow: ellipsis;
         margin-bottom: 0.5rem;
     }
-
-    /* Text clamping for descriptions */
     .description-text {
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -230,29 +152,22 @@
         text-overflow: ellipsis;
         margin-bottom: 0;
     }
-
-    /* --- Custom Pagination Styles --- */
     .pagination {
         list-style: none;
         display: flex;
         justify-content: center;
         padding: 0;
         margin: 0;
-
         --pagination-link-color: var(--indiegologi-primary);
         --pagination-active-bg: var(--indiegologi-primary);
         --pagination-active-color: white;
-        --pagination-hover-bg: rgba(12, 44, 90, 0.8); /* Warna primary dengan sedikit opacity */
+        --pagination-hover-bg: rgba(12, 44, 90, 0.8);
         --pagination-hover-color: white;
         --pagination-border-color: var(--indiegologi-primary);
         --pagination-disabled-color: rgba(12, 44, 90, 0.4);
         --pagination-disabled-border: rgba(12, 44, 90, 0.2);
     }
-
-    .pagination .page-item {
-        margin: 0 5px;
-    }
-
+    .pagination .page-item { margin: 0 5px; }
     .pagination .page-link {
         border-radius: 8px;
         padding: 10px 15px;
@@ -264,12 +179,10 @@
         align-items: center;
         justify-content: center;
         height: 40px;
-
         color: var(--pagination-link-color);
         background-color: transparent;
         border: 1px solid var(--pagination-border-color);
     }
-
     .pagination .page-item.active .page-link {
         background-color: var(--pagination-active-bg);
         border-color: var(--pagination-active-bg);
@@ -277,7 +190,6 @@
         font-weight: bold;
         box-shadow: 0 4px 8px rgba(12, 44, 90, 0.2);
     }
-
     .pagination .page-link:hover:not(.active) {
         background-color: var(--pagination-hover-bg);
         border-color: var(--pagination-hover-bg);
@@ -285,7 +197,6 @@
         transform: translateY(-2px);
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-
     .pagination .page-item.disabled .page-link {
         color: var(--pagination-disabled-color);
         pointer-events: none;
@@ -294,39 +205,16 @@
         transform: none;
         box-shadow: none;
     }
-
-    /* Responsive adjustments for small screens */
     @media (max-width: 767.98px) {
-        .section-title-articles {
-            font-size: 1.8rem;
-            margin-top: 5rem;
-        }
-        .section-title-articles::after {
-            width: 60px;
-            height: 3px;
-        }
-        .title-text {
-            font-size: 16px;
-            -webkit-line-clamp: 3;
-        }
-
-        .description-text {
-            -webkit-line-clamp: 2;
-            font-size: 12px;
-        }
-        .form-select {
-            width: 100%;
-        }
-        .d-flex.justify-content-end {
-            justify-content: center !important;
-        }
+        .section-title-articles { font-size: 1.8rem; margin-top: 5rem; }
+        .section-title-articles::after { width: 60px; height: 3px; }
+        .title-text { font-size: 16px; -webkit-line-clamp: 3; }
+        .description-text { -webkit-line-clamp: 2; font-size: 12px; }
+        .form-select { width: 100%; }
+        .d-flex.justify-content-end { justify-content: center !important; }
     }
-
-    /* Media query for very small screens or where navbar might overlap title */
     @media (max-width: 575.98px) {
-        .hero-section-articles {
-            padding-bottom: 2rem;
-        }
+        .hero-section-articles { padding-bottom: 2rem; }
     }
 </style>
 @endpush

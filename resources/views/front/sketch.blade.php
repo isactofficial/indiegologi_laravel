@@ -1,17 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Sketch Telling')
+@section('title', __('sketch.page_title'))
 
 @section('content')
 <div class="sketch-telling-section">
     <div class="container">
-        <h1 class="section-title">Sketch Telling</h1>
-        <p class="section-description">Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang
-            lebih dalam tentang berbagai perjalanan hidup</p>
+        <h1 class="section-title">{{ __('sketch.section_title') }}</h1>
+        <p class="section-description">{{ __('sketch.section_subtitle') }}</p>
 
         @if($sketches->isEmpty())
         <div class="text-center">
-            <p class="lead text-muted">Belum ada sketsa yang tersedia saat ini.</p>
+            <p class="lead text-muted">{{ __('sketch.no_sketches_available') }}</p>
         </div>
         @else
         <div class="cards-grid">
@@ -19,12 +18,13 @@
             <div class="card">
                 <a href="{{ route('front.sketches.detail', ['sketch' => $sketch->slug]) }}">
                     <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-image"
-                        alt="{{ $sketch->title }}">
+                         alt="{{ $sketch->title }}">
                 </a>
                 <div class="card-content">
+                    {{-- Konten Dinamis (Tidak Diterjemahkan) --}}
                     <h3 class="card-title">{{ Str::limit($sketch->title, 50) }}</h3>
                     <a href="{{ route('front.sketches.detail', ['sketch' => $sketch->slug]) }}" class="read-more">
-                        Lihat Detail <span class="arrow">›</span>
+                        {{ __('sketch.view_details_button') }} <span class="arrow">›</span>
                     </a>
                 </div>
             </div>
@@ -40,7 +40,7 @@
 </div>
 
 <style>
-/* General Styling */
+/* Semua CSS Anda tetap sama, tidak perlu diubah */
 .sketch-telling-section {
     padding: 80px 0;
     text-align: center;
@@ -48,7 +48,6 @@
     padding-top: 120px;
     margin-top: 20px;
 }
-
 .section-title {
     font-family: 'Playfair Display', serif;
     font-size: 2.8rem;
@@ -56,7 +55,6 @@
     color: #0C2C5A;
     margin-bottom: 10px;
 }
-
 .section-description {
     font-size: 1.1rem;
     color: #6c757d;
@@ -64,8 +62,6 @@
     margin: 0 auto 50px auto;
     line-height: 1.6;
 }
-
-/* Cards Grid Layout */
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -73,8 +69,6 @@
     justify-content: center;
     padding-bottom: 50px;
 }
-
-/* Individual Card Styling */
 .card {
     background-color: #fff;
     border-radius: 10px;
@@ -84,12 +78,10 @@
     display: flex;
     flex-direction: column;
 }
-
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
-
 .card-image {
     width: 100%;
     height: 200px;
@@ -98,7 +90,6 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
-
 .card-content {
     padding: 20px;
     text-align: left;
@@ -107,7 +98,6 @@
     flex-direction: column;
     justify-content: space-between;
 }
-
 .card-title {
     font-size: 1.3rem;
     font-weight: 600;
@@ -121,7 +111,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .read-more {
     display: flex;
     align-items: center;
@@ -130,55 +119,43 @@
     text-decoration: none;
     margin-top: auto;
 }
-
 .read-more .arrow {
     margin-left: 5px;
     font-size: 1.2rem;
     transition: transform 0.3s ease;
 }
-
 .read-more:hover .arrow {
     transform: translateX(5px);
 }
-
 .read-more:hover {
     text-decoration: underline;
 }
-
-/* Responsiveness */
 @media (max-width: 992px) {
     .cards-grid {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
-
     .section-title {
         font-size: 2.2rem;
     }
-
     .section-description {
         font-size: 1rem;
     }
-
     .card-title {
         font-size: 1.2rem;
     }
 }
-
 @media (max-width: 768px) {
     .cards-grid {
         grid-template-columns: 1fr;
         max-width: 400px;
         margin: 0 auto;
     }
-
     .sketch-telling-section {
         padding: 60px 0;
     }
-
     .section-title {
         font-size: 2rem;
     }
-
     .section-description {
         font-size: 0.9rem;
     }
