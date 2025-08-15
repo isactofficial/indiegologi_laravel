@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
 
     {{-- Custom CSS Files --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -113,9 +114,24 @@
     .offcanvas-header {
         border-bottom: 1px solid #dee2e6;
     }
+
+    /* [PERUBAHAN UX] Style untuk menu offcanvas baru */
     .offcanvas-body .nav-link {
-        font-size: 1.2rem;
-        padding: 0.75rem 0;
+        font-size: 1.1rem; /* Ukuran font yang lebih nyaman */
+        padding: 0.85rem 0; /* Jarak vertikal yang lebih baik */
+        display: flex;
+        align-items: center;
+        gap: 1rem; /* Jarak antara ikon dan teks */
+    }
+    .offcanvas-body .nav-link i {
+        font-size: 1.4rem;
+        width: 25px; /* Lebar tetap agar teks lurus */
+        text-align: center;
+        color: var(--indiegologi-secondary);
+    }
+    .offcanvas-body .nav-link.active i,
+    .offcanvas-body .nav-link.active {
+        color: var(--indiegologi-primary);
     }
     .offcanvas-body .logout-btn {
         width: 100%;
@@ -136,31 +152,57 @@
 </head>
 
 <body>
-
     <nav class="navbar navbar-expand-lg fixed-top py-3">
         <div class="container-fluid">
+            {{-- Brand/Logo --}}
             <a class="navbar-brand" href="{{ route('front.index') }}">
                 <h1 class="text-primary m-0 p-0">INDIEGOLOGI</h1>
             </a>
             
-            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNavbar"
-                aria-controls="mobileNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <div class="d-flex align-items-center d-lg-none">
+                @auth
+                <a class="nav-link position-relative fs-4 me-2" href="{{ route('front.cart.view') }}" title="Keranjang">
+                    <i class="bi bi-cart"></i>
+                    @php
+                        $cartCountMobile = \App\Models\CartItem::where('user_id', auth()->id())->count();
+                    @endphp
+                    <span class="badge rounded-pill bg-danger cart-badge" style="top: -2px; right: -5px;">
+                        {{ $cartCountMobile }}
+                    </span>
+                </a>
+                @endauth
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNavbar" aria-controls="mobileNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
 
+            {{-- Desktop Menu --}}
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-                    {{-- ... menu items ... --}}
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">HOME</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">BERITA</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">LAYANAN</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">SKETCH</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">CONTACT US</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">{{ __('navbar.home') }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">{{ __('navbar.news') }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">{{ __('navbar.services') }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">{{ __('navbar.sketch') }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">{{ __('navbar.contact') }}</a></li>
                     
-                    <li class="nav-item d-none d-lg-block">
-                        <div class="nav-separator"></div>
+                    {{-- Language Dropdown --}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle fs-5 d-flex align-items-center gap-1" href="#" id="navbarLanguageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Language">
+                            <i class="bi bi-globe"></i>
+                            <span class="d-none d-md-inline text-uppercase" style="font-size: 0.95em;">
+                                {{ strtoupper(app()->getLocale()) }}
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarLanguageDropdown">
+                            <li><a class="dropdown-item d-flex align-items-center @if(app()->getLocale() == 'id') active fw-bold @endif" href="{{ route('lang.switch', 'id') }}"><span class="fi fi-id me-2"></span> Bahasa Indonesia @if(app()->getLocale() == 'id')<i class="bi bi-check2 ms-auto text-success"></i>@endif</a></li>
+                            <li><a class="dropdown-item d-flex align-items-center @if(app()->getLocale() == 'en') active fw-bold @endif" href="{{ route('lang.switch', 'en') }}"><span class="fi fi-gb me-2"></span> English @if(app()->getLocale() == 'en')<i class="bi bi-check2 ms-auto text-success"></i>@endif</a></li>
+                        </ul>
                     </li>
+                    
+                    {{-- Separator --}}
+                    <li class="nav-item d-none d-lg-block"><div class="nav-separator"></div></li>
 
+                    {{-- Actions (Cart, Profile, Login) for Desktop --}}
                     <li class="nav-item">
                         <div class="navbar-actions">
                             @auth
@@ -169,30 +211,20 @@
                                     @php
                                         $cartCount = \App\Models\CartItem::where('user_id', auth()->id())->count();
                                     @endphp
-                                    {{-- [INI PERBAIKANNYA] Menambahkan id="cart-count-badge" --}}
-                                    <span class="badge rounded-pill bg-danger cart-badge {{ $cartCount == 0 ? 'd-none' : '' }}" id="cart-count-badge">
-                                        {{ $cartCount }}
-                                    </span>
+                                    <span class="badge rounded-pill bg-danger cart-badge {{ $cartCount == 0 ? 'd-none' : '' }}" id="cart-count-badge">{{ $cartCount }}</span>
                                 </a>
                                 <div class="dropdown">
-                                    <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil">
-                                        <i class="bi bi-person-circle"></i>
-                                    </a>
+                                    <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil"><i class="bi bi-person-circle"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDropdown">
-                                        <li><a class="dropdown-item" href="{{ route('profile.index') }}">Lihat Profil</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('profile.index') }}">{{ __('navbar.view_profile') }}</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <form method="POST" action="{{ route('logout') }}">
-                                                @csrf
-                                                <button type="submit" class="dropdown-item">LOGOUT</button>
-                                            </form>
+                                            <form method="POST" action="{{ route('logout') }}"><button type="submit" class="dropdown-item">{{ __('navbar.logout') }}</button></form>
                                         </li>
                                     </ul>
                                 </div>
                             @else
-                                <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">
-                                    LOGIN
-                                </a>
+                                <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">{{ __('navbar.login') }}</a>
                             @endguest
                         </div>
                     </li>
@@ -201,14 +233,16 @@
         </div>
     </nav>
 
-    {{-- [BARU] Offcanvas untuk Tampilan Mobile --}}
+    {{-- ========================================================================= --}}
+    {{-- OFFCANVAS MENU (MOBILE)                                                   --}}
+    {{-- ========================================================================= --}}
     <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="mobileNavbar" aria-labelledby="mobileNavbarLabel">
         <div class="offcanvas-header">
             @auth
                 <div class="d-flex align-items-center">
                     <i class="bi bi-person-circle fs-2 me-2"></i>
                     <div>
-                        <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel">{{ Auth::user()->name }}</h5>
+                        <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel" style="line-height: 1.2;">{{ Auth::user()->name }}</h5>
                         <small class="text-muted">{{ Auth::user()->email }}</small>
                     </div>
                 </div>
@@ -218,25 +252,47 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body d-flex flex-column">
+            {{-- Main Navigation --}}
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">HOME</a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">BERITA</a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">LAYANAN</a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">SKETCH</a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">CONTACT US</a></li>
-                @auth
-                    <li class="nav-item"><a class="nav-link" href="{{ route('profile.index') }}">PROFIL SAYA</a></li>
-                @endauth
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}"><i class="bi bi-house"></i><span>{{ __('navbar.home') }}</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-newspaper"></i><span>{{ __('navbar.news') }}</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}"><i class="bi bi-grid"></i><span>{{ __('navbar.services') }}</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-pencil-square"></i><span>{{ __('navbar.sketch') }}</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-envelope"></i><span>{{ __('navbar.contact') }}</span></a></li>
             </ul>
 
+            <hr>
+
+            {{-- User Actions --}}
+            @auth
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('front.cart.view') }}">
+                        <i class="bi bi-cart"></i>
+                        <span>{{ __('navbar.cart') }}</span>
+                        <span class="badge rounded-pill bg-danger ms-auto">{{ $cartCount ?? 0 }}</span>
+                    </a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('profile.index') }}"><i class="bi bi-person"></i><span>{{ __('navbar.view_profile') }}</span></a></li>
+            </ul>
+            <hr>
+            @endauth
+
+            {{-- Language Settings --}}
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link @if(app()->getLocale() == 'id') active @endif" href="{{ route('lang.switch', 'id') }}"><span class="fi fi-id"></span><span class="ms-3">Bahasa Indonesia</span></a></li>
+                <li class="nav-item"><a class="nav-link @if(app()->getLocale() == 'en') active @endif" href="{{ route('lang.switch', 'en') }}"><span class="fi fi-gb"></span><span class="ms-3">English</span></a></li>
+            </ul>
+            
+            {{-- Footer Actions (Login/Logout) --}}
             <div class="mt-auto">
                 @auth
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="btn btn-danger logout-btn">LOGOUT</button>
+                        <button type="submit" class="btn btn-danger logout-btn"><i class="bi bi-box-arrow-right me-2"></i>{{ __('navbar.logout') }}</button>
                     </form>
                 @else
-                    <a class="btn btn-primary logout-btn" href="{{ route('login') }}">LOGIN</a>
+                    <a class="btn btn-primary logout-btn" href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-2"></i>{{ __('navbar.login') }}</a>
                 @endguest
             </div>
         </div>
@@ -259,19 +315,11 @@
                 let lastScrollTop = 0;
                 window.addEventListener('scroll', function() {
                     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    
-                    if (scrollTop > 10) {
-                        navbar.classList.add('scrolled');
-                    } else {
-                        navbar.classList.remove('scrolled');
-                    }
-
+                    if (scrollTop > 10) { navbar.classList.add('scrolled'); } 
+                    else { navbar.classList.remove('scrolled'); }
                     if (window.innerWidth >= 992) {
-                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) {
-                            navbar.classList.add('navbar-hidden');
-                        } else {
-                            navbar.classList.remove('navbar-hidden');
-                        }
+                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) { navbar.classList.add('navbar-hidden'); } 
+                        else { navbar.classList.remove('navbar-hidden'); }
                     }
                     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
                 });

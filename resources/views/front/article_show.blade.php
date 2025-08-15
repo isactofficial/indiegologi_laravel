@@ -4,19 +4,18 @@
 
 <div class="container py-5 mt-5 pt-lg-0">
     <div class="row justify-content-center">
-        <div class="col-lg-12 pt-5"> <div class="d-flex justify-content-between mb-4 mt-4">
-                <a href="{{ route('front.index') }}" class="btn px-4 py-2"
-                style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 8px;">
-                    <i class="fas fa-arrow-left me-2"></i> Kembali
+        <div class="col-lg-12 pt-5">
+            <div class="d-flex justify-content-between mb-4 mt-4">
+                <a href="{{ route('front.articles') }}" class="btn px-4 py-2" style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 8px;">
+                    <i class="fas fa-arrow-left me-2"></i> {{ __('articles.back_button') }}
                 </a>
             </div>
-
 
             <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <span class="badge rounded-pill px-3 py-2"
-                         style="background-color: {{ $article->status == 'Published' ? '#D6E4FF' : '#f5f5f5' }};
-                                color: {{ $article->status == 'Published' ? '#0C2C5A' : '#6c757d' }};">
+                          style="background-color: {{ $article->status == 'Published' ? '#D6E4FF' : '#f5f5f5' }};
+                                 color: {{ $article->status == 'Published' ? '#0C2C5A' : '#6c757d' }};">
                         {{ $article->status }}
                     </span>
                     <div class="text-muted small">
@@ -24,76 +23,76 @@
                     </div>
                 </div>
 
+                {{-- Diterjemahkan otomatis oleh Model Accessor --}}
                 <h1 class="fw-bold mb-3 article-text" style="color: #0C2C5A;">{{ $article->title }}</h1>
 
                 <div class="d-flex align-items-center mb-4">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle me-3"
-                         style="width: 40px; height: 40px; background-color: #D6E4FF;">
+                    <div class="d-flex justify-content-center align-items-center rounded-circle me-3" style="width: 40px; height: 40px; background-color: #D6E4FF;">
                         <i class="fas fa-user" style="color: #0C2C5A;"></i>
                     </div>
                     <div>
                         <p class="mb-0 fw-medium" style="color: #0C2C5A;">{{ $article->author }}</p>
-                        <p class="text-muted small mb-0">Author</p>
+                        <p class="text-muted small mb-0">{{ __('articles.author_label') }}</p>
                     </div>
                 </div>
 
                 @if($article->thumbnail)
-                    <div class="text-center my-4">
-                        <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail"
-                             class="img-fluid mx-auto d-block"
-                             style="max-width: 100%; height: auto; border-radius: 16px;">
-                    </div>
+                <div class="text-center my-4">
+                    <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail" class="img-fluid mx-auto d-block" style="max-width: 100%; height: auto; border-radius: 16px;">
+                </div>
                 @endif
             </div>
-
 
             <div class="mb-4">
                 <div class="article-description mb-4">
                     <div class="p-3 rounded-3" style="background-color: #F8FAFD;">
+                        {{-- Diterjemahkan otomatis oleh Model Accessor --}}
                         <p class="lead mb-0" style="color: #5F738C;">{{ $article->description }}</p>
                     </div>
                 </div>
 
                 @if($article->subheadings->count())
-                    <div class="article-content">
-                        @foreach($article->subheadings as $subheading)
-                            <div class="subheading-section mb-4">
-                                <h3 class="fw-bold mb-3 article-text" style="color: #0C2C5A; padding-bottom: 10px; border-bottom: 2px solid #e3e9f4;">
-                                    {{ $subheading->title }}
-                                </h3>
-                                @foreach($subheading->paragraphs as $paragraph)
-                                    <div class="paragraph mb-4">
-                                        <p style="line-height: 1.8; color: #5F738C;">{{ $paragraph->content }}</p>
-                                    </div>
-                                @endforeach
-                            </div>
+                <div class="article-content">
+                    @foreach($article->subheadings as $subheading)
+                    <div class="subheading-section mb-4">
+                        <h3 class="fw-bold mb-3 article-text" style="color: #0C2C5A; padding-bottom: 10px; border-bottom: 2px solid #e3e9f4;">
+                            {{-- Diterjemahkan otomatis oleh Model Accessor --}}
+                            {{ $subheading->title }}
+                        </h3>
+                        @foreach($subheading->paragraphs as $paragraph)
+                        <div class="paragraph mb-4">
+                            {{-- Diterjemahkan otomatis oleh Model Accessor --}}
+                            <p style="line-height: 1.8; color: #5F738C;">{{ $paragraph->content }}</p>
+                        </div>
                         @endforeach
                     </div>
+                    @endforeach
+                </div>
                 @endif
             </div>
 
             <div class="card border-0 rounded-4 shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <h3 class="fw-bold fs-5 mb-4 article-text" style="color: #0C2C5A;">Komentar ({{ $article->comments->count() }})</h3>
+                    <h3 class="fw-bold fs-5 mb-4 article-text" style="color: #0C2C5A;">{{ __('articles.comments_title') }} ({{ $article->comments->count() }})</h3>
 
                     @auth
                         <form action="{{ route('comments.store', $article->id) }}" method="POST" class="mb-4">
                             @csrf
                             <div class="form-group">
                                 <textarea name="content" rows="3" class="form-control @error('content') is-invalid @enderror"
-                                          placeholder="Tulis komentar Anda..." style="border-color: #0C2C5A;"></textarea>
+                                          placeholder="{{ __('articles.write_your_comment') }}" style="border-color: #0C2C5A;"></textarea>
                                 @error('content')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <button type="submit" class="btn btn-primary mt-2" style="background-color: #0C2C5A; border-color: #0C2C5A;">
-                                <i class="fas fa-paper-plane me-2"></i>Kirim Komentar
+                                <i class="fas fa-paper-plane me-2"></i>{{ __('articles.submit_comment') }}
                             </button>
                         </form>
                     @else
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2 article-text" style="color: #0C2C5A;"></i>
-                            Silakan <a href="{{ route('login') }}" style="color: #0C2C5A;">login</a> untuk memberikan komentar.
+                            {!! __('articles.login_to_comment', ['loginLink' => '<a href="'.route('login').'" style="color: #0C2C5A; font-weight: bold;">'.__('articles.login_text').'</a>']) !!}
                         </div>
                     @endauth
 
@@ -101,8 +100,7 @@
                         @forelse($article->comments()->with('user')->latest()->get() as $comment)
                             <div class="comment-item border-bottom py-3">
                                 <div class="d-flex align-items-start">
-                                    <div class="d-flex justify-content-center align-items-center rounded-circle me-3"
-                                         style="width: 40px; height: 40px; background-color: #D6E4FF;">
+                                    <div class="d-flex justify-content-center align-items-center rounded-circle me-3" style="width: 40px; height: 40px; background-color: #D6E4FF;">
                                         <i class="fas fa-user" style="color: #0C2C5A;"></i>
                                     </div>
                                     <div class="flex-grow-1">
@@ -115,19 +113,20 @@
                                         @auth
                                             @if(auth()->id() === $comment->user_id)
                                                 <div class="comment-actions">
-                                                    <button class="btn btn-sm btn-link"
+                                                    <button class="btn btn-sm btn-link edit-comment"
                                                             data-comment-id="{{ $comment->id }}"
                                                             data-content="{{ $comment->content }}"
+                                                            data-save-text="{{ __('articles.save_button') }}"
+                                                            data-cancel-text="{{ __('articles.cancel_button') }}"
                                                             style="color: #0C2C5A;">
-                                                        <i class="fas fa-edit"></i> Edit
+                                                        <i class="fas fa-edit"></i> {{ __('articles.edit_button') }}
                                                     </button>
-                                                    <form action="{{ route('comments.destroy', $comment->id) }}"
-                                                          method="POST" class="d-inline">
+                                                    <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-link text-danger"
-                                                                onclick="return confirm('Apakah Anda yakin ingin menghapus komentar ini?')">
-                                                            <i class="fas fa-trash"></i> Hapus
+                                                                onclick="return confirm('{{ __('articles.delete_confirm') }}')">
+                                                            <i class="fas fa-trash"></i> {{ __('articles.delete_button') }}
                                                         </button>
                                                     </form>
                                                 </div>
@@ -138,60 +137,29 @@
                             </div>
                         @empty
                             <div class="text-center py-4">
-                                <p class="text-muted mb-0 article-text">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
+                                <p class="text-muted mb-0 article-text">{{ __('articles.no_comments') }} {{ __('articles.be_first_commentator') }}</p>
                             </div>
                         @endforelse
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
+{{-- Styles tidak perlu diubah --}}
 <style>
-    .article-content h3 {
-        font-size: 1.5rem;
-    }
-
-    .article-content p {
-        font-size: 1.05rem;
-    }
-
-    .lead {
-        font-size: 1.15rem;
-        font-weight: 400;
-    }
-    .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(12, 44, 90, 0.3);
-}
-   .comment-item:last-child {
-        border-bottom: none !important;
-    }
-
-    .comment-actions {
-        font-size: 0.875rem;
-    }
-
-    .comment-actions .btn-link {
-        padding: 0.25rem 0.5rem;
-        text-decoration: none;
-    }
-
-    .comment-actions .btn-link:hover {
-        text-decoration: underline;
-    }
-
-
+    .article-content h3 { font-size: 1.5rem; }
+    .article-content p { font-size: 1.05rem; }
+    .lead { font-size: 1.15rem; font-weight: 400; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(12, 44, 90, 0.3); }
+    .comment-item:last-child { border-bottom: none !important; }
+    .comment-actions { font-size: 0.875rem; }
+    .comment-actions .btn-link { padding: 0.25rem 0.5rem; text-decoration: none; }
+    .comment-actions .btn-link:hover { text-decoration: underline; }
     @media (max-width: 768px) {
-        .article-content h3 {
-            font-size: 1.3rem;
-        }
-
-        img.img-fluid {
-            max-width: 100% !important;
-        }
+        .article-content h3 { font-size: 1.3rem; }
+        img.img-fluid { max-width: 100% !important; }
     }
 </style>
 
@@ -202,8 +170,11 @@
         button.addEventListener('click', function() {
             const commentId = this.dataset.commentId;
             const content = this.dataset.content;
+            
+            // Mengambil teks terjemahan dari data-* attribute
+            const saveText = this.dataset.saveText;
+            const cancelText = this.dataset.cancelText;
 
-            // Create edit form
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = `/comments/${commentId}`;
@@ -214,21 +185,21 @@
                     <textarea name="content" rows="3" class="form-control">${content}</textarea>
                 </div>
                 <div class="mt-2">
-                    <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
-                    <button type="button" class="btn btn-secondary btn-sm cancel-edit">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm">${saveText}</button>
+                    <button type="button" class="btn btn-secondary btn-sm cancel-edit">${cancelText}</button>
                 </div>
             `;
 
-            // Replace comment content with form
-            const commentContent = this.closest('.comment-item').querySelector('p');
-            commentContent.replaceWith(form);
+            const commentContentContainer = this.closest('.comment-item').querySelector('p');
+            const originalContent = commentContentContainer.cloneNode(true);
+            commentContentContainer.replaceWith(form);
 
-            // Handle cancel
             form.querySelector('.cancel-edit').addEventListener('click', () => {
-                form.replaceWith(commentContent);
+                form.replaceWith(originalContent);
             });
         });
     });
 </script>
 @endpush
+
 @endsection

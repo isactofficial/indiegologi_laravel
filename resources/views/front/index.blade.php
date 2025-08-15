@@ -15,9 +15,9 @@
                 <div class="carousel-caption">
                     <div class="container">
                         {{-- Menghapus <br> agar lebih responsif --}}
-                        <h1 class="hero-title">Temukan Diri Sejati Anda dengan Hypno Healing</h1>
-                        <p class="hero-subtitle">Jalani proses penyembuhan diri yang penuh perhatian dan nyaman bersama kami, untuk menemukan kedamaian batin yang mendalam.</p>
-                        <a href="#" class="btn btn-light hero-button">Mulai Perjalanan Anda</a>
+                        <h1 class="hero-title">{{__('home.hero_title_1')}}</h1>
+                        <p class="hero-subtitle">{{ __('home.hero_subtitle_1') }}</p>
+                        <a href="#" class="btn btn-light hero-button">{{ __('buttons.start_journey') }}</a>
                     </div>
                 </div>
             </div>
@@ -28,9 +28,9 @@
                 <div class="overlay"></div>
                 <div class="carousel-caption">
                     <div class="container">
-                        <h1 class="hero-title">Jurnal Reflektif: Kisah Anda, Karya Anda</h1>
-                        <p class="hero-subtitle">Ekspresikan perjalanan emosional Anda dengan elegan dan personal, mendokumentasikan setiap langkah menuju cinta diri.</p>
-                        <a href="#" class="btn btn-light hero-button">Pelajari Tentang Kami</a>
+                        <h1 class="hero-title">{{ __('home.hero_title_2') }}</h1>
+                        <p class="hero-subtitle">{{ __('home.hero_subtitle_2') }}</p>
+                        <a href="#" class="btn btn-light hero-button">{{ __('buttons.learn_about_us') }}i</a>
                     </div>
                 </div>
             </div>
@@ -41,9 +41,9 @@
                 <div class="overlay"></div>
                 <div class="carousel-caption">
                     <div class="container">
-                        <h1 class="hero-title">Seni Menghargai Setiap Proses Hidup</h1>
-                        <p class="hero-subtitle">Panduan penuh kasih untuk membantu Anda menemukan keindahan dan kekuatan di setiap tahap kehidupan.</p>
-                        <a href="#" class="btn btn-light hero-button">Temukan Artikel Kami</a>
+                        <h1 class="hero-title">{{ __('home.hero_title_3') }}</h1>
+                        <p class="hero-subtitle">{{ __('home.hero_subtitle_3') }}</p>
+                        <a href="#" class="btn btn-light hero-button">{{ __('buttons.find_our_articles') }}i</a>
                     </div>
                 </div>
             </div>
@@ -71,10 +71,9 @@
 
     {{-- 2. Artikel Populer (Slider Satu Artikel Menonjol) --}}
     <section class="container py-5 my-5" style="margin-top: 80px;"><br><br><br>
-        <h2 class="text-center fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Artikel Pilihan Kami untuk Anda
+        <h2 class="text-center fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">{{ __('home.featured_article_title') }}
         </h2>
-        <p class="text-center mb-5" style="color:#6c757d;">Jelajahi kisah-kisah penuh inspirasi dan temukan wawasan yang
-            paling menyentuh hati komunitas kami.</p>
+        <p class="text-center mb-5" style="color:#6c757d;">{{ __('home.featured_article_subtitle') }}</p>
         <div class="swiper featured-popular-article-swiper">
             <div class="swiper-wrapper">
                 @forelse ($popular_articles as $article)
@@ -96,7 +95,7 @@
                                 {{ optional($article->created_at)->format('d F Y') }}</p>
                             <a href="{{ route('front.articles.show', $article->slug) }}"
                                 class="btn btn-link text-decoration-none fw-semibold p-0 featured-popular-link"
-                                style="color: #0C2C5A;">Baca Lebih Lanjut <i class="bi bi-arrow-right"></i></a>
+                                style="color: #0C2C5A;">{{ __('buttons.read_more') }} <i class="bi bi-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
@@ -132,9 +131,9 @@
 {{-- 3. Artikel Terbaru (Slider) --}}
 <section class="container py-5 my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0" style="color: #0C2C5A;">Wawasan Terbaru untuk Anda</h2>
+        <h2 class="fw-bold mb-0" style="color: #0C2C5A;">{{ __('home.latest_insight_title') }}</h2>
         <a href="{{ route('front.articles') }}" class="btn btn-link text-decoration-none fw-semibold p-0"
-            style="color: #0C2C5A;">Lihat Semua Artikel <i class="bi bi-arrow-right"></i></a>
+            style="color: #0C2C5A;">{{ __('buttons.see_all_articles') }}<i class="bi bi-arrow-right"></i></a>
     </div>
     <div class="swiper latest-articles-swiper">
         <div class="swiper-wrapper">
@@ -152,8 +151,7 @@
                         <p class="card-text mb-3" style="color:#4a5a6a;">
                             {{ Str::words(strip_tags($article->description), 15, '...') }}</p>
                         <a href="{{ route('front.articles.show', $article->slug) }}"
-                            class="mt-auto text-decoration-none fw-semibold" style="color: #0C2C5A;">Baca Lebih
-                            Lanjut</a>
+                            class="mt-auto text-decoration-none fw-semibold" style="color: #0C2C5A;">{{ __('buttons.read_more') }}</a>
                     </div>
                 </div>
             </div>
@@ -184,9 +182,9 @@
 {{-- 4. Artikel Populer (Slider 3 Kolom) --}}
 <section class="container py-5 my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0" style="color: #0C2C5A;">Artikel Pilihan untuk Anda</h2>
+        <h2 class="fw-bold mb-0" style="color: #0C2C5A;">{{ __('home.popular_article_title') }}</h2>
         <a href="{{ route('front.articles') }}" class="btn btn-link text-decoration-none fw-semibold p-0"
-            style="color: #0C2C5A;">Jelajahi Semua <i class="bi bi-arrow-right"></i></a>
+            style="color: #0C2C5A;">{{ __('buttons.explore_all') }}<i class="bi bi-arrow-right"></i></a>
     </div>
     <div class="swiper latest-articles-swiper">
         <div class="swiper-wrapper">
@@ -203,8 +201,7 @@
                         <p class="card-text mb-3" style="color:#4a5a6a;">
                             {{ Str::words(strip_tags($article->description), 15, '...') }}</p>
                         <a href="{{ route('front.articles.show', $article->slug) }}"
-                            class="mt-auto text-decoration-none fw-semibold" style="color: #0C2C5A;">Baca Lebih
-                            Lanjut</a>
+                            class="mt-auto text-decoration-none fw-semibold" style="color: #0C2C5A;">{{ __('buttons.read_more') }}</a>
                     </div>
                 </div>
             </div>
@@ -231,15 +228,88 @@
         <div class="swiper-button-prev latest-articles-prev"></div>
     </div>
     <div class="text-center mt-4">
-        <a href="{{ route('front.articles') }}" class="btn btn-primary px-4 py-2" style="background-color: #0C2C5A; border-color: #0C2C5A;">Lihat Semua Artikel</a>
+        <a href="{{ route('front.articles') }}" class="btn btn-primary px-4 py-2" style="background-color: #0C2C5A; border-color: #0C2C5A;">{{ __('buttons.see_all_articles') }}</a>
     </div>
 </section>
 
 {{-- 5. Testimoni Section --}}
+<section class="container py-5 my-5">
+    <div class="text-center">
+        <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">{{ __('home.section_title') }}</h2>
+        {{-- Catatan: Kita menggunakan {!! !!} agar tag <strong> bisa dirender sebagai HTML --}}
+        <p style="font-size:1.15rem; color:#6c757d;">{!! __('home.section_subtitle') !!}</p>
+    </div>
+    <div class="swiper testimonials-swiper mt-5">
+        <div class="swiper-wrapper">
+            {{-- Ini adalah contoh untuk data statis, nantinya bisa di-loop dari database --}}
+            @for ($i = 0; $i < 3; $i++) 
+            <div class="swiper-slide">
+                <div class="testimonial-square-card position-relative overflow-hidden shadow-sm mx-auto">
+                    <img src="{{ asset('assets/testimoni-bg.jpg') }}" alt="Testimoni" class="testimonial-bg-img">
+                    <div class="testimonial-overlay"></div>
+
+                    <div class="testimonial-quote-icon testimonial-quote-top-left" style="color: #212529;">&#10077;</div>
+
+                    <div class="testimonial-content text-center text-white w-100 px-4 position-absolute bottom-0 start-50 translate-middle-x pb-4">
+                        <div class="testimonial-name fw-bold" style="font-size: 1.8rem;">{{ __('home.person1_name') }}</div>
+                        <div class="testimonial-job mb-2" style="font-size: 1.1rem; font-style: italic; opacity: 0.8;">
+                            {{ __('home.person1_job') }}
+                        </div>
+                        <div class="testimonial-text fw-semibold fst-italic" style="font-size: 0.95rem; line-height: 1.4;">
+                            "{{ __('home.person1_quote') }}"
+                        </div>
+                    </div>
+
+                    <div class="testimonial-quote-icon testimonial-quote-bottom-right" style="color: #212529;">&#10078;</div>
+                </div>
+            </div>
+            @endfor
+        </div>
+        <div class="swiper-button-next testimonials-next"></div>
+        <div class="swiper-button-prev testimonials-prev"></div>
+    </div>
+</section>
+
+{{-- 6. Sketch Telling (Slider) --}}
+<section class="container py-5 my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="w-100 text-center">
+            <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">{{ __('home.sketch_title') }}</h2>
+            <p class="text-muted mb-0 text-center">{{ __('home.sketch_subtitle') }}</p>
+        </div>
+    </div>
+    <div class="swiper sketch-telling-swiper">
+        <div class="swiper-wrapper">
+            @forelse ($latest_sketches as $sketch)
+            <div class="swiper-slide pb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-img-top"
+                        style="height: 200px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="fw-bold">{{ Str::limit($sketch->title, 50) }}</h5>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="swiper-slide">
+                <p class="text-center text-muted">{{ __('home.sketch_none_available') }}</p>
+            </div>
+            @endforelse
+        </div>
+        <div class="swiper-button-next sketch-next"></div>
+        <div class="swiper-button-prev sketch-prev"></div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ route('front.sketch') }}" class="btn btn-primary  px-4 py-2 text-center mt-4" style=" background-color: #0C2C5A; border-color: #0C2C5A;">{{ __('home.sketch_see_all_button') }}</a>
+    </div>
+    </div>
+</section>
+
+<!-- Layanan -->
 <section class="py-5 my-5 bg-light">
     <div class="container text-center">
-        <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Layanan Kami</h2>
-        <p class="text-muted mb-0 text-center">Pilihan sesi konseling yang fleksibel dan disesuaikan dengan kebutuhan Anda</p>
+        <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">{{ __('home.our_services_title') }}</h2>
+        <p class="text-muted mb-0 text-center">{{__('home.our_services_subtitle')}}</p>
     </div>
     <div class="container mt-5">
         <div class="row g-4 justify-content-center">
@@ -253,19 +323,19 @@
                         <h5 class="fw-bold mb-3">{{ $service->title }}</h5>
                         <p class="text-muted small">{{ Str::limit($service->short_description, 100) }}</p>
                         <p class="fw-bold fs-4 my-3" style="color: #0C2C5A;">Rp {{ number_format($service->price, 0, ',', '.') }}</p>
-                        <a href="{{ route('front.layanan') }}" class="btn btn-outline-primary mt-auto stretched-link" style="color:#f8f9fa; background-color: #0C2C5A; border-color: #0C2C5A;">Pilih Paket Ini</a>
+                        <a href="{{ route('front.layanan') }}" class="btn btn-outline-primary mt-auto stretched-link" style="color:#f8f9fa; background-color: #0C2C5A; border-color: #0C2C5A;">{{ __('home.select_package_button') }}</a>
                     </div>
                 </div>
             </div>
             @empty
             <div class="col-12">
-                <p class="text-muted text-center">Belum ada layanan tersedia.</p>
+                <p class="text-muted text-center">{{ __('home.no_services_available') }}</p>
             </div>
             @endforelse
         </div>
         <div class="text-center mt-5">
             {{-- Tombol ini tetap solid/penuh --}}
-            <a href="{{ route('front.layanan') }}" class="btn btn-primary px-4 py-2" style=" background-color: #0C2C5A; border-color: #0C2C5A;">Lihat Semua Layanan</a>
+            <a href="{{ route('front.layanan') }}" class="btn btn-primary px-4 py-2" style=" background-color: #0C2C5A; border-color: #0C2C5A;">{{ __('home.see_all_services_button') }}</a>
         </div>
     </div>
 </section>
