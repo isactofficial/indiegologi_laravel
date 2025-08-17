@@ -140,10 +140,99 @@
         font-weight: 600;
     }
 
+    /* Kustomisasi Google Translate */
+    #google_translate_element {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    #google_translate_element .goog-te-gadget {
+        padding: 0 !important;
+        line-height: inherit !important;
+        height: 100%;
+    }
+    
+    .goog-te-combo {
+        border: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        font-family: 'Poppins', sans-serif !important;
+        color: #343a40 !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 8px !important;
+        font-size: 1rem !important;
+        margin: 0 !important;
+        height: auto !important;
+    }
+
+    .goog-te-gadget-simple {
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        line-height: inherit !important;
+    }
+
+    .goog-te-gadget-simple .goog-te-menu-value {
+        text-decoration: none !important;
+        color: #343a40 !important;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: color 0.3s ease;
+        padding: 0 !important;
+        line-height: inherit !important;
+    }
+
+    .goog-te-gadget-simple .goog-te-menu-value:hover {
+        color: var(--indiegologi-primary) !important;
+    }
+
+    .goog-te-gadget-simple .goog-te-menu-value span:last-child {
+        display: none; /* Menyembunyikan ikon panah bawaan */
+    }
+    
+    .goog-te-gadget-simple .goog-te-menu-value::after {
+        content: '\F282'; /* ikon chevron-down dari Bootstrap Icons */
+        font-family: 'bootstrap-icons';
+        margin-left: 0.25rem;
+        color: #6c757d;
+        vertical-align: middle;
+        font-size: 0.8rem;
+    }
+
+    .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight {
+        display: none !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Sembunyikan di mobile dan tampilkan di desktop */
+    #google_translate_element.d-none.d-lg-block {
+        margin-left: 0.75rem;
+    }
+
+    /* Sembunyikan di desktop dan tampilkan di mobile */
+    .mobile-language-link {
+        display: none;
+    }
+    
     @media (max-width: 991.98px) {
         .navbar .container-fluid {
             padding-left: 1rem;
             padding-right: 1rem;
+        }
+        
+        #google_translate_element {
+            display: none;
+        }
+
+        .mobile-language-link {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 0;
+            font-size: 1.1rem;
+            gap: 1rem;
         }
     }
     </style>
@@ -184,12 +273,7 @@
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">{{ __('navbar.services') }}</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">{{ __('navbar.sketch') }}</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">{{ __('navbar.contact') }}</a></li>
-
-                    {{-- Google Translate Widget --}}
-                    <li class="nav-item d-flex align-items-center">
-                        <div id="google_translate_element_desktop"></div>
-                    </li>
-
+                    
                     {{-- Separator --}}
                     <li class="nav-item d-none d-lg-block"><div class="nav-separator"></div></li>
 
@@ -210,13 +294,20 @@
                                         <li><a class="dropdown-item" href="{{ route('profile.index') }}">{{ __('navbar.view_profile') }}</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <form method="POST" action="{{ route('logout') }}"><button type="submit" class="dropdown-item">{{ __('navbar.logout') }}</button></form>
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item">{{ __('navbar.logout') }}</button>
+                                            </form>
                                         </li>
                                     </ul>
                                 </div>
+                                
                             @else
                                 <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">{{ __('navbar.login') }}</a>
                             @endguest
+                            
+                            {{-- Widget Google Translate bawaan untuk Desktop --}}
+                            <div id="google_translate_element_desktop" class="d-none d-lg-block"></div>
                         </div>
                     </li>
                 </ul>
@@ -251,7 +342,15 @@
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-pencil-square"></i><span>{{ __('navbar.sketch') }}</span></a></li>
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-envelope"></i><span>{{ __('navbar.contact') }}</span></a></li>
             </ul>
+            <hr>
 
+            {{-- Widget Google Translate Bawaan untuk Mobile --}}
+            <li class="nav-item mobile-language-link d-lg-none">
+                <a class="nav-link disabled" href="#">
+                    <i class="bi bi-globe2"></i><span>{{ __('navbar.language') }}</span>
+                </a>
+                <div id="google_translate_element_mobile"></div>
+            </li>
             <hr>
 
             {{-- User Actions --}}
@@ -268,14 +367,7 @@
             </ul>
             <hr>
             @endauth
-
-            {{-- Language Settings --}}
-            <ul class="navbar-nav">
-                <li class="nav-item d-flex align-items-center">
-                    <div id="google_translate_element_mobile"></div>
-                </li>
-            </ul>
-
+            
             {{-- Footer Actions (Login/Logout) --}}
             <div class="mt-auto">
                 @auth
@@ -307,14 +399,13 @@
                 {pageLanguage: 'id', includedLanguages: 'id,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
                 'google_translate_element_desktop'
             );
-            // Untuk versi mobile
             new google.translate.TranslateElement(
                 {pageLanguage: 'id', includedLanguages: 'id,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
                 'google_translate_element_mobile'
             );
         }
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     {{-- Existing JavaScript --}}
     <script>
