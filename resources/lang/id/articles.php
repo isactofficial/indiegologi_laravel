@@ -9,6 +9,7 @@ return [
     'sort_author' => 'Berdasarkan Penulis',
     'no_articles_found' => 'Tidak ada artikel yang ditemukan.',
 
+
     // Halaman Detail Artikel (Show)
     'back_button' => 'Kembali',
     'author_label' => 'Penulis',
