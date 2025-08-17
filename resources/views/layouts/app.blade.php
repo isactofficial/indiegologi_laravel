@@ -40,7 +40,7 @@
         border-bottom: 1px solid transparent;
         transition: transform 0.3s ease-in-out, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
-    
+
     .navbar.scrolled {
         background-color: rgba(255, 255, 255, 0.9);
         border-bottom: 1px solid rgba(0, 0, 0, 0.07);
@@ -76,7 +76,7 @@
         color: var(--indiegologi-primary) !important;
         font-weight: 700;
     }
-    
+
     .cart-badge {
         position: absolute;
         top: -5px;
@@ -85,7 +85,7 @@
         padding: 0.3em 0.5em;
         border: 2px solid white;
     }
-    
+
     .navbar-actions {
         display: flex;
         align-items: center;
@@ -158,10 +158,10 @@
             <a class="navbar-brand" href="{{ route('front.index') }}">
                 <h1 class="text-primary m-0 p-0">INDIEGOLOGI</h1>
             </a>
-            
+
             <div class="d-flex align-items-center d-lg-none">
                 @auth
-                <a class="nav-link position-relative fs-4 me-2" href="{{ route('front.cart.view') }}" title="Keranjang">
+                <a class="nav-link position-relative fs-4 me-2" href="{{ route('front.cart.view') }}" title="{{ __('navbar.cart') }}">
                     <i class="bi bi-cart"></i>
                     @php
                         $cartCountMobile = \App\Models\CartItem::where('user_id', auth()->id())->count();
@@ -184,21 +184,12 @@
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">{{ __('navbar.services') }}</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">{{ __('navbar.sketch') }}</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">{{ __('navbar.contact') }}</a></li>
-                    
-                    {{-- Language Dropdown --}}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fs-5 d-flex align-items-center gap-1" href="#" id="navbarLanguageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Language">
-                            <i class="bi bi-globe"></i>
-                            <span class="d-none d-md-inline text-uppercase" style="font-size: 0.95em;">
-                                {{ strtoupper(app()->getLocale()) }}
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarLanguageDropdown">
-                            <li><a class="dropdown-item d-flex align-items-center @if(app()->getLocale() == 'id') active fw-bold @endif" href="{{ route('lang.switch', 'id') }}"><span class="fi fi-id me-2"></span> Bahasa Indonesia @if(app()->getLocale() == 'id')<i class="bi bi-check2 ms-auto text-success"></i>@endif</a></li>
-                            <li><a class="dropdown-item d-flex align-items-center @if(app()->getLocale() == 'en') active fw-bold @endif" href="{{ route('lang.switch', 'en') }}"><span class="fi fi-gb me-2"></span> English @if(app()->getLocale() == 'en')<i class="bi bi-check2 ms-auto text-success"></i>@endif</a></li>
-                        </ul>
+
+                    {{-- Google Translate Widget --}}
+                    <li class="nav-item d-flex align-items-center">
+                        <div id="google_translate_element_desktop"></div>
                     </li>
-                    
+
                     {{-- Separator --}}
                     <li class="nav-item d-none d-lg-block"><div class="nav-separator"></div></li>
 
@@ -206,7 +197,7 @@
                     <li class="nav-item">
                         <div class="navbar-actions">
                             @auth
-                                <a class="nav-link position-relative fs-5" href="{{ route('front.cart.view') }}" title="Keranjang">
+                                <a class="nav-link position-relative fs-5" href="{{ route('front.cart.view') }}" title="{{ __('navbar.cart') }}">
                                     <i class="bi bi-cart"></i>
                                     @php
                                         $cartCount = \App\Models\CartItem::where('user_id', auth()->id())->count();
@@ -214,7 +205,7 @@
                                     <span class="badge rounded-pill bg-danger cart-badge {{ $cartCount == 0 ? 'd-none' : '' }}" id="cart-count-badge">{{ $cartCount }}</span>
                                 </a>
                                 <div class="dropdown">
-                                    <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil"><i class="bi bi-person-circle"></i></a>
+                                    <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ __('navbar.view_profile') }}"><i class="bi bi-person-circle"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDropdown">
                                         <li><a class="dropdown-item" href="{{ route('profile.index') }}">{{ __('navbar.view_profile') }}</a></li>
                                         <li><hr class="dropdown-divider"></li>
@@ -247,7 +238,7 @@
                     </div>
                 </div>
             @else
-                <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel">Menu</h5>
+                <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel">{{ __('navbar.menu') }}</h5>
             @endauth
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
@@ -280,10 +271,11 @@
 
             {{-- Language Settings --}}
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link @if(app()->getLocale() == 'id') active @endif" href="{{ route('lang.switch', 'id') }}"><span class="fi fi-id"></span><span class="ms-3">Bahasa Indonesia</span></a></li>
-                <li class="nav-item"><a class="nav-link @if(app()->getLocale() == 'en') active @endif" href="{{ route('lang.switch', 'en') }}"><span class="fi fi-gb"></span><span class="ms-3">English</span></a></li>
+                <li class="nav-item d-flex align-items-center">
+                    <div id="google_translate_element_mobile"></div>
+                </li>
             </ul>
-            
+
             {{-- Footer Actions (Login/Logout) --}}
             <div class="mt-auto">
                 @auth
@@ -308,6 +300,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
+    {{-- Google Translate Script --}}
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {pageLanguage: 'id', includedLanguages: 'id,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+                'google_translate_element_desktop'
+            );
+            // Untuk versi mobile
+            new google.translate.TranslateElement(
+                {pageLanguage: 'id', includedLanguages: 'id,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+                'google_translate_element_mobile'
+            );
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    {{-- Existing JavaScript --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const navbar = document.querySelector('.navbar.fixed-top');
@@ -315,10 +324,10 @@
                 let lastScrollTop = 0;
                 window.addEventListener('scroll', function() {
                     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    if (scrollTop > 10) { navbar.classList.add('scrolled'); } 
+                    if (scrollTop > 10) { navbar.classList.add('scrolled'); }
                     else { navbar.classList.remove('scrolled'); }
                     if (window.innerWidth >= 992) {
-                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) { navbar.classList.add('navbar-hidden'); } 
+                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) { navbar.classList.add('navbar-hidden'); }
                         else { navbar.classList.remove('navbar-hidden'); }
                     }
                     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
