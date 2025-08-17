@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Keranjang Belanja')
+@section('title', __('cart.page_title'))
 
 @push('styles')
 {{-- [BRAND] Import font yang elegan dan modern dari Google Fonts --}}
@@ -116,6 +116,22 @@
     .price-details-list .list-group-item {
         padding: 0.5rem 0; border: 0; background-color: transparent;
     }
+
+    /* [RESPONSIVE] Tambahan CSS untuk Tampilan Mobile */
+    @media (max-width: 767.98px) {
+        .cart-header .section-title {
+            font-size: 2rem; /* Perkecil judul utama di mobile */
+        }
+        .summary-card h4 {
+            font-size: 1.25rem; /* Perkecil judul "Ringkasan Pesanan" */
+        }
+        .summary-card .fs-5 {
+            font-size: 1.1rem !important; /* Perkecil "Grand Total Akhir" */
+        }
+        .summary-card .fs-4 {
+            font-size: 1.2rem !important; /* Perkecil "Total Bayar Sekarang" */
+        }
+    }
 </style>
 @endpush
 
@@ -126,38 +142,36 @@
         @if ($cartItems->isEmpty())
             <div class="text-center py-5">
                 <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
-                <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
-                <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
-                <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
+                <h2 class="fw-bold mt-4" style="color: var(--brand-text);">{{ __('cart.empty_cart_title') }}</h2>
+                <p class="fs-5 text-muted">{{ __('cart.empty_cart_subtitle') }}</p>
+                <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">{{ __('cart.empty_cart_button') }}</a>
             </div>
         @else
             <div class="text-center mb-5 cart-header">
-                <h1 class="section-title">Keranjang Belanja Anda</h1>
-                <p class="lead text-muted">Satu langkah lagi untuk menjadi versi terbaik Anda.</p>
+                <h1 class="section-title">{{ __('cart.page_title') }}</h1>
+                <p class="lead text-muted">{{ __('cart.page_subtitle') }}</p>
             </div>
 
             <form action="{{ route('checkout.process') }}" method="POST" id="cart-form">
                 @csrf
                 <div class="row g-4 g-lg-5">
-                    {{-- Daftar Item Keranjang --}}
-                    <div class="col-lg-8">
+                    <div class="col-lg-7">
                         <div class="card mb-3 shadow-sm border-0">
                             <div class="card-body p-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="select-all" checked>
                                     <label class="form-check-label fw-bold" for="select-all" style="color: var(--brand-text);">
-                                        Pilih Semua Layanan
+                                        {{ __('cart.select_all') }}
                                     </label>
                                 </div>
                             </div>
                         </div>
 
                         @foreach ($cartItems as $item)
-                            <div class="card mb-4 cart-item-card">
+                            <div class="card mb-3 cart-item-card"> 
                                 <div class="card-body p-4">
                                     <div class="row">
-                                        {{-- Kolom Detail Layanan --}}
-                                        <div class="col-md-7 mb-4 mb-md-0">
+                                        <div class="col-12 col-md-7 mb-4 mb-md-0">
                                             <div class="d-flex align-items-start">
                                                 <div class="form-check me-3 pt-1">
                                                     <input class="form-check-input item-checkbox" type="checkbox" name="selected_items[]" value="{{ $item->id }}" id="item-{{ $item->id }}" checked>
@@ -167,7 +181,10 @@
                                                     <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">{{ $item->service->title }}</h5>
                                                     <ul class="item-details-list">
                                                         <li><i class="bi bi-calendar-check"></i>{{ \Carbon\Carbon::parse($item->booked_date)->translatedFormat('d M Y') }}, {{ $item->booked_time }}</li>
-                                                        <li><i class="bi bi-camera-video"></i>{{ $item->session_type }} & {{ $item->contact_preference == 'chat_only' ? 'Chat' : 'Chat & Call' }}</li>
+                                                        <li>
+                                                            <i class="bi bi-camera-video"></i>
+                                                            {{ $item->session_type == 'Online' ? __('cart.session_online') : __('cart.session_offline') }} & {{ $item->contact_preference == 'chat_only' ? __('cart.contact_chat_only') : __('cart.contact_chat_and_call') }}
+                                                        </li>
                                                         @if($item->offline_address)
                                                             <li><i class="bi bi-geo-alt"></i>{{ $item->offline_address }}</li>
                                                         @endif
@@ -176,44 +193,38 @@
                                             </div>
                                         </div>
 
-                                        {{-- Kolom Rincian Biaya & Aksi --}}
-                                        <div class="col-md-5 border-md-start ps-md-4">
+                                        <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
                                             <ul class="list-group list-group-flush price-details-list small">
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Harga Dasar:</span>
+                                                    <span class="text-muted">{{ __('cart.base_price') }}</span>
                                                     <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
                                                 </li>
                                                 @if ($item->hours > 0)
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
+                                                    <span class="text-muted">{{ __('cart.hourly_price', ['hours' => $item->hours]) }}</span>
                                                     <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
                                                 </li>
                                                 @endif
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Subtotal:</span>
+                                                    <span class="text-muted">{{ __('cart.subtotal') }}</span>
                                                     <span class="text-muted">Rp {{ number_format($item->item_subtotal, 0, ',', '.') }}</span>
                                                 </li>
-
                                                 @php $itemDiscount = $item->item_subtotal - $item->final_item_price; @endphp
                                                 @if ($itemDiscount > 0)
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span style="color: var(--brand-danger);">Diskon:</span>
+                                                    <span style="color: var(--brand-danger);">{{ __('cart.discount') }}</span>
                                                     <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
                                                 </li>
                                                 @endif
                                             </ul>
-
                                             <hr class="my-2" style="border-color: var(--brand-border);">
-
                                             <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                <span>Total Item:</span>
+                                                <span>{{ __('cart.total_item') }}</span>
                                                 <span>Rp {{ number_format($item->final_item_price, 0, ',', '.') }}</span>
                                             </p>
-
                                             <div class="d-flex justify-content-between align-items-center">
-                                                {{-- [UBAH] Mengganti class tombol agar sesuai brand --}}
-                                                <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
-                                                <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="Hapus item">
+                                                <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">{{ __('cart.order_again_button') }}</a>
+                                                <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="{{ __('cart.remove_item_title') }}">
                                                     <i class="bi bi-trash3-fill fs-5"></i>
                                                 </button>
                                             </div>
@@ -224,38 +235,37 @@
                         @endforeach
                     </div>
 
-                    {{-- Ringkasan Pesanan --}}
-                    <div class="col-lg-4">
+                    <div class="col-lg-5">
                         <div class="summary-card sticky-summary">
                             <div class="card-body p-4">
-                                <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">Ringkasan Pesanan</h4>
+                                <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">{{ __('cart.summary_title') }}</h4>
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Subtotal Semua Item</span>
+                                    <span class="text-muted">{{ __('cart.summary_subtotal') }}</span>
                                     <span class="text-muted" id="summary-subtotal">Rp {{ $subtotal }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-3">
-                                    <span class="text-muted">Total Diskon</span>
+                                    <span class="text-muted">{{ __('cart.summary_total_discount') }}</span>
                                     <span class="text-danger" id="summary-discount">- Rp {{ $totalDiscount }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between fw-bold fs-5 mb-3" style="color: var(--brand-text);">
-                                    <span>Grand Total Akhir</span>
+                                    <span>{{ __('cart.summary_grand_total') }}</span>
                                     <span id="summary-grandtotal">Rp {{ $grandTotal }}</span>
                                 </div>
                                 <hr style="border-color: var(--brand-border);">
                                 <div class="mb-3">
-                                    <label for="payment-type-select" class="form-label fw-bold" style="color: var(--brand-text);">Pilih Tipe Pembayaran</label>
+                                    <label for="payment-type-select" class="form-label fw-bold" style="color: var(--brand-text);">{{ __('cart.summary_payment_type') }}</label>
                                     <select class="form-select" id="payment-type-select" name="global_payment_type">
-                                        <option value="full_payment" selected>Pembayaran Penuh</option>
-                                        <option value="dp">DP (50%)</option>
+                                        <option value="full_payment" selected>{{ __('cart.payment_full') }}</option>
+                                        <option value="dp">{{ __('cart.payment_dp') }}</option>
                                     </select>
                                 </div>
                                 <hr style="border-color: var(--brand-border);">
                                 <div class="d-flex justify-content-between fw-bolder fs-4 mt-3" style="color: var(--brand-primary);">
-                                    <span>Total Bayar Sekarang</span>
+                                    <span style="white-space: nowrap; margin-right: 1rem;">{{ __('cart.summary_total_to_pay') }}</span>
                                     <span id="summary-totalpay">Rp {{ $totalToPayNow }}</span>
                                 </div>
                                 <div class="d-grid mt-4">
-                                    <button type="submit" class="btn btn-checkout">Lanjutkan ke Pembayaran</button>
+                                    <button type="submit" class="btn btn-checkout">{{ __('cart.summary_checkout_button') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -273,7 +283,6 @@
 @endsection
 
 @push('scripts')
-{{-- Script Javascript tidak berubah --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
