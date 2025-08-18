@@ -2,103 +2,100 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Daftar - KAMCUP</title> {{-- Ubah title menjadi KAMCUP --}}
+    <title>Daftar - Indiegologi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* KAMCUP Brand Colors */
+        /* Indiegologi Brand Colors */
         :root {
-            --kamcup-pink: #cb2786; /* Primary color */
-            --kamcup-blue-green: #00617a; /* Secondary color */
-            --kamcup-yellow: #f4b704; /* Accent color */
-            --kamcup-dark-text: #212529; /* Dark text for contrast */
-            --kamcup-light-text: #ffffff; /* Light text */
-            --kamcup-light-bg: #f5f7fa; /* Light background variant */
-            --kamcup-gradient-start: #f5f7fa; /* Start of body gradient */
-            --kamcup-gradient-end: #e6f7f1; /* End of body gradient */
+            --indiegologi-primary: #0C2C5A; /* Biru Tua - Classy, Pointed */
+            --indiegologi-accent: #F4B704; /* Emas - Memorable */
+            --indiegologi-light-bg: #F5F7FA;
+            --indiegologi-dark-text: #212529;
+            --indiegologi-light-text: #ffffff;
+            --indiegologi-muted-text: #6c757d;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--kamcup-gradient-start) 0%, var(--kamcup-gradient-end) 100%); /* Refreshing gradient */
+            background-color: var(--indiegologi-light-bg);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--kamcup-dark-text); /* Default body text color */
+            color: var(--indiegologi-dark-text);
+            padding: 2rem 0;
         }
 
         .card {
-            border-radius: 20px; /* Youthful rounded corners */
-            border: 1px solid rgba(255, 255, 255, 0.3); /* Softer border */
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* Deeper shadow for impact */
-            backdrop-filter: blur(8px); /* Slightly less blur, more subtle */
-            background-color: rgba(255, 255, 255, 0.95); /* More opaque white */
-            overflow: hidden; /* Ensures contents stay within rounded corners */
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            background-color: #ffffff;
+            overflow: hidden;
         }
 
         .card-body {
-            padding: 3rem; /* More generous padding */
+            padding: 3rem;
         }
 
         .logo-container {
-            width: 90px; /* Slightly larger */
-            height: 90px;
-            background-color: rgba(var(--kamcup-yellow-rgb), 0.15); /* Light yellow background */
-            border-radius: 50%; /* Make it circular, more dynamic */
+            width: 80px;
+            height: 80px;
+            background-color: var(--indiegologi-primary);
+            border-radius: 12px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 1.5rem;
-            box-shadow: 0 8px 16px rgba(var(--kamcup-yellow-rgb), 0.3); /* Yellow shadow */
-            transition: transform 0.3s ease; /* Smooth hover effect */
+            transition: transform 0.3s ease;
         }
 
         .logo-container:hover {
-            transform: scale(1.05); /* Interactive effect */
+            transform: translateY(-5px);
         }
 
         .logo-icon {
-            font-size: 3rem; /* Larger icon */
-            color: var(--kamcup-yellow); /* KAMCUP Yellow */
+            font-size: 2.5rem;
+            color: var(--indiegologi-accent);
         }
 
         h1.h3 {
-            color: var(--kamcup-blue-green); /* Use blue-green for main heading */
-            font-weight: 700 !important; /* Stronger font weight */
-            font-size: 2.25rem; /* Larger heading */
+            color: var(--indiegologi-primary);
+            font-weight: 700 !important;
+            font-size: 2rem;
         }
 
         .text-muted {
-            color: #6c757d !important; /* Standard Bootstrap muted text */
+            color: var(--indiegologi-muted-text) !important;
+        }
+
+        .form-label {
+            font-weight: 500;
         }
 
         .form-control {
             border-radius: 12px;
-            padding: 0.85rem 1.25rem; /* Slightly more padding */
-            border: 1px solid rgba(var(--kamcup-blue-green-rgb), 0.3); /* Blue-green tint border */
-            background-color: var(--kamcup-light-bg); /* Light background for inputs */
+            padding: 0.85rem 1.25rem;
+            border: 1px solid #e0e0e0;
+            background-color: #fcfcfc;
             transition: all 0.3s ease;
         }
-        /* Mengatur variabel RGB untuk warna KAMCUP */
-        .form-control:focus {
-            --kamcup-pink-rgb: 203, 39, 134;
-            --kamcup-blue-green-rgb: 0, 97, 122;
-            --kamcup-yellow-rgb: 244, 183, 4;
 
-            border-color: var(--kamcup-pink); /* Pink border on focus */
-            box-shadow: 0 0 0 0.25rem rgba(var(--kamcup-pink-rgb), 0.15); /* Pink shadow on focus */
-            background-color: var(--kamcup-light-text); /* White background on focus */
+        .form-control:focus {
+            border-color: var(--indiegologi-primary);
+            box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.1);
+            background-color: #ffffff;
         }
 
         .input-group-text {
             background-color: transparent;
-            border: 1px solid rgba(var(--kamcup-blue-green-rgb), 0.3); /* Match input border */
+            border: 1px solid #e0e0e0;
             border-right: none;
-            border-radius: 12px 0 0 12px; /* Match input border-radius */
-            color: var(--kamcup-blue-green); /* Icon color */
+            border-radius: 12px 0 0 12px;
+            color: var(--indiegologi-primary);
         }
 
         .form-control.border-start-0 {
@@ -106,22 +103,21 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--kamcup-yellow) 0%, #d49c00 100%); /* Yellow gradient for register */
+            background-color: var(--indiegologi-accent);
             border: none;
             border-radius: 12px;
             padding: 0.85rem 1.5rem;
             font-weight: 600;
-            box-shadow: 0 6px 16px rgba(var(--kamcup-yellow-rgb), 0.3); /* Yellow shadow */
+            box-shadow: 0 4px 15px rgba(244, 183, 4, 0.2);
             transition: all 0.3s ease;
-            text-transform: uppercase; /* Expressive */
-            letter-spacing: 0.05em; /* Sporty */
-            color: var(--kamcup-dark-text); /* Dark text on yellow button */
+            letter-spacing: 0.03em;
+            color: var(--indiegologi-primary);
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px); /* More pronounced lift */
-            box-shadow: 0 8px 20px rgba(var(--kamcup-yellow-rgb), 0.4);
-            background: linear-gradient(135deg, #d49c00 0%, var(--kamcup-yellow) 100%); /* Reverse gradient on hover */
+            background-color: #d49c00;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(244, 183, 4, 0.3);
         }
 
         .alert {
@@ -131,60 +127,61 @@
         }
 
         .alert-danger {
-            background-color: rgba(var(--kamcup-pink-rgb), 0.1); /* Light pink */
-            color: var(--kamcup-pink);
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
         }
 
         .text-primary {
-            color: var(--kamcup-blue-green) !important; /* Blue-green for links */
+            color: var(--indiegologi-primary) !important;
         }
 
         .text-primary:hover {
-            color: var(--kamcup-pink) !important; /* Pink on link hover */
+            color: var(--indiegologi-accent) !important;
         }
 
         .social-login {
-            background: rgba(var(--kamcup-pink-rgb), 0.1); /* Light pink background for social login */
+            background-color: #f7f9fc;
+            border: 1px solid #e0e0e0;
             border-radius: 12px;
             padding: 1rem;
             transition: all 0.3s ease;
-            font-weight: 600;
-            color: var(--kamcup-dark-text);
+            font-weight: 500;
+            color: var(--indiegologi-dark-text);
         }
 
         .social-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(var(--kamcup-pink-rgb), 0.2);
-            background: rgba(var(--kamcup-pink-rgb), 0.2); /* Slightly darker pink on hover */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: #eef1f5;
         }
 
         .social-icon {
             width: 24px;
             height: 24px;
-            margin-right: 0.75rem; /* More space */
+            margin-right: 0.75rem;
         }
 
-        /* Button Kembali Style */
         .btn-back {
-            background-color: var(--kamcup-blue-green); /* Blue-green background */
-            border: none;
+            background-color: transparent;
+            border: 1px solid var(--indiegologi-primary);
             border-radius: 12px;
             padding: 0.75rem 1.5rem;
             font-weight: 600;
-            box-shadow: 0 4px 12px rgba(var(--kamcup-blue-green-rgb), 0.2);
             transition: all 0.3s ease;
-            color: var(--kamcup-light-text);
+            color: var(--indiegologi-primary);
+            box-shadow: none;
         }
 
         .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(var(--kamcup-blue-green-rgb), 0.3);
-            background-color: #004b5c; /* Darker blue-green */
+            background-color: var(--indiegologi-primary);
+            color: var(--indiegologi-light-text);
+            transform: none;
+            box-shadow: 0 4px 12px rgba(12, 44, 90, 0.2);
         }
 
         .btn-back i {
             font-size: 1.2rem;
-            color: var(--kamcup-light-text);
+            color: inherit;
         }
 
         /* Responsive adjustments */
@@ -194,7 +191,7 @@
             }
 
             .logo-container {
-                width: 70px; /* Smaller on mobile */
+                width: 70px;
                 height: 70px;
             }
 
@@ -225,10 +222,11 @@
                     <div class="card-body">
                         <div class="text-center mb-4">
                             <div class="logo-container">
-                                <i class="fas fa-user-plus logo-icon"></i> {{-- Icon for registration --}}
+                                {{-- Ikon tangan dengan hati melambangkan budaya caring, love, sharing --}}
+                                <i class="fas fa-hand-holding-heart logo-icon"></i>
                             </div>
-                            <h1 class="h3 fw-bold mb-1">Bergabunglah dengan KAMCUP!</h1> {{-- Welcoming text --}}
-                            <p class="text-muted mb-0">Daftar untuk mulai **berkompetisi** dan **berkembang** bersama kami.</p> {{-- Brand reflection --}}
+                            <h1 class="h3 fw-bold mb-1">Mari Berbagi Ide di Indiegologi!</h1>
+                            <p class="text-muted mb-0">Daftar untuk mulai **mewujudkan ide kreatif** bersama kami.</p>
                         </div>
 
                         @if($errors->any())
@@ -241,7 +239,7 @@
                             @csrf
 
                             <div class="mb-3">
-                                <label for="name" class="form-label fw-medium">Nama Lengkap</label>
+                                <label for="name" class="form-label">Nama Lengkap</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fas fa-user"></i>
@@ -253,19 +251,19 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="email" class="form-label fw-medium">Email</label>
+                                <label for="email" class="form-label">Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fas fa-envelope"></i>
                                     </span>
                                     <input type="email" name="email" id="email" required
                                            class="form-control border-start-0"
-                                           placeholder="nama@email.com" value="{{ old('email') }}">
+                                           placeholder="nama@indiegologi.com" value="{{ old('email') }}">
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="password" class="form-label fw-medium">Password</label>
+                                <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fas fa-lock"></i>
@@ -277,7 +275,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label for="password_confirmation" class="form-label fw-medium">Konfirmasi Password</label>
+                                <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fas fa-lock"></i>
@@ -293,7 +291,7 @@
                             </button>
 
                             <div class="text-center text-muted mb-4">
-                                Sudah punya akun? <a href="{{ route('login') }}" class="text-decoration-none fw-medium">Masuk di sini</a>
+                                Sudah punya akun? <a href="{{ route('login') }}" class="text-decoration-none fw-medium text-primary">Masuk di sini</a>
                             </div>
 
                             <div class="text-center">

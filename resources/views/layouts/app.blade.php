@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     {{-- Custom CSS Files --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -152,7 +153,7 @@
         line-height: inherit !important;
         height: 100%;
     }
-    
+
     .goog-te-combo {
         border: none !important;
         background-color: transparent !important;
@@ -190,7 +191,7 @@
     .goog-te-gadget-simple .goog-te-menu-value span:last-child {
         display: none; /* Menyembunyikan ikon panah bawaan */
     }
-    
+
     .goog-te-gadget-simple .goog-te-menu-value::after {
         content: '\F282'; /* ikon chevron-down dari Bootstrap Icons */
         font-family: 'bootstrap-icons';
@@ -216,13 +217,13 @@
     .mobile-language-link {
         display: none;
     }
-    
+
     @media (max-width: 991.98px) {
         .navbar .container-fluid {
             padding-left: 1rem;
             padding-right: 1rem;
         }
-        
+
         #google_translate_element {
             display: none;
         }
@@ -273,7 +274,7 @@
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">{{ __('navbar.services') }}</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">{{ __('navbar.sketch') }}</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">{{ __('navbar.contact') }}</a></li>
-                    
+
                     {{-- Separator --}}
                     <li class="nav-item d-none d-lg-block"><div class="nav-separator"></div></li>
 
@@ -301,11 +302,11 @@
                                         </li>
                                     </ul>
                                 </div>
-                                
+
                             @else
                                 <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">{{ __('navbar.login') }}</a>
                             @endguest
-                            
+
                             {{-- Widget Google Translate bawaan untuk Desktop --}}
                             <div id="google_translate_element_desktop" class="d-none d-lg-block"></div>
                         </div>
@@ -367,7 +368,7 @@
             </ul>
             <hr>
             @endauth
-            
+
             {{-- Footer Actions (Login/Logout) --}}
             <div class="mt-auto">
                 @auth
