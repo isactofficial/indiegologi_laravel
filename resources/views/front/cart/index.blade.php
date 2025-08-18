@@ -168,7 +168,7 @@
                         </div>
 
                         @foreach ($cartItems as $item)
-                            <div class="card mb-3 cart-item-card"> 
+                            <div class="card mb-3 cart-item-card">
                                 <div class="card-body p-4">
                                     <div class="row">
                                         <div class="col-12 col-md-7 mb-4 mb-md-0">

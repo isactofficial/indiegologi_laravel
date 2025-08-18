@@ -24,10 +24,7 @@ class ConsultationService extends Model
         'hourly_price' => 'decimal:2',
     ];
 
-    /**
-     * Relasi many-to-many ke booking.
-     * Relasi ini juga harus menggunakan model pivot BookingService.
-     */
+
     public function consultationBookings()
     {
         return $this->belongsToMany(ConsultationBooking::class, 'booking_service', 'service_id', 'booking_id')
