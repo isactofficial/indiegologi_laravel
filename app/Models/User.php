@@ -50,14 +50,9 @@ class User extends Authenticatable
     public function comments() {
         return $this->hasMany(Comment::class);
     }
-
-    public function registeredTournaments()
+    public function invoices()
     {
-        return $this->hasMany(TournamentRegistration::class);
+        return $this->hasMany(Invoice::class);
     }
 
-    public function hostApplications()
-    {
-        return $this->hasMany(TournamentHostRequest::class);
-    }
 }
