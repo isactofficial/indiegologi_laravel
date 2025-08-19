@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('cart.page_title'))
+@section('title',  'Keranjang Belanja Anda')
 
 @push('styles')
 {{-- [BRAND] Import font yang elegan dan modern dari Google Fonts --}}
@@ -142,14 +142,14 @@
         @if ($cartItems->isEmpty())
             <div class="text-center py-5">
                 <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
-                <h2 class="fw-bold mt-4" style="color: var(--brand-text);">{{ __('cart.empty_cart_title') }}</h2>
-                <p class="fs-5 text-muted">{{ __('cart.empty_cart_subtitle') }}</p>
-                <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">{{ __('cart.empty_cart_button') }}</a>
+                <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
+                <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
+                <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
             </div>
         @else
             <div class="text-center mb-5 cart-header">
-                <h1 class="section-title">{{ __('cart.page_title') }}</h1>
-                <p class="lead text-muted">{{ __('cart.page_subtitle') }}</p>
+                <h1 class="section-title">Keranjang Belanja Anda</h1>
+                <p class="lead text-muted">Satu langkah lagi untuk menjadi versi terbaik Anda.</p>
             </div>
 
             <form action="{{ route('checkout.process') }}" method="POST" id="cart-form">
@@ -161,7 +161,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="select-all" checked>
                                     <label class="form-check-label fw-bold" for="select-all" style="color: var(--brand-text);">
-                                        {{ __('cart.select_all') }}
+                                        Pilih Semua Layanan
                                     </label>
                                 </div>
                             </div>
@@ -181,10 +181,7 @@
                                                     <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">{{ $item->service->title }}</h5>
                                                     <ul class="item-details-list">
                                                         <li><i class="bi bi-calendar-check"></i>{{ \Carbon\Carbon::parse($item->booked_date)->translatedFormat('d M Y') }}, {{ $item->booked_time }}</li>
-                                                        <li>
-                                                            <i class="bi bi-camera-video"></i>
-                                                            {{ $item->session_type == 'Online' ? __('cart.session_online') : __('cart.session_offline') }} & {{ $item->contact_preference == 'chat_only' ? __('cart.contact_chat_only') : __('cart.contact_chat_and_call') }}
-                                                        </li>
+                                                       <li><i class="bi bi-camera-video"></i>{{ $item->session_type }} & {{ $item->contact_preference == 'chat_only' ? 'Chat' : 'Chat & Call' }}</li>
                                                         @if($item->offline_address)
                                                             <li><i class="bi bi-geo-alt"></i>{{ $item->offline_address }}</li>
                                                         @endif
@@ -196,35 +193,35 @@
                                         <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
                                             <ul class="list-group list-group-flush price-details-list small">
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">{{ __('cart.base_price') }}</span>
+                                                    <span class="text-muted">Harga Dasar:</span>
                                                     <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
                                                 </li>
                                                 @if ($item->hours > 0)
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">{{ __('cart.hourly_price', ['hours' => $item->hours]) }}</span>
+                                                    <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
                                                     <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
                                                 </li>
                                                 @endif
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">{{ __('cart.subtotal') }}</span>
+                                                    <span class="text-muted">Subtotal:</span>
                                                     <span class="text-muted">Rp {{ number_format($item->item_subtotal, 0, ',', '.') }}</span>
                                                 </li>
                                                 @php $itemDiscount = $item->item_subtotal - $item->final_item_price; @endphp
                                                 @if ($itemDiscount > 0)
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span style="color: var(--brand-danger);">{{ __('cart.discount') }}</span>
+                                                    <span style="color: var(--brand-danger);">Diskon:</span>
                                                     <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
                                                 </li>
                                                 @endif
                                             </ul>
                                             <hr class="my-2" style="border-color: var(--brand-border);">
                                             <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                <span>{{ __('cart.total_item') }}</span>
+                                                <span>Total Item:</span>
                                                 <span>Rp {{ number_format($item->final_item_price, 0, ',', '.') }}</span>
                                             </p>
                                             <div class="d-flex justify-content-between align-items-center">
-                                                <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">{{ __('cart.order_again_button') }}</a>
-                                                <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="{{ __('cart.remove_item_title') }}">
+                                               <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
+                                                <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="Hapus item">
                                                     <i class="bi bi-trash3-fill fs-5"></i>
                                                 </button>
                                             </div>
@@ -238,34 +235,34 @@
                     <div class="col-lg-5">
                         <div class="summary-card sticky-summary">
                             <div class="card-body p-4">
-                                <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">{{ __('cart.summary_title') }}</h4>
+                                <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">Ringkasan Pesanan</h4>
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">{{ __('cart.summary_subtotal') }}</span>
+                                    <span class="text-muted">Subtotal Semua Item</span>
                                     <span class="text-muted" id="summary-subtotal">Rp {{ $subtotal }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-3">
-                                    <span class="text-muted">{{ __('cart.summary_total_discount') }}</span>
+                                    <span class="text-muted">Total Diskon</span>
                                     <span class="text-danger" id="summary-discount">- Rp {{ $totalDiscount }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between fw-bold fs-5 mb-3" style="color: var(--brand-text);">
-                                    <span>{{ __('cart.summary_grand_total') }}</span>
+                                    <span>Grand Total Akhir</span>
                                     <span id="summary-grandtotal">Rp {{ $grandTotal }}</span>
                                 </div>
                                 <hr style="border-color: var(--brand-border);">
                                 <div class="mb-3">
-                                    <label for="payment-type-select" class="form-label fw-bold" style="color: var(--brand-text);">{{ __('cart.summary_payment_type') }}</label>
+                                    <label for="payment-type-select" class="form-label fw-bold" style="color: var(--brand-text);">Pilih Tipe Pembayaran</label>
                                     <select class="form-select" id="payment-type-select" name="global_payment_type">
-                                        <option value="full_payment" selected>{{ __('cart.payment_full') }}</option>
-                                        <option value="dp">{{ __('cart.payment_dp') }}</option>
+                                        <option value="full_payment" selected>Pembayaran Penuh</option>
+                                        <option value="dp">DP (50%)</option>
                                     </select>
                                 </div>
                                 <hr style="border-color: var(--brand-border);">
                                 <div class="d-flex justify-content-between fw-bolder fs-4 mt-3" style="color: var(--brand-primary);">
-                                    <span style="white-space: nowrap; margin-right: 1rem;">{{ __('cart.summary_total_to_pay') }}</span>
+                                    <span style="white-space: nowrap; margin-right: 1rem;">Total Bayar Sekarang</span>
                                     <span id="summary-totalpay">Rp {{ $totalToPayNow }}</span>
                                 </div>
                                 <div class="d-grid mt-4">
-                                    <button type="submit" class="btn btn-checkout">{{ __('cart.summary_checkout_button') }}</button>
+                                    <button type="submit" class="btn btn-checkout">Lanjutkan ke Pembayaran</button>
                                 </div>
                             </div>
                         </div>
