@@ -6,47 +6,47 @@
         <div class="d-flex justify-content-between pt-5">
             <a href="{{ route('front.index') }}" class="btn px-4 py-2"
                style="background-color: #D6E4FF; color: #0C2C5A; border-radius: 8px;">
-                <i class="fas fa-arrow-left me-2"></i> {{ __('contact.back_button') }}
+                <i class="fas fa-arrow-left me-2"></i> Kembali
             </a>
         </div>
         <div class="text-center mb-5 p-4 rounded-4">
-            <h1 class="fw-bold mb-3 article-text" style="color: #0C2C5A;">{{ __('contact.page_title') }}</h1>
-            <p class="text-muted w-75 mx-auto article-text">{{ __('contact.page_subtitle') }}</p>
+            <h1 class="fw-bold mb-3 article-text" style="color: #0C2C5A;">Mari Terhubung dengan Indiegologi</h1>
+            <p class="text-muted w-75 mx-auto article-text">Punya pertanyaan, ide kolaborasi, atau ingin berbagi cerita? Tim Indiegologi siap melayani Anda. Kami adalah ruang aman untuk eksplorasi diri, dengan visi holistik untuk kesejahteraan mental Anda.</p>
         </div>
 
         <div class="row g-4">
             <div class="col-lg-7 mb-4 mb-lg-0">
                 <div class="p-4 p-lg-5 rounded-4 h-100" style="background-color: #ffffff; box-shadow: 0 10px 30px rgba(12, 44, 90, 0.08);">
-                    <h4 class="fw-semibold mb-4 article-text" style="color: #0C2C5A;">{{ __('contact.form_title') }}</h4>
+                    <h4 class="fw-semibold mb-4 article-text" style="color: #0C2C5A;">Kirimkan Pesan Kepada Kami</h4>
                     <form>
                         <div class="row g-4">
                             <div class="col-md-6">
                                 <div class="form-floating mb-1">
                                     <input type="text" class="form-control border-0" style="background-color: #f4f4f4;" id="nameInput" placeholder="Your name" required>
-                                    <label for="nameInput" class="text-muted article-text">{{ __('contact.form_name') }}</label>
+                                    <label for="nameInput" class="text-muted article-text">Nama Anda</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-1">
                                     <input type="email" class="form-control border-0" style="background-color: #f4f4f4;" id="emailInput" placeholder="you@example.com" required>
-                                    <label for="emailInput" class="text-muted">{{ __('contact.form_email') }}</label>
+                                    <label for="emailInput" class="text-muted">Email</label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating mb-1">
                                     <input type="text" class="form-control border-0" style="background-color: #f4f4f4;" id="subjectInput" placeholder="How can we help you?">
-                                    <label for="subjectInput" class="text-muted">{{ __('contact.form_subject') }}</label>
+                                    <label for="subjectInput" class="text-muted">Subjek</label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-floating mb-1">
                                     <textarea class="form-control border-0" style="background-color: #f4f4f4; height: 140px;" id="messageInput" placeholder="Tell us more about your inquiry..." required></textarea>
-                                    <label for="messageInput" class="text-muted">{{ __('contact.form_message') }}</label>
+                                    <label for="messageInput" class="text-muted">Pesan Anda</label>
                                 </div>
                             </div>
                             <div class="col-12 mt-3">
                                 <button class="btn btn-lg px-4 py-2 rounded-pill text-white d-flex align-items-center" style="background: #0C2C5A; border: none; box-shadow: 0 4px 12px rgba(12, 44, 90, 0.25); transition: all 0.3s ease;">
-                                    <span>{{ __('contact.form_button') }}</span>
+                                    <span>Kirim Pesan</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-send ms-2" viewBox="0 0 16 16">
                                         <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
                                     </svg>
@@ -59,7 +59,7 @@
 
             <div class="col-lg-5">
                 <div class="p-4 p-lg-4 rounded-4 mb-4" style="background-color: #ffffff; box-shadow: 0 10px 30px rgba(12, 44, 90, 0.08);">
-                    <h4 class="fw-semibold mb-4 article-text" style="color: #0C2C5A;">{{ __('contact.location_title') }}</h4>
+                    <h4 class="fw-semibold mb-4 article-text" style="color: #0C2C5A;">Lokasi Kami</h4>
 
                     <div class="d-flex mb-4 align-items-start">
                         <div class="me-3">
@@ -68,7 +68,7 @@
                             </div>
                         </div>
                         <div>
-                            <h6 class="fw-bold mb-1" style="color: #0C2C5A;">{{ __('contact.location_head_office') }}</h6>
+                            <h6 class="fw-bold mb-1" style="color: #0C2C5A;">Kantor Pusat Indiegologi</h6>
                             <p class="mb-1 text-muted">Jl. Sadar Dusun I Kampung Padang,<br>Riau - 28557</p>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                             </div>
                         </div>
                         <div>
-                            <h6 class="fw-bold mb-1" style="color: #0C2C5A;">{{ __('contact.location_branch_office') }}</h6>
+                            <h6 class="fw-bold mb-1" style="color: #0C2C5A;">Kantor Cabang Indiegologi</h6>
                             <p class="mb-1 text-muted">Ngadiwinatan NG I/1106 Yogyakarta,<br>DIY 55261</p>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                             </div>
                         </div>
                         <div>
-                            <h6 class="fw-bold mb-1" style="color: #0C2C5A;">{{ __('contact.location_phone') }}</h6>
+                            <h6 class="fw-bold mb-1" style="color: #0C2C5A;">Telepon</h6>
                             <p class="mb-1">
                                 <a href="tel:+6281234567890" class="text-decoration-none text-muted" style="transition: color 0.3s ease;">+62 812-3456-7890</a>
                             </p>
@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="p-4 p-lg-4 rounded-4" style="background-color: #ffffff; box-shadow: 0 10px 30px rgba(12, 44, 90, 0.08);">
-    <h4 class="fw-semibold mb-4 article-text" style="color: #0C2C5A;">{{ __('contact.social_title') }}</h4>
+    <h4 class="fw-semibold mb-4 article-text" style="color: #0C2C5A;">Terhubung dengan Kami</h4>
     <div class="d-flex flex-column gap-3">
         <a href="https://www.instagram.com/indiegologi/" class="d-flex align-items-center text-decoration-none p-3 rounded-3" style="transition: all 0.3s ease; ">
             <div class="me-3">

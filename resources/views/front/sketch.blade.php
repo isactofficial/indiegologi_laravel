@@ -1,16 +1,17 @@
 @extends('layouts.app')
 
-@section('title', __('sketch.page_title'))
+@section('title', 'Sketch Telling')
 
 @section('content')
 <div class="sketch-telling-section">
     <div class="container">
-        <h1 class="section-title">{{ __('sketch.section_title') }}</h1>
-        <p class="section-description">{{ __('sketch.section_subtitle') }}</p>
+        <h1 class="section-title">Sketch Telling</h1>
+        <p class="section-description">Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang
+            lebih dalam tentang berbagai perjalanan hidup</p>
 
         @if($sketches->isEmpty())
         <div class="text-center">
-            <p class="lead text-muted">{{ __('sketch.no_sketches_available') }}</p>
+            <p class="lead text-muted">Belum ada sketsa yang tersedia saat ini.</p>
         </div>
         @else
         <div class="cards-grid">
@@ -24,7 +25,7 @@
                     {{-- Konten Dinamis (Tidak Diterjemahkan) --}}
                     <h3 class="card-title">{{ Str::limit($sketch->title, 50) }}</h3>
                     <a href="{{ route('front.sketches.detail', ['sketch' => $sketch->slug]) }}" class="read-more">
-                        {{ __('sketch.view_details_button') }} <span class="arrow">›</span>
+                        Lihat Detail <span class="arrow">›</span>
                     </a>
                 </div>
             </div>

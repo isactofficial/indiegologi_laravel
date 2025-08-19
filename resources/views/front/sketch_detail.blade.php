@@ -7,7 +7,7 @@
     {{-- Tombol kembali --}}
     <div class="mb-3">
         <a href="{{ route('front.sketch') }}" class="btn px-4 py-2" style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 8px;">
-                    <i class="fas fa-arrow-left me-2"></i> {{ __('sketch.back_button') }}
+                    <i class="fas fa-arrow-left me-2"></i>KEMBALI
         </a>
     </div>
 
@@ -16,7 +16,7 @@
 
     {{-- Informasi Author dan Tanggal --}}
     <div class="text-muted mb-4 d-flex align-items-center gap-2">
-        <span>{{ __('sketch.published_on') }}</span>
+        <span>Published</span>
         {{-- Tanggal akan otomatis diterjemahkan oleh Carbon/Laravel --}}
         <span>{{ $sketch->created_at->format('d F Y') }}</span>
     </div>
