@@ -7,7 +7,7 @@
         <div class="col-lg-12 pt-5">
             <div class="d-flex justify-content-between mb-4 mt-4">
                 <a href="{{ route('front.articles') }}" class="btn px-4 py-2" style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 8px;">
-                    <i class="fas fa-arrow-left me-2"></i> {{ __('articles.back_button') }}
+                    <i class="fas fa-arrow-left me-2"></i>Kembali
                 </a>
             </div>
 
@@ -32,7 +32,7 @@
                     </div>
                     <div>
                         <p class="mb-0 fw-medium" style="color: #0C2C5A;">{{ $article->author }}</p>
-                        <p class="text-muted small mb-0">{{ __('articles.author_label') }}</p>
+                        <p class="text-muted small mb-0">Penulis</p>
                     </div>
                 </div>
 
@@ -73,26 +73,26 @@
 
             <div class="card border-0 rounded-4 shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <h3 class="fw-bold fs-5 mb-4 article-text" style="color: #0C2C5A;">{{ __('articles.comments_title') }} ({{ $article->comments->count() }})</h3>
+                    <h3 class="fw-bold fs-5 mb-4 article-text" style="color: #0C2C5A;">Komentar ({{ $article->comments->count() }})</h3>
 
                     @auth
                         <form action="{{ route('comments.store', $article->id) }}" method="POST" class="mb-4">
                             @csrf
                             <div class="form-group">
                                 <textarea name="content" rows="3" class="form-control @error('content') is-invalid @enderror"
-                                          placeholder="{{ __('articles.write_your_comment') }}" style="border-color: #0C2C5A;"></textarea>
+                                          placeholder="Tulis komentar Anda..." style="border-color: #0C2C5A;"></textarea>
                                 @error('content')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <button type="submit" class="btn btn-primary mt-2" style="background-color: #0C2C5A; border-color: #0C2C5A;">
-                                <i class="fas fa-paper-plane me-2"></i>{{ __('articles.submit_comment') }}
+                                <i class="fas fa-paper-plane me-2"></i>Kirim Komentar
                             </button>
                         </form>
                     @else
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2 article-text" style="color: #0C2C5A;"></i>
-                            {!! __('articles.login_to_comment', ['loginLink' => '<a href="'.route('login').'" style="color: #0C2C5A; font-weight: bold;">'.__('articles.login_text').'</a>']) !!}
+                            Silakan <a href="{{ route('login') }}" style="color: #0C2C5A;">login</a> untuk memberikan komentar.
                         </div>
                     @endauth
 
@@ -116,17 +116,17 @@
                                                     <button class="btn btn-sm btn-link edit-comment"
                                                             data-comment-id="{{ $comment->id }}"
                                                             data-content="{{ $comment->content }}"
-                                                            data-save-text="{{ __('articles.save_button') }}"
-                                                            data-cancel-text="{{ __('articles.cancel_button') }}"
+                                                            data-save-text="Save"
+                                                            data-cancel-text="Batal"
                                                             style="color: #0C2C5A;">
-                                                        <i class="fas fa-edit"></i> {{ __('articles.edit_button') }}
+                                                        <i class="fas fa-edit"></i> Edit
                                                     </button>
                                                     <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-link text-danger"
-                                                                onclick="return confirm('{{ __('articles.delete_confirm') }}')">
-                                                            <i class="fas fa-trash"></i> {{ __('articles.delete_button') }}
+                                                                onclick="return confirm('Apakah Anda yakin ingin menghapus komentar ini?')">
+                                                            <i class="fas fa-trash"></i> ('Hapus')
                                                         </button>
                                                     </form>
                                                 </div>
@@ -137,7 +137,7 @@
                             </div>
                         @empty
                             <div class="text-center py-4">
-                                <p class="text-muted mb-0 article-text">{{ __('articles.no_comments') }} {{ __('articles.be_first_commentator') }}</p>
+                                <p class="text-muted mb-0 article-text">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
                             </div>
                         @endforelse
                     </div>

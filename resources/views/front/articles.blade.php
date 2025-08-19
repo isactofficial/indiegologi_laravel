@@ -1,20 +1,21 @@
+
 @extends('layouts.app')
 
 @section('content')
 
 <div class="container py-5 mt-5 pt-lg-0">
     {{-- Teks ini sekarang bisa diterjemahkan --}}
-    <h2 class="fw-bold mb-4 text-center section-title-articles">{{ __('articles.page_title') }}</h2>
-    <p class="text-center mb-5 text-muted">{{ __('articles.page_subtitle') }}</p>
+    <h2 class="fw-bold mb-4 text-center section-title-articles">Wawasan & Inspirasi Terbaru dari Indiegologi</h2>
+    <p class="text-center mb-5 text-muted">Jelajahi kumpulan artikel inspiratif dan informatif yang kami kurasi, dirancang untuk mendukung perjalanan kesejahteraan dan pertumbuhan pribadi Anda.</p>
 
     <div class="mb-4 d-flex justify-content-end">
         <form action="{{ route('front.articles') }}" method="GET">
             <select name="filter" class="form-select border-primary-custom text-primary-custom" onchange="this.form.submit()">
                 {{-- Teks ini sekarang bisa diterjemahkan --}}
-                <option value="">{{ __('articles.sort_by') }}</option>
-                <option value="latest" {{ request('filter') == 'latest' ? 'selected' : '' }}>{{ __('articles.sort_latest') }}</option>
-                <option value="popular" {{ request('filter') == 'popular' ? 'selected' : '' }}>{{ __('articles.sort_popular') }}</option>
-                <option value="author" {{ request('filter') == 'author' ? 'selected' : '' }}>{{ __('articles.sort_author') }}</option>
+                <option value="">Urutkan</option>
+                <option value="latest" {{ request('filter') == 'latest' ? 'selected' : '' }}>Terbaru</option>
+                <option value="popular" {{ request('filter') == 'popular' ? 'selected' : '' }}>Populer</option>
+                <option value="author" {{ request('filter') == 'author' ? 'selected' : '' }}>Penulis</option>
             </select>
         </form>
     </div>
@@ -39,7 +40,7 @@
         @empty
             <div class="col-12">
                 {{-- Teks ini sekarang bisa diterjemahkan --}}
-                <p class="text-center text-primary-custom">{{ __('articles.no_articles_found') }}</p>
+                <p class="text-center text-primary-custom">Tidak ada artikel yang ditemukan.</p>
             </div>
         @endforelse
     </div>

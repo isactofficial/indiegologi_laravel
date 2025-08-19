@@ -11,8 +11,9 @@
     <div class="service-details-page">
         <section class="container-title mb-5">
             <div class="row">
-                <h1 class="section-title">{!! __('services.page_title', ['ampersand' => '<span class="ampersand-style">&</span>']) !!}</h1>
-                <p class="section-desc">{{ __('services.page_subtitle') }}</p>
+                <h1 class="section-title">Penawaran Spesial <span class="ampersand-style">&</span> Paket Kesejahteraan</h1>
+                <p class="section-desc">Temukan berbagai promo eksklusif dan paket layanan yang dirancang untuk mendukung perjalanan Anda menuju kesejahteraan mental optimal dengan nilai terbaik.
+                </p>
             </div>
         </section>
 
@@ -40,7 +41,7 @@
                                             <button class="btn-details-toggle" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapse-{{ $service->id }}"
                                                     aria-expanded="false" aria-controls="collapse-{{ $service->id }}">
-                                                {{ __('services.button_read_more') }}
+                                                Baca Selengkapnya
                                             </button>
                                         </div>
                                     </div>
@@ -53,7 +54,7 @@
                                             data-hourly-price="{{ $service->hourly_price }}">
                                             <div class="row mb-4">
                                                 <div class="col-12">
-                                                    <h6 class="fw-judul">{{ __('services.product_description') }}</h6>
+                                                    <h6 class="fw-judul">Deskripsi Produk:</h6>
                                                     {{-- Konten Dinamis (Tidak Diterjemahkan) --}}
                                                     <p>{{ $service->product_description }}</p>
                                                 </div>
@@ -62,37 +63,37 @@
                                             <div class="form-section mb-4">
                                                 <div class="row">
                                                     <div class="col-12 mb-3">
-                                                        <h6 class="fw-bold">{{ __('services.schedule_title') }}</h6>
-                                                        <small class="text-muted">{{ __('services.schedule_note') }}</small>
+                                                        <h6 class="fw-bold">Pilih Jadwal Meditasi:</h6>
+                                                        <small class="text-muted">(Pemesanan minimal H-1 sebelum jadwal yang diinginkan)</small>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
-                                                            <label for="booked_date-{{ $service->id }}" class="form-label">{{ __('services.form_date') }}</label>
+                                                            <label for="booked_date-{{ $service->id }}" class="form-label">Tanggal:</label>
                                                             <input type="date" id="booked_date-{{ $service->id }}" class="form-control service-date-picker" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
-                                                            <label for="booked_time-{{ $service->id }}" class="form-label">{{ __('services.form_start_time') }}</label>
+                                                            <label for="booked_time-{{ $service->id }}" class="form-label">Jam Mulai:</label>
                                                             <input type="time" id="booked_time-{{ $service->id }}" class="form-control" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
-                                                            <label for="hours-{{ $service->id }}" class="form-label">{{ __('services.form_hours') }}</label>
+                                                            <label for="hours-{{ $service->id }}" class="form-label">Jumlah Jam</label>
                                                             <input type="number" id="hours-{{ $service->id }}" class="form-control hours-input" value="0" min="0" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-12">
                                                         <div class="mb-3">
-                                                            <label for="session_type-{{ $service->id }}" class="form-label">{{ __('services.form_session_choice') }}</label>
+                                                            <label for="session_type-{{ $service->id }}" class="form-label">Pilihan Sesi</label>
                                                             <select id="session_type-{{ $service->id }}" class="form-select session-type-select">
-                                                                <option value="Online">{{ __('services.session_online') }}</option>
-                                                                <option value="Offline">{{ __('services.session_offline') }}</option>
+                                                                <option value="Online">Online</option>
+                                                                <option value="Offline">Offline</option>
                                                             </select>
                                                         </div>
                                                         <div class="mb-3 offline-address-container" style="display:none;">
-                                                            <textarea id="offline_address-{{ $service->id }}" class="form-control" placeholder="{{ __('services.offline_address_placeholder') }}"></textarea>
+                                                            <textarea id="offline_address-{{ $service->id }}" class="form-control" placeholder="Sleman Utara DIY"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -102,14 +103,14 @@
 
                                             <div class="form-section contact-options mb-4">
                                                 <div class="col-12">
-                                                    <h6 class="fw-bold">{{ __('services.contact_preference_title') }}</h6>
+                                                    <h6 class="fw-bold">Saya bersedia dihubungi via:</h6>
                                                     <div class="form-check mb-2">
                                                         <input class="form-check-input" type="radio" name="contact_preference-{{ $service->id }}" id="contact-chatcall-{{ $service->id }}" value="chat_and_call" checked>
-                                                        <label class="form-check-label" for="contact-chatcall-{{ $service->id }}">{{ __('services.contact_phone_and_wa') }}</label>
+                                                        <label class="form-check-label" for="contact-chatcall-{{ $service->id }}">Telepon & WhatsApp</label>
                                                     </div>
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="radio" name="contact_preference-{{ $service->id }}" id="contact-chatonly-{{ $service->id }}" value="chat_only">
-                                                        <label class="form-check-label" for="contact-chatonly-{{ $service->id }}">{{ __('services.contact_wa_only') }}</label>
+                                                        <label class="form-check-label" for="contact-chatonly-{{ $service->id }}">Hanya WhatsApp</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -126,18 +127,19 @@
                                                     </div>
                                                     <div class="col-auto">
                                                         @auth
-                                                            <button type="button" class="btn btn-primary px-4 py-2 select-service-btn" data-service-id="{{ $service->id }}">{{ __('services.button_select_service') }}</button>
+                                                            <button type="button" class="btn btn-primary px-4 py-2 select-service-btn" data-service-id="{{ $service->id }}">Pilih Layanan</button>
                                                         @else
-                                                            <p class="text-danger mb-0">{!! __('services.login_prompt', ['loginLink' => '<a href="'.route('login').'">login</a>']) !!}</p>
+                                                            <p class="text-danger mb-0">Silakan <a href="{{ route('login') }}">login</a> untuk memilih layanan.</p>
                                                         @endauth
                                                     </div>
                                                 </div>
 
                                                 <div class="referral-section text-center">
-                                                    <label for="referral_code-{{ $service->id }}" class="form-label d-block mb-2">{{ __('services.referral_prompt') }}</label>
+                                                    <label for="referral_code-{{ $service->id }}" class="form-label d-block mb-2">
+                                                        Punya Kode Referral untuk Layanan Ini?</label>
                                                     <div class="input-group">
                                                         <input type="text" id="referral_code-{{ $service->id }}" class="form-control referral-code-input">
-                                                        <button class="btn apply-referral-btn" type="button" data-service-id="{{ $service->id }}">{{ __('services.button_apply') }}</button>
+                                                        <button class="btn apply-referral-btn" type="button" data-service-id="{{ $service->id }}">Apply</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -147,7 +149,7 @@
                             </div>
                         @empty
                             <div class="col-12 text-center py-5">
-                                <p class="text-muted">{{ __('services.no_services_available') }}</p>
+                                <p class="text-muted">Layanan kami akan segera tersedia!</p>
                             </div>
                         @endforelse
                     </div>
@@ -162,15 +164,15 @@
     {{-- [BARU] Menyiapkan terjemahan untuk JavaScript --}}
     <script>
         const translations = {
-            success: "{{ __('services.alert_success') }}",
-            failure: "{{ __('services.alert_failure') }}",
-            info: "{{ __('services.alert_info') }}",
-            referral_applied: "{{ __('services.alert_referral_applied') }}",
-            referral_invalid: "{{ __('services.alert_referral_invalid') }}",
-            referral_not_found: "{{ __('services.alert_referral_not_found') }}",
-            referral_enter_first: "{{ __('services.alert_referral_enter_first') }}",
-            generic_error: "{{ __('services.alert_generic_error') }}",
-            validation_fails: "{{ __('services.alert_validation_fails') }}",
+            success: "Berhasil!",
+            failure: "Gagal!",
+            info: "Perhatian!",
+            referral_applied: "Kode referral berhasil diterapkan!",
+            referral_invalid: "Kode referral tidak valid atau sudah kadaluarsa.",
+            referral_not_found: "Kode referral tidak ditemukan.",
+            referral_enter_first: "Silakan masukkan kode referral terlebih dahulu.",
+            generic_error: "Terjadi kesalahan, silakan coba lagi.",
+            validation_fails: "Validasi gagal. Silakan periksa input Anda.",
         };
     </script>
     
