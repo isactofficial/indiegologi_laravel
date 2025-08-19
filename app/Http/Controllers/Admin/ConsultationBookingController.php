@@ -354,4 +354,12 @@ class ConsultationBookingController extends Controller
 
         return redirect()->route('admin.consultation-bookings.index')->with('success', 'Booking berhasil dihapus!');
     }
+
+    public function showUserProfile(User $user)
+    {
+        // Load relasi 'profile' untuk mendapatkan data tambahan
+        $user->load('profile');
+
+        return view('admin.users.show', compact('user'));
+    }
 }

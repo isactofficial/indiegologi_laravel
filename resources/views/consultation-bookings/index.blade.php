@@ -63,7 +63,8 @@
     {{-- Add Button --}}
     <div class="row mb-4">
         <div class="col-md-12 d-flex justify-content-end">
-            <a href="{{ route('admin.consultation-bookings.create') }}" class="btn btn-sporty-primary d-flex align-items-center px-4 py-2">
+            <a href="{{ route('admin.consultation-bookings.create') }}"
+                class="btn btn-sporty-primary d-flex align-items-center px-4 py-2">
                 <i class="fas fa-plus me-2"></i>
                 <span class="fw-semibold">Buat Booking Baru</span>
             </a>
@@ -73,8 +74,9 @@
     {{-- Table --}}
     <div class="card border-0 rounded-4 shadow-sm">
         <div class="card-body p-4">
-            @if(session('success'))
-                <div class="alert alert-success rounded-3 alert-custom-success mb-4"><i class="fas fa-check-circle me-2"></i>{{ session('success') }}</div>
+            @if (session('success'))
+                <div class="alert alert-success rounded-3 alert-custom-success mb-4"><i
+                        class="fas fa-check-circle me-2"></i>{{ session('success') }}</div>
             @endif
 
             <div class="table-responsive">
@@ -103,28 +105,48 @@
                                         $paymentStatus = strtolower($booking->invoice->payment_status ?? 'N/A');
                                         $paymentStatusClass = 'badge-' . $paymentStatus;
                                     @endphp
-                                    <span class="badge {{ $paymentStatusClass }}">{{ $booking->invoice->payment_status ?? 'N/A' }}</span>
+                                    <span
+                                        class="badge {{ $paymentStatusClass }}">{{ $booking->invoice->payment_status ?? 'N/A' }}</span>
                                 </td>
                                 <td class="py-3">
                                     @php
                                         // Mengambil status sesi dari booking
-                                        $sessionStatus = str_replace(' ', '-', strtolower($booking->session_status ?? 'N/A'));
+                                        $sessionStatus = str_replace(
+                                            ' ',
+                                            '-',
+                                            strtolower($booking->session_status ?? 'N/A'),
+                                        );
                                         $sessionStatusClass = 'badge-' . $sessionStatus;
                                     @endphp
-                                    <span class="badge {{ $sessionStatusClass }}">{{ ucfirst($booking->session_status ?? 'N/A') }}</span>
+                                    <span
+                                        class="badge {{ $sessionStatusClass }}">{{ ucfirst($booking->session_status ?? 'N/A') }}</span>
                                 </td>
                                 <td class="py-3">
                                     <div class="d-flex gap-2">
-                                        <a href="{{ route('admin.consultation-bookings.show', $booking->id) }}" class="btn btn-sm btn-outline-info rounded-pill px-3" style="border-color: #00617a; color: #00617a;" title="Lihat Invoice">
+                                        @if ($booking->user)
+                                            <a href="{{ route('admin.users.show', $booking->user->id) }}"
+                                                class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                                                style="border-color: #0d6efd; color: #0d6efd;" title="Lihat Profil User">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('admin.consultation-bookings.show', $booking->id) }}"
+                                            class="btn btn-sm btn-outline-info rounded-pill px-3"
+                                            style="border-color: #00617a; color: #00617a;" title="Lihat Invoice">
                                             <i class="fas fa-file-invoice"></i>
                                         </a>
-                                        <a href="{{ route('admin.consultation-bookings.edit', $booking->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3" style="border-color: #f4b704; color: #f4b704;" title="Edit Booking">
+                                        <a href="{{ route('admin.consultation-bookings.edit', $booking->id) }}"
+                                            class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+                                            style="border-color: #f4b704; color: #f4b704;" title="Edit Booking">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form action="{{ route('admin.consultation-bookings.destroy', $booking->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('admin.consultation-bookings.destroy', $booking->id) }}"
+                                            method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger rounded-pill px-3" style="border-color: #cb2786; color: #cb2786;" title="Hapus Booking">
+                                            <button type="button" onclick="confirmDelete(event, this.parentElement)"
+                                                class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                                style="border-color: #cb2786; color: #cb2786;" title="Hapus Booking">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
