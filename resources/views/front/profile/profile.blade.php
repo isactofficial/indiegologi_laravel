@@ -367,7 +367,6 @@
 
 {{-- Konten utama halaman profil --}}
 <div class="container-profile">
-    <!-- Notifikasi berhasil update data -->
     @if(session('success'))
     <div class="alert alert-success text-center mb-4">
         {{ session('success') }}
@@ -451,9 +450,47 @@
     <div class="appointment-section-wrapper mx-auto">
         <div id="appointments-list">
             @forelse($user->invoices as $index => $invoice)
+
+                @php
+                    $booking = \App\Models\ConsultationBooking::where('invoice_id', $invoice->id)->with('services')->first();
+                @endphp
             <div class="appointment-card" data-index="{{ $index }}">
                 <div class="appointment-header">
-                    <h3 class="appointment-title">{{ $invoice->session_type ?? 'Paket Konsultasi' }}</h3>
+                    @php
+                        $sessionTypes = collect();
+                        $offlineAddress = null;
+                        $displayText = 'Sesi Konsultasi'; // Fallback default
+
+                        if ($booking && $booking->services->isNotEmpty()) {
+                            // Ambil semua tipe sesi yang unik (e.g., ['Online', 'Offline'])
+                            $sessionTypes = $booking->services->pluck('pivot.session_type')->unique();
+
+                            // Cari alamat jika ada sesi offline
+                            if ($sessionTypes->contains('Offline')) {
+                                $offlineService = $booking->services->first(function ($service) {
+                                    return $service->pivot->session_type == 'Offline' && !empty($service->pivot->offline_address);
+                                });
+                                if ($offlineService) {
+                                    $offlineAddress = $offlineService->pivot->offline_address;
+                                }
+                            }
+
+                            // Tentukan teks yang akan ditampilkan berdasarkan jumlah tipe sesi
+                            if ($sessionTypes->count() > 1) {
+                                $displayText = 'Online & Offline';
+                            } elseif ($sessionTypes->count() == 1) {
+                                $displayText = ucfirst($sessionTypes->first());
+                            }
+
+                            // Tambahkan alamat jika ada
+                            if ($offlineAddress) {
+                                $displayText .= ' (' . $offlineAddress . ')';
+                            }
+                        }
+                    @endphp
+                    <h3 class="appointment-title">
+                        {{ $displayText }}
+                    </h3>
                     @php
                         $displayPaymentStatus = $invoice->payment_status;
                         switch (Str::lower($invoice->payment_status)) {
@@ -501,12 +538,16 @@
                         <div class="detail-value">{{ $displayPaymentType ?? '-' }}</div>
                     </div>
                 </div>
+                @if ($booking)
                 <div class="appointment-actions">
-                    <a href="#" class="btn btn-secondary-outline">Print</a>
-                    @if(Str::lower($invoice->payment_status) !== 'paid')
-                        <a href="#" class="btn btn-primary">Bayar Sekarang</a>
+                    <a href="{{ route('admin.consultation-bookings.download-pdf', $booking->id) }}" class="btn btn-secondary-outline">
+                        <i class="fas fa-download me-2"></i>PDF
+                    </a>
+                    @if(Str::lower($invoice->payment_status) !== 'paid' && Str::lower($invoice->payment_status) !== 'dibatalkan')
+                        <a href="{{ route('invoice.show', $booking) }}" class="btn btn-primary">Bayar Sekarang</a>
                     @endif
                 </div>
+                @endif
             </div>
             @empty
             <div class="text-center text-muted no-appointment-message">

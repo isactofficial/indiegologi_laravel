@@ -183,27 +183,20 @@
             color: #0C2C5A;
             padding: 16px 8px;
             border-bottom: none;
-            /* margin-bottom dihapus dari sini */
         }
 
-        /* (BARU) Style untuk total yang harus dibayar jika DP */
         .summary-line.total-payable {
-            background-color: #0C2C5A; /* Warna biru tua agar kontras */
-            color: #fff; /* Teks putih */
+            background-color: #0C2C5A;
+            color: #fff;
             font-weight: 700;
             padding: 16px 8px;
             border-bottom: none;
-            margin-bottom: 100px; /* Margin bawah dipindahkan ke sini */
+            margin-bottom: 100px;
         }
 
         .invoice-footer {
             clear: both;
             padding-top: 100px;
-        }
-
-        .service-table .discount-row {
-            /* (DIUBAH) Baris ini dihapus untuk mengurangi jarak */
-            /* border-bottom: 20px solid white; */
         }
 
         .payment-info {
@@ -304,8 +297,20 @@
                     <span>: {{ optional($consultationBooking->invoice)?->due_date?->format('d/F/Y') ?? 'N/A' }}</span>
                     <span>Status</span>
                     <span>: {{ ucfirst(optional($consultationBooking->invoice)?->payment_status ?? 'N/A') }}</span>
+
                     <span>Session</span>
-                    <span>: {{ ucfirst($consultationBooking->session_status ?? 'N/A') }}</span>
+                    <span>:
+                        @php
+                            $sessionTypes = $consultationBooking->services
+                                            ->pluck('pivot.session_type')
+                                            ->unique()
+                                            ->map(function ($type) {
+                                                return ucfirst($type);
+                                            })
+                                            ->join(', ');
+                        @endphp
+                        {{ $sessionTypes ?: 'N/A' }}
+                    </span>
 
                     <span>Payment Type</span>
                     <span>:
@@ -351,25 +356,23 @@
                         </tr>
                         @endif
 
-                        <tr class="discount-row">
-                            <td>Diskon</td>
-                            <td class="text-right">
-                                @if ($service->pivot->discount_amount_at_booking > 0)
-                                    1
-                                @else
-                                    0
-                                @endif
-                            </td>
-                            <td class="text-right">-</td>
-                            <td class="text-right">
-                                @if (optional($service->pivot->referralCode)->discount_percentage)
-                                    {{ rtrim(rtrim(number_format($service->pivot->referralCode->discount_percentage, 2, ',', '.'), '0'), ',') }}%
-                                @else
-                                    0%
-                                @endif
-                            </td>
-                            <td class="text-right">-Rp {{ number_format($service->pivot->discount_amount_at_booking, 0, ',', '.') }}</td>
-                        </tr>
+                        {{-- ==================== PERUBAHAN DIMULAI DI SINI ==================== --}}
+                        @if ($service->pivot->discount_amount_at_booking > 0)
+                            <tr class="discount-row">
+                                <td>Diskon</td>
+                                <td class="text-right">1</td>
+                                <td class="text-right">-</td>
+                                <td class="text-right">
+                                    @if (optional($service->pivot->referralCode)->discount_percentage)
+                                        {{ rtrim(rtrim(number_format($service->pivot->referralCode->discount_percentage, 2, ',', '.'), '0'), ',') }}%
+                                    @else
+                                        0%
+                                    @endif
+                                </td>
+                                <td class="text-right">-Rp {{ number_format($service->pivot->discount_amount_at_booking, 0, ',', '.') }}</td>
+                            </tr>
+                        @endif
+                        {{-- ==================== PERUBAHAN SELESAI DI SINI ==================== --}}
                     @endforeach
                 </tbody>
             </table>
@@ -380,19 +383,22 @@
                     <span>Rp
                         {{ number_format(optional($consultationBooking->invoice)->total_amount + optional($consultationBooking->invoice)->discount_amount, 0, ',', '.') }}</span>
                 </div>
+
+                {{-- ==================== PERUBAHAN DIMULAI DI SINI ==================== --}}
+                @if (optional($consultationBooking->invoice)->discount_amount > 0)
                 <div class="summary-line">
                     <span><b>Total Diskon Item:</b></span>
                     <span><b>-Rp
                             {{ number_format(optional($consultationBooking->invoice)->discount_amount, 0, ',', '.') }}</b></span>
                 </div>
+                @endif
+                {{-- ==================== PERUBAHAN SELESAI DI SINI ==================== --}}
 
-                {{-- Selalu tampilkan total keseluruhan --}}
                 <div class="summary-line grand-total">
                     <span>TOTAL KESELURUHAN :</span>
                     <span>Rp {{ number_format(optional($consultationBooking->invoice)->total_amount, 0, ',', '.') }}</span>
                 </div>
 
-                {{-- Jika pembayaran adalah DP, tampilkan baris total yang harus dibayar --}}
                 @if ($consultationBooking->payment_type == 'dp')
                     @php
                         $dpAmount = optional($consultationBooking->invoice)->total_amount * 0.5;
@@ -402,7 +408,6 @@
                         <span>Rp {{ number_format($dpAmount, 0, ',', '.') }}</span>
                     </div>
                 @else
-                    {{-- Jika bukan DP, kita tambahkan kembali margin bawah ke grand total via inline style --}}
                     <style>
                         .summary-line.grand-total {
                             margin-bottom: 100px;
