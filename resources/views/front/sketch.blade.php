@@ -41,7 +41,7 @@
 </div>
 
 <style>
-/* Semua CSS Anda tetap sama, tidak perlu diubah */
+
 .sketch-telling-section {
     padding: 80px 0;
     text-align: center;
@@ -63,13 +63,18 @@
     margin: 0 auto 50px auto;
     line-height: 1.6;
 }
+
+
 .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* Diubah menjadi 3 kolom */
+    grid-template-columns: repeat(3, 1fr);
     gap: 30px;
     justify-content: center;
     padding-bottom: 50px;
 }
+
+
 .card {
     background-color: #fff;
     border-radius: 10px;
@@ -131,9 +136,12 @@
 .read-more:hover {
     text-decoration: underline;
 }
+
+/* ==================== PENYESUAIAN RESPONSIVE ==================== */
 @media (max-width: 992px) {
     .cards-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        /* Diubah menjadi 2 kolom untuk tablet */
+        grid-template-columns: repeat(2, 1fr);
     }
     .section-title {
         font-size: 2.2rem;
@@ -147,6 +155,7 @@
 }
 @media (max-width: 768px) {
     .cards-grid {
+        /* Diubah menjadi 1 kolom untuk mobile */
         grid-template-columns: 1fr;
         max-width: 400px;
         margin: 0 auto;

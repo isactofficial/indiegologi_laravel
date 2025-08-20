@@ -15,6 +15,11 @@
         background-color: #dc3545;
         color: #fff;
     }
+
+    .badge-unpaid {
+        background-color: #dc3545;
+        color: #fff;
+    }
     .badge-menunggu-pembayaran {
         background-color: #ffc107;
         color: #343a40;
