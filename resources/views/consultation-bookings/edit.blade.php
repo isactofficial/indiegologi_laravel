@@ -103,7 +103,7 @@
                         <select id="payment_status" name="payment_status" class="form-select @error('payment_status') is-invalid @enderror" required>
                             <option value="Pending" {{ old('payment_status', optional($consultationBooking->invoice)->payment_status) == 'Pending' ? 'selected' : '' }}>Pending</option>
                             <option value="Paid" {{ old('payment_status', optional($consultationBooking->invoice)->payment_status) == 'Paid' ? 'selected' : '' }}>Paid</option>
-                            <option value="Failed" {{ old('payment_status', optional($consultationBooking->invoice)->payment_status) == 'Failed' ? 'selected' : '' }}>Failed</option>
+                            <option value="UnPaid" {{ old('payment_status', optional($consultationBooking->invoice)->payment_status) == 'UnPaid' ? 'selected' : '' }}>UnPaid</option>
                         </select>
                         @error('payment_status')
                             <div class="invalid-feedback d-block">{{ $message }}</div>

@@ -243,7 +243,7 @@ class ConsultationBookingController extends Controller
             'payment_type' => 'required|string|in:dp,full_payment',
             'receiver_name' => 'nullable|string|max:255',
             'session_status' => 'required|string|in:menunggu pembayaran,terdaftar,ongoing,selesai,dibatalkan',
-            'payment_status' => 'required|string|in:Pending,Paid,Failed',
+            'payment_status' => 'required|string|in:Pending,Paid,UnPaid',
         ]);
 
         $totalFinalPrice = 0;

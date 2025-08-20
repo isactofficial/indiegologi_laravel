@@ -284,7 +284,7 @@
                     @endif
 
                     <span>No Hp</span>
-                    <span>: {{ optional($consultationBooking->user)->phone_number ?? 'N/A' }}</span>
+                    <span>: {{ optional($consultationBooking->user->profile)->phone_number ?? 'N/A' }}</span>
                 </div>
 
                 <div class="invoice-details-info">
@@ -302,12 +302,12 @@
                     <span>:
                         @php
                             $sessionTypes = $consultationBooking->services
-                                            ->pluck('pivot.session_type')
-                                            ->unique()
-                                            ->map(function ($type) {
-                                                return ucfirst($type);
-                                            })
-                                            ->join(', ');
+                                                ->pluck('pivot.session_type')
+                                                ->unique()
+                                                ->map(function ($type) {
+                                                    return ucfirst($type);
+                                                })
+                                                ->join(', ');
                         @endphp
                         {{ $sessionTypes ?: 'N/A' }}
                     </span>
@@ -347,7 +347,7 @@
                         @if($service->pivot->hours_booked > 0 && $service->hourly_price > 0)
                         <tr class="service-hours-row">
                             <td style="padding-left: 25px;">
-                                 Sesi Tambahan ({{ $service->pivot->hours_booked }} Jam)
+                                  Sesi Tambahan ({{ $service->pivot->hours_booked }} Jam)
                             </td>
                             <td class="text-right"></td>
                             <td class="text-right">Rp {{ number_format($service->hourly_price, 0, ',', '.') }}</td>
@@ -356,7 +356,7 @@
                         </tr>
                         @endif
 
-                        {{-- ==================== PERUBAHAN DIMULAI DI SINI ==================== --}}
+
                         @if ($service->pivot->discount_amount_at_booking > 0)
                             <tr class="discount-row">
                                 <td>Diskon</td>
@@ -372,7 +372,7 @@
                                 <td class="text-right">-Rp {{ number_format($service->pivot->discount_amount_at_booking, 0, ',', '.') }}</td>
                             </tr>
                         @endif
-                        {{-- ==================== PERUBAHAN SELESAI DI SINI ==================== --}}
+
                     @endforeach
                 </tbody>
             </table>
@@ -384,7 +384,7 @@
                         {{ number_format(optional($consultationBooking->invoice)->total_amount + optional($consultationBooking->invoice)->discount_amount, 0, ',', '.') }}</span>
                 </div>
 
-                {{-- ==================== PERUBAHAN DIMULAI DI SINI ==================== --}}
+
                 @if (optional($consultationBooking->invoice)->discount_amount > 0)
                 <div class="summary-line">
                     <span><b>Total Diskon Item:</b></span>
@@ -392,7 +392,7 @@
                             {{ number_format(optional($consultationBooking->invoice)->discount_amount, 0, ',', '.') }}</b></span>
                 </div>
                 @endif
-                {{-- ==================== PERUBAHAN SELESAI DI SINI ==================== --}}
+
 
                 <div class="summary-line grand-total">
                     <span>TOTAL KESELURUHAN :</span>
