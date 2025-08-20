@@ -42,8 +42,8 @@ class ConsultationBooking extends Model
     public function services()
     {
         return $this->belongsToMany(ConsultationService::class, 'booking_service', 'booking_id', 'service_id')
-                    ->using(BookingService::class) // <-- WAJIB: Tentukan model pivotnya di sini
-                    ->withPivot(
+                    ->using(BookingService::class)
+                    ->withPivot([
                         'total_price_at_booking',
                         'discount_amount_at_booking',
                         'final_price_at_booking',
@@ -52,8 +52,10 @@ class ConsultationBooking extends Model
                         'booked_date',
                         'booked_time',
                         'session_type',
-                        'offline_address'
-                    )
+                        'offline_address',
+                 
+                        'invoice_id'
+                    ])
                     ->withTimestamps();
     }
 }

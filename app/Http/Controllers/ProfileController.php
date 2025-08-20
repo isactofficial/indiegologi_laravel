@@ -8,8 +8,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Profile;
-use App\Models\Invoice; // Pastikan model Invoice di-import
+use App\Models\UserProfile; 
+use App\Models\Invoice;
 
 class ProfileController extends Controller
 {
@@ -19,10 +19,9 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        // Load relasi profile dan invoices untuk user yang sedang login
-        $user->load(['profile', 'invoices']); // Memuat data profile dan invoices sekaligus
+        // Load relasi profile (yang sebenarnya UserProfile) dan invoices
+        $user->load(['profile', 'invoices']); // Relasi 'profile' di model User harus mengacu ke UserProfile
 
-        // Data $invoices sudah tersedia melalui $user->invoices di view
         return view('front.profile.profile', compact('user'));
     }
 
@@ -32,7 +31,7 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $user->load('profile');
+        $user->load('profile'); // Relasi 'profile' di model User harus mengacu ke UserProfile
 
         return view('front.profile.edit', compact('user'));
     }
@@ -59,7 +58,8 @@ class ProfileController extends Controller
         $user->save();
 
         // Update profile info
-        $profile = $user->profile ?? new Profile(['user_id' => $user->id]);
+        // <--- PERUBAHAN DI SINI: Menggunakan UserProfile saat membuat instance baru
+        $profile = $user->profile ?? new UserProfile(['user_id' => $user->id]);
         $profile->birthdate = $request->birthdate;
         $profile->gender = $request->gender;
         $profile->phone_number = $request->phone_number;
