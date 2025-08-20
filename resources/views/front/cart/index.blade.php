@@ -6,7 +6,7 @@
 {{-- [BRAND] Import font yang elegan dan modern dari Google Fonts --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
     /* === [BRAND IDENTITY] Cart Page Styles V3 === */
@@ -21,7 +21,7 @@
         --brand-surface: #ffffff;
         --brand-border: #dee2e6;
         --brand-danger: #dc3545;
-        --font-main: 'Poppins', sans-serif;
+        --font-main: 'Playfair Display', sans-serif;
     }
 
     body {

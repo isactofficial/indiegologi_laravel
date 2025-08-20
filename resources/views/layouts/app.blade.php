@@ -12,7 +12,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    {{-- [PERUBAHAN] Menambahkan Google Font untuk Playfair Display --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -29,7 +34,8 @@
     }
 
     body {
-        font-family: 'Poppins', sans-serif;
+        /* [PERUBAHAN] Mengganti font utama dan menambahkan fallback 'serif' */
+        font-family: 'Playfair Display';
         background-color: var(--indiegologi-light);
         padding-top: var(--navbar-height);
     }
@@ -57,6 +63,7 @@
         font-weight: 700;
         color: var(--indiegologi-primary) !important;
         transition: color 0.3s ease;
+        font-family: 'Playfair Display'; /* Brand tetap menggunakan Poppins agar lebih modern */
     }
 
     .navbar .nav-link {
@@ -66,6 +73,7 @@
         padding: 0.6rem 1rem;
         border-radius: 8px;
         transition: color 0.3s ease, transform 0.3s ease;
+        font-family: 'Playfair Display';
     }
 
     .navbar .nav-link:hover {
@@ -116,7 +124,7 @@
         border-bottom: 1px solid #dee2e6;
     }
 
-    /* [PERUBAHAN UX] Style untuk menu offcanvas baru */
+    /* Style untuk menu offcanvas baru */
     .offcanvas-body .nav-link {
         font-size: 1.1rem; /* Ukuran font yang lebih nyaman */
         padding: 0.85rem 0; /* Jarak vertikal yang lebih baik */
@@ -208,12 +216,10 @@
         box-shadow: none !important;
     }
 
-    /* Sembunyikan di mobile dan tampilkan di desktop */
     #google_translate_element.d-none.d-lg-block {
         margin-left: 0.75rem;
     }
 
-    /* Sembunyikan di desktop dan tampilkan di mobile */
     .mobile-language-link {
         display: none;
     }
@@ -246,12 +252,12 @@
         <div class="container-fluid">
             {{-- Brand/Logo --}}
             <a class="navbar-brand" href="{{ route('front.index') }}">
-                <h1 class="text-primary m-0 p-0">INDIEGOLOGI</h1>
+                <h1 class="text-primary m-0 p-0">Indiegologi</h1>
             </a>
 
             <div class="d-flex align-items-center d-lg-none">
                 @auth
-                <a class="nav-link position-relative fs-4 me-2" href="{{ route('front.cart.view') }}" title="{{ __('navbar.cart') }}">
+                <a class="nav-link position-relative fs-4 me-2" href="{{ route('front.cart.view') }}" title="Keranjang">
                     <i class="bi bi-cart"></i>
                     @php
                         $cartCountMobile = \App\Models\CartItem::where('user_id', auth()->id())->count();
@@ -269,11 +275,11 @@
             {{-- Desktop Menu --}}
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">BERANDA</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">BERITA</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">LAYANAN</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">SKETSA</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">KONTAK KAMI</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">Berita</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">Layanan</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">Sketsa</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">Kontak Kami</a></li>
 
                     {{-- Separator --}}
                     <li class="nav-item d-none d-lg-block"><div class="nav-separator"></div></li>
@@ -290,21 +296,21 @@
                                     <span class="badge rounded-pill bg-danger cart-badge {{ $cartCount == 0 ? 'd-none' : '' }}" id="cart-count-badge">{{ $cartCount }}</span>
                                 </a>
                                 <div class="dropdown">
-                                    <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ __('navbar.view_profile') }}"><i class="bi bi-person-circle"></i></a>
+                                    <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil"><i class="bi bi-person-circle"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDropdown">
-                                        <li><a class="dropdown-item" href="{{ route('profile.index') }}">PROFIL SAYA</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('profile.index') }}">Profil Saya</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <form method="POST" action="{{ route('logout') }}">
                                                 @csrf
-                                                <button type="submit" class="dropdown-item">LOGOUT</button>
+                                                <button type="submit" class="dropdown-item">Logout</button>
                                             </form>
                                         </li>
                                     </ul>
                                 </div>
 
                             @else
-                                <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">LOGIN</a>
+                                <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">Login</a>
                             @endguest
 
                             {{-- Widget Google Translate bawaan untuk Desktop --}}
@@ -337,11 +343,11 @@
         <div class="offcanvas-body d-flex flex-column">
             {{-- Main Navigation --}}
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}"><i class="bi bi-house"></i><span>BERANDA</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-newspaper"></i><span>BERITA</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}"><i class="bi bi-grid"></i><span>LAYANAN</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-pencil-square"></i><span>SKETSA</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-envelope"></i><span>KONTAK KAMI</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}"><i class="bi bi-house"></i><span>Beranda</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-newspaper"></i><span>Berita</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}"><i class="bi bi-grid"></i><span>Layanan</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-pencil-square"></i><span>Sketsa</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-envelope"></i><span>Kontak Kami</span></a></li>
             </ul>
             <hr>
 
@@ -374,10 +380,10 @@
                 @auth
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="btn btn-danger logout-btn"><i class="bi bi-box-arrow-right me-2"></i>LOGOUT</button>
+                        <button type="submit" class="btn btn-danger logout-btn"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
                     </form>
                 @else
-                    <a class="btn btn-primary logout-btn" href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-2"></i>LOGIN</a>
+                    <a class="btn btn-primary logout-btn" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">Login</a>
                 @endguest
             </div>
         </div>
