@@ -11,23 +11,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
     public function process(Request $request)
     {
-        // Validasi sudah benar, 'global_payment_type' sudah ada di sini
         $validatedData = $request->validate([
             'selected_items' => 'required|array|min:1',
             'selected_items.*' => 'exists:cart_items,id',
             'global_payment_type' => ['required', Rule::in(['full_payment', 'dp'])],
         ]);
 
-        // AMBIL TIPE PEMBAYARAN DARI REQUEST YANG SUDAH DIVALIDASI
         $selectedPaymentType = $validatedData['global_payment_type'];
 
         $user = Auth::user();
         $selectedItemIds = $request->input('selected_items', []);
+
         if (empty($selectedItemIds)) {
             return back()->with('error', 'Pilih setidaknya satu layanan.');
         }
@@ -58,11 +58,19 @@ class CheckoutController extends Controller
                 $referralIdToSave = null;
 
                 if ($item->referralCode) {
-                    $itemDiscount = $itemPrice * ($item->referralCode->discount_percentage / 100);
-                    $totalDiscount += $itemDiscount;
-                    $referralIdToSave = $item->referralCode->id;
-                    if (!in_array($referralIdToSave, $usedReferralCodeIds)) {
-                        $usedReferralCodeIds[] = $referralIdToSave;
+                    $code = $item->referralCode;
+                    $isValid = !$code->valid_until || (new \DateTime($code->valid_until)) > (new \DateTime());
+                    $hasUses = !$code->max_uses || $code->current_uses < $code->max_uses;
+
+                    if ($isValid && $hasUses) {
+                        $itemDiscount = $itemPrice * ($code->discount_percentage / 100);
+                        $totalDiscount += $itemDiscount;
+                        $referralIdToSave = $code->id;
+                        if (!in_array($referralIdToSave, $usedReferralCodeIds)) {
+                            $usedReferralCodeIds[] = $referralIdToSave;
+                        }
+                    } else {
+                        Log::warning("Referral code {$code->code} for cart item {$item->id} is invalid at checkout.");
                     }
                 }
 
@@ -74,14 +82,15 @@ class CheckoutController extends Controller
                     'booked_time'                => $item->booked_time,
                     'hours_booked'               => $item->hours,
                     'session_type'               => $item->session_type,
-                    'offline_address'            => $item->session_type == 'online' ? null : $item->offline_address,
+                    'offline_address'            => $item->session_type == 'Offline' ? $item->offline_address : null,
                     'referral_code_id'           => $referralIdToSave,
+                    // 'user_id' => $user->id, // <-- HAPUS BARIS INI!
+                    'invoice_id'                 => null,
                 ];
             }
 
             $grandTotal = $subtotal - $totalDiscount;
 
-            // Buat Invoice
             $invoice = Invoice::create([
                 'user_id'         => $user->id,
                 'invoice_no'      => 'INV-' . strtoupper(Str::random(8)),
@@ -90,12 +99,15 @@ class CheckoutController extends Controller
                 'total_amount'    => $grandTotal,
                 'discount_amount' => $totalDiscount,
                 'paid_amount'     => 0.00,
-                'payment_type'    => $selectedPaymentType, // Perbarui juga di sini untuk konsistensi
+                'payment_type'    => $selectedPaymentType,
                 'payment_status'  => 'pending',
                 'session_type'    => $firstItem->session_type,
             ]);
 
-            // Buat Booking
+            foreach ($servicesToAttach as $serviceId => $pivotData) {
+                $servicesToAttach[$serviceId]['invoice_id'] = $invoice->id;
+            }
+
             $booking = ConsultationBooking::create([
                 'user_id'         => $user->id,
                 'invoice_id'      => $invoice->id,
@@ -104,7 +116,6 @@ class CheckoutController extends Controller
                 'discount_amount' => $totalDiscount,
                 'session_status'  => 'menunggu pembayaran',
                 'contact_preference' => $firstItem->contact_preference,
-                // PERUBAHAN UTAMA DI SINI
                 'payment_type'    => $selectedPaymentType,
             ]);
 
@@ -121,7 +132,8 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            Log::error('Checkout failed: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
+            return back()->with('error', 'Terjadi kesalahan saat memproses pesanan Anda. Detail: ' . $e->getMessage());
         }
     }
 }

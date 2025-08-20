@@ -7,12 +7,14 @@ use App\Models\Sketch;
 use App\Models\ConsultationService;
 use App\Models\ReferralCode;
 use App\Models\CartItem;
+use App\Models\BookingService; // Tambahkan import untuk model BookingService
+use App\Models\Invoice; // Tambahkan import untuk model Invoice
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon; // Pastikan Carbon diimpor untuk validasi tanggal
+use Carbon\Carbon; // Pastikan Carbon sudah diimpor
 
 class FrontController extends Controller
 {
@@ -73,6 +75,102 @@ class FrontController extends Controller
     public function contact()
     {
         return view('front.contact');
+    }
+
+    /**
+     * Memeriksa ketersediaan jadwal layanan.
+     * Menerima booked_date, booked_time, hours_booked, dan service_id.
+     * Akan memeriksa tumpang tindih dengan booking yang sudah dibayar.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkBookingAvailability(Request $request)
+    {
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'booked_date' => 'required|date_format:Y-m-d',
+            'booked_time' => 'required|date_format:H:i',
+            'hours_booked' => 'required|integer|min:0',
+            'service_id' => 'required|exists:consultation_services,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'available' => false,
+                'message' => 'Validasi input jadwal gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $bookedDate = $request->input('booked_date');
+        $bookedTime = $request->input('booked_time');
+        $hoursBooked = (int) $request->input('hours_booked');
+        $serviceId = $request->input('service_id');
+
+        // Menggabungkan tanggal dan jam untuk membuat objek Carbon untuk waktu yang diminta
+        try {
+            $requestedStart = Carbon::parse("{$bookedDate} {$bookedTime}");
+        } catch (\Exception $e) {
+            Log::error("Failed to parse requested start time: {$bookedDate} {$bookedTime} - " . $e->getMessage());
+            return response()->json([
+                'available' => false,
+                'message' => 'Format tanggal atau jam tidak valid.'
+            ], 422);
+        }
+
+        // Menghitung waktu selesai booking yang diminta
+        $requestedEnd = $requestedStart->copy()->addHours($hoursBooked);
+
+        // Pastikan service_id yang diberikan valid dan sesuai dengan ConsultationService
+        $service = ConsultationService::find($serviceId);
+        if (!$service) {
+            return response()->json([
+                'available' => false,
+                'message' => 'Layanan tidak ditemukan.'
+            ], 404);
+        }
+
+        // Query untuk mencari booking yang sudah dibayar dan terikat dengan layanan ini
+        // Asumsi: Model BookingService memiliki relasi 'invoice' ke model Invoice,
+        // dan BookingService memiliki kolom 'service_id'.
+        $existingBookings = BookingService::where('service_id', $serviceId)
+            ->whereHas('invoice', function ($query) {
+                $query->where('payment_status', 'paid');
+            })
+            ->get();
+
+        foreach ($existingBookings as $booking) {
+            // Menggabungkan booked_date dan booked_time dari database
+            try {
+                $existingStart = Carbon::parse("{$booking->booked_date} {$booking->booked_time}");
+            } catch (\Exception $e) {
+                Log::warning("Failed to parse existing booking start time for booking ID {$booking->id}: {$booking->booked_date} {$booking->booked_time} - " . $e->getMessage());
+                // Lewati booking ini jika waktu tidak dapat di-parsing
+                continue;
+            }
+
+            // Menghitung waktu selesai booking yang sudah ada
+            $existingEnd = $existingStart->copy()->addHours($booking->hours_booked);
+
+            // Memeriksa apakah ada tumpang tindih waktu
+            // Logika overlap: (RequestedStart < ExistingEnd) AND (ExistingStart < RequestedEnd)
+            // Ini berarti ada tumpang tindih jika waktu mulai yang diminta lebih awal dari waktu berakhir booking yang ada
+            // DAN waktu mulai booking yang ada lebih awal dari waktu berakhir yang diminta.
+            if ($requestedStart->lt($existingEnd) && $existingStart->lt($requestedEnd)) {
+                // Jika ada tumpang tindih, kirim respons error
+                return response()->json([
+                    'available' => false,
+                    'message' => 'Jadwal yang Anda pilih sudah terisi. Silakan pilih waktu lain.'
+                ], 409); // Menggunakan status code 409 Conflict
+            }
+        }
+
+        // Jika tidak ada tumpang tindih, kirim respons berhasil
+        return response()->json([
+            'available' => true,
+            'message' => 'Jadwal tersedia.'
+        ]);
     }
 
     // --- Metode Keranjang Belanja ---
@@ -225,8 +323,8 @@ class FrontController extends Controller
         }
 
         $cartItem = CartItem::where('id', $request->id)
-                            ->where('user_id', Auth::id())
-                            ->first();
+                             ->where('user_id', Auth::id())
+                             ->first();
 
         if ($cartItem) {
             $cartItem->delete();

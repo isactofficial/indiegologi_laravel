@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\FrontController;
+use App\Http\Controllers\FrontController; // Pastikan ini ada
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AdminDashboardController;
@@ -78,23 +78,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [FrontController::class, 'viewCart'])->name('view');
         Route::post('/add', [FrontController::class, 'addToCart'])->name('add');
         Route::post('/remove', [FrontController::class, 'removeFromCart'])->name('remove');
-    });
-});
-
-Route::middleware(['auth'])->group(function () {
-    // ... (route profile)
-
-    // [PERUBAHAN DI SINI] Cart Routes
-    Route::prefix('cart')->name('front.cart.')->group(function () {
-        Route::get('/', [App\Http\Controllers\FrontController::class, 'viewCart'])->name('view');
-        Route::post('/add', [App\Http\Controllers\FrontController::class, 'addToCart'])->name('add');
-        Route::post('/remove', [App\Http\Controllers\FrontController::class, 'removeFromCart'])->name('remove');
-        // TAMBAHKAN ROUTE INI UNTUK AJAX
-        Route::post('/update-summary', [App\Http\Controllers\FrontController::class, 'updateCartSummary'])->name('updateSummary');
+        // TAMBAHKAN ROUTE INI UNTUK AJAX UPDATE SUMMARY
+        Route::post('/update-summary', [FrontController::class, 'updateCartSummary'])->name('updateSummary');
     });
 
     // Checkout Route
     Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
+
+    // [PENTING: TAMBAHKAN ROUTE INI UNTUK CEK KETERSEDIAAN JADWAL]
+    // Ini adalah rute yang akan dipanggil oleh AJAX di layanan.blade.php
+    Route::post('/check-availability', [FrontController::class, 'checkBookingAvailability'])->name('front.check.availability');
 });
 
 
@@ -144,3 +137,4 @@ Route::get('/invoice/{consultationBooking}', [InvoiceController::class, 'show'])
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
 Route::get('/users/profile/{user}', [ConsultationBookingController::class, 'showUserProfile'])->name('admin.users.show');
+

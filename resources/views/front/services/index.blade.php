@@ -30,8 +30,8 @@
                                         <div class="d-flex justify-content-between align-items-center w-100">
                                             <div class="d-flex align-items-center">
                                                 <img src="{{ asset('storage/' . $service->thumbnail) }}"
-                                                    alt="{{ $service->title }}" class="d-none d-md-block rounded-3 me-3"
-                                                    style="width: 100px; height: 100px; object-fit: cover;">
+                                                     alt="{{ $service->title }}" class="d-none d-md-block rounded-3 me-3"
+                                                     style="width: 100px; height: 100px; object-fit: cover;">
                                                 <div>
                                                     {{-- Konten Dinamis (Tidak Diterjemahkan) --}}
                                                     <h5 class="fw-bold mb-1">{{ $service->title }}</h5>
@@ -59,7 +59,7 @@
                                                     <p>{{ $service->product_description }}</p>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="form-section mb-4">
                                                 <div class="row">
                                                     <div class="col-12 mb-3">
@@ -75,12 +75,15 @@
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label for="booked_time-{{ $service->id }}" class="form-label">Jam Mulai:</label>
-                                                            <input type="time" id="booked_time-{{ $service->id }}" class="form-control" required>
+                                                            {{-- Tambahkan kelas booked_time-input dan div untuk pesan error --}}
+                                                            <input type="time" id="booked_time-{{ $service->id }}" class="form-control booked_time-input" required>
+                                                            <div class="invalid-feedback d-block time-error-message" style="display: none;"></div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label for="hours-{{ $service->id }}" class="form-label">Jumlah Jam</label>
+                                                            {{-- Tambahkan kelas hours-input --}}
                                                             <input type="number" id="hours-{{ $service->id }}" class="form-control hours-input" value="0" min="0" required>
                                                         </div>
                                                     </div>
@@ -121,12 +124,13 @@
                                                 <div class="row justify-content-between align-items-start mb-3">
                                                     <div class="col-auto">
                                                         <div class="final-price-display">
-                                                            <span class="final-price">{{ number_format($service->price, 0, ',', '.') }}</span>
+                                                            <span class="final-price">Rp. {{ number_format($service->price, 0, ',', '.') }}</span>
                                                         </div>
                                                         <div class="d-none"><span class="initial-price"></span><span class="discount-amount"></span></div>
                                                     </div>
                                                     <div class="col-auto">
                                                         @auth
+                                                            {{-- Tombol "Pilih Layanan" akan dinonaktifkan secara default atau oleh JS --}}
                                                             <button type="button" class="btn btn-primary px-4 py-2 select-service-btn" data-service-id="{{ $service->id }}">Pilih Layanan</button>
                                                         @else
                                                             <p class="text-danger mb-0">Silakan <a href="{{ route('login') }}">login</a> untuk memilih layanan.</p>
@@ -160,7 +164,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     {{-- [BARU] Menyiapkan terjemahan untuk JavaScript --}}
     <script>
         const translations = {
@@ -173,9 +177,11 @@
             referral_enter_first: "Silakan masukkan kode referral terlebih dahulu.",
             generic_error: "Terjadi kesalahan, silakan coba lagi.",
             validation_fails: "Validasi gagal. Silakan periksa input Anda.",
+            schedule_unavailable: "Jadwal tidak tersedia. Silakan pilih waktu lain.", // Pesan baru
+            schedule_check_error: "Terjadi kesalahan saat memeriksa jadwal. Coba lagi.", // Pesan baru
         };
     </script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date();
@@ -223,7 +229,7 @@
                 const block = $(this).closest('.service-block');
                 calculatePrices(block);
             });
-            
+
             $('.accordion-body').on('change', '.session-type-select', function() {
                 const block = $(this).closest('.service-block');
                 const container = block.find('.offline-address-container');
@@ -267,6 +273,62 @@
                 calculatePrices(block);
             });
 
+            // --- Bagian BARU untuk validasi jadwal ---
+            $('.accordion-body').on('change input', '.service-date-picker, .booked_time-input, .hours-input', function() {
+                const block = $(this).closest('.service-block');
+                const serviceId = block.data('service-id');
+                const bookedDate = block.find('#booked_date-' + serviceId).val();
+                const bookedTime = block.find('#booked_time-' + serviceId).val();
+                const hoursBooked = parseInt(block.find('#hours-' + serviceId).val()) || 0; // Pastikan ini integer
+                const selectBtn = block.find('.select-service-btn');
+                const timeErrorDisplay = block.find('.time-error-message');
+
+                // Hanya jalankan jika semua input jadwal sudah terisi dan hoursBooked > 0
+                if (bookedDate && bookedTime && hoursBooked >= 0) { // Izinkan 0 jam untuk layanan yang tidak berbasis jam
+                    // Nonaktifkan tombol saat pemeriksaan berlangsung
+                    selectBtn.prop('disabled', true).text('Memeriksa Jadwal...');
+                    timeErrorDisplay.text('').hide(); // Sembunyikan pesan error sebelumnya
+
+                    $.ajax({
+                        url: '{{ route("front.check.availability") }}', // Rute yang sudah kita buat di web.php
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            service_id: serviceId,
+                            booked_date: bookedDate,
+                            booked_time: bookedTime,
+                            hours_booked: hoursBooked
+                        },
+                        success: function(response) {
+                            if (response.available) {
+                                selectBtn.prop('disabled', false).text('Pilih Layanan');
+                                timeErrorDisplay.text('').hide();
+                            } else {
+                                selectBtn.prop('disabled', true).text('Jadwal Tidak Tersedia');
+                                timeErrorDisplay.text(response.message || translations.schedule_unavailable).show();
+                            }
+                        },
+                        error: function(response) {
+                            let errorMessage = translations.schedule_check_error;
+                            if (response.responseJSON && response.responseJSON.message) {
+                                errorMessage = response.responseJSON.message;
+                            } else if (response.responseJSON && response.responseJSON.errors) {
+                                // Tampilkan error validasi dari backend jika ada
+                                const errorMessages = Object.values(response.responseJSON.errors).flat().join(' ');
+                                errorMessage = translations.validation_fails + ' ' + errorMessages;
+                            }
+                            selectBtn.prop('disabled', true).text('Jadwal Tidak Tersedia');
+                            timeErrorDisplay.text(errorMessage).show();
+                        }
+                    });
+                } else {
+                    // Jika ada input jadwal yang kosong, nonaktifkan tombol dan bersihkan pesan error
+                    selectBtn.prop('disabled', true).text('Pilih Jadwal Dulu');
+                    timeErrorDisplay.text('').hide();
+                }
+            });
+            // --- Akhir Bagian BARU ---
+
             $('.select-service-btn').on('click', function() {
                 const block = $(this).closest('.service-block');
                 const serviceId = block.data('service-id');
@@ -285,6 +347,18 @@
                     _token: '{{ csrf_token() }}'
                 };
 
+                // Lakukan validasi dasar di frontend sebelum mengirim ke backend
+                if (!formData.booked_date || !formData.booked_time || formData.hours < 0) {
+                    Swal.fire(translations.info, 'Harap lengkapi semua informasi jadwal (Tanggal, Jam Mulai, Jumlah Jam).', 'info');
+                    return;
+                }
+
+                // Jika sesi offline dan alamat kosong, berikan peringatan
+                if (formData.session_type === 'Offline' && !formData.offline_address) {
+                    Swal.fire(translations.info, 'Harap masukkan alamat offline untuk sesi Offline.', 'info');
+                    return;
+                }
+
                 $.ajax({
                     url: '{{ route("front.cart.add") }}',
                     type: 'POST',
@@ -301,7 +375,7 @@
                         if (response.responseJSON && response.responseJSON.message) {
                             errorMessage = response.responseJSON.message;
                         } else if (response.responseJSON && response.responseJSON.errors) {
-                            errorMessage = translations.validation_fails + Object.values(response.responseJSON.errors).flat().join(' ');
+                            errorMessage = translations.validation_fails + ': ' + Object.values(response.responseJSON.errors).flat().join(' ');
                         }
                         Swal.fire(translations.failure, errorMessage, 'error');
                     }
@@ -310,6 +384,10 @@
 
             $('.service-block').each(function() {
                 calculatePrices($(this));
+                // Inisialisasi status tombol select-service-btn
+                const block = $(this);
+                const selectBtn = block.find('.select-service-btn');
+                selectBtn.prop('disabled', true).text('Pilih Jadwal Dulu'); // Nonaktifkan di awal
             });
         });
     </script>
