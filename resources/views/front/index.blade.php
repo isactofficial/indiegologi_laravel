@@ -67,7 +67,7 @@
     font-size: 1rem;
     font-weight: 600;
     padding: 0.75rem 2rem;
-    border-radius: 8px;
+    border-radius: 5px;
     font-family: 'Playfair Display';
     background-color: #0C2C5A;
     color: #ffffff;
@@ -120,6 +120,7 @@
     min-height: 400px;
     padding: 48px 56px;
     position: relative;
+    border-radius: 10px;
 }
 .featured-popular-img-wrap {
     width: 100%;
@@ -129,6 +130,7 @@
     height: 340px;
     width: 100%;
     object-fit: cover;
+    border-radius: 6px;
 }
 .featured-popular-title {
     font-size: 2.6rem;
@@ -148,7 +150,7 @@
 .featured-popular-wrapper .swiper-button-next,
 .featured-popular-wrapper .swiper-button-prev {
     background: #fff;
-    border-radius: 50%;
+    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     width: 48px;
     height: 48px;
@@ -180,7 +182,7 @@
 .testimonial-square-card {
     width: 340px;
     height: 340px;
-    border-radius: 8px;
+    border-radius: 5px;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
     position: relative;
     overflow: hidden;
@@ -227,7 +229,7 @@
     background-color: white;
     width: 44px;
     height: 44px;
-    border-radius: 50%;
+    border-radius: 8px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     color: #18305b !important;
     transition: opacity 0.2s;
@@ -240,6 +242,9 @@
 .swiper-button-disabled {
     opacity: 0;
     pointer-events: none;
+}
+.card {
+    border-radius: 6px;
 }
 .card .article-img-container {
     padding-top: 56.25%;
@@ -418,11 +423,11 @@
                 @forelse ($popular_articles as $article)
                 <div class="swiper-slide">
                     <div
-                        class="d-flex flex-column flex-lg-row align-items-center justify-content-center bg-white rounded-4 shadow-sm border border-light featured-popular-card">
+                        class="d-flex flex-column flex-lg-row align-items-center justify-content-center bg-white shadow-sm border border-light featured-popular-card">
                         {{-- Konten Card --}}
                         <div class="flex-shrink-0 mb-4 mb-lg-0 me-lg-5 featured-popular-img-wrap">
                             <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail Artikel Populer"
-                                class="img-fluid rounded-3 featured-popular-img">
+                                class="img-fluid featured-popular-img">
                         </div>
                         <div class="flex-grow-1 text-lg-start text-center featured-popular-content">
                             <h3 class="fw-bold mb-3 featured-popular-title line-clamp-2" style="color: #0C2C5A;">
