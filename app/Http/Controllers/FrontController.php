@@ -7,14 +7,14 @@ use App\Models\Sketch;
 use App\Models\ConsultationService;
 use App\Models\ReferralCode;
 use App\Models\CartItem;
-use App\Models\BookingService; // Tambahkan import untuk model BookingService
-use App\Models\Invoice; // Tambahkan import untuk model Invoice
+use App\Models\BookingService;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon; // Pastikan Carbon sudah diimpor
+use Carbon\Carbon;
 
 class FrontController extends Controller
 {
@@ -57,15 +57,13 @@ class FrontController extends Controller
         $services = ConsultationService::whereIn('status', ['published', 'special'])->latest()->paginate(6);
         $referralCodes = ReferralCode::all();
 
-        // Hitung cart_count di sini sebelum view dirender, untuk menghindari error di layout
         $cartCount = 0;
         if (Auth::check()) {
             try {
                 $cartCount = CartItem::where('user_id', Auth::id())->count();
             } catch (\Exception $e) {
-                // Log error jika tabel belum siap, tapi jangan sampai crash halaman
                 Log::warning('Could not count cart items for user ' . Auth::id() . ': ' . $e->getMessage());
-                $cartCount = 0; // Set default ke 0 jika ada error
+                $cartCount = 0;
             }
         }
 
@@ -87,7 +85,6 @@ class FrontController extends Controller
      */
     public function checkBookingAvailability(Request $request)
     {
-        // Validasi input
         $validator = Validator::make($request->all(), [
             'booked_date' => 'required|date_format:Y-m-d',
             'booked_time' => 'required|date_format:H:i',
@@ -108,7 +105,6 @@ class FrontController extends Controller
         $hoursBooked = (int) $request->input('hours_booked');
         $serviceId = $request->input('service_id');
 
-        // Menggabungkan tanggal dan jam untuk membuat objek Carbon untuk waktu yang diminta
         try {
             $requestedStart = Carbon::parse("{$bookedDate} {$bookedTime}");
         } catch (\Exception $e) {
@@ -119,10 +115,8 @@ class FrontController extends Controller
             ], 422);
         }
 
-        // Menghitung waktu selesai booking yang diminta
         $requestedEnd = $requestedStart->copy()->addHours($hoursBooked);
 
-        // Pastikan service_id yang diberikan valid dan sesuai dengan ConsultationService
         $service = ConsultationService::find($serviceId);
         if (!$service) {
             return response()->json([
@@ -131,42 +125,36 @@ class FrontController extends Controller
             ], 404);
         }
 
-        // Query untuk mencari booking yang sudah dibayar dan terikat dengan layanan ini
-        // Asumsi: Model BookingService memiliki relasi 'invoice' ke model Invoice,
-        // dan BookingService memiliki kolom 'service_id'.
+        // --- PERUBAHAN DI SINI UNTUK LOGIKA JATUH TEMPO ---
         $existingBookings = BookingService::where('service_id', $serviceId)
             ->whereHas('invoice', function ($query) {
-                $query->where('payment_status', 'paid');
+                $query->where('payment_status', 'paid')
+                      ->orWhere(function ($query) {
+                          $query->whereIn('payment_status', ['unpaid', 'pending'])
+                                ->where('due_date', '>=', now());
+                      });
             })
             ->get();
+        // --- AKHIR PERUBAHAN ---
 
         foreach ($existingBookings as $booking) {
-            // Menggabungkan booked_date dan booked_time dari database
             try {
                 $existingStart = Carbon::parse("{$booking->booked_date} {$booking->booked_time}");
             } catch (\Exception $e) {
                 Log::warning("Failed to parse existing booking start time for booking ID {$booking->id}: {$booking->booked_date} {$booking->booked_time} - " . $e->getMessage());
-                // Lewati booking ini jika waktu tidak dapat di-parsing
                 continue;
             }
 
-            // Menghitung waktu selesai booking yang sudah ada
             $existingEnd = $existingStart->copy()->addHours($booking->hours_booked);
 
-            // Memeriksa apakah ada tumpang tindih waktu
-            // Logika overlap: (RequestedStart < ExistingEnd) AND (ExistingStart < RequestedEnd)
-            // Ini berarti ada tumpang tindih jika waktu mulai yang diminta lebih awal dari waktu berakhir booking yang ada
-            // DAN waktu mulai booking yang ada lebih awal dari waktu berakhir yang diminta.
             if ($requestedStart->lt($existingEnd) && $existingStart->lt($requestedEnd)) {
-                // Jika ada tumpang tindih, kirim respons error
                 return response()->json([
                     'available' => false,
                     'message' => 'Jadwal yang Anda pilih sudah terisi. Silakan pilih waktu lain.'
-                ], 409); // Menggunakan status code 409 Conflict
+                ], 409);
             }
         }
 
-        // Jika tidak ada tumpang tindih, kirim respons berhasil
         return response()->json([
             'available' => true,
             'message' => 'Jadwal tersedia.'
@@ -177,7 +165,6 @@ class FrontController extends Controller
 
     /**
      * Menambahkan layanan ke keranjang belanja.
-     * Menghapus validasi dan pengisian payment_type karena akan dipilih di halaman keranjang.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -197,7 +184,6 @@ class FrontController extends Controller
             'offline_address' => 'nullable|string',
             'referral_code' => 'nullable|string|exists:referral_codes,code',
             'contact_preference' => 'required|string|in:chat_only,chat_and_call',
-            // 'payment_type' dihapus dari validasi karena akan dipilih di halaman keranjang
         ]);
 
         if ($validator->fails()) {
@@ -229,7 +215,6 @@ class FrontController extends Controller
                     'session_type' => $validatedData['session_type'],
                     'offline_address' => $validatedData['offline_address'] ?? null,
                     'contact_preference' => $validatedData['contact_preference'],
-                    // 'payment_type' tidak lagi diatur di sini
                     'referral_code' => $validatedData['referral_code'] ?? null,
                 ]
             );
@@ -253,7 +238,6 @@ class FrontController extends Controller
 
     /**
      * Menampilkan halaman keranjang belanja pengguna.
-     * Memuat item keranjang dan menghitung ringkasan awal.
      *
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
@@ -268,7 +252,6 @@ class FrontController extends Controller
                              ->where('user_id', $userId)
                              ->get();
 
-        // Siapkan summary awal dengan asumsi 'full_payment' sebagai default
         $summary = $this->calculateSummary($cartItems->pluck('id')->toArray(), 'full_payment');
 
         return view('front.cart.index', array_merge([
@@ -278,7 +261,6 @@ class FrontController extends Controller
 
     /**
      * Memperbarui ringkasan keranjang belanja melalui permintaan AJAX.
-     * Menerima juga payment_type dari request.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -288,7 +270,7 @@ class FrontController extends Controller
         $validator = Validator::make($request->all(), [
             'ids' => 'nullable|array',
             'ids.*' => 'exists:cart_items,id',
-            'payment_type' => 'nullable|string|in:full_payment,dp', // Validasi untuk payment_type
+            'payment_type' => 'nullable|string|in:full_payment,dp',
         ]);
 
         if ($validator->fails()) {
@@ -300,7 +282,7 @@ class FrontController extends Controller
         }
 
         $selectedIds = $request->input('ids', []);
-        $paymentType = $request->input('payment_type', 'full_payment'); // Ambil payment_type dari request, default full_payment
+        $paymentType = $request->input('payment_type', 'full_payment');
 
         $summary = $this->calculateSummary($selectedIds, $paymentType);
         return response()->json($summary);
@@ -323,8 +305,8 @@ class FrontController extends Controller
         }
 
         $cartItem = CartItem::where('id', $request->id)
-                             ->where('user_id', Auth::id())
-                             ->first();
+                            ->where('user_id', Auth::id())
+                            ->first();
 
         if ($cartItem) {
             $cartItem->delete();
@@ -336,11 +318,10 @@ class FrontController extends Controller
 
     /**
      * Helper: Menghitung ringkasan total untuk item keranjang yang dipilih.
-     * Menerima payment_type global untuk menghitung total yang harus dibayar sekarang.
      *
      * @param array $itemIds Array of CartItem IDs
      * @param string $globalPaymentType Tipe pembayaran global ('full_payment' atau 'dp')
-     * @return array Formatted summary data (subtotal, totalDiscount, grandTotal, totalToPayNow)
+     * @return array Formatted summary data
      */
     private function calculateSummary(array $itemIds, string $globalPaymentType = 'full_payment'): array
     {
@@ -356,16 +337,14 @@ class FrontController extends Controller
 
         $subtotal = 0.0;
         $totalDiscount = 0.0;
-        $grandTotalBeforePaymentType = 0.0; // Total sebelum diterapkan payment_type (DP/Full)
 
         foreach ($cartItems as $item) {
             $subtotal += $item->item_subtotal;
             $totalDiscount += $item->discount_amount;
-            $grandTotalBeforePaymentType += $item->final_item_price;
         }
 
-        $grandTotal = $subtotal - $totalDiscount; // Ini adalah Grand Total akhir
-        $totalToPayNow = $grandTotal; // Default ke pembayaran penuh
+        $grandTotal = $subtotal - $totalDiscount;
+        $totalToPayNow = $grandTotal;
 
         if ($globalPaymentType == 'dp') {
             $totalToPayNow = $grandTotal * 0.5;
