@@ -12,8 +12,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    {{-- [PERUBAHAN] Menambahkan Google Font untuk Playfair Display --}}
+
+    {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,8 +34,7 @@
     }
 
     body {
-        /* [PERUBAHAN] Mengganti font utama dan menambahkan fallback 'serif' */
-        font-family: 'Playfair Display';
+        font-family: 'Playfair Display', serif;
         background-color: var(--indiegologi-light);
         padding-top: var(--navbar-height);
     }
@@ -63,7 +62,7 @@
         font-weight: 700;
         color: var(--indiegologi-primary) !important;
         transition: color 0.3s ease;
-        font-family: 'Playfair Display'; /* Brand tetap menggunakan Poppins agar lebih modern */
+        font-family: 'Playfair Display';
     }
 
     .navbar .nav-link {
@@ -126,15 +125,15 @@
 
     /* Style untuk menu offcanvas baru */
     .offcanvas-body .nav-link {
-        font-size: 1.1rem; /* Ukuran font yang lebih nyaman */
-        padding: 0.85rem 0; /* Jarak vertikal yang lebih baik */
+        font-size: 1.1rem;
+        padding: 0.85rem 0;
         display: flex;
         align-items: center;
-        gap: 1rem; /* Jarak antara ikon dan teks */
+        gap: 1rem;
     }
     .offcanvas-body .nav-link i {
         font-size: 1.4rem;
-        width: 25px; /* Lebar tetap agar teks lurus */
+        width: 25px;
         text-align: center;
         color: var(--indiegologi-secondary);
     }
@@ -150,56 +149,87 @@
     }
 
     /* Kustomisasi Google Translate */
-    #google_translate_element {
-        display: flex;
-        align-items: center;
-        height: 100%;
+    /* Pastikan div translate memiliki display block dan dimensi di desktop */
+    #google_translate_element_desktop {
+        margin-left: 0.75rem;
+        display: block;
+        height: auto; /* Biarkan tinggi menyesuaikan konten */
+        min-height: 30px; /* Minimal tinggi agar terlihat */
     }
 
-    #google_translate_element .goog-te-gadget {
-        padding: 0 !important;
-        line-height: inherit !important;
-        height: 100%;
+    /* Mobile: sembunyikan widget desktop, tampilkan widget mobile */
+    @media (max-width: 991.98px) {
+        .navbar .container-fluid {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        #google_translate_element_desktop {
+            display: none !important; /* Sembunyikan widget desktop di mobile */
+        }
+
+        /* Container untuk widget mobile */
+        .mobile-translate-container {
+            display: block !important; /* Pastikan container terlihat */
+            margin-top: 1rem;
+            padding-left: 1rem; /* Sesuaikan padding agar sejajar dengan nav-link */
+            width: 100%;
+            box-sizing: border-box;
+            overflow: visible !important; /* Sangat penting untuk iframe */
+            min-height: 50px; /* Beri tinggi minimal yang cukup untuk widget */
+            border: 1px solid #eee; /* Untuk debugging: lihat batasnya */
+            background-color: #fff; /* Untuk debugging: lihat latar belakangnya */
+        }
+
+        /* Pastikan elemen bawaan Google Translate di dalamnya juga terlihat */
+        #google_translate_element_mobile .goog-te-gadget {
+            display: block !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 40px !important;
+            overflow: visible !important;
+            background-color: transparent !important; /* Hapus background bawaan */
+            border: none !important; /* Hapus border bawaan */
+            box-shadow: none !important; /* Hapus shadow bawaan */
+        }
+
+        /* Sembunyikan link "Ganti Bahasa" yang lama */
+        .mobile-language-link {
+            display: none !important;
+        }
     }
 
-    .goog-te-combo {
-        border: none !important;
-        background-color: transparent !important;
-        box-shadow: none !important;
-        font-family: 'Poppins', sans-serif !important;
+    /* Gaya umum untuk widget Google Translate (desktop dan mobile) */
+    /* Ini akan diterapkan ke semua .goog-te-gadget, override jika ada yang spesifik */
+    .goog-te-gadget {
+        font-family: 'Poppins', sans-serif !important; /* Gunakan Poppins untuk teks widget */
         color: #343a40 !important;
-        padding: 0.25rem 0.5rem !important;
-        border-radius: 8px !important;
         font-size: 1rem !important;
-        margin: 0 !important;
-        height: auto !important;
     }
-
+    .goog-te-combo {
+        border: 1px solid #ccc !important; /* Beri border agar terlihat */
+        border-radius: 4px !important;
+        padding: 0.25rem 0.5rem !important;
+        background-color: #f8f8f8 !important; /* Latar belakang agar terlihat */
+        box-shadow: none !important;
+    }
     .goog-te-gadget-simple {
         background-color: transparent !important;
         border: none !important;
         padding: 0 !important;
-        line-height: inherit !important;
     }
-
     .goog-te-gadget-simple .goog-te-menu-value {
         text-decoration: none !important;
         color: #343a40 !important;
         font-weight: 500;
-        font-size: 1rem;
-        transition: color 0.3s ease;
         padding: 0 !important;
-        line-height: inherit !important;
     }
-
     .goog-te-gadget-simple .goog-te-menu-value:hover {
         color: var(--indiegologi-primary) !important;
     }
-
     .goog-te-gadget-simple .goog-te-menu-value span:last-child {
         display: none; /* Menyembunyikan ikon panah bawaan */
     }
-
     .goog-te-gadget-simple .goog-te-menu-value::after {
         content: '\F282'; /* ikon chevron-down dari Bootstrap Icons */
         font-family: 'bootstrap-icons';
@@ -208,7 +238,6 @@
         vertical-align: middle;
         font-size: 0.8rem;
     }
-
     .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight {
         display: none !important;
         background-color: transparent !important;
@@ -216,32 +245,6 @@
         box-shadow: none !important;
     }
 
-    #google_translate_element.d-none.d-lg-block {
-        margin-left: 0.75rem;
-    }
-
-    .mobile-language-link {
-        display: none;
-    }
-
-    @media (max-width: 991.98px) {
-        .navbar .container-fluid {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-
-        #google_translate_element {
-            display: none;
-        }
-
-        .mobile-language-link {
-            display: flex;
-            align-items: center;
-            padding: 0.85rem 0;
-            font-size: 1.1rem;
-            gap: 1rem;
-        }
-    }
     </style>
 
     @stack('styles')
@@ -351,13 +354,11 @@
             </ul>
             <hr>
 
-            {{-- Widget Google Translate Bawaan untuk Mobile --}}
-            <li class="nav-item mobile-language-link d-lg-none">
-                <a class="nav-link disabled" href="#google_translate_element_mobile">
-                    <i class="bi bi-globe2"></i><span>Ganti Bahasa</span>
-                </a>
-                <div id="google_translate_element_mobile" class="d-none d-lg-block"></div>
-            </li>
+            {{-- Widget Google Translate bawaan untuk Mobile --}}
+            {{-- Tambahkan container khusus dengan styling yang agresif --}}
+            <div class="mobile-translate-container">
+                <div id="google_translate_element_mobile"></div>
+            </div>
             <hr>
 
             {{-- User Actions --}}

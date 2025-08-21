@@ -2,6 +2,346 @@
 
 @section('title', 'Indiegologi - Homepage')
 
+@push('styles')
+{{-- [BRAND] Import font yang elegan dan modern dari Google Fonts --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+<style>
+/* 1. Hero Section Styles */
+.hero-section {
+    position: relative;
+    height: 100vh;
+    min-height: 650px;
+    color: #fff;
+}
+.hero-section .carousel,
+.hero-section .carousel-inner,
+.hero-section .carousel-item {
+    height: 100%;
+}
+.hero-section .carousel-item {
+    background-size: cover;
+    background-position: center;
+}
+.hero-section .overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+}
+.hero-section .carousel-caption {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hero-section .carousel-caption .container {
+    text-align: center;
+}
+.hero-title, .hero-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+}
+.hero-title {
+    font-size: clamp(2.25rem, 5vw, 3.75rem); /* Responsive font size */
+    font-weight: 800;
+    line-height: 1.2;
+    max-width: 25ch;
+    margin-bottom: 1rem;
+}
+.hero-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.2rem); /* Responsive font size */
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 55ch;
+    margin-bottom: 2.25rem;
+    font-family: 'Playfair Display', sans-serif;
+}
+.hero-button {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-family: 'Playfair Display';
+    background-color: #0C2C5A;
+    color: #ffffff;
+    border: 1px solid #0C2C5A;
+    transition: all 0.3s ease-out;
+}
+.hero-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background-color: #0C2C5A;
+    border-color: #0C2C5A;
+    color: #ffffff;
+}
+.hero-section .carousel-indicators {
+    display: flex !important;
+    opacity: 1 !important;
+    bottom: 5rem;
+}
+.hero-section .carousel-indicators button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    opacity: 1;
+}
+.hero-section .carousel-indicators .active {
+    background-color: #fff;
+}
+.hero-section .carousel-control-prev,
+.hero-section .carousel-control-next {
+    display: none; /* Biasanya disembunyikan di mobile, atau disesuaikan */
+}
+
+
+/* 2. Featured Popular Article Slider Styles */
+.featured-popular-article-swiper {
+    position: relative;
+    overflow: hidden !important;
+}
+.featured-popular-article-swiper .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+}
+.featured-popular-card {
+    width: 100%;
+    max-width: 1050px;
+    min-height: 400px;
+    padding: 48px 56px;
+    position: relative;
+}
+.featured-popular-img-wrap {
+    width: 100%;
+    max-width: 380px;
+}
+.featured-popular-img {
+    height: 340px;
+    width: 100%;
+    object-fit: cover;
+}
+.featured-popular-title {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #18305b;
+    line-height: 1.2;
+}
+.featured-popular-desc {
+    font-family: 'Playfair Display', sans-serif;
+}
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.featured-popular-wrapper .swiper-button-next,
+.featured-popular-wrapper .swiper-button-prev {
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    width: 48px;
+    height: 48px;
+    color: #555;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 1;
+    transition: opacity 0.2s, box-shadow 0.2s, left 0.3s, right 0.3s;
+    z-index: 2;
+}
+.featured-popular-wrapper .swiper-button-prev {
+    left: -25px !important;
+}
+.featured-popular-wrapper .swiper-button-next {
+    right: -25px !important;
+}
+.featured-popular-wrapper .swiper-button-next:after,
+.featured-popular-wrapper .swiper-button-prev:after {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+.featured-popular-wrapper .swiper-button-disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 3. Testimonial Styles */
+.testimonial-square-card {
+    width: 340px;
+    height: 340px;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto 20px;
+}
+.testimonial-bg-img {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover; z-index: 1;
+    filter: blur(1px) brightness(0.7);
+}
+.testimonial-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 2;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 60%, rgba(0, 0, 0, 0.45) 100%);
+}
+.testimonial-content {
+    position: absolute;
+    z-index: 3; bottom: 20px; left: 0; right: 0;
+    padding: 0 20px;
+    font-family: 'Playfair Display', sans-serif;
+}
+.testimonial-name {
+    font-family: 'Playfair Display', serif;
+}
+.testimonial-quote-icon {
+    position: absolute;
+    font-size: 2.2rem;
+    z-index: 4; opacity: 0.7; font-family: serif;
+}
+.testimonial-quote-top-left {
+    top: 15px; left: 20px;
+}
+.testimonial-quote-bottom-right {
+    bottom: 20px; right: 20px;
+}
+
+/* 4. CSS Umum untuk SEMUA Tombol Panah Slider Lainnya */
+.swiper-button-next,
+.swiper-button-prev {
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    color: #18305b !important;
+    transition: opacity 0.2s;
+}
+.swiper-button-next::after,
+.swiper-button-prev::after {
+    font-size: 1.2rem;
+    font-weight: 900;
+}
+.swiper-button-disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+.card .article-img-container {
+    padding-top: 56.25%;
+    position: relative;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+.card .article-img-container img {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+}
+.card-hover-zoom {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.card-hover-zoom:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.5em;
+}
+.featured-popular-title.line-clamp-2 {
+    min-height: 2.4em;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 1200px) {
+    .featured-popular-wrapper .swiper-button-prev {
+        left: 0 !important;
+    }
+    .featured-popular-wrapper .swiper-button-next {
+        right: 0 !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .featured-popular-card {
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 40px;
+    }
+    .featured-popular-card .me-lg-5 {
+        margin-right: 0 !important;
+    }
+    .featured-popular-img-wrap {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .hero-section {
+        min-height: 600px;
+    }
+    .hero-section .carousel-caption {
+        align-items: flex-end;
+        padding-bottom: 6rem;
+    }
+    .featured-popular-card {
+        padding: 24px;
+        min-height: auto;
+    }
+    .featured-popular-title {
+        font-size: 1.8rem; /* Adjusted for smaller screens */
+    }
+    .featured-popular-desc {
+        font-size: 1rem; /* Adjusted for smaller screens */
+    }
+    .featured-popular-link {
+        font-size: 1rem;
+    }
+    .featured-popular-wrapper .swiper-button-prev,
+    .featured-popular-wrapper .swiper-button-next {
+        width: 40px;
+        height: 40px;
+    }
+    .featured-popular-wrapper .swiper-button-prev {
+        left: 5px !important;
+    }
+    .featured-popular-wrapper .swiper-button-next {
+        right: 5px !important;
+    }
+    .featured-popular-wrapper .swiper-button-next:after,
+    .featured-popular-wrapper .swiper-button-prev:after {
+        font-size: 1.2rem;
+    }
+    /* Adjustments for general section titles on mobile */
+    h2.fw-bold.mb-3, h2.fw-bold.mb-0 {
+        font-size: 1.8rem !important; /* Ensure main section titles scale down */
+    }
+    p.text-center.mb-5, p.lead.text-muted {
+        font-size: 0.95rem !important; /* Adjust paragraph text */
+    }
+}
+</style>
+@endpush
+
 @section('content')
 
 {{-- 1. Hero Section --}}
@@ -16,7 +356,7 @@
                     <div class="container">
                         <h1 class="hero-title">Temukan Diri Sejati Anda dengan Hypno Healing</h1>
                         <p class="hero-subtitle">Jalani proses penyembuhan diri yang penuh perhatian dan nyaman bersama kami, untuk menemukan kedamaian batin yang mendalam.</p>
-                        <a href="#" class="btn hero-button">Mulai Perjalanan Anda</a>
+                        <a href="{{ route('front.layanan') }}" class="btn hero-button">Mulai Perjalanan Anda</a>
                     </div>
                 </div>
             </div>
@@ -195,7 +535,7 @@
 <section class="container py-5 my-5">
     <div class="text-center">
         <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Kisah Inspiratif dari Keluarga Indiegologi</h2>
-        <p style="font-size:1.15rem; color:#6c757d; font-family: 'Playfair Display', sans-serif;">Dengarkan cerita tulus dari mereka yang telah berproses bersama kami, menemukan kebahagiaan, kejelasan, dan <strong>cinta diri</strong> yang sejati.</p>
+        <p style="font-size:1.15rem; color:#6c757d; font-family: 'Playfair Display', sans-serif;">Dengarkan cerita tulus dari mereka yang telah berproses bersama kami, menemukan kebahagiaan, kejelasan, dan **cinta diri** yang sejati.</p>
     </div>
     <div class="swiper testimonials-swiper mt-5">
         <div class="swiper-wrapper">
@@ -236,7 +576,7 @@
         <div class="swiper-wrapper">
             @forelse ($latest_sketches as $sketch)
             <div class="swiper-slide pb-3">
-                <a href="{{ route('front.sketch') }}" class="text-decoration-none d-block h-100">
+                <a href="{{ route('front.sketches.detail', $sketch->slug) }}" class="text-decoration-none d-block h-100">
                     <div class="card border-0 shadow-sm h-100 card-hover-zoom">
                         <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-img-top"
                             style="height: 200px; object-fit: cover;">
@@ -325,7 +665,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Inisialisasi Swiper BARU untuk Artikel Populer
+    // Inisialisasi Swiper BARU untuk Artikel Populer (3 kolom)
     new Swiper('.popular-articles-swiper', {
         loop: true,
         navigation: {
@@ -368,344 +708,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endpush
-
-@push('styles')
-<style>
-/* 1. Hero Section Styles */
-.hero-section {
-    position: relative;
-    height: 100vh;
-    min-height: 650px;
-    color: #fff;
-}
-.hero-section .carousel,
-.hero-section .carousel-inner,
-.hero-section .carousel-item {
-    height: 100%;
-}
-.hero-section .carousel-item {
-    background-size: cover;
-    background-position: center;
-}
-/* [PERBAIKAN] Mengubah overlay agar cocok untuk teks di tengah */
-.hero-section .overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
-}
-.hero-section .carousel-caption {
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Menambahkan ini agar container ke tengah */
-}
-/* [PERBAIKAN] Mengubah text-align menjadi center untuk semua ukuran layar */
-.hero-section .carousel-caption .container {
-    text-align: center;
-}
-/* [PERBAIKAN] Memindahkan margin auto ke aturan dasar agar berlaku di desktop */
-.hero-title, .hero-subtitle {
-    margin-left: auto;
-    margin-right: auto;
-}
-.hero-title {
-    font-size: clamp(2.25rem, 5vw, 3.75rem);
-    font-weight: 800;
-    line-height: 1.2;
-    max-width: 25ch; /* Sedikit lebih lebar agar pas di tengah */
-    margin-bottom: 1rem;
-}
-.hero-subtitle {
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    color: rgba(255, 255, 255, 0.9);
-    max-width: 55ch;
-    margin-bottom: 2.25rem;
-    font-family: 'Playfair Display', sans-serif;
-}
-.hero-button {
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 0.75rem 2rem;
-    border-radius: 8px;
-    font-family: 'Playfair Display';
-    
-    /* --- TAMBAHAN BARU --- */
-    background-color: #0C2C5A;
-    color: #ffffff;
-    border: 1px solid #0C2C5A; /* Menyamakan warna border */
-    transition: all 0.3s ease-out;
-}
-
-/* --- TAMBAHKAN INI UNTUK EFEK SAAT KURSOR DI ATAS TOMBOL --- */
-.hero-button:hover {
-   transform: translateY(-3px); 
-    
-    /* Menambahkan bayangan halus untuk memperkuat efek mengangkat */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
-    
-    /* Warna tetap sama */
-    background-color: #0C2C5A;
-    border-color: #0C2C5A;
-    color: #ffffff;
-}
-.hero-section .carousel-indicators {
-    display: flex !important; 
-    opacity: 1 !important;
-    bottom: 5rem;
-}
-.hero-section .carousel-indicators button {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: none;
-    opacity: 1;
-}
-.hero-section .carousel-indicators .active {
-    background-color: #fff;
-}
-.hero-section .carousel-control-prev,
-.hero-section .carousel-control-next {
-    display: none;
-}
-
-
-/* 2. Featured Popular Article Slider Styles */
-/* [PERBAIKAN] Mengembalikan overflow ke hidden untuk memperbaiki layout global */
-.featured-popular-article-swiper {
-    position: relative;
-    overflow: hidden !important;
-}
-.featured-popular-article-swiper .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem 0;
-}
-.featured-popular-card {
-    width: 100%;
-    max-width: 1050px;
-    min-height: 400px;
-    padding: 48px 56px;
-    position: relative;
-}
-.featured-popular-img-wrap {
-    width: 100%;
-    max-width: 380px;
-}
-.featured-popular-img {
-    height: 340px;
-    width: 100%;
-    object-fit: cover;
-}
-.featured-popular-title {
-    font-size: 2.6rem;
-    font-weight: 700;
-    color: #18305b;
-    line-height: 1.2;
-}
-.featured-popular-desc {
-    font-family: 'Playfair Display', sans-serif;
-}
-.line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-.featured-popular-wrapper .swiper-button-next,
-.featured-popular-wrapper .swiper-button-prev {
-    background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    width: 48px;
-    height: 48px;
-    color: #555;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 1;
-    transition: opacity 0.2s, box-shadow 0.2s, left 0.3s, right 0.3s;
-    z-index: 2;
-}
-.featured-popular-wrapper .swiper-button-prev {
-    left: -25px !important;
-}
-.featured-popular-wrapper .swiper-button-next {
-    right: -25px !important;
-}
-.featured-popular-wrapper .swiper-button-next:after,
-.featured-popular-wrapper .swiper-button-prev:after {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-}
-.featured-popular-wrapper .swiper-button-disabled {
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* 3. Testimonial Styles */
-.testimonial-square-card {
-    width: 340px;
-    height: 340px;
-    border-radius: 8px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
-    position: relative;
-    overflow: hidden;
-    margin: 0 auto 20px;
-}
-.testimonial-bg-img {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: cover; z-index: 1;
-    filter: blur(1px) brightness(0.7);
-}
-.testimonial-overlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 2;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 60%, rgba(0, 0, 0, 0.45) 100%);
-}
-.testimonial-content {
-    position: absolute;
-    z-index: 3; bottom: 20px; left: 0; right: 0;
-    padding: 0 20px;
-    font-family: 'Playfair Display', sans-serif;
-}
-.testimonial-name {
-    font-family: 'Playfair Display', serif;
-}
-.testimonial-quote-icon {
-    position: absolute;
-    font-size: 2.2rem;
-    z-index: 4; opacity: 0.7; font-family: serif;
-}
-.testimonial-quote-top-left {
-    top: 15px; left: 20px;
-}
-.testimonial-quote-bottom-right {
-    bottom: 20px; right: 20px;
-}
-
-/* 4. CSS Umum untuk SEMUA Tombol Panah Slider Lainnya */
-.swiper-button-next,
-.swiper-button-prev {
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: white;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    color: #18305b !important;
-    transition: opacity 0.2s;
-}
-.swiper-button-next::after,
-.swiper-button-prev::after {
-    font-size: 1.2rem;
-    font-weight: 900;
-}
-.swiper-button-disabled {
-    opacity: 0;
-    pointer-events: none;
-}
-.card .article-img-container {
-    padding-top: 56.25%;
-    position: relative;
-    overflow: hidden;
-    background-color: #f0f0f0;
-}
-.card .article-img-container img {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: cover;
-}
-.card-hover-zoom {
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-.card-hover-zoom:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
-}
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-height: 2.5em; 
-}
-.featured-popular-title.line-clamp-2 {
-    min-height: 2.4em;
-}
-
-/* RESPONSIVE */
-@media (max-width: 1200px) {
-    .featured-popular-wrapper .swiper-button-prev {
-        left: 0 !important;
-    }
-    .featured-popular-wrapper .swiper-button-next {
-        right: 0 !important;
-    }
-}
-
-@media (max-width: 991.98px) {
-    .featured-popular-card {
-        flex-direction: column !important;
-        text-align: center !important;
-        padding: 40px;
-    }
-    .featured-popular-card .me-lg-5 {
-        margin-right: 0 !important;
-    }
-    .featured-popular-img-wrap {
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 767.98px) {
-    .hero-section {
-        min-height: 600px;
-    }
-    .hero-section .carousel-caption {
-        align-items: flex-end;
-        padding-bottom: 6rem;
-    }
-    .featured-popular-card {
-        padding: 24px;
-        min-height: auto;
-    }
-    .featured-popular-title {
-        font-size: 1.8rem;
-    }
-    .featured-popular-desc {
-        font-size: 1rem;
-    }
-    .featured-popular-link {
-        font-size: 1rem;
-    }
-    .featured-popular-wrapper .swiper-button-prev,
-    .featured-popular-wrapper .swiper-button-next {
-        width: 40px;
-        height: 40px;
-    }
-    .featured-popular-wrapper .swiper-button-prev {
-        left: 5px !important;
-    }
-    .featured-popular-wrapper .swiper-button-next {
-        right: 5px !important;
-    }
-    .featured-popular-wrapper .swiper-button-next:after,
-    .featured-popular-wrapper .swiper-button-prev:after {
-        font-size: 1.2rem;
-    }
-}
-</style>
 @endpush
