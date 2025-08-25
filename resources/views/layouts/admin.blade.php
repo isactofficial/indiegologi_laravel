@@ -18,14 +18,14 @@
 
     <style>
         :root {
-            --primary-color: #cb2786;
+            --primary-color: #0C2C5A;
             --secondary-color: #00617a;
             --accent-color: #f4b704;
             --text-dark: #343a40;
             --text-muted: #6c757d;
             --bg-light: #F8F8FF;
             --bg-sidebar: #FFFFFF;
-            --active-bg: rgba(203, 39, 134, 0.1);
+            --active-bg: rgba(12, 44, 90, 0.1);
             --active-text: var(--primary-color);
             --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
             --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
@@ -57,17 +57,36 @@
         .sidebar h4 { font-weight: 700; color: var(--text-dark); margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e9ecef; text-align: center; }
         .sidebar a { font-weight: 500; display: flex; align-items: center; color: var(--text-dark); padding: 12px 20px; margin: 8px 15px; text-decoration: none; transition: all 0.3s ease; border-radius: 10px; }
         .sidebar a i { margin-right: 10px; font-size: 18px; }
-        .sidebar a:hover { background-color: var(--active-bg); color: var(--active-text); transform: translateX(5px); }
-        .sidebar a.active { background-color: var(--active-bg); color: var(--active-text); font-weight: 600; box-shadow: 0 2px 8px rgba(var(--primary-color-rgb), 0.15); }
+
+        /* Gaya untuk link yang tidak aktif saat di-hover */
+        .sidebar a:not(.active):hover {
+            background-color: var(--active-bg);
+            color: var(--active-text);
+            transform: translateX(5px);
+        }
+
+        /* [DIUBAH] Gaya untuk link yang aktif agar sesuai gambar */
+        .sidebar a.active {
+            background-color: var(--primary-color); /* Latar belakang biru solid */
+            color: #FFFFFF; /* Teks berwarna putih */
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(12, 44, 90, 0.3); /* Shadow yang lebih tegas */
+        }
         .main-content-wrapper { margin-left: var(--sidebar-width); flex-grow: 1; padding: 30px; background-color: var(--bg-light); transition: all 0.3s ease; }
         .content { padding: 30px; background-color: var(--bg-light); border-radius: 15px; box-shadow: var(--shadow-md); }
         .btn-logout {
             bottom: 20px; left: 15px; right: 15px; position: absolute; width: calc(100% - 30px); background-color: #fff; border: 1px solid var(--primary-color); padding: 12px 20px; border-radius: 10px; color: var(--primary-color); font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; text-decoration: none;
         }
-        .btn-logout:hover { background-color: rgba(203, 39, 134, 0.05); box-shadow: 0 2px 8px rgba(203, 39, 134, 0.2); }
+        .btn-logout:hover {
+            background-color: rgba(12, 44, 90, 0.05);
+            box-shadow: 0 2px 8px rgba(12, 44, 90, 0.2);
+        }
         .btn-logout i { margin-right: 8px; }
         .logo-container { text-align: center; margin-bottom: 20px; }
-        .logo-container .logo { width: 60px; height: 60px; background-color: var(--active-bg); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px; border: 1px solid rgba(203, 39, 134, 0.2); }
+        .logo-container .logo {
+            width: 60px; height: 60px; background-color: var(--active-bg); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;
+            border: 1px solid rgba(12, 44, 90, 0.2);
+        }
         .logo-container .logo i { font-size: 30px; color: var(--primary-color); }
         .nav-links { flex-grow: 1; }
         @media (max-width: 768px) {
@@ -106,7 +125,6 @@
                 <a href="{{ route('admin.consultation-services.index') }}" class="{{ request()->routeIs('admin.consultation-services.*') ? 'active' : '' }}">
                     <i class="fas fa-handshake"></i> Manajemen Layanan
                 </a>
-                {{-- **Menyesuaikan tautan untuk Manajemen Booking** --}}
                 <a href="{{ route('admin.consultation-bookings.index') }}" class="{{ request()->routeIs('admin.consultation-bookings.*') ? 'active' : '' }}">
                     <i class="fas fa-calendar-check"></i> Manajemen Booking
                 </a>
