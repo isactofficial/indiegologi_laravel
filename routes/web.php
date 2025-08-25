@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\FrontController; // Pastikan ini ada
+use App\Http\Controllers\FrontController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AdminDashboardController;
@@ -33,16 +33,19 @@ Route::get('/storage-link', function () {
     return "Symlink already exists.";
 });
 
+// ======================================================================
+// PERUBAHAN DI SINI: Menerapkan middleware pelacakan per rute
+// ======================================================================
+
 // Public-Facing Routes
-Route::middleware('log.visit')->group(function () {
-    Route::get('/', [FrontController::class, 'index'])->name('front.index');
-    Route::get('/articles', [FrontController::class, 'articles'])->name('front.articles');
-    Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name('front.articles.show');
-    Route::get('/layanan', [FrontController::class, 'layanan'])->name('front.layanan');
-    Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact');
-    Route::get('/sketches', [FrontController::class, 'sketches_show'])->name('front.sketch');
-    Route::get('/sketches/{sketch:slug}', [FrontController::class, 'showDetail'])->name('front.sketches.detail');
-});
+Route::get('/', [FrontController::class, 'index'])->name('front.index')->middleware('track.views:homepage');
+Route::get('/articles', [FrontController::class, 'articles'])->name('front.articles')->middleware('track.views:articles');
+Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name('front.articles.show')->middleware('track.views:articles');
+Route::get('/layanan', [FrontController::class, 'layanan'])->name('front.layanan')->middleware('track.views:layanan');
+Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact')->middleware('track.views:contact');
+Route::get('/sketches', [FrontController::class, 'sketches_show'])->name('front.sketch')->middleware('track.views:sketches');
+Route::get('/sketches/{sketch:slug}', [FrontController::class, 'showDetail'])->name('front.sketches.detail')->middleware('track.views:sketches');
+
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -137,4 +140,3 @@ Route::get('/invoice/{consultationBooking}', [InvoiceController::class, 'show'])
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
 Route::get('/users/profile/{user}', [ConsultationBookingController::class, 'showUserProfile'])->name('admin.users.show');
-

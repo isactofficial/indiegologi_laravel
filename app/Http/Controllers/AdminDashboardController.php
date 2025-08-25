@@ -3,76 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\ConsultationBooking;
+use App\Models\ConsultationService;
+use App\Models\PageVisit; // Gunakan model baru
 use App\Models\Sketch;
 use App\Models\User;
-use App\Models\ConsultationService;
-use App\Models\ConsultationBooking;
-use App\Models\Visit;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class AdminDashboardController extends Controller
 {
-    public function dashboard(Request $request)
+    public function dashboard()
     {
-        $totalUsers = User::count();
+        // Data lama yang sudah ada
         $totalArticles = Article::count();
-        $publishedArticles = Article::where('status', 'Published')->count();
-        $draftArticles = Article::where('status', 'Draft')->count();
-
+        $publishedArticles = Article::where('status', 'published')->count();
         $totalSketches = Sketch::count();
-        $publishedSketches = Sketch::where('status', 'Published')->count();
-        $draftSketches = Sketch::where('status', 'Draft')->count();
-
+        $publishedSketches = Sketch::where('status', 'published')->count();
         $totalServices = ConsultationService::count();
         $totalBookings = ConsultationBooking::count();
+        $totalUsers = User::count();
+        $articles = Article::all();
+        $sketches = Sketch::all();
 
-        try {
-            $todayVisit = Visit::whereDate('visited_at', Carbon::today())->count();
-            $weekVisit = Visit::whereBetween('visited_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
-            $monthVisit = Visit::whereMonth('visited_at', Carbon::now()->month)->count();
-            $yearVisit = Visit::whereYear('visited_at', Carbon::now()->year)->count();
+        // [LOGIKA BARU] Menghitung data kunjungan dari tabel page_visits
+        $homepageVisits = PageVisit::where('page_name', 'homepage')->count();
+        $articleVisits  = PageVisit::where('page_name', 'articles')->count();
+        $sketchVisits   = PageVisit::where('page_name', 'sketches')->count();
+        $layananVisits  = PageVisit::where('page_name', 'layanan')->count();
+        $contactVisits  = PageVisit::where('page_name', 'contact')->count();
 
-            $homepageUrls = ['http://indiegologi.com', 'http://indiegologi.com/'];
-            $homeVisit = Visit::whereIn('url', $homepageUrls)->count();
-            $articleVisits = Visit::where('url', 'like', '%/articles%')->count();
-            $sketchVisits = Visit::where('url', 'like', '%/sketches%')->count();
-            $contactVisits = Visit::where('url', 'like', '%/contact%')->count();
-
-            $homeVisitToday = Visit::whereIn('url', $homepageUrls)
-                ->whereDate('visited_at', Carbon::today())
-                ->count();
-            $homeVisitWeek = Visit::whereIn('url', $homepageUrls)
-                ->whereBetween('visited_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-                ->count();
-            $homeVisitMonth = Visit::whereIn('url', $homepageUrls)
-                ->whereMonth('visited_at', Carbon::now()->month)
-                ->count();
-            $homeVisitYear = Visit::whereIn('url', $homepageUrls)
-                ->whereYear('visited_at', Carbon::now()->year)
-                ->count();
-
-        } catch (\Exception $e) {
-            $todayVisit = $weekVisit = $monthVisit = $yearVisit = 0;
-            $homeVisit = $articleVisits = $sketchVisits = $contactVisits = 0;
-            $homeVisitToday = $homeVisitWeek = $homeVisitMonth = $homeVisitYear = 0;
-        }
-
-        // --- PERBAIKAN: Ambil data articles dan sketches untuk section "Recent" ---
-        $articles = Article::orderBy('created_at', 'desc')->take(6)->get();
-        $sketches = Sketch::orderBy('created_at', 'desc')->take(6)->get();
-        // --- AKHIR PERBAIKAN ---
+        // [LOGIKA BARU] Menghitung data untuk kartu Total Visits
+        $totalVisits = PageVisit::count();
+        $todayVisits = PageVisit::whereDate('created_at', Carbon::today())->count();
+        $weekVisits  = PageVisit::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+        $monthVisits = PageVisit::whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', Carbon::now()->month)->count();
+        $yearVisits  = PageVisit::whereYear('created_at', Carbon::now()->year)->count();
 
         return view('dashboard.admin', compact(
-            'totalUsers', 'totalArticles', 'publishedArticles', 'draftArticles',
-            'totalSketches', 'publishedSketches', 'draftSketches',
-            'totalServices', 'totalBookings',
-            'todayVisit', 'weekVisit', 'monthVisit', 'yearVisit',
-            'homeVisitToday', 'homeVisitWeek', 'homeVisitMonth', 'homeVisitYear',
-            'homeVisit',
-            'articleVisits', 'sketchVisits', 'contactVisits',
-            'articles', 'sketches' 
+            'totalArticles',
+            'publishedArticles',
+            'totalSketches',
+            'publishedSketches',
+            'totalServices',
+            'totalBookings',
+            'totalUsers',
+            'articles',
+            'sketches',
+            // Variabel baru untuk data kunjungan
+            'homepageVisits',
+            'articleVisits',
+            'sketchVisits',
+            'layananVisits',
+            'contactVisits',
+            'totalVisits',
+            'todayVisits',
+            'weekVisits',
+            'monthVisits',
+            'yearVisits'
         ));
     }
 }
