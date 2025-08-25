@@ -1,19 +1,37 @@
 @extends('layouts.admin')
 
+@push('styles')
+{{-- [WARNA DIUBAH] Menyesuaikan style form dan tombol --}}
+<style>
+    .form-control:focus, .form-select:focus {
+        border-color: #0C2C5A;
+        box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.25);
+    }
+    .btn-success {
+        background-color: #0C2C5A;
+        border-color: #0C2C5A;
+    }
+    .btn-success:hover {
+        background-color: #081f3f;
+        border-color: #081f3f;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid px-4" style="min-height: 100vh;">
 
     {{-- Header --}}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid #f4b704;">
+            <div class="bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid #0C2C5A;">
                 <div class="d-flex align-items-center">
                     <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
-                         style="width: 70px; height: 70px; background-color: rgba(244, 183, 4, 0.1);">
-                        <i class="fas fa-tags fs-2" style="color: #f4b704;"></i>
+                         style="width: 70px; height: 70px; background-color: rgba(12, 44, 90, 0.1);">
+                        <i class="fas fa-tags fs-2" style="color: #0C2C5A;"></i>
                     </div>
                     <div>
-                        <h2 class="fs-3 fw-bold mb-1" style="color: #f4b704;">Tambah Kode Referral Baru</h2>
+                        <h2 class="fs-3 fw-bold mb-1" style="color: #0C2C5A;">Tambah Kode Referral Baru</h2>
                         <p class="text-muted mb-0">Isi detail kode referral Anda di bawah ini.</p>
                     </div>
                 </div>
@@ -26,7 +44,6 @@
         <div class="card-body p-4">
             <form action="{{ route('admin.referral-codes.store') }}" method="POST">
                 @csrf
-
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="code" class="form-label text-secondary fw-medium">Kode Referral</label>
@@ -64,7 +81,6 @@
                         @enderror
                     </div>
                 </div>
-
                 <div class="d-flex justify-content-start mt-4">
                     <button type="submit" class="btn btn-success px-4 py-2">Simpan Kode</button>
                     <a href="{{ route('admin.referral-codes.index') }}" class="btn btn-outline-secondary ms-2 px-4 py-2">Batal</a>
