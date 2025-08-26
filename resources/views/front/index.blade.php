@@ -8,6 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
+{{-- STYLE UNTUK ANIMASI AOS --}}
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
 <style>
 /* 1. Hero Section Styles */
 .hero-section {
@@ -349,7 +352,7 @@
 
 @section('content')
 
-{{-- 1. Hero Section --}}
+{{-- 1. Hero Section (Tidak perlu animasi scroll karena sudah terlihat saat load) --}}
 <section class="hero-section">
     <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
@@ -413,18 +416,18 @@
 
 {{-- 2. Artikel Populer (Slider Satu Artikel Menonjol) --}}
 <section class="container py-5 my-5" style="margin-top: 80px;"><br><br><br>
-    <h2 class="text-center fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Artikel Pilihan Kami untuk Anda
-    </h2>
-    <p class="text-center mb-5" style="color:#6c757d; font-family: 'Playfair Display', sans-serif;">Jelajahi kisah-kisah penuh inspirasi dan temukan wawasan yang paling menyentuh hati komunitas kami.</p>
+    <div data-aos="fade-down" data-aos-duration="1000">
+        <h2 class="text-center fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Artikel Pilihan Kami untuk Anda</h2>
+        <p class="text-center mb-5" style="color:#6c757d; font-family: 'Playfair Display', sans-serif;">Jelajahi kisah-kisah penuh inspirasi dan temukan wawasan yang paling menyentuh hati komunitas kami.</p>
+    </div>
 
-    <div class="featured-popular-wrapper" style="position: relative;">
+    <div class="featured-popular-wrapper" style="position: relative;" data-aos="zoom-in-up" data-aos-duration="1000" data-aos-delay="200">
         <div class="swiper featured-popular-article-swiper">
             <div class="swiper-wrapper">
                 @forelse ($popular_articles as $article)
                 <div class="swiper-slide">
                     <div
                         class="d-flex flex-column flex-lg-row align-items-center justify-content-center bg-white shadow-sm border border-light featured-popular-card">
-                        {{-- Konten Card --}}
                         <div class="flex-shrink-0 mb-4 mb-lg-0 me-lg-5 featured-popular-img-wrap">
                             <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail Artikel Populer"
                                 class="img-fluid featured-popular-img">
@@ -460,14 +463,14 @@
 {{-- 3. Artikel Terbaru (Slider) --}}
 <section class="container py-5 my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0" style="color: #0C2C5A;">Wawasan Terbaru untuk Anda</h2>
+        <h2 class="fw-bold mb-0" style="color: #0C2C5A;" data-aos="fade-right" data-aos-duration="800">Wawasan Terbaru untuk Anda</h2>
         <a href="{{ route('front.articles') }}" class="btn btn-link text-decoration-none fw-semibold p-0"
-            style="color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Semua Artikel<i class="bi bi-arrow-right ms-1"></i></a>
+            style="color: #0C2C5A; font-family: 'Playfair Display', sans-serif;" data-aos="fade-left" data-aos-duration="800">Lihat Semua Artikel<i class="bi bi-arrow-right ms-1"></i></a>
     </div>
     <div class="swiper latest-articles-swiper">
         <div class="swiper-wrapper">
             @forelse ($latest_articles as $article)
-            <div class="swiper-slide pb-3">
+            <div class="swiper-slide pb-3" data-aos="fade-up" data-aos-delay="{{ $loop->index * 150 }}">
                 <div class="card border-0 shadow-sm h-100 card-hover-zoom">
                     <div class="article-img-container">
                         <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}"
@@ -498,14 +501,14 @@
 {{-- 4. Artikel Populer (Slider 3 Kolom) --}}
 <section class="container py-5 my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0" style="color: #0C2C5A;">Artikel Pilihan untuk Anda</h2>
+        <h2 class="fw-bold mb-0" style="color: #0C2C5A;" data-aos="fade-right" data-aos-duration="800">Artikel Pilihan untuk Anda</h2>
         <a href="{{ route('front.articles') }}" class="btn btn-link text-decoration-none fw-semibold p-0"
-            style="color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Jelajahi Semua<i class="bi bi-arrow-right ms-1"></i></a>
+            style="color: #0C2C5A; font-family: 'Playfair Display', sans-serif;" data-aos="fade-left" data-aos-duration="800">Jelajahi Semua<i class="bi bi-arrow-right ms-1"></i></a>
     </div>
     <div class="swiper popular-articles-swiper">
         <div class="swiper-wrapper">
             @forelse ($popular_articles as $article)
-            <div class="swiper-slide pb-3">
+            <div class="swiper-slide pb-3" data-aos="fade-up" data-aos-delay="{{ $loop->index * 150 }}">
                 <div class="card border-0 shadow-sm h-100 card-hover-zoom">
                     <div class="article-img-container" style="padding-top: 56.25%;">
                         <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}"
@@ -531,21 +534,21 @@
         <div class="swiper-button-next popular-articles-next"></div>
         <div class="swiper-button-prev popular-articles-prev"></div>
     </div>
-    <div class="text-center mt-4">
+    <div class="text-center mt-4" data-aos="zoom-in" data-aos-delay="300">
         <a href="{{ route('front.articles') }}" class="btn btn-primary px-4 py-2" style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Semua Artikel</a>
     </div>
 </section>
 
 {{-- 5. Testimoni Section --}}
 <section class="container py-5 my-5">
-    <div class="text-center">
+    <div class="text-center" data-aos="fade-up">
         <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Kisah Inspiratif dari Keluarga Indiegologi</h2>
         <p style="font-size:1.15rem; color:#6c757d; font-family: 'Playfair Display', sans-serif;">Dengarkan cerita tulus dari mereka yang telah berproses bersama kami, menemukan kebahagiaan, kejelasan, dan **cinta diri** yang sejati.</p>
     </div>
     <div class="swiper testimonials-swiper mt-5">
         <div class="swiper-wrapper">
             @for ($i = 0; $i < 3; $i++)
-            <div class="swiper-slide">
+            <div class="swiper-slide" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1200" data-aos-delay="{{ $i * 200 }}">
                 <div class="testimonial-square-card position-relative overflow-hidden shadow-sm mx-auto">
                     <img src="{{ asset('assets/testimoni/testimoni.jpg') }}" alt="Testimoni" class="testimonial-bg-img">
                     <div class="testimonial-overlay"></div>
@@ -571,16 +574,14 @@
 
 {{-- 6. Sketch Telling (Slider) --}}
 <section class="container py-5 my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="w-100 text-center">
-            <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Sketch Telling</h2>
-            <p class="text-muted mb-0 text-center" style="font-family: 'Playfair Display', sans-serif;">Lihatlah kisah-kisah yang kami visualisasikan</p>
-        </div>
+    <div class="w-100 text-center" data-aos="fade-up">
+        <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Sketch Telling</h2>
+        <p class="text-muted mb-0 text-center" style="font-family: 'Playfair Display', sans-serif;">Lihatlah kisah-kisah yang kami visualisasikan</p>
     </div>
-    <div class="swiper sketch-telling-swiper">
+    <div class="swiper sketch-telling-swiper mt-4">
         <div class="swiper-wrapper">
             @forelse ($latest_sketches as $sketch)
-            <div class="swiper-slide pb-3">
+            <div class="swiper-slide pb-3" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 150 }}">
                 <a href="{{ route('front.sketches.detail', $sketch->slug) }}" class="text-decoration-none d-block h-100">
                     <div class="card border-0 shadow-sm h-100 card-hover-zoom">
                         <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-img-top"
@@ -600,20 +601,20 @@
         <div class="swiper-button-next sketch-next"></div>
         <div class="swiper-button-prev sketch-prev"></div>
     </div>
-    <div class="text-center mt-4">
-        <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2 text-center mt-4" style=" background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Semua Sketsa</a>
+    <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="300">
+        <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2 text-center" style=" background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Semua Sketsa</a>
     </div>
 </section>
 
 <section class="py-5 my-5 bg-light">
-    <div class="container text-center">
+    <div class="container text-center" data-aos="fade-down">
         <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Layanan Unggulan Kami</h2>
         <p class="text-muted mb-0 text-center" style="font-family: 'Playfair Display', sans-serif;">Kami menawarkan berbagai layanan yang dirancang untuk mendukung perjalanan Anda.</p>
     </div>
     <div class="container mt-5">
         <div class="row g-4 justify-content-center">
             @forelse ($services as $service)
-            <div class="col-lg-4 col-md-6 mb-4">
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 150 }}">
                 <div class="card border-0 shadow-sm h-100 text-center card-hover-zoom">
                     <div class="card-body p-4 d-flex flex-column">
                         <div class="mb-3">
@@ -627,12 +628,12 @@
                 </div>
             </div>
             @empty
-            <div class="col-12">
+            <div class="col-12" data-aos="fade-up">
                 <p class="text-muted text-center">Saat ini belum ada layanan yang tersedia.</p>
             </div>
             @endforelse
         </div>
-        <div class="text-center mt-5">
+        <div class="text-center mt-5" data-aos="zoom-in" data-aos-delay="300">
             <a href="{{ route('front.layanan') }}" class="btn btn-primary px-4 py-2" style=" background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Semua Layanan</a>
         </div>
     </div>
@@ -641,6 +642,7 @@
 @endsection
 
 @push('scripts')
+{{-- Skrip untuk Swiper.js (slider) --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Swiper untuk Artikel Terpopuler Pilihan Kami (Hanya satu slide terlihat)
@@ -712,5 +714,49 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+</script>
+
+{{-- SCRIPT UNTUK ANIMASI AOS DENGAN LOGIKA KUSTOM --}}
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    // Inisialisasi AOS
+    AOS.init({
+        duration: 900,
+        easing: 'ease-in-out-sine',
+        // PENTING: once harus false agar kita bisa memanipulasi animasinya
+        once: false, 
+        offset: 120,
+    });
+
+    // --- SCRIPT KUSTOM UNTUK PERILAKU ANIMASI SPESIFIK ---
+    
+    // Variabel untuk menyimpan posisi scroll terakhir
+    let lastScrollTop = 0;
+    // Ambil semua elemen yang memiliki atribut data-aos
+    const allAosElements = document.querySelectorAll('[data-aos]');
+
+    // Tambahkan event listener saat window di-scroll
+    window.addEventListener('scroll', function() {
+        // Dapatkan posisi scroll saat ini
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop < lastScrollTop) {
+            // JIKA ARAH SCROLL KE ATAS
+            allAosElements.forEach(function(element) {
+                // Cek jika posisi atas elemen berada DI BAWAH layar (tidak terlihat)
+                if (element.getBoundingClientRect().top > window.innerHeight) {
+                    // Jika ya, hapus kelas 'aos-animate' untuk "mereset"
+                    // dan menyembunyikannya kembali sesuai permintaan.
+                    element.classList.remove('aos-animate');
+                }
+            });
+        } 
+        // Saat scrolling ke bawah, kita tidak melakukan apa-apa.
+        // Biarkan AOS yang bekerja secara normal untuk memunculkan elemen.
+
+        // Update posisi scroll terakhir
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    }, false);
+
 </script>
 @endpush
