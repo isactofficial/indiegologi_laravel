@@ -30,24 +30,23 @@
                                         <div class="d-flex justify-content-between align-items-center w-100">
                                             <div class="d-flex align-items-center">
                                                 <img src="{{ asset('storage/' . $service->thumbnail) }}"
-                                                     alt="{{ $service->title }}" class="d-none d-md-block rounded-3 me-3"
-                                                     style="width: 100px; height: 100px; object-fit: cover;">
+                                                    alt="{{ $service->title }}" class="d-none d-md-block rounded-3 me-3"
+                                                    style="width: 100px; height: 100px; object-fit: cover;">
                                                 <div>
-                                                    {{-- Konten Dinamis (Tidak Diterjemahkan) --}}
                                                     <h5 class="fw-bold mb-1">{{ $service->title }}</h5>
                                                     <p class="text-muted mb-0">{{ Str::limit($service->short_description, 70) }}</p>
                                                 </div>
                                             </div>
                                             <button class="btn-details-toggle" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $service->id }}"
-                                                    aria-expanded="false" aria-controls="collapse-{{ $service->id }}">
+                                                     data-bs-toggle="collapse" data-bs-target="#collapse-{{ $service->id }}"
+                                                     aria-expanded="false" aria-controls="collapse-{{ $service->id }}">
                                                 Baca Selengkapnya
                                             </button>
                                         </div>
                                     </div>
                                 </h2>
                                 <div id="collapse-{{ $service->id }}" class="accordion-collapse collapse"
-                                    aria-labelledby="heading-{{ $service->id }}" data-bs-parent="#servicesAccordion">
+                                     aria-labelledby="heading-{{ $service->id }}" data-bs-parent="#servicesAccordion">
                                     <div class="accordion-body p-4">
                                         <div class="service-block" data-service-id="{{ $service->id }}"
                                             data-price="{{ $service->price }}"
@@ -55,7 +54,6 @@
                                             <div class="row mb-4">
                                                 <div class="col-12">
                                                     <h6 class="fw-judul">Deskripsi Produk:</h6>
-                                                    {{-- Konten Dinamis (Tidak Diterjemahkan) --}}
                                                     <p>{{ $service->product_description }}</p>
                                                 </div>
                                             </div>
@@ -75,7 +73,6 @@
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label for="booked_time-{{ $service->id }}" class="form-label">Jam Mulai:</label>
-                                                            {{-- Tambahkan kelas booked_time-input dan div untuk pesan error --}}
                                                             <input type="time" id="booked_time-{{ $service->id }}" class="form-control booked_time-input" required>
                                                             <div class="invalid-feedback d-block time-error-message" style="display: none;"></div>
                                                         </div>
@@ -83,7 +80,6 @@
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label for="hours-{{ $service->id }}" class="form-label">Jumlah Jam</label>
-                                                            {{-- Tambahkan kelas hours-input --}}
                                                             <input type="number" id="hours-{{ $service->id }}" class="form-control hours-input" value="0" min="0" required>
                                                         </div>
                                                     </div>
@@ -129,12 +125,7 @@
                                                         <div class="d-none"><span class="initial-price"></span><span class="discount-amount"></span></div>
                                                     </div>
                                                     <div class="col-auto">
-                                                        @auth
-                                                            {{-- Tombol "Pilih Layanan" akan dinonaktifkan secara default atau oleh JS --}}
-                                                            <button type="button" class="btn btn-primary px-4 py-2 select-service-btn" data-service-id="{{ $service->id }}">Pilih Layanan</button>
-                                                        @else
-                                                            <p class="text-danger mb-0">Silakan <a href="{{ route('login') }}">login</a> untuk memilih layanan.</p>
-                                                        @endauth
+                                                        <button type="button" class="btn btn-primary px-4 py-2 select-service-btn" data-service-id="{{ $service->id }}">Pilih Layanan</button>
                                                     </div>
                                                 </div>
 
@@ -162,233 +153,237 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    {{-- [BARU] Menyiapkan terjemahan untuk JavaScript --}}
-    <script>
-        const translations = {
-            success: "Berhasil!",
-            failure: "Gagal!",
-            info: "Perhatian!",
-            referral_applied: "Kode referral berhasil diterapkan!",
-            referral_invalid: "Kode referral tidak valid atau sudah kadaluarsa.",
-            referral_not_found: "Kode referral tidak ditemukan.",
-            referral_enter_first: "Silakan masukkan kode referral terlebih dahulu.",
-            generic_error: "Terjadi kesalahan, silakan coba lagi.",
-            validation_fails: "Validasi gagal. Silakan periksa input Anda.",
-            schedule_unavailable: "Jadwal tidak tersedia. Silakan pilih waktu lain.", // Pesan baru
-            schedule_check_error: "Terjadi kesalahan saat memeriksa jadwal. Coba lagi.", // Pesan baru
-        };
-    </script>
+        <script>
+            const translations = {
+                success: "Berhasil!",
+                failure: "Gagal!",
+                info: "Perhatian!",
+                referral_applied: "Kode referral berhasil diterapkan!",
+                referral_invalid: "Kode referral tidak valid atau sudah kadaluarsa.",
+                referral_not_found: "Kode referral tidak ditemukan.",
+                referral_enter_first: "Silakan masukkan kode referral terlebih dahulu.",
+                generic_error: "Terjadi kesalahan, silakan coba lagi.",
+                validation_fails: "Validasi gagal. Silakan periksa input Anda.",
+                schedule_unavailable: "Jadwal tidak tersedia. Silakan pilih waktu lain.",
+                schedule_check_error: "Terjadi kesalahan saat memeriksa jadwal. Coba lagi.",
+            };
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-
-            const year = tomorrow.getFullYear();
-            const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
-            const day = String(tomorrow.getDate()).padStart(2, '0');
-            const minDate = `${year}-${month}-${day}`;
-
-            document.querySelectorAll('.service-date-picker').forEach(function(input) {
-                input.setAttribute('min', minDate);
-            });
-
-            const servicesData = @json($services->keyBy('id'));
-            const referralCodesData = @json($referralCodes->keyBy('code'));
-            let appliedReferrals = {};
-
-            function calculatePrices(block) {
-                const serviceId = block.data('service-id');
-                const hours = parseInt(block.find('.hours-input').val()) || 0;
-                const service = servicesData[serviceId];
-                if (!service) return;
-
-                const basePrice = parseFloat(service.price);
-                const hourlyPrice = parseFloat(service.hourly_price);
-                let initialPrice = basePrice + (hourlyPrice * hours);
-                let discountAmount = 0;
-                let finalPrice = initialPrice;
-                const referralCode = appliedReferrals[serviceId];
-
-                if (referralCode) {
-                    const discountPercentage = referralCode.discount_percentage;
-                    discountAmount = (initialPrice * discountPercentage) / 100;
-                    finalPrice = initialPrice - discountAmount;
+            function getTempCart() {
+                try {
+                    const cart = localStorage.getItem('tempCart');
+                    return cart ? JSON.parse(cart) : {};
+                } catch (e) {
+                    console.error("Failed to parse tempCart from localStorage", e);
+                    return {};
                 }
-
-                block.find('.initial-price').text('Rp ' + initialPrice.toLocaleString('id-ID'));
-                block.find('.discount-amount').text('Rp ' + discountAmount.toLocaleString('id-ID'));
-                block.find('.final-price').text('Rp. ' + finalPrice.toLocaleString('id-ID'));
             }
 
-            $('.accordion-body').on('change input', '.hours-input, .session-type-select', function() {
-                const block = $(this).closest('.service-block');
-                calculatePrices(block);
-            });
-
-            $('.accordion-body').on('change', '.session-type-select', function() {
-                const block = $(this).closest('.service-block');
-                const container = block.find('.offline-address-container');
-                if ($(this).val() === 'Offline') {
-                    container.show().find('textarea').attr('required', true);
-                } else {
-                    container.hide().find('textarea').attr('required', false);
+            function saveTempCart(cart) {
+                try {
+                    localStorage.setItem('tempCart', JSON.stringify(cart));
+                } catch (e) {
+                    console.error("Failed to save tempCart to localStorage", e);
                 }
-            });
+            }
 
-            $('.accordion-body').on('click', '.apply-referral-btn', function() {
-                const block = $(this).closest('.service-block');
-                const serviceId = block.data('service-id');
-                const referralCodeInput = block.find('.referral-code-input').val().toUpperCase();
-
-                if (appliedReferrals[serviceId]) {
-                    delete appliedReferrals[serviceId];
-                }
-
-                if (serviceId && referralCodeInput && referralCodesData[referralCodeInput]) {
-                    const code = referralCodesData[referralCodeInput];
-                    const isValid = !code.valid_until || new Date(code.valid_until) > new Date();
-                    const hasUses = !code.max_uses || code.current_uses < code.max_uses;
-
-                    if (isValid && hasUses) {
-                        appliedReferrals[serviceId] = {
-                            code: referralCodeInput,
-                            discount_percentage: parseFloat(code.discount_percentage)
-                        };
-                        Swal.fire(translations.success, translations.referral_applied, 'success');
+            function updateCartCount() {
+                const cartCountElement = $('#cart-count-badge');
+                if (cartCountElement.length) {
+                    const tempCart = getTempCart();
+                    const count = Object.keys(tempCart).length;
+                    if (count > 0) {
+                        cartCountElement.text(count).removeClass('d-none');
                     } else {
-                        Swal.fire(translations.failure, translations.referral_invalid, 'error');
-                    }
-                } else {
-                    if (referralCodeInput) {
-                        Swal.fire(translations.failure, translations.referral_not_found, 'error');
-                    } else {
-                        Swal.fire(translations.info, translations.referral_enter_first, 'info');
+                        cartCountElement.text('').addClass('d-none');
                     }
                 }
-                calculatePrices(block);
-            });
+            }
 
-            // --- Bagian BARU untuk validasi jadwal ---
-            $('.accordion-body').on('change input', '.service-date-picker, .booked_time-input, .hours-input', function() {
-                const block = $(this).closest('.service-block');
-                const serviceId = block.data('service-id');
-                const bookedDate = block.find('#booked_date-' + serviceId).val();
-                const bookedTime = block.find('#booked_time-' + serviceId).val();
-                const hoursBooked = parseInt(block.find('#hours-' + serviceId).val()) || 0; // Pastikan ini integer
-                const selectBtn = block.find('.select-service-btn');
-                const timeErrorDisplay = block.find('.time-error-message');
+            document.addEventListener('DOMContentLoaded', function() {
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
 
-                // Hanya jalankan jika semua input jadwal sudah terisi dan hoursBooked > 0
-                if (bookedDate && bookedTime && hoursBooked >= 0) { // Izinkan 0 jam untuk layanan yang tidak berbasis jam
-                    // Nonaktifkan tombol saat pemeriksaan berlangsung
-                    selectBtn.prop('disabled', true).text('Memeriksa Jadwal...');
-                    timeErrorDisplay.text('').hide(); // Sembunyikan pesan error sebelumnya
+                const year = tomorrow.getFullYear();
+                const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+                const day = String(tomorrow.getDate()).padStart(2, '0');
+                const minDate = `${year}-${month}-${day}`;
 
-                    $.ajax({
-                        url: '{{ route("front.check.availability") }}', // Rute yang sudah kita buat di web.php
-                        type: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            service_id: serviceId,
-                            booked_date: bookedDate,
-                            booked_time: bookedTime,
-                            hours_booked: hoursBooked
-                        },
-                        success: function(response) {
-                            if (response.available) {
-                                selectBtn.prop('disabled', false).text('Pilih Layanan');
-                                timeErrorDisplay.text('').hide();
-                            } else {
-                                selectBtn.prop('disabled', true).text('Jadwal Tidak Tersedia');
-                                timeErrorDisplay.text(response.message || translations.schedule_unavailable).show();
-                            }
-                        },
-                        error: function(response) {
-                            let errorMessage = translations.schedule_check_error;
-                            if (response.responseJSON && response.responseJSON.message) {
-                                errorMessage = response.responseJSON.message;
-                            } else if (response.responseJSON && response.responseJSON.errors) {
-                                // Tampilkan error validasi dari backend jika ada
-                                const errorMessages = Object.values(response.responseJSON.errors).flat().join(' ');
-                                errorMessage = translations.validation_fails + ' ' + errorMessages;
-                            }
-                            selectBtn.prop('disabled', true).text('Jadwal Tidak Tersedia');
-                            timeErrorDisplay.text(errorMessage).show();
-                        }
-                    });
-                } else {
-                    // Jika ada input jadwal yang kosong, nonaktifkan tombol dan bersihkan pesan error
-                    selectBtn.prop('disabled', true).text('Pilih Jadwal Dulu');
-                    timeErrorDisplay.text('').hide();
-                }
-            });
-            // --- Akhir Bagian BARU ---
+                document.querySelectorAll('.service-date-picker').forEach(function(input) {
+                    input.setAttribute('min', minDate);
+                });
 
-            $('.select-service-btn').on('click', function() {
-                const block = $(this).closest('.service-block');
-                const serviceId = block.data('service-id');
-                const referralCode = appliedReferrals[serviceId] ? appliedReferrals[serviceId].code : null;
+                const servicesData = @json($services->keyBy('id'));
+                const referralCodesData = @json($referralCodes->keyBy('code'));
+                let appliedReferrals = {};
 
-                const formData = {
-                    id: serviceId,
-                    hours: block.find('#hours-' + serviceId).val(),
-                    booked_date: block.find('#booked_date-' + serviceId).val(),
-                    booked_time: block.find('#booked_time-' + serviceId).val(),
-                    session_type: block.find('#session_type-' + serviceId).val(),
-                    offline_address: block.find('#offline_address-' + serviceId).val(),
-                    referral_code: referralCode,
-                    contact_preference: block.find('input[name="contact_preference-' + serviceId + '"]:checked').val(),
-                    payment_type: block.find('input[name="payment_type-' + serviceId + '"]:checked').val(),
-                    _token: '{{ csrf_token() }}'
-                };
+                updateCartCount();
 
-                // Lakukan validasi dasar di frontend sebelum mengirim ke backend
-                if (!formData.booked_date || !formData.booked_time || formData.hours < 0) {
-                    Swal.fire(translations.info, 'Harap lengkapi semua informasi jadwal (Tanggal, Jam Mulai, Jumlah Jam).', 'info');
-                    return;
+                function calculatePrices(block) {
+                    const serviceId = block.data('service-id');
+                    const hours = parseInt(block.find('.hours-input').val()) || 0;
+                    const service = servicesData[serviceId];
+                    if (!service) return;
+
+                    const basePrice = parseFloat(service.price);
+                    const hourlyPrice = parseFloat(service.hourly_price);
+                    let initialPrice = basePrice + (hourlyPrice * hours);
+                    let discountAmount = 0;
+                    let finalPrice = initialPrice;
+                    const referralCode = appliedReferrals[serviceId];
+
+                    if (referralCode) {
+                        const discountPercentage = referralCode.discount_percentage;
+                        discountAmount = (initialPrice * discountPercentage) / 100;
+                        finalPrice = initialPrice - discountAmount;
+                    }
+
+                    block.find('.final-price').text('Rp. ' + finalPrice.toLocaleString('id-ID'));
                 }
 
-                // Jika sesi offline dan alamat kosong, berikan peringatan
-                if (formData.session_type === 'Offline' && !formData.offline_address) {
-                    Swal.fire(translations.info, 'Harap masukkan alamat offline untuk sesi Offline.', 'info');
-                    return;
-                }
+                $('.accordion-body').on('change input', '.hours-input, .session-type-select', function() {
+                    const block = $(this).closest('.service-block');
+                    calculatePrices(block);
+                });
 
-                $.ajax({
-                    url: '{{ route("front.cart.add") }}',
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        Swal.fire(translations.success, response.message, 'success');
-                        const cartCountElement = $('#cart-count-badge');
-                        if(cartCountElement.length) {
-                            cartCountElement.text(response.cart_count).removeClass('d-none');
-                        }
-                    },
-                    error: function(response) {
-                        let errorMessage = translations.generic_error;
-                        if (response.responseJSON && response.responseJSON.message) {
-                            errorMessage = response.responseJSON.message;
-                        } else if (response.responseJSON && response.responseJSON.errors) {
-                            errorMessage = translations.validation_fails + ': ' + Object.values(response.responseJSON.errors).flat().join(' ');
-                        }
-                        Swal.fire(translations.failure, errorMessage, 'error');
+                $('.accordion-body').on('change', '.session-type-select', function() {
+                    const block = $(this).closest('.service-block');
+                    const container = block.find('.offline-address-container');
+                    if ($(this).val() === 'Offline') {
+                        container.show().find('textarea').attr('required', true);
+                    } else {
+                        container.hide().find('textarea').attr('required', false);
                     }
                 });
-            });
 
-            $('.service-block').each(function() {
-                calculatePrices($(this));
-                // Inisialisasi status tombol select-service-btn
-                const block = $(this);
-                const selectBtn = block.find('.select-service-btn');
-                selectBtn.prop('disabled', true).text('Pilih Jadwal Dulu'); // Nonaktifkan di awal
+                $('.accordion-body').on('click', '.apply-referral-btn', function() {
+                    const block = $(this).closest('.service-block');
+                    const serviceId = block.data('service-id');
+                    const referralCodeInput = block.find('.referral-code-input').val().toUpperCase();
+
+                    if (appliedReferrals[serviceId]) {
+                        delete appliedReferrals[serviceId];
+                    }
+
+                    if (serviceId && referralCodeInput && referralCodesData[referralCodeInput]) {
+                        const code = referralCodesData[referralCodeInput];
+                        const isValid = !code.valid_until || new Date(code.valid_until) > new Date();
+                        const hasUses = !code.max_uses || code.current_uses < code.max_uses;
+
+                        if (isValid && hasUses) {
+                            appliedReferrals[serviceId] = {
+                                code: referralCodeInput,
+                                discount_percentage: parseFloat(code.discount_percentage)
+                            };
+                            Swal.fire(translations.success, translations.referral_applied, 'success');
+                        } else {
+                            Swal.fire(translations.failure, translations.referral_invalid, 'error');
+                        }
+                    } else {
+                        if (referralCodeInput) {
+                            Swal.fire(translations.failure, translations.referral_not_found, 'error');
+                        } else {
+                            Swal.fire(translations.info, translations.referral_enter_first, 'info');
+                        }
+                    }
+                    calculatePrices(block);
+                });
+
+                $('.accordion-body').on('change input', '.service-date-picker, .booked_time-input, .hours-input', function() {
+                    const block = $(this).closest('.service-block');
+                    const serviceId = block.data('service-id');
+                    const bookedDate = block.find('#booked_date-' + serviceId).val();
+                    const bookedTime = block.find('#booked_time-' + serviceId).val();
+                    const hoursBooked = parseInt(block.find('#hours-' + serviceId).val()) || 0;
+                    const selectBtn = block.find('.select-service-btn');
+                    const timeErrorDisplay = block.find('.time-error-message');
+
+                    if (bookedDate && bookedTime && hoursBooked >= 0) {
+                        selectBtn.prop('disabled', false).text('Pilih Layanan');
+                        timeErrorDisplay.text('').hide();
+                    } else {
+                        selectBtn.prop('disabled', true).text('Pilih Jadwal Dulu');
+                        timeErrorDisplay.text('').hide();
+                    }
+                });
+
+                $('.select-service-btn').on('click', function() {
+                    const block = $(this).closest('.service-block');
+                    const serviceId = block.data('service-id');
+                    const referralCode = appliedReferrals[serviceId] ? appliedReferrals[serviceId].code : null;
+
+                    const formData = {
+                        id: serviceId,
+                        hours: block.find('#hours-' + serviceId).val(),
+                        booked_date: block.find('#booked_date-' + serviceId).val(),
+                        booked_time: block.find('#booked_time-' + serviceId).val(),
+                        session_type: block.find('#session_type-' + serviceId).val(),
+                        offline_address: block.find('#offline_address-' + serviceId).val(),
+                        referral_code: referralCode,
+                        contact_preference: block.find('input[name="contact_preference-' + serviceId + '"]:checked').val(),
+                        price: parseFloat(servicesData[serviceId].price),
+                        hourly_price: parseFloat(servicesData[serviceId].hourly_price),
+                        service_title: servicesData[serviceId].title,
+                        service_thumbnail: servicesData[serviceId].thumbnail,
+                        discount_percentage: appliedReferrals[serviceId] ? appliedReferrals[serviceId].discount_percentage : 0
+                    };
+
+                    if (!formData.booked_date || !formData.booked_time || formData.hours < 0) {
+                        Swal.fire(translations.info, 'Harap lengkapi semua informasi jadwal (Tanggal, Jam Mulai, Jumlah Jam).', 'info');
+                        return;
+                    }
+
+                    if (formData.session_type === 'Offline' && !formData.offline_address) {
+                        Swal.fire(translations.info, 'Harap masukkan alamat offline untuk sesi Offline.', 'info');
+                        return;
+                    }
+
+                    @auth
+                        $.ajax({
+                            url: '{{ route("front.cart.add") }}',
+                            type: 'POST',
+                            data: { ...formData, _token: '{{ csrf_token() }}' },
+                            success: function(response) {
+                                Swal.fire(translations.success, response.message, 'success');
+                                updateCartCount();
+                            },
+                            error: function(response) {
+                                let errorMessage = translations.generic_error;
+                                if (response.responseJSON && response.responseJSON.message) {
+                                    errorMessage = response.responseJSON.message;
+                                } else if (response.responseJSON && response.responseJSON.errors) {
+                                    errorMessage = translations.validation_fails + ': ' + Object.values(response.responseJSON.errors).flat().join(' ');
+                                }
+                                Swal.fire(translations.failure, errorMessage, 'error');
+                            }
+                        });
+                    @else
+                        const tempCart = getTempCart();
+                        tempCart[serviceId] = formData;
+                        saveTempCart(tempCart);
+                        updateCartCount();
+
+                        Swal.fire({
+                            title: translations.success,
+                            text: "Layanan berhasil ditambahkan ke keranjang sementara! Data akan tersimpan di sini sampai Anda login.",
+                            icon: 'success',
+                            confirmButtonText: 'Lanjutkan',
+                            footer: '<a href="{{ route("login") }}">Ingin login sekarang?</a>'
+                        });
+                    @endauth
+                });
+
+                $('.service-block').each(function() {
+                    calculatePrices($(this));
+                    const block = $(this);
+                    const selectBtn = block.find('.select-service-btn');
+                    selectBtn.prop('disabled', true).text('Pilih Jadwal Dulu');
+                });
             });
-        });
-    </script>
+        </script>
+    @endpush
 @endsection

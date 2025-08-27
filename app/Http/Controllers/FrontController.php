@@ -125,17 +125,15 @@ class FrontController extends Controller
             ], 404);
         }
 
-        // --- PERUBAHAN DI SINI UNTUK LOGIKA JATUH TEMPO ---
         $existingBookings = BookingService::where('service_id', $serviceId)
             ->whereHas('invoice', function ($query) {
                 $query->where('payment_status', 'paid')
-                      ->orWhere(function ($query) {
-                          $query->whereIn('payment_status', ['unpaid', 'pending'])
-                                ->where('due_date', '>=', now());
-                      });
+                    ->orWhere(function ($query) {
+                        $query->whereIn('payment_status', ['unpaid', 'pending'])
+                            ->where('due_date', '>=', now());
+                    });
             })
             ->get();
-        // --- AKHIR PERUBAHAN ---
 
         foreach ($existingBookings as $booking) {
             try {
@@ -236,27 +234,33 @@ class FrontController extends Controller
         }
     }
 
+    // PENTING: Perubahan pada metode viewCart
     /**
      * Menampilkan halaman keranjang belanja pengguna.
      *
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\View\View
      */
     public function viewCart()
     {
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Anda harus login untuk melihat keranjang.');
+        // Jika pengguna sudah login, tampilkan keranjang dari database
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $cartItems = CartItem::with(['service', 'referralCode'])
+                                 ->where('user_id', $userId)
+                                 ->get();
+            $summary = $this->calculateSummary($cartItems->pluck('id')->toArray(), 'full_payment');
+
+            return view('front.cart.index', array_merge([
+                'cartItems' => $cartItems,
+            ], $summary));
         }
 
-        $userId = Auth::id();
-        $cartItems = CartItem::with(['service', 'referralCode'])
-                             ->where('user_id', $userId)
-                             ->get();
+        // Jika pengguna belum login, tampilkan halaman keranjang kosong
+        // Data akan diisi oleh JavaScript dari local storage di sisi klien
+        $cartItems = collect();
+        $summary = $this->formatSummary(0, 0, 0, 0);
 
-        $summary = $this->calculateSummary($cartItems->pluck('id')->toArray(), 'full_payment');
-
-        return view('front.cart.index', array_merge([
-            'cartItems' => $cartItems,
-        ], $summary));
+        return view('front.cart.index', compact('cartItems', 'summary'));
     }
 
     /**
@@ -284,6 +288,14 @@ class FrontController extends Controller
         $selectedIds = $request->input('ids', []);
         $paymentType = $request->input('payment_type', 'full_payment');
 
+        // Pastikan pengguna login sebelum memproses
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki izin untuk melakukan tindakan ini.'
+            ], 401);
+        }
+
         $summary = $this->calculateSummary($selectedIds, $paymentType);
         return response()->json($summary);
     }
@@ -305,8 +317,8 @@ class FrontController extends Controller
         }
 
         $cartItem = CartItem::where('id', $request->id)
-                            ->where('user_id', Auth::id())
-                            ->first();
+                             ->where('user_id', Auth::id())
+                             ->first();
 
         if ($cartItem) {
             $cartItem->delete();

@@ -10,8 +10,8 @@
     <style>
         /* Indiegologi Brand Colors */
         :root {
-            --indiegologi-primary: #0C2C5A; /* Biru Tua - Classy, Pointed */
-            --indiegologi-accent: #F4B704; /* Emas - Memorable */
+            --indiegologi-primary: #0C2C5A;
+            --indiegologi-accent: #F4B704;
             --indiegologi-light-bg: #F5F7FA;
             --indiegologi-dark-text: #212529;
             --indiegologi-light-text: #ffffff;
@@ -20,7 +20,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--indiegologi-light-bg); /* Background yang bersih */
+            background-color: var(--indiegologi-light-bg);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -31,8 +31,8 @@
 
         .card {
             border-radius: 16px;
-            border: none; /* Border dihilangkan untuk kesan lebih classy */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Shadow yang lebih halus */
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             background-color: #ffffff;
             overflow: hidden;
         }
@@ -44,8 +44,8 @@
         .logo-container {
             width: 80px;
             height: 80px;
-            background-color: var(--indiegologi-primary); /* Menggunakan warna primary */
-            border-radius: 12px; /* Sudut lebih tegas */
+            background-color: var(--indiegologi-primary);
+            border-radius: 12px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -54,12 +54,12 @@
         }
 
         .logo-container:hover {
-            transform: translateY(-5px); /* Efek lift yang graceful */
+            transform: translateY(-5px);
         }
 
         .logo-icon {
             font-size: 2.5rem;
-            color: var(--indiegologi-accent); /* Menggunakan warna aksen */
+            color: var(--indiegologi-accent);
         }
 
         h1.h3 {
@@ -79,14 +79,14 @@
         .form-control {
             border-radius: 12px;
             padding: 0.85rem 1.25rem;
-            border: 1px solid #e0e0e0; /* Border lebih soft */
+            border: 1px solid #e0e0e0;
             background-color: #fcfcfc;
             transition: all 0.3s ease;
         }
 
         .form-control:focus {
             border-color: var(--indiegologi-primary);
-            box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.1); /* Shadow dari warna primary */
+            box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.1);
             background-color: #ffffff;
         }
 
@@ -114,7 +114,7 @@
         }
 
         .btn-primary:hover {
-            background-color: #082142; /* Darker primary on hover */
+            background-color: #082142;
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(12, 44, 90, 0.3);
         }
@@ -186,7 +186,7 @@
 
         .btn-back i {
             font-size: 1.2rem;
-            color: inherit; /* Warna ikon mengikuti warna teks */
+            color: inherit;
         }
     </style>
 </head>
@@ -198,7 +198,6 @@
                 <div class="card-body">
                     <div class="text-center mb-4">
                         <div class="logo-container">
-                            {{-- Ikon hati melambangkan caring dan love, sesuai dengan brand culture --}}
                             <i class="fas fa-heart logo-icon"></i>
                         </div>
                         <h1 class="h3 fw-bold mb-1">Selamat Datang di Indiegologi</h1>
@@ -217,8 +216,10 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('login') }}" id="login-form">
                         @csrf
+                        {{-- Tambahkan hidden input untuk data keranjang sementara --}}
+                        <input type="hidden" name="temp_cart_data" id="temp-cart-input">
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
@@ -286,5 +287,25 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ambil form login
+        const loginForm = document.getElementById('login-form');
+
+        // Pastikan form ada sebelum menambahkan event listener
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(event) {
+                // Ambil data keranjang dari local storage
+                const tempCartData = localStorage.getItem('tempCart');
+
+                // Jika ada data, masukkan ke hidden input
+                if (tempCartData) {
+                    const tempCartInput = document.getElementById('temp-cart-input');
+                    tempCartInput.value = tempCartData;
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>
