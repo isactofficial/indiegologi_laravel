@@ -5,24 +5,26 @@
 @section('content')
 <div class="sketch-telling-section">
     <div class="container">
-        <h1 class="section-title">Sketch Telling</h1>
-        <p class="section-description">Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang
+        {{-- Title and description with fade-down animations --}}
+        <h1 class="section-title" data-aos="fade-down">Sketch Telling</h1>
+        <p class="section-description" data-aos="fade-down" data-aos-delay="150">Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang
             lebih dalam tentang berbagai perjalanan hidup</p>
 
         @if($sketches->isEmpty())
-        <div class="text-center">
+        {{-- Message for no sketches with a zoom-in animation --}}
+        <div class="text-center" data-aos="zoom-in">
             <p class="lead text-muted">Belum ada sketsa yang tersedia saat ini.</p>
         </div>
         @else
         <div class="cards-grid">
             @foreach ($sketches as $sketch)
-            <div class="card">
+            {{-- Each card has a fade-up animation with a staggered delay --}}
+            <div class="card" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 3) * 150 }}">
                 <a href="{{ route('front.sketches.detail', ['sketch' => $sketch->slug]) }}">
                     <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-image"
                          alt="{{ $sketch->title }}">
                 </a>
                 <div class="card-content">
-                    {{-- Konten Dinamis (Tidak Diterjemahkan) --}}
                     <h3 class="card-title">{{ Str::limit($sketch->title, 50) }}</h3>
                     <a href="{{ route('front.sketches.detail', ['sketch' => $sketch->slug]) }}" class="read-more">
                         Lihat Detail <span class="arrow">›</span>
@@ -32,16 +34,20 @@
             @endforeach
         </div>
 
-        {{-- Bagian Pagination --}}
-        <div class="d-flex justify-content-center mt-5">
+        {{-- Pagination with a fade-up animation --}}
+        <div class="d-flex justify-content-center mt-5" data-aos="fade-up">
             {{ $sketches->links() }}
         </div>
         @endif
     </div>
 </div>
+@endsection
+
+@push('styles')
+{{-- STYLE UNTUK ANIMASI AOS --}}
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
 <style>
-
 .sketch-telling-section {
     padding: 80px 0;
     text-align: center;
@@ -63,18 +69,13 @@
     margin: 0 auto 50px auto;
     line-height: 1.6;
 }
-
-
 .cards-grid {
     display: grid;
-    /* Diubah menjadi 3 kolom */
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
     justify-content: center;
     padding-bottom: 50px;
 }
-
-
 .card {
     background-color: #fff;
     border-radius: 10px;
@@ -137,10 +138,8 @@
     text-decoration: underline;
 }
 
-/* ==================== PENYESUAIAN RESPONSIVE ==================== */
 @media (max-width: 992px) {
     .cards-grid {
-        /* Diubah menjadi 2 kolom untuk tablet */
         grid-template-columns: repeat(2, 1fr);
     }
     .section-title {
@@ -155,7 +154,6 @@
 }
 @media (max-width: 768px) {
     .cards-grid {
-        /* Diubah menjadi 1 kolom untuk mobile */
         grid-template-columns: 1fr;
         max-width: 400px;
         margin: 0 auto;
@@ -171,4 +169,32 @@
     }
 }
 </style>
-@endsection
+@endpush
+
+@push('scripts')
+{{-- SCRIPT UNTUK ANIMASI AOS --}}
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 900,
+        easing: 'ease-in-out-sine',
+        once: false,
+        offset: 120,
+    });
+
+    let lastScrollTop = 0;
+    const allAosElements = document.querySelectorAll('[data-aos]');
+
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop < lastScrollTop) {
+            allAosElements.forEach(function(element) {
+                if (element.getBoundingClientRect().top > window.innerHeight) {
+                    element.classList.remove('aos-animate');
+                }
+            });
+        }
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    }, false);
+</script>
+@endpush
