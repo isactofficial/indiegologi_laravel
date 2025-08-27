@@ -153,8 +153,8 @@
     #google_translate_element_desktop {
         margin-left: 0.75rem;
         display: block;
-        height: auto; /* Biarkan tinggi menyesuaikan konten */
-        min-height: 30px; /* Minimal tinggi agar terlihat */
+        height: auto;
+        min-height: 30px;
     }
 
     /* Mobile: sembunyikan widget desktop, tampilkan widget mobile */
@@ -165,52 +165,48 @@
         }
 
         #google_translate_element_desktop {
-            display: none !important; /* Sembunyikan widget desktop di mobile */
+            display: none !important;
         }
 
-        /* Container untuk widget mobile */
         .mobile-translate-container {
-            display: block !important; /* Pastikan container terlihat */
+            display: block !important;
             margin-top: 1rem;
-            padding-left: 1rem; /* Sesuaikan padding agar sejajar dengan nav-link */
+            padding-left: 1rem;
             width: 100%;
             box-sizing: border-box;
-            overflow: visible !important; /* Sangat penting untuk iframe */
-            min-height: 50px; /* Beri tinggi minimal yang cukup untuk widget */
-            border: 1px solid #eee; /* Untuk debugging: lihat batasnya */
-            background-color: #fff; /* Untuk debugging: lihat latar belakangnya */
+            overflow: visible !important;
+            min-height: 50px;
+            border: 1px solid #eee;
+            background-color: #fff;
         }
 
-        /* Pastikan elemen bawaan Google Translate di dalamnya juga terlihat */
         #google_translate_element_mobile .goog-te-gadget {
             display: block !important;
             width: 100% !important;
             height: auto !important;
             min-height: 40px !important;
             overflow: visible !important;
-            background-color: transparent !important; /* Hapus background bawaan */
-            border: none !important; /* Hapus border bawaan */
-            box-shadow: none !important; /* Hapus shadow bawaan */
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
 
-        /* Sembunyikan link "Ganti Bahasa" yang lama */
         .mobile-language-link {
             display: none !important;
         }
     }
 
     /* Gaya umum untuk widget Google Translate (desktop dan mobile) */
-    /* Ini akan diterapkan ke semua .goog-te-gadget, override jika ada yang spesifik */
     .goog-te-gadget {
-        font-family: 'Poppins', sans-serif !important; /* Gunakan Poppins untuk teks widget */
+        font-family: 'Poppins', sans-serif !important;
         color: #343a40 !important;
         font-size: 1rem !important;
     }
     .goog-te-combo {
-        border: 1px solid #ccc !important; /* Beri border agar terlihat */
+        border: 1px solid #ccc !important;
         border-radius: 4px !important;
         padding: 0.25rem 0.5rem !important;
-        background-color: #f8f8f8 !important; /* Latar belakang agar terlihat */
+        background-color: #f8f8f8 !important;
         box-shadow: none !important;
     }
     .goog-te-gadget-simple {
@@ -228,10 +224,10 @@
         color: var(--indiegologi-primary) !important;
     }
     .goog-te-gadget-simple .goog-te-menu-value span:last-child {
-        display: none; /* Menyembunyikan ikon panah bawaan */
+        display: none;
     }
     .goog-te-gadget-simple .goog-te-menu-value::after {
-        content: '\F282'; /* ikon chevron-down dari Bootstrap Icons */
+        content: '\F282';
         font-family: 'bootstrap-icons';
         margin-left: 0.25rem;
         color: #6c757d;
@@ -259,17 +255,14 @@
             </a>
 
             <div class="d-flex align-items-center d-lg-none">
-                @auth
+                {{-- Keranjang untuk Mobile --}}
                 <a class="nav-link position-relative fs-4 me-2" href="{{ route('front.cart.view') }}" title="Keranjang">
                     <i class="bi bi-cart"></i>
-                    @php
-                        $cartCountMobile = \App\Models\CartItem::where('user_id', auth()->id())->count();
-                    @endphp
-                    <span class="badge rounded-pill bg-danger cart-badge" style="top: -2px; right: -5px;">
-                        {{ $cartCountMobile }}
+                    {{-- Badge di-handle oleh JavaScript, sembunyikan secara default --}}
+                    <span class="badge rounded-pill bg-danger cart-badge d-none" id="cart-count-badge-mobile" style="top: -2px; right: -5px;">
+                        0
                     </span>
                 </a>
-                @endauth
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNavbar" aria-controls="mobileNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -290,14 +283,13 @@
                     {{-- Actions (Cart, Profile, Login) for Desktop --}}
                     <li class="nav-item">
                         <div class="navbar-actions">
+                            {{-- Keranjang untuk Desktop --}}
+                            <a class="nav-link position-relative fs-5" href="{{ route('front.cart.view') }}" title="Keranjang">
+                                <i class="bi bi-cart"></i>
+                                {{-- Badge di-handle oleh JavaScript, sembunyikan secara default --}}
+                                <span class="badge rounded-pill bg-danger cart-badge d-none" id="cart-count-badge-desktop">0</span>
+                            </a>
                             @auth
-                                <a class="nav-link position-relative fs-5" href="{{ route('front.cart.view') }}" title="Keranjang">
-                                    <i class="bi bi-cart"></i>
-                                    @php
-                                        $cartCount = \App\Models\CartItem::where('user_id', auth()->id())->count();
-                                    @endphp
-                                    <span class="badge rounded-pill bg-danger cart-badge {{ $cartCount == 0 ? 'd-none' : '' }}" id="cart-count-badge">{{ $cartCount }}</span>
-                                </a>
                                 <div class="dropdown">
                                     <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil"><i class="bi bi-person-circle"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDropdown">
@@ -311,10 +303,9 @@
                                         </li>
                                     </ul>
                                 </div>
-
                             @else
                                 <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">Login</a>
-                            @endguest
+                            @endauth
 
                             {{-- Widget Google Translate bawaan untuk Desktop --}}
                             <div id="google_translate_element_desktop" class="d-none d-lg-block"></div>
@@ -355,25 +346,27 @@
             <hr>
 
             {{-- Widget Google Translate bawaan untuk Mobile --}}
-            {{-- Tambahkan container khusus dengan styling yang agresif --}}
             <div class="mobile-translate-container">
                 <div id="google_translate_element_mobile"></div>
             </div>
             <hr>
 
             {{-- User Actions --}}
-            @auth
             <ul class="navbar-nav">
                 <li class="nav-item">
+                    {{-- Keranjang di offcanvas --}}
                     <a class="nav-link" href="{{ route('front.cart.view') }}">
                         <i class="bi bi-cart"></i>
                         <span>Keranjang</span>
-                        <span class="badge rounded-pill bg-danger ms-auto">{{ $cartCount ?? 0 }}</span>
+                        <span class="badge rounded-pill bg-danger ms-auto d-none" id="cart-count-badge-offcanvas">0</span>
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('profile.index') }}"><i class="bi bi-person"></i><span>Profil Saya</span></a></li>
             </ul>
-            <hr>
+            @auth
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('profile.index') }}"><i class="bi bi-person"></i><span>Profil Saya</span></a></li>
+                </ul>
+                <hr>
             @endauth
 
             {{-- Footer Actions (Login/Logout) --}}
@@ -385,7 +378,7 @@
                     </form>
                 @else
                     <a class="btn btn-primary logout-btn" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">Login</a>
-                @endguest
+                @endauth
             </div>
         </div>
     </div>
@@ -416,7 +409,56 @@
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     {{-- Existing JavaScript --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // Fungsi untuk mengambil data keranjang dari Local Storage
+        function getTempCart() {
+            try {
+                const cart = localStorage.getItem('tempCart');
+                return cart ? JSON.parse(cart) : {};
+            } catch (e) {
+                console.error("Failed to parse tempCart from localStorage", e);
+                return {};
+            }
+        }
+
+        // Fungsi untuk memperbarui badge keranjang di navbar
+        function updateCartCount() {
+            // Ambil jumlah item dari Local Storage
+            const tempCart = getTempCart();
+            const tempCartCount = Object.keys(tempCart).length;
+
+            // Perbarui badge keranjang di offcanvas
+            const offcanvasBadge = $('#cart-count-badge-offcanvas');
+            if (offcanvasBadge.length) {
+                if (tempCartCount > 0) {
+                    offcanvasBadge.text(tempCartCount).removeClass('d-none');
+                } else {
+                    offcanvasBadge.text('0').addClass('d-none');
+                }
+            }
+
+            // Perbarui badge keranjang di desktop
+            const desktopBadge = $('#cart-count-badge-desktop');
+            if (desktopBadge.length) {
+                if (tempCartCount > 0) {
+                    desktopBadge.text(tempCartCount).removeClass('d-none');
+                } else {
+                    desktopBadge.text('0').addClass('d-none');
+                }
+            }
+
+            // Perbarui badge keranjang di mobile (di samping toggler)
+            const mobileBadge = $('#cart-count-badge-mobile');
+            if (mobileBadge.length) {
+                if (tempCartCount > 0) {
+                    mobileBadge.text(tempCartCount).removeClass('d-none');
+                } else {
+                    mobileBadge.text('0').addClass('d-none');
+                }
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const navbar = document.querySelector('.navbar.fixed-top');
             if (navbar) {
@@ -432,10 +474,11 @@
                     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
                 });
             }
+
+            // Panggil fungsi ini saat halaman pertama kali dimuat
+            updateCartCount();
         });
     </script>
-
     @stack('scripts')
-
 </body>
 </html>

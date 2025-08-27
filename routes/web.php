@@ -34,10 +34,9 @@ Route::get('/storage-link', function () {
 });
 
 // ======================================================================
-// PERUBAHAN DI SINI: Menerapkan middleware pelacakan per rute
+// Rute Publik (Akses Tanpa Login)
 // ======================================================================
 
-// Public-Facing Routes
 Route::get('/', [FrontController::class, 'index'])->name('front.index')->middleware('track.views:homepage');
 Route::get('/articles', [FrontController::class, 'articles'])->name('front.articles')->middleware('track.views:articles');
 Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name('front.articles.show')->middleware('track.views:articles');
@@ -47,7 +46,13 @@ Route::get('/sketches', [FrontController::class, 'sketches_show'])->name('front.
 Route::get('/sketches/{sketch:slug}', [FrontController::class, 'showDetail'])->name('front.sketches.detail')->middleware('track.views:sketches');
 
 
-// Authentication Routes
+// PENTING: Pindahkan rute keranjang belanja ke sini, di luar middleware auth.
+Route::get('/cart', [FrontController::class, 'viewCart'])->name('front.cart.view');
+
+// ======================================================================
+// Rute Autentikasi
+// ======================================================================
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -64,7 +69,10 @@ Route::get('reset-password/{token}', [ResetPasswordController::class, 'showReset
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 
-// --- Authenticated User Routes ---
+// ======================================================================
+// Rute Pengguna yang Diautentikasi
+// ======================================================================
+
 Route::middleware(['auth'])->group(function () {
     // Comment management
     Route::post('/articles/{article}/comments', [CommentController::class, 'store'])->name('comments.store');
@@ -78,10 +86,9 @@ Route::middleware(['auth'])->group(function () {
 
     // [BARU] Cart Routes
     Route::prefix('cart')->name('front.cart.')->group(function () {
-        Route::get('/', [FrontController::class, 'viewCart'])->name('view');
+        // Hapus rute 'view' dari sini, sudah dipindahkan ke atas
         Route::post('/add', [FrontController::class, 'addToCart'])->name('add');
         Route::post('/remove', [FrontController::class, 'removeFromCart'])->name('remove');
-        // TAMBAHKAN ROUTE INI UNTUK AJAX UPDATE SUMMARY
         Route::post('/update-summary', [FrontController::class, 'updateCartSummary'])->name('updateSummary');
     });
 
@@ -89,12 +96,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
 
     // [PENTING: TAMBAHKAN ROUTE INI UNTUK CEK KETERSEDIAAN JADWAL]
-    // Ini adalah rute yang akan dipanggil oleh AJAX di layanan.blade.php
     Route::post('/check-availability', [FrontController::class, 'checkBookingAvailability'])->name('front.check.availability');
 });
 
 
-// --- Admin Routes ---
+// ======================================================================
+// Rute Admin
+// ======================================================================
+
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->name('dashboard');
 
@@ -120,7 +129,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
 
-// --- Role-Based Dashboards ---
+// ======================================================================
+// Role-Based Dashboards
+// ======================================================================
+
 Route::middleware(['auth', 'role:author'])->group(function () {
     Route::get('/author/dashboard', function () {
         return view('dashboard.author');
