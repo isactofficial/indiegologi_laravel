@@ -2,17 +2,20 @@
 
 @section('content')
 
-<div class="container py-5 mt-5 pt-lg-0">
+{{-- The main container now has a fade-in animation --}}
+<div class="container py-5 mt-5 pt-lg-0" data-aos="fade-in">
     <div class="row justify-content-center">
         <div class="col-lg-12 pt-5">
-            <div class="d-flex justify-content-between mb-4 mt-4">
+            {{-- Back button with a fade-right animation --}}
+            <div class="d-flex justify-content-between mb-4 mt-4" data-aos="fade-right">
                 <a href="{{ route('front.articles') }}" class="btn px-4 py-2" style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 8px;">
                     <i class="fas fa-arrow-left me-2"></i>Kembali
                 </a>
             </div>
 
             <div class="mb-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
+                {{-- Meta info (badge and date) with fade-down animation --}}
+                <div class="d-flex justify-content-between align-items-start mb-3" data-aos="fade-down">
                     <span class="badge rounded-pill px-3 py-2"
                           style="background-color: {{ $article->status == 'Published' ? '#D6E4FF' : '#f5f5f5' }};
                                  color: {{ $article->status == 'Published' ? '#0C2C5A' : '#6c757d' }};">
@@ -23,10 +26,11 @@
                     </div>
                 </div>
 
-                {{-- Diterjemahkan otomatis oleh Model Accessor --}}
-                <h1 class="fw-bold mb-3 article-text" style="color: #0C2C5A;">{{ $article->title }}</h1>
+                {{-- Article title with fade-down animation --}}
+                <h1 class="fw-bold mb-3 article-text" style="color: #0C2C5A;" data-aos="fade-down" data-aos-delay="100">{{ $article->title }}</h1>
 
-                <div class="d-flex align-items-center mb-4">
+                {{-- Author info with fade-down animation --}}
+                <div class="d-flex align-items-center mb-4" data-aos="fade-down" data-aos-delay="200">
                     <div class="d-flex justify-content-center align-items-center rounded-circle me-3" style="width: 40px; height: 40px; background-color: #D6E4FF;">
                         <i class="fas fa-user" style="color: #0C2C5A;"></i>
                     </div>
@@ -36,17 +40,18 @@
                     </div>
                 </div>
 
+                {{-- Thumbnail image with a zoom-in animation --}}
                 @if($article->thumbnail)
-                <div class="text-center my-4">
+                <div class="text-center my-4" data-aos="zoom-in-up" data-aos-delay="300">
                     <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail" class="img-fluid mx-auto d-block" style="max-width: 100%; height: auto; border-radius: 16px;">
                 </div>
                 @endif
             </div>
 
             <div class="mb-4">
-                <div class="article-description mb-4">
+                {{-- Article description with a fade-up animation --}}
+                <div class="article-description mb-4" data-aos="fade-up">
                     <div class="p-3 rounded-3" style="background-color: #F8FAFD;">
-                        {{-- Diterjemahkan otomatis oleh Model Accessor --}}
                         <p class="lead mb-0" style="color: #5F738C;">{{ $article->description }}</p>
                     </div>
                 </div>
@@ -54,14 +59,13 @@
                 @if($article->subheadings->count())
                 <div class="article-content">
                     @foreach($article->subheadings as $subheading)
-                    <div class="subheading-section mb-4">
+                    {{-- Each subheading section has a staggered fade-up animation --}}
+                    <div class="subheading-section mb-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                         <h3 class="fw-bold mb-3 article-text" style="color: #0C2C5A; padding-bottom: 10px; border-bottom: 2px solid #e3e9f4;">
-                            {{-- Diterjemahkan otomatis oleh Model Accessor --}}
                             {{ $subheading->title }}
                         </h3>
                         @foreach($subheading->paragraphs as $paragraph)
                         <div class="paragraph mb-4">
-                            {{-- Diterjemahkan otomatis oleh Model Accessor --}}
                             <p style="line-height: 1.8; color: #5F738C;">{{ $paragraph->content }}</p>
                         </div>
                         @endforeach
@@ -71,7 +75,8 @@
                 @endif
             </div>
 
-            <div class="card border-0 rounded-4 shadow-sm mb-4">
+            {{-- Comments section card with a fade-up animation --}}
+            <div class="card border-0 rounded-4 shadow-sm mb-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="card-body p-4">
                     <h3 class="fw-bold fs-5 mb-4 article-text" style="color: #0C2C5A;">Komentar ({{ $article->comments->count() }})</h3>
 
@@ -98,7 +103,8 @@
 
                     <div class="comments-list">
                         @forelse($article->comments()->with('user')->latest()->get() as $comment)
-                            <div class="comment-item border-bottom py-3">
+                            {{-- Each comment has a subtle fade-up animation --}}
+                            <div class="comment-item border-bottom py-3" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 5) * 50 }}">
                                 <div class="d-flex align-items-start">
                                     <div class="d-flex justify-content-center align-items-center rounded-circle me-3" style="width: 40px; height: 40px; background-color: #D6E4FF;">
                                         <i class="fas fa-user" style="color: #0C2C5A;"></i>
@@ -126,7 +132,7 @@
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-link text-danger"
                                                                 onclick="return confirm('Apakah Anda yakin ingin menghapus komentar ini?')">
-                                                            <i class="fas fa-trash"></i> ('Hapus')
+                                                            <i class="fas fa-trash"></i> Hapus
                                                         </button>
                                                     </form>
                                                 </div>
@@ -136,7 +142,7 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="text-center py-4">
+                            <div class="text-center py-4" data-aos="zoom-in">
                                 <p class="text-muted mb-0 article-text">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
                             </div>
                         @endforelse
@@ -147,7 +153,13 @@
     </div>
 </div>
 
-{{-- Styles tidak perlu diubah --}}
+@endsection
+
+@push('styles')
+{{-- STYLE UNTUK ANIMASI AOS --}}
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+{{-- Your existing styles remain unchanged --}}
 <style>
     .article-content h3 { font-size: 1.5rem; }
     .article-content p { font-size: 1.05rem; }
@@ -162,16 +174,15 @@
         img.img-fluid { max-width: 100% !important; }
     }
 </style>
+@endpush
 
 @push('scripts')
 <script>
-    // Edit comment functionality
     document.querySelectorAll('.edit-comment').forEach(button => {
         button.addEventListener('click', function() {
             const commentId = this.dataset.commentId;
             const content = this.dataset.content;
-            
-            // Mengambil teks terjemahan dari data-* attribute
+
             const saveText = this.dataset.saveText;
             const cancelText = this.dataset.cancelText;
 
@@ -200,6 +211,30 @@
         });
     });
 </script>
-@endpush
 
-@endsection
+{{-- SCRIPT UNTUK ANIMASI AOS --}}
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 900,
+        easing: 'ease-in-out-sine',
+        once: false,
+        offset: 120,
+    });
+
+    let lastScrollTop = 0;
+    const allAosElements = document.querySelectorAll('[data-aos]');
+
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop < lastScrollTop) {
+            allAosElements.forEach(function(element) {
+                if (element.getBoundingClientRect().top > window.innerHeight) {
+                    element.classList.remove('aos-animate');
+                }
+            });
+        }
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    }, false);
+</script>
+@endpush
