@@ -477,6 +477,11 @@
 
             // Panggil fungsi ini saat halaman pertama kali dimuat
             updateCartCount();
+
+            // clear localStorage
+            $('form.logout-form').on('submit', function() {
+                localStorage.removeItem('tempCart');
+            });
         });
     </script>
     @stack('scripts')
