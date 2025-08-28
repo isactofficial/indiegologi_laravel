@@ -504,6 +504,13 @@
 
     $(document).ready(function() {
         @auth
+            // **MODIFICATION START**
+            // Clear the temporary cart from localStorage because the user is logged in
+            // and is now using the server-side (database) cart. This prevents the
+            // local cart from reappearing after logout.
+            localStorage.removeItem('tempCart');
+            // **MODIFICATION END**
+
             function updateSummary() {
                 let selectedIds = [];
                 $('.item-checkbox:checked').each(function() {
