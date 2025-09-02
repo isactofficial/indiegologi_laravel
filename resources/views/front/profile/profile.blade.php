@@ -386,7 +386,7 @@
             <div class="mx-auto rounded-circle overflow-hidden shadow-sm profile-photo-container" style="width:120px; height:120px; background:#e0e0e0; border: 3px solid var(--indiegologi-primary);">
                 @if(optional($user->profile)->profile_photo)
                 <img src="{{ asset('storage/' . $user->profile->profile_photo) }}" alt="Profile Photo"
-                    class="w-100 h-100 object-fit-cover">
+                     class="w-100 h-100 object-fit-cover">
                 @else
                 <div class="d-flex align-items-center justify-content-center h-100 text-muted bg-light">
                     <i class="fas fa-user-circle" style="font-size: 3rem; color: #b0b0b0;"></i>
@@ -449,7 +449,9 @@
     <div class="text-center profile-page-main-title mt-5">Jadwal Appointment</div> {{-- Adjusted main title for section --}}
     <div class="appointment-section-wrapper mx-auto">
         <div id="appointments-list">
-            @forelse($user->invoices as $index => $invoice)
+            {{--sortByDesc('invoice_date') untuk mengurutkan
+            invoice dari yang terbaru ke yang terlama.--}}
+            @forelse($user->invoices->sortByDesc('invoice_date') as $index => $invoice)
 
                 @php
                     $booking = \App\Models\ConsultationBooking::where('invoice_id', $invoice->id)->with('services')->first();
