@@ -27,6 +27,7 @@
             justify-content: center;
             color: var(--indiegologi-dark-text);
             padding: 2rem 0;
+            overflow-x: hidden; /* Mencegah scroll horizontal karena animasi */
         }
 
         .card {
@@ -165,7 +166,6 @@
             margin-right: 0.75rem;
         }
 
-        /* Button Kembali Style */
         .btn-back {
             background-color: transparent;
             border: 1px solid var(--indiegologi-primary);
@@ -188,6 +188,32 @@
             font-size: 1.2rem;
             color: inherit;
         }
+
+        /* [ANIMASI] CSS untuk animasi staggered fade-in */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-item {
+            opacity: 0; /* Sembunyikan elemen secara default */
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        /* Memberi jeda (delay) yang berbeda pada setiap elemen */
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+        .delay-7 { animation-delay: 0.7s; }
+        .delay-8 { animation-delay: 0.8s; }
+
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center py-4 py-sm-5">
@@ -196,7 +222,7 @@
         <div class="col-sm-8 col-md-7 col-lg-5 col-xl-4">
             <div class="card">
                 <div class="card-body">
-                    <div class="text-center mb-4">
+                    <div class="text-center mb-4 animate-item delay-1">
                         <div class="logo-container">
                             <i class="fas fa-heart logo-icon"></i>
                         </div>
@@ -205,23 +231,22 @@
                     </div>
 
                     @if(session('success'))
-                        <div class="alert alert-success d-flex align-items-center mb-3">
+                        <div class="alert alert-success d-flex align-items-center mb-3 animate-item delay-2">
                             <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
                         </div>
                     @endif
 
                     @if($errors->any())
-                        <div class="alert alert-danger d-flex align-items-center mb-3">
+                        <div class="alert alert-danger d-flex align-items-center mb-3 animate-item delay-2">
                             <i class="fas fa-exclamation-circle me-2"></i> {{ $errors->first() }}
                         </div>
                     @endif
 
                     <form method="POST" action="{{ route('login') }}" id="login-form">
                         @csrf
-                        {{-- Tambahkan hidden input untuk data keranjang sementara --}}
                         <input type="hidden" name="temp_cart_data" id="temp-cart-input">
 
-                        <div class="mb-3">
+                        <div class="mb-3 animate-item delay-2">
                             <label for="email" class="form-label">Email</label>
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -233,7 +258,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-2">
+                        <div class="mb-2 animate-item delay-3">
                             <label for="password" class="form-label">Password</label>
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -245,22 +270,24 @@
                             </div>
                         </div>
 
-                        <div class="mb-4 text-end">
+                        <div class="mb-4 text-end animate-item delay-3">
                             <a href="{{ route('password.request') }}" class="text-decoration-none small fw-medium text-primary">
                                 Lupa Password?
                             </a>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 mb-4">
-                            <i class="fas fa-sign-in-alt me-2"></i> Masuk Akun
-                        </button>
-
-                        <div class="text-center text-muted mb-4">
+                        <div class="animate-item delay-4">
+                            <button type="submit" class="btn btn-primary w-100 mb-4">
+                                <i class="fas fa-sign-in-alt me-2"></i> Masuk Akun
+                            </button>
+                        </div>
+                        
+                        <div class="text-center text-muted mb-4 animate-item delay-5">
                             Belum punya akun?
                             <a href="{{ route('register') }}" class="text-decoration-none fw-medium text-primary">Daftar di sini</a>
                         </div>
 
-                        <div class="text-center">
+                        <div class="text-center animate-item delay-6">
                             <p class="text-muted mb-3">Atau masuk dengan</p>
                             <div class="social-login">
                                 <a href="{{ route('auth.google') }}" class="d-flex align-items-center justify-content-center text-decoration-none">
@@ -275,7 +302,7 @@
                             </div>
                         </div>
                     </form>
-                    <div class="text-center mt-3">
+                    <div class="text-center mt-3 animate-item delay-7">
                         <a href="{{ route('front.index') }}" class="btn btn-back w-100">
                             <i class="fas fa-arrow-left me-2"></i> Kembali ke Beranda
                         </a>
@@ -289,16 +316,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Ambil form login
         const loginForm = document.getElementById('login-form');
-
-        // Pastikan form ada sebelum menambahkan event listener
         if (loginForm) {
             loginForm.addEventListener('submit', function(event) {
-                // Ambil data keranjang dari local storage
                 const tempCartData = localStorage.getItem('tempCart');
-
-                // Jika ada data, masukkan ke hidden input
                 if (tempCartData) {
                     const tempCartInput = document.getElementById('temp-cart-input');
                     tempCartInput.value = tempCartData;

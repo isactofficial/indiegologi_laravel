@@ -77,11 +77,6 @@ class FrontController extends Controller
 
     /**
      * Memeriksa ketersediaan jadwal layanan.
-     * Menerima booked_date, booked_time, hours_booked, dan service_id.
-     * Akan memeriksa tumpang tindih dengan booking yang sudah dibayar.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function checkBookingAvailability(Request $request)
     {
@@ -163,9 +158,6 @@ class FrontController extends Controller
 
     /**
      * Menambahkan layanan ke keranjang belanja.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function addToCart(Request $request)
     {
@@ -234,20 +226,16 @@ class FrontController extends Controller
         }
     }
 
-    // PENTING: Perubahan pada metode viewCart
     /**
      * Menampilkan halaman keranjang belanja pengguna.
-     *
-     * @return \Illuminate\View\View
      */
     public function viewCart()
     {
-        // Jika pengguna sudah login, tampilkan keranjang dari database
         if (Auth::check()) {
             $userId = Auth::id();
             $cartItems = CartItem::with(['service', 'referralCode'])
-                                 ->where('user_id', $userId)
-                                 ->get();
+                                      ->where('user_id', $userId)
+                                      ->get();
             $summary = $this->calculateSummary($cartItems->pluck('id')->toArray(), 'full_payment');
 
             return view('front.cart.index', array_merge([
@@ -255,8 +243,6 @@ class FrontController extends Controller
             ], $summary));
         }
 
-        // Jika pengguna belum login, tampilkan halaman keranjang kosong
-        // Data akan diisi oleh JavaScript dari local storage di sisi klien
         $cartItems = collect();
         $summary = $this->formatSummary(0, 0, 0, 0);
 
@@ -265,9 +251,6 @@ class FrontController extends Controller
 
     /**
      * Memperbarui ringkasan keranjang belanja melalui permintaan AJAX.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function updateCartSummary(Request $request)
     {
@@ -288,7 +271,6 @@ class FrontController extends Controller
         $selectedIds = $request->input('ids', []);
         $paymentType = $request->input('payment_type', 'full_payment');
 
-        // Pastikan pengguna login sebelum memproses
         if (!Auth::check()) {
             return response()->json([
                 'success' => false,
@@ -302,9 +284,6 @@ class FrontController extends Controller
 
     /**
      * Menghapus item dari keranjang belanja.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function removeFromCart(Request $request)
     {
@@ -317,8 +296,8 @@ class FrontController extends Controller
         }
 
         $cartItem = CartItem::where('id', $request->id)
-                             ->where('user_id', Auth::id())
-                             ->first();
+                            ->where('user_id', Auth::id())
+                            ->first();
 
         if ($cartItem) {
             $cartItem->delete();
@@ -330,10 +309,6 @@ class FrontController extends Controller
 
     /**
      * Helper: Menghitung ringkasan total untuk item keranjang yang dipilih.
-     *
-     * @param array $itemIds Array of CartItem IDs
-     * @param string $globalPaymentType Tipe pembayaran global ('full_payment' atau 'dp')
-     * @return array Formatted summary data
      */
     private function calculateSummary(array $itemIds, string $globalPaymentType = 'full_payment'): array
     {
@@ -343,9 +318,9 @@ class FrontController extends Controller
         }
 
         $cartItems = CartItem::with('referralCode')
-                             ->whereIn('id', $itemIds)
-                             ->where('user_id', $userId)
-                             ->get();
+                            ->whereIn('id', $itemIds)
+                            ->where('user_id', $userId)
+                            ->get();
 
         $subtotal = 0.0;
         $totalDiscount = 0.0;
@@ -367,12 +342,6 @@ class FrontController extends Controller
 
     /**
      * Helper: Memformat nilai mata uang menjadi format Rupiah.
-     *
-     * @param float $subtotal
-     * @param float $totalDiscount
-     * @param float $grandTotal
-     * @param float $totalToPayNow
-     * @return array
      */
     private function formatSummary(float $subtotal, float $totalDiscount, float $grandTotal, float $totalToPayNow): array
     {
@@ -382,5 +351,79 @@ class FrontController extends Controller
             'grandTotal' => number_format($grandTotal, 0, ',', '.'),
             'totalToPayNow' => number_format($totalToPayNow, 0, ',', '.'),
         ];
+    }
+    
+    // --- [FUNGSI PENCARIAN BARU YANG TELAH DI-IMPROVE] ---
+    
+    /**
+     * Menyorot kata kunci dalam teks.
+     */
+    private function highlightText($text, $query)
+    {
+        if (empty($text) || empty($query)) {
+            return $text;
+        }
+        return preg_replace('/(' . preg_quote($query, '/') . ')/i', '<mark class="bg-warning">$1</mark>', $text);
+    }
+
+    /**
+     * Menampilkan hasil pencarian berdasarkan query dari pengguna dengan fungsionalitas yang lebih luas.
+     */
+    public function search(Request $request)
+    {
+        $request->validate([
+            'query' => 'required|string|min:2',
+        ]);
+    
+        $query = $request->input('query');
+    
+        // 1. Cari di model Article (Judul, Deskripsi, dan Penulis)
+        $articles = Article::where('status', 'published')
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                  ->orWhere('description', 'like', "%{$query}%")
+                  ->orWhere('author', 'like', "%{$query}%");
+            })
+            ->latest()
+            ->get();
+    
+        // 2. Cari di model Sketch (Judul, Konten, dan Penulis)
+        $sketches = Sketch::where('status', 'published')
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                  ->orWhere('content', 'like', "%{$query}%")
+                  ->orWhere('author', 'like', "%{$query}%");
+            })
+            ->latest()
+            ->get();
+    
+        // 3. Cari di model ConsultationService (Judul Layanan dan Deskripsi)
+        $services = ConsultationService::whereIn('status', ['published', 'special'])
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                  ->orWhere('short_description', 'like', "%{$query}%")
+                  ->orWhere('product_description', 'like', "%{$query}%");
+            })
+            ->latest()
+            ->get();
+    
+        // 4. Proses highlight untuk setiap hasil
+        $articles->each(function ($item) use ($query) {
+            $item->title = $this->highlightText($item->title, $query);
+            $item->description = $this->highlightText(Str::limit(strip_tags($item->description), 150), $query);
+        });
+    
+        $sketches->each(function ($item) use ($query) {
+            $item->title = $this->highlightText($item->title, $query);
+            $item->content = $this->highlightText(Str::limit(strip_tags($item->content), 150), $query);
+        });
+    
+        $services->each(function ($item) use ($query) {
+            $item->title = $this->highlightText($item->title, $query);
+            $item->short_description = $this->highlightText($item->short_description, $query);
+        });
+    
+        // 5. Kirim semua hasil ke view
+        return view('front.search.results', compact('query', 'articles', 'sketches', 'services'));
     }
 }
