@@ -241,7 +241,7 @@
             <div class="col-sm-8 col-md-7 col-lg-5 col-xl-4">
                 <div class="card">
                     <div class="card-body">
-                        <div class="text-center mb-4 animate-item delay-1">
+                        <div class="text-center mb-4">
                             <div class="logo-container">
                                 <i class="fas fa-hand-holding-heart logo-icon"></i>
                             </div>
@@ -250,7 +250,7 @@
                         </div>
 
                         @if($errors->any())
-                            <div class="alert alert-danger d-flex align-items-center mb-3 animate-item delay-2">
+                            <div class="alert alert-danger d-flex align-items-center mb-3">
                                 <i class="fas fa-exclamation-circle me-2"></i> {{ $errors->first() }}
                             </div>
                         @endif
@@ -258,7 +258,7 @@
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
 
-                            <div class="mb-3 animate-item delay-2">
+                            <div class="mb-3">
                                 <label for="name" class="form-label">Nama Lengkap</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -270,7 +270,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 animate-item delay-3">
+                            <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -282,7 +282,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 animate-item delay-4">
+                            <div class="mb-2">
                                 <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -292,9 +292,13 @@
                                            class="form-control border-start-0"
                                            placeholder="Masukkan password Anda">
                                 </div>
+                                <div class="form-text password-clue">
+                                    Minimal 2 jenis karakter (huruf, angka, simbol).
+                                </div>
+                                <div id="password-strength-status" class="password-feedback"></div>
                             </div>
 
-                            <div class="mb-4 animate-item delay-5">
+                            <div class="mb-4">
                                 <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -306,17 +310,15 @@
                                 </div>
                             </div>
 
-                            <div class="animate-item delay-6">
-                                <button type="submit" class="btn btn-primary w-100 mb-4">
-                                    <i class="fas fa-user-plus me-2"></i> Daftar Akun
-                                </button>
-                            </div>
-                            
-                            <div class="text-center text-muted mb-4 animate-item delay-7">
+                            <button type="submit" id="register-btn" class="btn btn-primary w-100 mb-4" disabled>
+                                <i class="fas fa-user-plus me-2"></i> Daftar Akun
+                            </button>
+
+                            <div class="text-center text-muted mb-4">
                                 Sudah punya akun? <a href="{{ route('login') }}" class="text-decoration-none fw-medium text-primary">Masuk di sini</a>
                             </div>
 
-                            <div class="text-center animate-item delay-8">
+                            <div class="text-center">
                                 <p class="text-muted mb-3">Atau daftar dengan</p>
                                 <div class="social-login">
                                     <a href="{{ route('auth.google') }}" class="d-flex align-items-center justify-content-center text-decoration-none">
@@ -330,7 +332,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="text-center mt-3 animate-item delay-8">
+                            <div class="text-center mt-3">
                                 <a href="{{ route('front.index') }}" class="btn btn-back w-100">
                                     <i class="fas fa-arrow-left me-2"></i> Kembali ke Beranda
                                 </a>
@@ -343,5 +345,62 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const strengthStatus = document.getElementById('password-strength-status');
+            const registerBtn = document.getElementById('register-btn');
+
+            passwordInput.addEventListener('keyup', function() {
+                const password = this.value;
+                let score = 0;
+                let feedbackText = '';
+
+                strengthStatus.classList.remove('weak', 'medium', 'strong');
+
+                // 1. Cek panjang karakter dan spasi
+                if (password.length < 8) {
+                    feedbackText = 'Minimal 8 karakter.';
+                    strengthStatus.classList.add('weak');
+                    registerBtn.disabled = true;
+                } else if (/\s/.test(password)) {
+                    feedbackText = 'Password tidak boleh mengandung spasi.';
+                    strengthStatus.classList.add('weak');
+                    registerBtn.disabled = true;
+                } else {
+                    // 2. Hitung jenis karakter
+                    if (/[a-z]/.test(password)) score++; // Huruf kecil
+                    if (/[A-Z]/.test(password)) score++; // Huruf besar
+                    if (/[0-9]/.test(password)) score++; // Angka
+                    if (/[^a-zA-Z0-9]/.test(password)) score++; // Simbol
+
+                    // 3. Beri feedback berdasarkan skor
+                    switch (score) {
+                        case 1:
+                            feedbackText = 'Password lemah';
+                            strengthStatus.classList.add('weak');
+                            registerBtn.disabled = true; // Tidak bisa daftar dengan password lemah
+                            break;
+                        case 2:
+                            feedbackText = 'Password cukup kuat';
+                            strengthStatus.classList.add('medium');
+                            registerBtn.disabled = false; // Boleh daftar
+                            break;
+                        case 3:
+                        case 4:
+                            feedbackText = 'Password kuat';
+                            strengthStatus.classList.add('strong');
+                            registerBtn.disabled = false; // Boleh daftar
+                            break;
+                        default:
+                            feedbackText = '';
+                            registerBtn.disabled = true;
+                            break;
+                    }
+                }
+                strengthStatus.textContent = feedbackText;
+            });
+        });
+    </script>
 </body>
 </html>

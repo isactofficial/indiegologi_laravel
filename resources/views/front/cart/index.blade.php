@@ -3,10 +3,14 @@
 @section('title', 'Keranjang Belanja Anda')
 
 @push('styles')
+{{-- STYLE UNTUK ANIMASI AOS --}}
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+    /* Your existing CSS remains unchanged */
     :root {
         --brand-primary: #0C2C5A;
         --brand-text: #212529;
@@ -17,21 +21,17 @@
         --brand-danger: #dc3545;
         --font-main: 'Playfair Display', sans-serif;
     }
-
     body {
         font-family: var(--font-main);
         background-color: var(--brand-background);
     }
-
     .cart-page {
         color: var(--brand-text);
     }
-
     .cart-header .section-title {
         font-weight: 700;
         color: var(--brand-primary);
     }
-
     .cart-item-card, .summary-card {
         background-color: var(--brand-surface);
         border: 1px solid var(--brand-border);
@@ -39,12 +39,10 @@
         transition: all 0.3s ease-in-out;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
-
     .cart-item-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(12, 44, 90, 0.1);
     }
-
     .item-details-list {
         list-style: none; padding: 0; margin: 0; font-size: 0.9rem;
     }
@@ -55,7 +53,6 @@
         color: var(--brand-primary);
         margin-right: 0.75rem; width: 16px;
     }
-
     .btn-brand-outline {
         background-color: transparent;
         color: var(--brand-primary);
@@ -72,21 +69,18 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 10px rgba(12, 44, 90, 0.2);
     }
-
     .remove-btn {
         color: var(--brand-text-muted); transition: color 0.2s ease;
     }
     .remove-btn:hover { color: var(--brand-danger); }
     .remove-btn i { transition: transform 0.2s ease-in-out; }
     .remove-btn:hover i { transform: scale(1.15); }
-
     @media (min-width: 992px) {
         .sticky-summary {
             position: sticky;
             top: 120px;
         }
     }
-
     .btn-checkout {
         background-color: var(--brand-primary);
         color: var(--brand-surface);
@@ -103,11 +97,9 @@
         transform: translateY(-3px);
         box-shadow: 0 7px 20px rgba(12, 44, 90, 0.3);
     }
-
     .price-details-list .list-group-item {
         padding: 0.5rem 0; border: 0; background-color: transparent;
     }
-
     @media (max-width: 767.98px) {
         .cart-header .section-title {
             font-size: 2rem;
@@ -131,14 +123,16 @@
 
         @auth
             @if ($cartItems->isEmpty())
-                <div class="text-center py-5">
+                {{-- Empty cart message with zoom-in animation --}}
+                <div class="text-center py-5" data-aos="zoom-in">
                     <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
                     <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
                     <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
                     <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
                 </div>
             @else
-                <div class="text-center mb-5 cart-header">
+                {{-- Cart header with fade-down animation --}}
+                <div class="text-center mb-5 cart-header" data-aos="fade-down">
                     <h1 class="section-title">Keranjang Belanja Anda</h1>
                     <p class="lead text-muted">Satu langkah lagi untuk menjadi versi terbaik Anda.</p>
                 </div>
@@ -146,7 +140,8 @@
                     @csrf
                     <div class="row g-4 g-lg-5">
                         <div class="col-lg-7">
-                            <div class="card mb-3 shadow-sm border-0">
+                            {{-- "Select All" card with fade-right animation --}}
+                            <div class="card mb-3 shadow-sm border-0" data-aos="fade-right">
                                 <div class="card-body p-3">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="select-all" checked>
@@ -157,7 +152,8 @@
                                 </div>
                             </div>
                             @foreach ($cartItems as $item)
-                                <div class="card mb-3 cart-item-card" data-service-id="{{ $item->service_id }}">
+                                {{-- Each cart item with a staggered fade-right animation --}}
+                                <div class="card mb-3 cart-item-card" data-service-id="{{ $item->service_id }}" data-aos="fade-right" data-aos-delay="{{ $loop->index * 100 }}">
                                     <div class="card-body p-4">
                                         <div class="row">
                                             <div class="col-12 col-md-7 mb-4 mb-md-0">
@@ -219,7 +215,8 @@
                                 </div>
                             @endforeach
                         </div>
-                        <div class="col-lg-5">
+                        {{-- Summary card with fade-left animation --}}
+                        <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
                             <div class="summary-card sticky-summary">
                                 <div class="card-body p-4">
                                     <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">Ringkasan Pesanan</h4>
@@ -263,7 +260,7 @@
             @endif
         @else
             <div id="temp-cart-display">
-                <div class="text-center py-5 empty-cart-message">
+                <div class="text-center py-5 empty-cart-message" data-aos="zoom-in">
                     <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
                     <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
                     <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
@@ -277,9 +274,35 @@
 @endsection
 
 @push('scripts')
+{{-- SCRIPT UNTUK ANIMASI AOS --}}
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 900,
+        easing: 'ease-in-out-sine',
+        once: false,
+        offset: 100,
+    });
+
+    let lastScrollTop = 0;
+    const allAosElements = document.querySelectorAll('[data-aos]');
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop < lastScrollTop) {
+            allAosElements.forEach(function(element) {
+                if (element.getBoundingClientRect().top > window.innerHeight) {
+                    element.classList.remove('aos-animate');
+                }
+            });
+        }
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    }, false);
+</script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    /* Your existing JavaScript logic remains unchanged */
     const translations = {
         success: "Berhasil!",
         failure: "Gagal!",
@@ -347,22 +370,24 @@
 
         if (Object.keys(cartItems).length === 0) {
             container.html(`
-                <div class="text-center py-5">
+                <div class="text-center py-5" data-aos="zoom-in">
                     <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
                     <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
                     <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
                     <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
                 </div>
             `);
+            // Re-initialize AOS for the newly added empty cart message
+            AOS.refresh();
             return;
         }
 
         const cartHeader = `
-            <div class="text-center mb-5 cart-header">
+            <div class="text-center mb-5 cart-header" data-aos="fade-down">
                 <h1 class="section-title">Keranjang Belanja Anda</h1>
                 <p class="lead text-muted">Satu langkah lagi untuk menjadi versi terbaik Anda.</p>
             </div>
-            <div class="alert alert-info" role="alert">
+            <div class="alert alert-info" role="alert" data-aos="fade-in" data-aos-delay="100">
                 <h5 class="alert-heading">Keranjang Sementara</h5>
                 <p>Layanan yang Anda pilih saat ini disimpan secara sementara di perangkat Anda. <a href="{{ route('login') }}">Silakan login</a> untuk menyimpannya secara permanen dan melanjutkan ke pembayaran.</p>
             </div>
@@ -375,7 +400,7 @@
 
         let checkedItems = [];
 
-        for (const serviceId in cartItems) {
+        Object.keys(cartItems).forEach((serviceId, index) => {
             const item = cartItems[serviceId];
             checkedItems.push(serviceId);
 
@@ -384,7 +409,7 @@
             const finalItemPrice = itemSubtotal - discountAmount;
 
             const itemHtml = `
-                <div class="card mb-3 cart-item-card" data-service-id="${serviceId}">
+                <div class="card mb-3 cart-item-card" data-service-id="${serviceId}" data-aos="fade-right" data-aos-delay="${index * 100}">
                     <div class="card-body p-4">
                         <div class="row">
                             <div class="col-12 col-md-7 mb-4 mb-md-0">
@@ -441,11 +466,11 @@
                 </div>
             `;
             cartListCol.append(itemHtml);
-        }
+        });
 
         const summary = calculateSummary(cartItems, 'full_payment');
         const summaryCol = `
-            <div class="col-lg-5">
+            <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
                 <div class="summary-card sticky-summary">
                     <div class="card-body p-4">
                         <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">Ringkasan Pesanan</h4>
@@ -484,6 +509,9 @@
         row.append(cartListCol).append(summaryCol);
         container.append(row);
 
+        // Re-initialize AOS for all the newly added elements
+        AOS.refresh();
+
         $('#payment-type-select-temp').on('change', function() {
             const tempCart = getTempCart();
             const summary = calculateSummary(tempCart, $(this).val());
@@ -504,12 +532,7 @@
 
     $(document).ready(function() {
         @auth
-            // **MODIFICATION START**
-            // Clear the temporary cart from localStorage because the user is logged in
-            // and is now using the server-side (database) cart. This prevents the
-            // local cart from reappearing after logout.
             localStorage.removeItem('tempCart');
-            // **MODIFICATION END**
 
             function updateSummary() {
                 let selectedIds = [];
