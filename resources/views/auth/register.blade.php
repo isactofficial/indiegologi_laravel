@@ -10,12 +10,15 @@
     <style>
         /* Indiegologi Brand Colors */
         :root {
-            --indiegologi-primary: #0C2C5A;
-            --indiegologi-accent: #F4B704;
+            --indiegologi-primary: #0C2C5A; /* Biru Tua - Classy, Pointed */
+            --indiegologi-accent: #F4B704; /* Emas - Memorable */
             --indiegologi-light-bg: #F5F7FA;
             --indiegologi-dark-text: #212529;
             --indiegologi-light-text: #ffffff;
             --indiegologi-muted-text: #6c757d;
+            --strength-weak: #dc3545;      /* Merah untuk password lemah */
+            --strength-medium: #ffc107;   /* Kuning untuk cukup kuat */
+            --strength-strong: #28a745;    /* Hijau untuk kuat */
         }
 
         body {
@@ -27,7 +30,6 @@
             justify-content: center;
             color: var(--indiegologi-dark-text);
             padding: 2rem 0;
-            overflow-x: hidden; /* Mencegah scroll horizontal karena animasi */
         }
 
         .card {
@@ -103,22 +105,30 @@
             border-left: none;
         }
 
-        .btn-primary {
-            background-color: var(--indiegologi-accent);
+       .btn-primary {
+            background-color: var(--indiegologi-primary);
             border: none;
             border-radius: 12px;
             padding: 0.85rem 1.5rem;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(244, 183, 4, 0.2);
+            box-shadow: 0 4px 15px rgba(12, 44, 90, 0.2);
             transition: all 0.3s ease;
             letter-spacing: 0.03em;
-            color: var(--indiegologi-primary);
         }
 
-        .btn-primary:hover {
-            background-color: #d49c00;
+        /* Gaya untuk tombol saat dinonaktifkan */
+        .btn-primary:disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: #082142;
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(244, 183, 4, 0.3);
+            box-shadow: 0 6px 20px rgba(12, 44, 90, 0.3);
         }
 
         .alert {
@@ -209,8 +219,29 @@
         .delay-6 { animation-delay: 0.6s; }
         .delay-7 { animation-delay: 0.7s; }
         .delay-8 { animation-delay: 0.8s; }
+        .delay-9 { animation-delay: 0.9s; }
+        .delay-10 { animation-delay: 1.0s; }
+        .delay-11 { animation-delay: 1.1s; }
 
 
+        /* Styling untuk feedback password */
+        .password-feedback {
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 5px;
+            height: 1.2rem; /* Reserve space to prevent layout shift */
+        }
+        .password-feedback.weak { color: var(--strength-weak); }
+        .password-feedback.medium { color: var(--strength-medium); }
+        .password-feedback.strong { color: var(--strength-strong); }
+
+        /* Styling untuk petunjuk password */
+        .password-clue {
+            font-size: 0.8rem;
+            color: var(--indiegologi-muted-text);
+        }
+
+        /* Responsive adjustments */
         @media (max-width: 576px) {
             .card-body {
                 padding: 1.5rem;
@@ -242,11 +273,11 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="text-center mb-4">
-                            <div class="logo-container">
+                            <div class="logo-container animate-item delay-1">
                                 <i class="fas fa-hand-holding-heart logo-icon"></i>
                             </div>
-                            <h1 class="h3 fw-bold mb-1">Mari Berbagi Ide di Indiegologi!</h1>
-                            <p class="text-muted mb-0">Daftar untuk mulai **mewujudkan ide kreatif** bersama kami.</p>
+                            <h1 class="h3 fw-bold mb-1 animate-item delay-2">Mari Berbagi Ide di Indiegologi!</h1>
+                            <p class="text-muted mb-0 animate-item delay-3">Daftar untuk mulai <strong>mewujudkan ide kreatif</strong> bersama kami.</p>
                         </div>
 
                         @if($errors->any())
@@ -258,7 +289,7 @@
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
 
-                            <div class="mb-3">
+                            <div class="mb-3 animate-item delay-4">
                                 <label for="name" class="form-label">Nama Lengkap</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -270,7 +301,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 animate-item delay-5">
                                 <label for="email" class="form-label">Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -282,7 +313,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-2">
+                            <div class="mb-2 animate-item delay-6">
                                 <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -298,7 +329,7 @@
                                 <div id="password-strength-status" class="password-feedback"></div>
                             </div>
 
-                            <div class="mb-4">
+                            <div class="mb-4 animate-item delay-7">
                                 <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -310,15 +341,15 @@
                                 </div>
                             </div>
 
-                            <button type="submit" id="register-btn" class="btn btn-primary w-100 mb-4" disabled>
+                            <button type="submit" id="register-btn" class="btn btn-primary w-100 mb-4 animate-item delay-8" disabled>
                                 <i class="fas fa-user-plus me-2"></i> Daftar Akun
                             </button>
 
-                            <div class="text-center text-muted mb-4">
+                            <div class="text-center text-muted mb-4 animate-item delay-9">
                                 Sudah punya akun? <a href="{{ route('login') }}" class="text-decoration-none fw-medium text-primary">Masuk di sini</a>
                             </div>
 
-                            <div class="text-center">
+                            <div class="text-center animate-item delay-10">
                                 <p class="text-muted mb-3">Atau daftar dengan</p>
                                 <div class="social-login">
                                     <a href="{{ route('auth.google') }}" class="d-flex align-items-center justify-content-center text-decoration-none">
@@ -332,7 +363,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-3 animate-item delay-11">
                                 <a href="{{ route('front.index') }}" class="btn btn-back w-100">
                                     <i class="fas fa-arrow-left me-2"></i> Kembali ke Beranda
                                 </a>
