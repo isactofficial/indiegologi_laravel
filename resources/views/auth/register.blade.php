@@ -10,8 +10,8 @@
     <style>
         /* Indiegologi Brand Colors */
         :root {
-            --indiegologi-primary: #0C2C5A; /* Biru Tua - Classy, Pointed */
-            --indiegologi-accent: #F4B704; /* Emas - Memorable */
+            --indiegologi-primary: #0C2C5A;
+            --indiegologi-accent: #F4B704;
             --indiegologi-light-bg: #F5F7FA;
             --indiegologi-dark-text: #212529;
             --indiegologi-light-text: #ffffff;
@@ -27,6 +27,7 @@
             justify-content: center;
             color: var(--indiegologi-dark-text);
             padding: 2rem 0;
+            overflow-x: hidden; /* Mencegah scroll horizontal karena animasi */
         }
 
         .card {
@@ -184,29 +185,49 @@
             color: inherit;
         }
 
-        /* Responsive adjustments */
+        /* [ANIMASI] CSS untuk animasi staggered fade-in */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-item {
+            opacity: 0; /* Sembunyikan elemen secara default */
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        /* Memberi jeda (delay) yang berbeda pada setiap elemen */
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+        .delay-7 { animation-delay: 0.7s; }
+        .delay-8 { animation-delay: 0.8s; }
+
+
         @media (max-width: 576px) {
             .card-body {
                 padding: 1.5rem;
             }
-
             .logo-container {
                 width: 70px;
                 height: 70px;
             }
-
             .logo-icon {
                 font-size: 2.25rem;
             }
-
             h1.h3 {
                 font-size: 1.8rem;
             }
-
             .form-control {
                 padding: 0.65rem 1rem;
             }
-
             .btn-primary, .btn-back {
                 padding: 0.65rem 1rem;
                 font-size: 0.95rem;
@@ -220,9 +241,8 @@
             <div class="col-sm-8 col-md-7 col-lg-5 col-xl-4">
                 <div class="card">
                     <div class="card-body">
-                        <div class="text-center mb-4">
+                        <div class="text-center mb-4 animate-item delay-1">
                             <div class="logo-container">
-                                {{-- Ikon tangan dengan hati melambangkan budaya caring, love, sharing --}}
                                 <i class="fas fa-hand-holding-heart logo-icon"></i>
                             </div>
                             <h1 class="h3 fw-bold mb-1">Mari Berbagi Ide di Indiegologi!</h1>
@@ -230,7 +250,7 @@
                         </div>
 
                         @if($errors->any())
-                            <div class="alert alert-danger d-flex align-items-center mb-3">
+                            <div class="alert alert-danger d-flex align-items-center mb-3 animate-item delay-2">
                                 <i class="fas fa-exclamation-circle me-2"></i> {{ $errors->first() }}
                             </div>
                         @endif
@@ -238,7 +258,7 @@
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
 
-                            <div class="mb-3">
+                            <div class="mb-3 animate-item delay-2">
                                 <label for="name" class="form-label">Nama Lengkap</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -250,7 +270,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 animate-item delay-3">
                                 <label for="email" class="form-label">Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -262,7 +282,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 animate-item delay-4">
                                 <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -274,7 +294,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-4">
+                            <div class="mb-4 animate-item delay-5">
                                 <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -286,15 +306,17 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 mb-4">
-                                <i class="fas fa-user-plus me-2"></i> Daftar Akun
-                            </button>
-
-                            <div class="text-center text-muted mb-4">
+                            <div class="animate-item delay-6">
+                                <button type="submit" class="btn btn-primary w-100 mb-4">
+                                    <i class="fas fa-user-plus me-2"></i> Daftar Akun
+                                </button>
+                            </div>
+                            
+                            <div class="text-center text-muted mb-4 animate-item delay-7">
                                 Sudah punya akun? <a href="{{ route('login') }}" class="text-decoration-none fw-medium text-primary">Masuk di sini</a>
                             </div>
 
-                            <div class="text-center">
+                            <div class="text-center animate-item delay-8">
                                 <p class="text-muted mb-3">Atau daftar dengan</p>
                                 <div class="social-login">
                                     <a href="{{ route('auth.google') }}" class="d-flex align-items-center justify-content-center text-decoration-none">
@@ -308,7 +330,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-3 animate-item delay-8">
                                 <a href="{{ route('front.index') }}" class="btn btn-back w-100">
                                     <i class="fas fa-arrow-left me-2"></i> Kembali ke Beranda
                                 </a>

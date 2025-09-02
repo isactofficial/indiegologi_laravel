@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ReferralCodeController;
 use App\Http\Controllers\Admin\ConsultationServiceController;
 use App\Http\Controllers\Admin\ConsultationBookingController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\OnboardingController;
 
 
 // Route for storage link
@@ -45,6 +46,8 @@ Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact
 Route::get('/sketches', [FrontController::class, 'sketches_show'])->name('front.sketch')->middleware('track.views:sketches');
 Route::get('/sketches/{sketch:slug}', [FrontController::class, 'showDetail'])->name('front.sketches.detail')->middleware('track.views:sketches');
 
+// Rute searchbar
+Route::get('/search', [FrontController::class, 'search'])->name('search.results');
 
 // PENTING: Pindahkan rute keranjang belanja ke sini, di luar middleware auth.
 Route::get('/cart', [FrontController::class, 'viewCart'])->name('front.cart.view');
@@ -97,6 +100,12 @@ Route::middleware(['auth'])->group(function () {
 
     // [PENTING: TAMBAHKAN ROUTE INI UNTUK CEK KETERSEDIAAN JADWAL]
     Route::post('/check-availability', [FrontController::class, 'checkBookingAvailability'])->name('front.check.availability');
+
+    // [BARU] Grup Rute untuk Onboarding
+    Route::prefix('onboarding')->name('onboarding.')->group(function () {
+        Route::get('/', [OnboardingController::class, 'show'])->name('show');
+        Route::post('/', [OnboardingController::class, 'store'])->name('store');
+    });
 });
 
 

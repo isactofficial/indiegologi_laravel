@@ -25,221 +25,291 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <style>
-    :root {
-        --indiegologi-primary: #0C2C5A;
-        --indiegologi-secondary: #6c757d;
-        --indiegologi-light: #f8f9fa;
-        --indiegologi-dark: #212529;
-        --navbar-height: 80px;
-    }
+        :root {
+            --indiegologi-primary: #0C2C5A;
+            --indiegologi-secondary: #6c757d;
+            --indiegologi-light: #f8f9fa;
+            --indiegologi-dark: #212529;
+            --navbar-height: 80px;
+        }
 
-    body {
-        font-family: 'Playfair Display', serif;
-        background-color: var(--indiegologi-light);
-        padding-top: var(--navbar-height);
-    }
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: var(--indiegologi-light);
+            padding-top: var(--navbar-height);
+        }
 
-    .navbar.fixed-top {
-        background-color: rgba(255, 255, 255, 0.7);
-        backdrop-filter: saturate(180%) blur(15px);
-        -webkit-backdrop-filter: saturate(180%) blur(15px);
-        border-bottom: 1px solid transparent;
-        transition: transform 0.3s ease-in-out, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
+        .navbar.fixed-top {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: saturate(180%) blur(15px);
+            -webkit-backdrop-filter: saturate(180%) blur(15px);
+            border-bottom: 1px solid transparent;
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .navbar.scrolled {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
 
-    .navbar-hidden {
-        transform: translateY(-100%);
-    }
+        .navbar-hidden {
+            transform: translateY(-100%);
+        }
 
-    .navbar-brand h1 {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--indiegologi-primary) !important;
-        transition: color 0.3s ease;
-        font-family: 'Playfair Display';
-    }
+        .navbar-brand h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--indiegologi-primary) !important;
+            transition: color 0.3s ease;
+            font-family: 'Playfair Display';
+        }
 
-    .navbar .nav-link {
-        color: #343a40;
-        font-weight: 500;
-        position: relative;
-        padding: 0.6rem 1rem;
-        border-radius: 8px;
-        transition: color 0.3s ease, transform 0.3s ease;
-        font-family: 'Playfair Display';
-    }
+        .navbar .nav-link {
+            color: #343a40;
+            font-weight: 500;
+            position: relative;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            transition: color 0.3s ease, transform 0.3s ease;
+            font-family: 'Playfair Display';
+        }
 
-    .navbar .nav-link:hover {
-        color: var(--indiegologi-primary);
-        transform: scale(1.05);
-    }
+        .navbar .nav-link:hover {
+            color: var(--indiegologi-primary);
+            transform: scale(1.05);
+        }
 
-    .navbar .nav-link.active {
-        color: var(--indiegologi-primary) !important;
-        font-weight: 700;
-    }
+        .navbar .nav-link.active {
+            color: var(--indiegologi-primary) !important;
+            font-weight: 700;
+        }
 
-    .cart-badge {
-        position: absolute;
-        top: -5px;
-        right: -8px;
-        font-size: 0.6em;
-        padding: 0.3em 0.5em;
-        border: 2px solid white;
-    }
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            font-size: 0.6em;
+            padding: 0.3em 0.5em;
+            border: 2px solid white;
+        }
 
-    .navbar-actions {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-    .nav-separator {
-        height: 24px;
-        width: 1px;
-        background-color: #dee2e6;
-        margin-left: 0.5rem;
-        margin-right: 0.5rem;
-    }
+        .nav-separator {
+            height: 24px;
+            width: 1px;
+            background-color: #dee2e6;
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+        }
 
-    .navbar .container-fluid {
-        padding-left: 3rem;
-        padding-right: 3rem;
-    }
-
-    .navbar-toggler {
-        border: none;
-    }
-    .navbar-toggler:focus {
-        box-shadow: none;
-    }
-    .offcanvas-header {
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    /* Style untuk menu offcanvas baru */
-    .offcanvas-body .nav-link {
-        font-size: 1.1rem;
-        padding: 0.85rem 0;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-    .offcanvas-body .nav-link i {
-        font-size: 1.4rem;
-        width: 25px;
-        text-align: center;
-        color: var(--indiegologi-secondary);
-    }
-    .offcanvas-body .nav-link.active i,
-    .offcanvas-body .nav-link.active {
-        color: var(--indiegologi-primary);
-    }
-    .offcanvas-body .logout-btn {
-        width: 100%;
-        margin-top: 1rem;
-        padding: 0.75rem;
-        font-weight: 600;
-    }
-
-    /* Kustomisasi Google Translate */
-    /* Pastikan div translate memiliki display block dan dimensi di desktop */
-    #google_translate_element_desktop {
-        margin-left: 0.75rem;
-        display: block;
-        height: auto;
-        min-height: 30px;
-    }
-
-    /* Mobile: sembunyikan widget desktop, tampilkan widget mobile */
-    @media (max-width: 991.98px) {
         .navbar .container-fluid {
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding-left: 3rem;
+            padding-right: 3rem;
         }
 
-        #google_translate_element_desktop {
-            display: none !important;
+        .navbar-toggler {
+            border: none;
+        }
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        .offcanvas-header {
+            border-bottom: 1px solid #dee2e6;
         }
 
-        .mobile-translate-container {
-            display: block !important;
-            margin-top: 1rem;
-            padding-left: 1rem;
+        .offcanvas-body .nav-link {
+            font-size: 1.1rem;
+            padding: 0.85rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .offcanvas-body .nav-link i {
+            font-size: 1.4rem;
+            width: 25px;
+            text-align: center;
+            color: var(--indiegologi-secondary);
+        }
+        .offcanvas-body .nav-link.active i,
+        .offcanvas-body .nav-link.active {
+            color: var(--indiegologi-primary);
+        }
+        .offcanvas-body .logout-btn {
             width: 100%;
-            box-sizing: border-box;
-            overflow: visible !important;
-            min-height: 50px;
-            border: 1px solid #eee;
-            background-color: #fff;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Navbar Search Dropdown Styling */
+        .search-container {
+            position: relative;
+            display: flex; 
+            align-items: center;
         }
 
-        #google_translate_element_mobile .goog-te-gadget {
-            display: block !important;
-            width: 100% !important;
-            height: auto !important;
-            min-height: 40px !important;
-            overflow: visible !important;
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 15px;
+            width: 320px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 1rem;
+            z-index: 1050;
+            opacity: 0;
+            transform: translateY(-10px);
+            visibility: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+        }
+
+        .search-dropdown.show {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        .search-dropdown form {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-dropdown .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-family: 'Playfair Display', serif;
+            flex-grow: 1;
+            margin-right: 0.5rem;
+        }
+
+        .search-dropdown .form-control:focus {
+            border-color: var(--indiegologi-primary);
+            box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.25);
+        }
+
+        .search-dropdown .btn-search-submit {
+            background-color: var(--indiegologi-primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-dropdown .btn-search-submit:hover {
+            background-color: #081e3f;
+        }
+
+
+        @media (max-width: 991.98px) {
+            .navbar .container-fluid {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            /* [IMPROVEMENT - FINAL FIX] Mengubah posisi dropdown di mobile agar tidak terpotong */
+            .search-dropdown {
+                position: fixed; /* Membuatnya relatif terhadap layar, bukan ikon */
+                top: 75px;       /* Posisi vertikal sedikit di bawah navbar */
+                left: 1rem;      /* Jarak dari kiri layar, sejajar dengan padding konten */
+                right: 1rem;     /* Jarak dari kanan layar */
+                width: auto;     /* Lebar akan otomatis mengisi ruang antara left dan right */
+                margin-top: 0;   /* Hapus margin-top karena posisi sudah diatur oleh 'top' */
+                transform: translateY(-10px); /* Jaga animasi slide */
+            }
+            
+            .search-dropdown.show {
+                transform: translateY(0); /* Jaga animasi slide saat muncul */
+            }
+
+            #google_translate_element_desktop {
+                display: none !important;
+            }
+
+            .mobile-translate-container {
+                display: block !important;
+                margin-top: 1rem;
+                padding-left: 1rem;
+                width: 100%;
+                box-sizing: border-box;
+                overflow: visible !important;
+                min-height: 50px;
+                border: 1px solid #eee;
+                background-color: #fff;
+            }
+
+            #google_translate_element_mobile .goog-te-gadget {
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 40px !important;
+                overflow: visible !important;
+                background-color: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            .mobile-language-link {
+                display: none !important;
+            }
+        }
+
+        .goog-te-gadget {
+            font-family: 'Poppins', sans-serif !important;
+            color: #343a40 !important;
+            font-size: 1rem !important;
+        }
+        .goog-te-combo {
+            border: 1px solid #ccc !important;
+            border-radius: 4px !important;
+            padding: 0.25rem 0.5rem !important;
+            background-color: #f8f8f8 !important;
+            box-shadow: none !important;
+        }
+        .goog-te-gadget-simple {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+        .goog-te-gadget-simple .goog-te-menu-value {
+            text-decoration: none !important;
+            color: #343a40 !important;
+            font-weight: 500;
+            padding: 0 !important;
+        }
+        .goog-te-gadget-simple .goog-te-menu-value:hover {
+            color: var(--indiegologi-primary) !important;
+        }
+        .goog-te-gadget-simple .goog-te-menu-value span:last-child {
+            display: none;
+        }
+        .goog-te-gadget-simple .goog-te-menu-value::after {
+            content: '\F282';
+            font-family: 'bootstrap-icons';
+            margin-left: 0.25rem;
+            color: #6c757d;
+            vertical-align: middle;
+            font-size: 0.8rem;
+        }
+        .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight {
+            display: none !important;
             background-color: transparent !important;
             border: none !important;
             box-shadow: none !important;
         }
-
-        .mobile-language-link {
-            display: none !important;
-        }
-    }
-
-    /* Gaya umum untuk widget Google Translate (desktop dan mobile) */
-    .goog-te-gadget {
-        font-family: 'Poppins', sans-serif !important;
-        color: #343a40 !important;
-        font-size: 1rem !important;
-    }
-    .goog-te-combo {
-        border: 1px solid #ccc !important;
-        border-radius: 4px !important;
-        padding: 0.25rem 0.5rem !important;
-        background-color: #f8f8f8 !important;
-        box-shadow: none !important;
-    }
-    .goog-te-gadget-simple {
-        background-color: transparent !important;
-        border: none !important;
-        padding: 0 !important;
-    }
-    .goog-te-gadget-simple .goog-te-menu-value {
-        text-decoration: none !important;
-        color: #343a40 !important;
-        font-weight: 500;
-        padding: 0 !important;
-    }
-    .goog-te-gadget-simple .goog-te-menu-value:hover {
-        color: var(--indiegologi-primary) !important;
-    }
-    .goog-te-gadget-simple .goog-te-menu-value span:last-child {
-        display: none;
-    }
-    .goog-te-gadget-simple .goog-te-menu-value::after {
-        content: '\F282';
-        font-family: 'bootstrap-icons';
-        margin-left: 0.25rem;
-        color: #6c757d;
-        vertical-align: middle;
-        font-size: 0.8rem;
-    }
-    .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight {
-        display: none !important;
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
 
     </style>
 
@@ -255,13 +325,21 @@
             </a>
 
             <div class="d-flex align-items-center d-lg-none">
-                {{-- Keranjang untuk Mobile --}}
+                <div class="search-container">
+                    <a class="nav-link position-relative fs-4 me-2 search-toggle" href="#" title="Cari">
+                        <i class="bi bi-search"></i>
+                    </a>
+                    <div class="search-dropdown">
+                        <form action="{{ route('search.results') }}" method="GET">
+                            <input type="search" name="query" class="form-control" placeholder="Cari artikel atau sketsa..." aria-label="Search" required autocomplete="off">
+                            <button type="submit" class="btn btn-search-submit" title="Cari"><i class="bi bi-arrow-right"></i></button>
+                        </form>
+                    </div>
+                </div>
+                
                 <a class="nav-link position-relative fs-4 me-2" href="{{ route('front.cart.view') }}" title="Keranjang">
                     <i class="bi bi-cart"></i>
-                    {{-- Badge di-handle oleh JavaScript, sembunyikan secara default --}}
-                    <span class="badge rounded-pill bg-danger cart-badge d-none" id="cart-count-badge-mobile" style="top: -2px; right: -5px;">
-                        0
-                    </span>
+                    <span class="badge rounded-pill bg-danger cart-badge d-none" id="cart-count-badge-mobile" style="top: -2px; right: -5px;">0</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNavbar" aria-controls="mobileNavbar">
                     <span class="navbar-toggler-icon"></span>
@@ -283,10 +361,20 @@
                     {{-- Actions (Cart, Profile, Login) for Desktop --}}
                     <li class="nav-item">
                         <div class="navbar-actions">
-                            {{-- Keranjang untuk Desktop --}}
+                            <div class="search-container">
+                                <a class="nav-link position-relative fs-5 search-toggle" href="#" title="Cari">
+                                    <i class="bi bi-search"></i>
+                                </a>
+                                <div class="search-dropdown">
+                                    <form action="{{ route('search.results') }}" method="GET">
+                                        <input type="search" name="query" class="form-control" placeholder="Ketik untuk mencari..." aria-label="Search" required autocomplete="off">
+                                        <button type="submit" class="btn btn-search-submit" title="Cari"><i class="bi bi-arrow-right"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+
                             <a class="nav-link position-relative fs-5" href="{{ route('front.cart.view') }}" title="Keranjang">
                                 <i class="bi bi-cart"></i>
-                                {{-- Badge di-handle oleh JavaScript, sembunyikan secara default --}}
                                 <span class="badge rounded-pill bg-danger cart-badge d-none" id="cart-count-badge-desktop">0</span>
                             </a>
                             @auth
@@ -315,9 +403,9 @@
             </div>
         </div>
     </nav>
-
+    
     {{-- ========================================================================= --}}
-    {{-- OFFCANVAS MENU (MOBILE)                                                   --}}
+    {{-- OFFCANVAS MENU (MOBILE)                                                 --}}
     {{-- ========================================================================= --}}
     <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="mobileNavbar" aria-labelledby="mobileNavbarLabel">
         <div class="offcanvas-header">
@@ -335,6 +423,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body d-flex flex-column">
+            
             {{-- Main Navigation --}}
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}"><i class="bi bi-house"></i><span>Beranda</span></a></li>
@@ -411,7 +500,6 @@
     {{-- Existing JavaScript --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Fungsi untuk mengambil data keranjang dari Local Storage
         function getTempCart() {
             try {
                 const cart = localStorage.getItem('tempCart');
@@ -422,41 +510,23 @@
             }
         }
 
-        // Fungsi untuk memperbarui badge keranjang di navbar
         function updateCartCount() {
-            // Ambil jumlah item dari Local Storage
             const tempCart = getTempCart();
             const tempCartCount = Object.keys(tempCart).length;
 
-            // Perbarui badge keranjang di offcanvas
-            const offcanvasBadge = $('#cart-count-badge-offcanvas');
-            if (offcanvasBadge.length) {
-                if (tempCartCount > 0) {
-                    offcanvasBadge.text(tempCartCount).removeClass('d-none');
-                } else {
-                    offcanvasBadge.text('0').addClass('d-none');
+            const updateBadge = (badge, count) => {
+                if (badge.length) {
+                    if (count > 0) {
+                        badge.text(count).removeClass('d-none');
+                    } else {
+                        badge.text('0').addClass('d-none');
+                    }
                 }
-            }
-
-            // Perbarui badge keranjang di desktop
-            const desktopBadge = $('#cart-count-badge-desktop');
-            if (desktopBadge.length) {
-                if (tempCartCount > 0) {
-                    desktopBadge.text(tempCartCount).removeClass('d-none');
-                } else {
-                    desktopBadge.text('0').addClass('d-none');
-                }
-            }
-
-            // Perbarui badge keranjang di mobile (di samping toggler)
-            const mobileBadge = $('#cart-count-badge-mobile');
-            if (mobileBadge.length) {
-                if (tempCartCount > 0) {
-                    mobileBadge.text(tempCartCount).removeClass('d-none');
-                } else {
-                    mobileBadge.text('0').addClass('d-none');
-                }
-            }
+            };
+            
+            updateBadge($('#cart-count-badge-offcanvas'), tempCartCount);
+            updateBadge($('#cart-count-badge-desktop'), tempCartCount);
+            updateBadge($('#cart-count-badge-mobile'), tempCartCount);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -465,23 +535,41 @@
                 let lastScrollTop = 0;
                 window.addEventListener('scroll', function() {
                     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    if (scrollTop > 10) { navbar.classList.add('scrolled'); }
+                    if (scrollTop > 10) { navbar.classList.add('scrolled'); } 
                     else { navbar.classList.remove('scrolled'); }
                     if (window.innerWidth >= 992) {
-                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) { navbar.classList.add('navbar-hidden'); }
+                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) { navbar.classList.add('navbar-hidden'); } 
                         else { navbar.classList.remove('navbar-hidden'); }
                     }
                     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
                 });
             }
 
-            // Panggil fungsi ini saat halaman pertama kali dimuat
             updateCartCount();
 
-            // clear localStorage
-            $('form.logout-form').on('submit', function() {
-                localStorage.removeItem('tempCart');
-            });
+            $('form.logout-form').on('submit', function() {
+                localStorage.removeItem('tempCart');
+            });
+
+            $('.search-toggle').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation(); 
+                
+                $('.search-dropdown.show').not($(this).siblings('.search-dropdown')).removeClass('show');
+                
+                var dropdown = $(this).siblings('.search-dropdown');
+                dropdown.toggleClass('show');
+                
+                if (dropdown.hasClass('show')) {
+                    dropdown.find('input[type="search"]').focus();
+                }
+            });
+
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.search-container').length) {
+                    $('.search-dropdown').removeClass('show');
+                }
+            });
         });
     </script>
     @stack('scripts')

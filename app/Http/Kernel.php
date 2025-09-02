@@ -38,6 +38,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\ProcessTempCart::class,
+            \App\Http\Middleware\CheckOnboardingStatus::class,
         ],
 
         'api' => [
