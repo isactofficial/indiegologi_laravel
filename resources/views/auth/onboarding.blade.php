@@ -5,134 +5,260 @@
     <title>Selamat Datang - Indiegologi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --indiegologi-primary: #0C2C5A;
             --indiegologi-light-bg: #F5F7FA;
             --indiegologi-dark-text: #212529;
+            --indiegologi-light-text: #ffffff;
         }
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--indiegologi-light-bg);
             color: var(--indiegologi-dark-text);
-        }
-        .onboarding-container {
+            display: flex; /* [BARU] Menggunakan flexbox untuk centering */
+            align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            padding: 2rem 0;
         }
         .card {
             border-radius: 16px;
             border: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            width: 100%;
+            max-width: 600px; /* Batas lebar maksimum untuk card */
         }
         .card-body { padding: 3rem; }
-        .question-step { display: none; } /* Sembunyikan semua step by default */
-        .question-step.active { display: block; } /* Tampilkan hanya yang aktif */
-        h2 { color: var(--indiegologi-primary); font-weight: 700; }
+        .question-step { 
+            display: none; 
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .question-step.active { display: block; }
+        h2 { 
+            font-family: 'Playfair Display', serif; 
+            color: var(--indiegologi-primary); 
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
         .form-check-label {
             width: 100%;
             padding: 1rem;
-            border: 1px solid #ddd;
+            border: 1px solid #e0e6ed;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+        }
+        .form-check-label:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
         }
         .form-check-input:checked + .form-check-label {
             border-color: var(--indiegologi-primary);
             background-color: rgba(12, 44, 90, 0.05);
             box-shadow: 0 0 0 2px rgba(12, 44, 90, 0.2);
+            transform: translateY(-3px);
         }
-        .form-check-input {
-            display: none;
+        .form-check-input { display: none; }
+        .progress {
+            height: 8px;
+            border-radius: 0;
+            background-color: #e9ecef;
         }
         .progress-bar {
             background-color: var(--indiegologi-primary);
+            transition: width 0.4s ease-in-out;
+        }
+        /* [IMPROVEMENT] Styling Tombol Baru */
+        .btn-primary {
+            background-color: var(--indiegologi-primary);
+            border-color: var(--indiegologi-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background-color: #082142; /* Warna biru lebih gelap saat hover */
+            border-color: #082142;
+        }
+        .btn-outline-secondary {
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 576px) {
+            body { align-items: flex-start; } /* Agar tidak terlalu ter-zoom di mobile */
+            .card-body { padding: 2rem 1.5rem; }
+            h2 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container onboarding-container d-flex align-items-center justify-content-center py-5">
-        <div class="col-md-8 col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                    <form action="{{ route('onboarding.store') }}" method="POST">
-                        @csrf
-                        
-                        <div id="step-1" class="question-step active">
-                            <h2 class="mb-2">Selamat Datang, {{ Auth::user()->name }}!</h2>
-                            <p class="text-muted mb-4">Apa tujuan utama Anda bergabung dengan Indiegologi?</p>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="main_goal" id="goal1" value="mencari_inspirasi" onclick="nextStep(2, 'A')">
-                                <label class="form-check-label" for="goal1">Saya ingin mencari inspirasi & wawasan baru.</label>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8 col-xl-7">
+                <div class="card">
+                    <div class="progress">
+                        <div class="progress-bar" id="progressBar" role="progressbar"></div>
+                    </div>
+                    <div class="card-body">
+                        <form id="onboardingForm" action="{{ route('onboarding.store') }}" method="POST">
+                            @csrf
+                            
+                            <div id="step-1" class="question-step text-center">
+                                <h2 class="mb-2">Selamat Datang, {{ Auth::user()->name }}!</h2>
+                                <p class="text-muted mb-4">Untuk siapa sesi terapi yang Anda cari?</p>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="therapy_for" id="for_self" value="Untuk Diri Sendiri"><label class="form-check-label" for="for_self">Untuk saya sendiri</label></div>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="therapy_for" id="for_couple" value="Untuk Pasangan"><label class="form-check-label" for="for_couple">Untuk saya dan pasangan saya</label></div>
+                                <div class="form-check text-start"><input class="form-check-input" type="radio" name="therapy_for" id="for_child" value="Untuk Anak"><label class="form-check-label" for="for_child">Untuk anak remaja saya</label></div>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="main_goal" id="goal2" value="menggunakan_layanan" onclick="nextStep(2, 'B')">
-                                <label class="form-check-label" for="goal2">Saya tertarik untuk menggunakan layanan konsultasi.</label>
-                            </div>
-                        </div>
 
-                        <div id="step-2A" class="question-step">
-                            <h2 class="mb-4">Topik apa yang paling menarik bagi Anda?</h2>
-                            <p class="text-muted mb-4">Pilih maksimal 3.</p>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" name="interests[]" value="bisnis" id="interest1">
-                                <label class="form-check-label" for="interest1">Bisnis & Startup</label>
+                            <div id="step-2" class="question-step text-center">
+                                <h2 class="mb-4">Apakah Anda pernah mengikuti terapi sebelumnya?</h2>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="previous_therapy" id="prev_yes" value="Ya"><label class="form-check-label" for="prev_yes">Ya</label></div>
+                                <div class="form-check text-start"><input class="form-check-input" type="radio" name="previous_therapy" id="prev_no" value="Belum Pernah"><label class="form-check-label" for="prev_no">Belum pernah</label></div>
                             </div>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" name="interests[]" value="pengembangan_diri" id="interest2">
-                                <label class="form-check-label" for="interest2">Pengembangan Diri & Karir</label>
-                            </div>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" name="interests[]" value="desain_kreatif" id="interest3">
-                                <label class="form-check-label" for="interest3">Desain & Kreativitas</label>
-                            </div>
-                            <button type="button" class="btn btn-dark w-100 mt-3" onclick="nextStep(3, null)">Lanjutkan</button>
-                        </div>
 
-                        <div id="step-2B" class="question-step">
-                            <h2 class="mb-4">Layanan apa yang paling Anda butuhkan saat ini?</h2>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="service_need" id="service1" value="konsultasi_karir" onclick="nextStep(3, null)">
-                                <label class="form-check-label" for="service1">Konsultasi Karir & Pengembangan Diri</label>
+                            <div id="step-3" class="question-step text-center">
+                                <h2 class="mb-4">Apakah Anda memiliki preferensi spesifik untuk terapis?</h2>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="therapist_preference" id="pref_spiritual" value="Pendekatan Religius/Spiritual"><label class="form-check-label" for="pref_spiritual">Terapis dengan pendekatan religius/spiritual tertentu</label></div>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="therapist_preference" id="pref_universal" value="Universal"><label class="form-check-label" for="pref_universal">Universal (semua agama baik)</label></div>
+                                <div class="form-check text-start"><input class="form-check-input" type="radio" name="therapist_preference" id="pref_none" value="Tidak Ada Preferensi"><label class="form-check-label" for="pref_none">Tidak ada preferensi khusus</label></div>
                             </div>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="service_need" id="service2" value="bimbingan_skripsi" onclick="nextStep(3, null)">
-                                <label class="form-check-label" for="service2">Bimbingan Tugas Akhir / Skripsi</label>
-                            </div>
-                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="service_need" id="service3" value="lainnya" onclick="nextStep(3, null)">
-                                <label class="form-check-label" for="service3">Lainnya</label>
-                            </div>
-                        </div>
 
-                        <div id="step-3" class="question-step text-center">
-                            <h2 class="mb-3">Terima Kasih!</h2>
-                            <p class="text-muted mb-4">Anda siap untuk memulai perjalanan Anda di Indiegologi. Klik selesai untuk masuk ke dashboard.</p>
-                            <button type="submit" class="btn btn-primary w-50">Selesai</button>
-                        </div>
+                            <div id="step-3a" class="question-step text-center">
+                                <h2 class="mb-4">Apa kepercayaan Anda?</h2>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="belief" id="belief_kristiani" value="Kristiani"><label class="form-check-label" for="belief_kristiani">Kristiani</label></div>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="belief" id="belief_lain" value="Lain-lain"><label class="form-check-label" for="belief_lain">Lain-lain</label></div>
+                            </div>
 
-                    </form>
+                            <div id="step-4" class="question-step text-center">
+                                <h2 class="mb-4">Apa harapan utama Anda dari sesi terapi?</h2>
+                                <p class="text-muted mb-4">Pilih yang paling menggambarkan Anda.</p>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="therapy_goal" id="goal_listen" value="Mendengarkan"><label class="form-check-label" for="goal_listen">Seseorang yang lebih banyak mendengarkan saya</label></div>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="therapy_goal" id="goal_skills" value="Belajar Keterampilan Baru"><label class="form-check-label" for="goal_skills">Seseorang yang membantu saya belajar keterampilan baru</label></div>
+                                <div class="form-check text-start"><input class="form-check-input" type="radio" name="therapy_goal" id="goal_discuss" value="Bisa Berdiskusi"><label class="form-check-label" for="goal_discuss">Seseorang yang bisa berdiskusi dengan saya</label></div>
+                            </div>
+
+                            <div id="step-4a" class="question-step text-center">
+                                <h2 class="mb-4">Lebih spesifik, apa yang Anda harapkan?</h2>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="listening_detail" id="listen_didengarkan" value="Didengarkan Saja"><label class="form-check-label" for="listen_didengarkan">Didengarkan saja</label></div>
+                                <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="listening_detail" id="listen_feedback" value="Mendapatkan Feedback"><label class="form-check-label" for="listen_feedback">Mendapatkan feedback</label></div>
+                                <div class="form-check text-start"><input class="form-check-input" type="radio" name="listening_detail" id="listen_solusi" value="Mendapatkan Solusi"><label class="form-check-label" for="listen_solusi">Mendapatkan solusi</label></div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-5">
+                                <button type="button" id="prevBtn" class="btn btn-outline-secondary">Kembali</button>
+                                <button type="button" id="nextBtn" class="btn btn-primary">Lanjutkan</button>
+                                <button type="submit" id="submitBtn" class="btn btn-primary w-100" style="display: none;">Selesai & Lanjutkan</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let currentStep = 1;
+        // Fungsionalitas JavaScript tidak perlu diubah, hanya desainnya.
+        document.addEventListener("DOMContentLoaded", function() {
+            const steps = document.querySelectorAll('.question-step');
+            const progressBar = document.getElementById('progressBar');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('onboardingForm');
+            let stepHistory = ['step-1'];
 
-        function nextStep(step, branch) {
-            // Sembunyikan semua step
-            document.querySelectorAll('.question-step').forEach(el => el.classList.remove('active'));
-
-            let nextStepId = `step-${step}`;
-            if (branch) {
-                nextStepId += branch;
+            function showStep(stepId) {
+                steps.forEach(step => {
+                    step.style.display = 'none';
+                    step.classList.remove('active');
+                });
+                const currentStep = document.getElementById(stepId)
+                currentStep.style.display = 'block';
+                currentStep.classList.add('active');
+                updateUI();
             }
 
-            // Tampilkan step berikutnya
-            document.getElementById(nextStepId).classList.add('active');
-            currentStep = step;
-        }
+            function updateUI() {
+                const currentStepId = stepHistory[stepHistory.length - 1];
+                const totalSteps = 5; 
+                let currentStepNumber = parseInt(currentStepId.replace('step-', '').replace('a',''));
+                const progress = ((currentStepNumber - 1) / totalSteps) * 100;
+                progressBar.style.width = `${progress}%`;
+
+                prevBtn.style.display = (stepHistory.length > 1) ? 'inline-block' : 'none';
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            }
+
+            function nextStepLogic() {
+                const currentStepId = stepHistory[stepHistory.length - 1];
+                const currentStepElement = document.getElementById(currentStepId);
+                const choice = currentStepElement.querySelector('input:checked');
+
+                if (!choice) {
+                    alert('Silakan pilih salah satu opsi.');
+                    return;
+                }
+
+                let nextStepId = '';
+
+                switch (currentStepId) {
+                    case 'step-1': nextStepId = 'step-2'; break;
+                    case 'step-2': nextStepId = 'step-3'; break;
+                    case 'step-3':
+                        nextStepId = (choice.value === 'Pendekatan Religius/Spiritual') ? 'step-3a' : 'step-4';
+                        break;
+                    case 'step-3a': nextStepId = 'step-4'; break;
+                    case 'step-4':
+                        if (choice.value === 'Mendengarkan') {
+                            nextStepId = 'step-4a';
+                        } else {
+                            submitForm();
+                            return;
+                        }
+                        break;
+                    case 'step-4a':
+                        submitForm();
+                        return;
+                }
+                
+                stepHistory.push(nextStepId);
+                showStep(nextStepId);
+            };
+
+            function prevStepLogic() {
+                if (stepHistory.length > 1) {
+                    stepHistory.pop();
+                    const lastStepId = stepHistory[stepHistory.length - 1];
+                    showStep(lastStepId);
+                }
+            };
+            
+            function submitForm() {
+                nextBtn.style.display = 'none';
+                prevBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+                form.submit();
+            }
+            
+            prevBtn.addEventListener('click', prevStepLogic);
+            nextBtn.addEventListener('click', nextStepLogic);
+
+            showStep('step-1');
+        });
     </script>
 </body>
 </html>
