@@ -573,5 +573,7 @@
         });
     </script>
     @stack('scripts')
+
+    <x-chatbot-widget/>
 </body>
 </html>
