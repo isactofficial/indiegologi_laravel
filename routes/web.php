@@ -19,7 +19,6 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
 
-
 // Route for storage link
 Route::get('/storage-link', function () {
     $targetFolder = base_path() . '/storage/app/public';
@@ -53,8 +52,12 @@ Route::get('/search', [FrontController::class, 'search'])->name('search.results'
 // PENTING: Pindahkan rute keranjang belanja ke sini, di luar middleware auth.
 Route::get('/cart', [FrontController::class, 'viewCart'])->name('front.cart.view');
 
-// Rute Chatbot
-Route::post('/chatbot-send-message', [ChatbotController::class, 'sendMessage'])->name('chatbot.sendMessage');
+// ======================================================================
+// Rute Chatbot BOTMAN
+// ======================================================================
+
+// Rute ini yang akan menangani semua pesan dari BotMan dan mengarahkannya ke ChatbotController
+Route::match(['get', 'post'], 'botman', [ChatbotController::class, 'handle']);
 
 // ======================================================================
 // Rute Autentikasi
