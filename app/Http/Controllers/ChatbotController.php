@@ -2,70 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Google\Cloud\Dialogflow\Cx\V3\SessionsClient;
-use Google\Cloud\Dialogflow\Cx\V3\QueryInput;
-use Google\Cloud\Dialogflow\Cx\V3\TextInput;
+use BotMan\BotMan\BotMan;
+use BotMan\BotMan\BotManFactory;
+use BotMan\BotMan\Drivers\DriverManager;
 
 class ChatbotController extends Controller
 {
-    public function sendMessage(Request $request)
+    public function handle()
     {
-        // ... (method ini tidak berubah) ...
-        $request->validate(['message' => 'required|string']);
-        $userMessage = $request->input('message');
-        $sessionId = $request->session()->getId();
-        try {
-            $botResponse = $this->detectIntent($userMessage, $sessionId);
-            return response()->json(['reply' => $botResponse]);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Dialogflow Error: ' . $e->getMessage());
-            return response()->json(['error' => 'Maaf, saya sedang mengalami gangguan.'], 500);
-        }
+        // Load the BotMan Web Driver
+        DriverManager::loadDriver(\BotMan\Drivers\Web\WebDriver::class);
+
+        // Configure BotMan with the necessary settings
+        $config = [
+            'web' => [
+                'matchingData' => [
+                    'driver' => 'web',
+                ],
+            ],
+        ];
+
+        // Create the BotMan instance
+        $botman = BotManFactory::create($config);
+
+        // --- Logika Respons Chatbot ---
+
+        // Response for 'Halo' or similar greetings
+        $botman->hears('^(halo|hi|hai|selamat pagi|selamat siang|selamat sore|selamat malam)$', function(BotMan $bot) {
+            $bot->reply('Halo juga! Ada yang bisa saya bantu?');
+        });
+
+        // Response for 'siapa namamu'
+        $botman->hears('siapa namamu', function(BotMan $bot) {
+            $bot->reply('Nama saya adalah bot, saya dibuat untuk membantu Anda.');
+        });
+
+        // Response for 'terima kasih' or 'makasih'
+        $botman->hears('^(terima kasih|makasih)$', function(BotMan $bot) {
+            $bot->reply('Sama-sama! Senang bisa membantu.');
+        });
+
+        // Response for 'layanan' or 'layanan apa saja'
+        $botman->hears('^(layanan|layanan apa saja|apa layanan Anda)$', function(BotMan $bot) {
+            $this->showServices($bot);
+        });
+
+        // Fallback response for unrecognized messages
+        $botman->fallback(function($bot) {
+            $bot->reply('Maaf, saya tidak mengerti. Silakan ketik "Halo" atau "Layanan" untuk memulai.');
+        });
+
+        // Start listening for messages
+        $botman->listen();
     }
 
-    private function detectIntent($text, $sessionId)
+    /**
+     * Helper method to show available services.
+     */
+    private function showServices(BotMan $bot)
     {
-        // --- [PERBAIKAN UTAMA ADA DI SINI] ---
-
-        // 1. Definisikan path ke file JSON Anda secara langsung.
-        //    Fungsi base_path() akan otomatis mendapatkan path root proyek Anda.
-       $credentialsPath = base_path('storage/app/private/indiegologi-chatbot-fb80b434d02e.json');
-
-$sessionsClient = new SessionsClient([
-    'credentials' => env('GOOGLE_APPLICATION_CREDENTIALS')
-]);
-
-
-        // --- Sisanya tetap sama ---
-        $projectId = env('GOOGLE_CLOUD_PROJECT_ID');
-        $locationId = 'asia-southeast1';
-        $agentId = '3358f14b-505a-43ea-86cd-d707d00e51f';
-
-        $sessionName = $sessionsClient->sessionName($projectId, $locationId, $agentId, $sessionId);
-
-        $textInput = new TextInput();
-        $textInput->setText($text);
-
-        $queryInput = new QueryInput();
-        $queryInput->setText($textInput);
-        $queryInput->setLanguageCode('id');
-
-        $response = $sessionsClient->detectIntent($sessionName, $queryInput);
-        $queryResult = $response->getQueryResult();
-
-        $responseText = '';
-        if ($queryResult->getResponseMessages()) {
-            $fulfillmentMessages = $queryResult->getResponseMessages();
-            foreach ($fulfillmentMessages as $message) {
-                if ($message->getText()) {
-                    $responseText .= $message->getText()->getText()->offsetGet(0) . "\n";
-                }
-            }
-        }
-        
-        $sessionsClient->close();
-
-        return $responseText ?: "Maaf, saya tidak mengerti pesan Anda.";
+        $bot->reply('Kami menyediakan beberapa layanan utama:');
+        $bot->reply('1. Konsultasi Bisnis');
+        $bot->reply('2. Konsultasi Keuangan');
+        $bot->reply('3. Desain Produk');
+        $bot->reply('Untuk detail lebih lanjut, silakan kunjungi halaman Layanan kami.');
     }
 }

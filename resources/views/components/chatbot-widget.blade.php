@@ -1,4 +1,5 @@
 <style>
+    /* ... Keep all your existing CSS styles here. They are fine. ... */
     :root { --chatbot-primary: #0C2C5A; --chatbot-accent: #F4B704; }
     .chatbot-fab {
         position: fixed;
@@ -90,82 +91,22 @@
     }
 </style>
 
-<div id="chatbot-container">
-    <div class="chatbot-fab" id="chatbot-fab">
-        <i class="fas fa-comment-dots"></i>
-    </div>
-    <div class="chatbot-window" id="chatbot-window">
-        <div class="chatbot-header">
-            <span>Tanya Mindie!</span>
-            <span class="chatbot-close-btn" id="chatbot-close-btn">&times;</span>
-        </div>
-        <div class="chatbot-messages" id="chatbot-messages">
-            </div>
-        <div class="chatbot-input">
-            <form id="chatbot-form">
-                <input type="text" class="form-control" id="chatbot-input-field" placeholder="Ketik pesan Anda..." autocomplete="off">
-            </form>
-        </div>
-    </div>
-</div>
+<div id="botman-widget"></div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const fab = document.getElementById('chatbot-fab');
-    const window = document.getElementById('chatbot-window');
-    const closeBtn = document.getElementById('chatbot-close-btn');
-    const form = document.getElementById('chatbot-form');
-    const inputField = document.getElementById('chatbot-input-field');
-    const messagesContainer = document.getElementById('chatbot-messages');
-
-    fab.addEventListener('click', () => window.classList.toggle('open'));
-    closeBtn.addEventListener('click', () => window.classList.remove('open'));
-
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const messageText = inputField.value.trim();
-        if (messageText === '') return;
-
-        appendMessage(messageText, 'user');
-        inputField.value = '';
-
-        fetch("{{ route('chatbot.sendMessage') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ message: messageText })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.reply) {
-                appendMessage(data.reply, 'bot');
-            } else {
-                appendMessage('Maaf, terjadi kesalahan.', 'bot');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            appendMessage('Tidak dapat terhubung ke server.', 'bot');
-        });
-    });
-
-    function appendMessage(text, type) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message');
-        
-        const contentDiv = document.createElement('div');
-        contentDiv.classList.add('message-content');
-        contentDiv.classList.add(type === 'user' ? 'user-message' : 'bot-message');
-        contentDiv.textContent = text;
-        
-        messageDiv.appendChild(contentDiv);
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    // Pesan sapaan pertama dari bot
-    appendMessage('Halo! Saya Mindie. Ada yang bisa saya bantu?', 'bot');
-});
+    var botmanWidget = {
+        frameEndpoint: '{{ url('/botman/chat') }}', // This URL is not needed for the web driver
+        introMessage: 'Halo! Saya Mindie. Ada yang bisa saya bantu?', // Pesan sapaan pertama
+        placeholderText: 'Ketik pesan Anda...',
+        title: 'Tanya Mindie!',
+        mainColor: '#0C2C5A', // Sesuaikan dengan warna primer Anda
+        bubbleBackground: '#0C2C5A',
+        desktopHeight: 500,
+        desktopWidth: 350,
+        aboutText: '',
+        userId: '{{ md5(session()->getId()) }}',
+        chatServer: '/botman', // Ini adalah rute yang akan menangani permintaan BotMan
+    };
 </script>
+
+<script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>

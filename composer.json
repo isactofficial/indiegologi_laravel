@@ -5,10 +5,11 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.0.2",
+        "php": "^8.1",
         "barryvdh/laravel-dompdf": "^3.1",
+        "botman/botman": "^2.8",
+        "botman/driver-web": "^1.5",
         "google/apiclient": "^2.18",
-        "google/cloud-dialogflow": "*",
         "guzzlehttp/guzzle": "^7.2",
         "illuminate/auth": "^9.0",
         "intervention/image": "^2.7",
@@ -68,7 +69,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "stable",
