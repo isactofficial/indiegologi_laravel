@@ -8,8 +8,14 @@
     <style>
         /* Define Custom Properties for your main colors */
         :root {
-            --kamcup-primary: #cb2786; /* Merah Muda Keunguan */
-            --kamcup-secondary: #00617a; /* Biru Kehijauan Tua */
+            --indiegologi-primary: #0C2C5A; /* Biru Tua - Classy, Pointed */
+            --indiegologi-accent: #F4B704; /* Emas - Memorable */
+            --indiegologi-light-bg: #F5F7FA;
+            --indiegologi-dark-text: #212529;
+            --indiegologi-light-text: #ffffff;
+            --indiegologi-muted-text: #6c757d;
+            --kamcup-primary: #0C2C5A; /* Merah Muda Keunguan */
+            --kamcup-secondary: #0C2C5A; /* Biru Kehijauan Tua */
             --kamcup-accent: #f4b704; /* Kuning Cerah */
             --text-dark: #212529; /* Umumnya teks gelap */
             --text-muted: #6c757d; /* Teks abu-abu untuk deskripsi */
@@ -62,7 +68,7 @@
         .cta-button {
             display: inline-block;
             background-color: var(--kamcup-primary); /* Warna primer untuk tombol */
-            color: var(--text-light); /* Teks putih untuk tombol */
+            color: var(--indiegologi-light-text); /* Teks putih untuk tombol */
             padding: 12px 25px;
             border-radius: 50px; /* Sangat membulat untuk kesan modern/sporty */
             text-decoration: none;
@@ -74,7 +80,7 @@
         .cta-button:hover {
             background-color: var(--kamcup-secondary); /* Ubah ke warna sekunder saat hover */
             transform: translateY(-2px); /* Efek sedikit terangkat saat hover */
-            color: var(--text-light); /* Pastikan teks tetap putih */
+            color: var(--indiegologi-light-text); /* Pastikan teks tetap putih */
         }
 
         .footer-text {
