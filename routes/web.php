@@ -168,3 +168,11 @@ Route::get('/invoice/{consultationBooking}', [InvoiceController::class, 'show'])
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
 Route::get('/users/profile/{user}', [ConsultationBookingController::class, 'showUserProfile'])->name('admin.users.show');
+
+Route::get('/tes-403', function () {
+    abort(403, 'Akses Ditolak.');
+});
+
+Route::get('/tes-500', function () {
+    abort(500, 'Terjadi Kesalahan Server.');
+});

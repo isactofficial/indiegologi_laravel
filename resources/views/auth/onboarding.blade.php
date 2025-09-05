@@ -17,7 +17,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--indiegologi-light-bg);
             color: var(--indiegologi-dark-text);
-            display: flex; /* [BARU] Menggunakan flexbox untuk centering */
+            display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
@@ -29,17 +29,17 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             width: 100%;
-            max-width: 600px; /* Batas lebar maksimum untuk card */
+            max-width: 600px;
         }
         .card-body { padding: 3rem; }
-        .question-step { 
-            display: none; 
+        .question-step {
+            display: none;
             animation: fadeIn 0.5s ease-in-out;
         }
         .question-step.active { display: block; }
-        h2 { 
-            font-family: 'Playfair Display', serif; 
-            color: var(--indiegologi-primary); 
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--indiegologi-primary);
             font-weight: 700;
             font-size: 2rem;
             margin-bottom: 0.75rem;
@@ -74,7 +74,6 @@
             background-color: var(--indiegologi-primary);
             transition: width 0.4s ease-in-out;
         }
-        /* [IMPROVEMENT] Styling Tombol Baru */
         .btn-primary {
             background-color: var(--indiegologi-primary);
             border-color: var(--indiegologi-primary);
@@ -83,7 +82,7 @@
             font-weight: 600;
         }
         .btn-primary:hover {
-            background-color: #082142; /* Warna biru lebih gelap saat hover */
+            background-color: #082142;
             border-color: #082142;
         }
         .btn-outline-secondary {
@@ -97,7 +96,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         @media (max-width: 576px) {
-            body { align-items: flex-start; } /* Agar tidak terlalu ter-zoom di mobile */
+            body { align-items: flex-start; }
             .card-body { padding: 2rem 1.5rem; }
             h2 { font-size: 1.5rem; }
         }
@@ -114,7 +113,7 @@
                     <div class="card-body">
                         <form id="onboardingForm" action="{{ route('onboarding.store') }}" method="POST">
                             @csrf
-                            
+
                             <div id="step-1" class="question-step text-center">
                                 <h2 class="mb-2">Selamat Datang, {{ Auth::user()->name }}!</h2>
                                 <p class="text-muted mb-4">Untuk siapa sesi terapi yang Anda cari?</p>
@@ -156,11 +155,11 @@
                                 <div class="form-check mb-3 text-start"><input class="form-check-input" type="radio" name="listening_detail" id="listen_feedback" value="Mendapatkan Feedback"><label class="form-check-label" for="listen_feedback">Mendapatkan feedback</label></div>
                                 <div class="form-check text-start"><input class="form-check-input" type="radio" name="listening_detail" id="listen_solusi" value="Mendapatkan Solusi"><label class="form-check-label" for="listen_solusi">Mendapatkan solusi</label></div>
                             </div>
-                            
+
                             <div class="d-flex justify-content-between align-items-center mt-5">
                                 <button type="button" id="prevBtn" class="btn btn-outline-secondary">Kembali</button>
                                 <button type="button" id="nextBtn" class="btn btn-primary">Lanjutkan</button>
-                                <button type="submit" id="submitBtn" class="btn btn-primary w-100" style="display: none;">Selesai & Lanjutkan</button>
+                                <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">Selesai & Lanjutkan</button>
                             </div>
                         </form>
                     </div>
@@ -170,7 +169,6 @@
     </div>
 
     <script>
-        // Fungsionalitas JavaScript tidak perlu diubah, hanya desainnya.
         document.addEventListener("DOMContentLoaded", function() {
             const steps = document.querySelectorAll('.question-step');
             const progressBar = document.getElementById('progressBar');
@@ -178,32 +176,94 @@
             const nextBtn = document.getElementById('nextBtn');
             const submitBtn = document.getElementById('submitBtn');
             const form = document.getElementById('onboardingForm');
+
+            // objek untuk mengelola alur langkah
+            const stepFlow = {
+                'step-1': { next: 'step-2' },
+                'step-2': { next: 'step-3' },
+                'step-3': {
+                    conditional: true,
+                    field: 'therapist_preference',
+                    paths: {
+                        'Pendekatan Religius/Spiritual': 'step-3a',
+                        'default': 'step-4'
+                    }
+                },
+                'step-3a': { next: 'step-4' },
+                'step-4': {
+                    conditional: true,
+                    field: 'therapy_goal',
+                    paths: {
+                        'Mendengarkan': 'step-4a',
+                        'default': 'submit'
+                    }
+                },
+                'step-4a': { next: 'submit' }
+            };
+
             let stepHistory = ['step-1'];
 
             function showStep(stepId) {
-                steps.forEach(step => {
-                    step.style.display = 'none';
-                    step.classList.remove('active');
-                });
-                const currentStep = document.getElementById(stepId)
-                currentStep.style.display = 'block';
-                currentStep.classList.add('active');
+                steps.forEach(step => step.classList.remove('active'));
+                document.getElementById(stepId).classList.add('active');
                 updateUI();
+            }
+
+            function isLastStep(stepId) {
+                const flow = stepFlow[stepId];
+
+                // Jika langkah ini secara langsung menuju submit
+                if (flow.next === 'submit') {
+                    return true;
+                }
+
+                if (flow.conditional) {
+                    const choice = document.querySelector(`input[name="${flow.field}"]:checked`);
+
+                    if (!choice) {
+                        return false;
+                    }
+                    const nextStepId = flow.paths[choice.value] || flow.paths.default;
+                    if (nextStepId === 'submit') {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             function updateUI() {
                 const currentStepId = stepHistory[stepHistory.length - 1];
-                const totalSteps = 5; 
-                let currentStepNumber = parseInt(currentStepId.replace('step-', '').replace('a',''));
-                const progress = ((currentStepNumber - 1) / totalSteps) * 100;
+
+                // Logika progress bar
+                const totalMainSteps = 4;
+                let currentStepNumber = 0;
+                if (currentStepId.includes('1')) currentStepNumber = 1;
+                if (currentStepId.includes('2')) currentStepNumber = 2;
+                if (currentStepId.includes('3')) currentStepNumber = 3;
+                if (currentStepId.includes('4')) currentStepNumber = 4;
+
+                const progress = ((currentStepNumber -1) / totalMainSteps) * 100;
                 progressBar.style.width = `${progress}%`;
 
+                // Menampilkan/menyembunyikan tombol kembali
                 prevBtn.style.display = (stepHistory.length > 1) ? 'inline-block' : 'none';
-                nextBtn.style.display = 'inline-block';
-                submitBtn.style.display = 'none';
+
+                // Logika menampilkan tombol Lanjutkan atau Selesai
+                if (isLastStep(currentStepId)) {
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'inline-block';
+                } else {
+                    nextBtn.style.display = 'inline-block';
+                    submitBtn.style.display = 'none';
+                }
             }
 
-            function nextStepLogic() {
+            // Menambahkan event listener ke semua radio button untuk update UI secara real-time
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', updateUI);
+            });
+
+            function navigateNext() {
                 const currentStepId = stepHistory[stepHistory.length - 1];
                 const currentStepElement = document.getElementById(currentStepId);
                 const choice = currentStepElement.querySelector('input:checked');
@@ -213,49 +273,32 @@
                     return;
                 }
 
-                let nextStepId = '';
+                const flow = stepFlow[currentStepId];
+                let nextStepId;
 
-                switch (currentStepId) {
-                    case 'step-1': nextStepId = 'step-2'; break;
-                    case 'step-2': nextStepId = 'step-3'; break;
-                    case 'step-3':
-                        nextStepId = (choice.value === 'Pendekatan Religius/Spiritual') ? 'step-3a' : 'step-4';
-                        break;
-                    case 'step-3a': nextStepId = 'step-4'; break;
-                    case 'step-4':
-                        if (choice.value === 'Mendengarkan') {
-                            nextStepId = 'step-4a';
-                        } else {
-                            submitForm();
-                            return;
-                        }
-                        break;
-                    case 'step-4a':
-                        submitForm();
-                        return;
+                if (flow.conditional) {
+                    nextStepId = flow.paths[choice.value] || flow.paths.default;
+                } else {
+                    nextStepId = flow.next;
                 }
-                
-                stepHistory.push(nextStepId);
-                showStep(nextStepId);
-            };
 
-            function prevStepLogic() {
+                if (nextStepId === 'submit') {
+                    form.submit();
+                } else {
+                    stepHistory.push(nextStepId);
+                    showStep(nextStepId);
+                }
+            }
+
+            function navigateBack() {
                 if (stepHistory.length > 1) {
                     stepHistory.pop();
-                    const lastStepId = stepHistory[stepHistory.length - 1];
-                    showStep(lastStepId);
+                    showStep(stepHistory[stepHistory.length - 1]);
                 }
-            };
-            
-            function submitForm() {
-                nextBtn.style.display = 'none';
-                prevBtn.style.display = 'none';
-                submitBtn.style.display = 'block';
-                form.submit();
             }
-            
-            prevBtn.addEventListener('click', prevStepLogic);
-            nextBtn.addEventListener('click', nextStepLogic);
+
+            nextBtn.addEventListener('click', navigateNext);
+            prevBtn.addEventListener('click', navigateBack);
 
             showStep('step-1');
         });

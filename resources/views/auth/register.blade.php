@@ -276,8 +276,8 @@
                             <div class="logo-container animate-item delay-1">
                                 <i class="fas fa-hand-holding-heart logo-icon"></i>
                             </div>
-                            <h1 class="h3 fw-bold mb-1 animate-item delay-2">Mari Berbagi Ide di Indiegologi!</h1>
-                            <p class="text-muted mb-0 animate-item delay-3">Daftar untuk mulai <strong>mewujudkan ide kreatif</strong> bersama kami.</p>
+                            <h1 class="h3 fw-bold mb-1">Mari Berbagi Ide di Indiegologi!</h1>
+                            <p class="text-muted mb-0">Daftar untuk mulai **mewujudkan ide kreatif** bersama kami.</p>
                         </div>
 
                         @if($errors->any())
