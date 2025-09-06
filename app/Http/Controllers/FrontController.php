@@ -75,6 +75,18 @@ class FrontController extends Controller
         return view('front.contact');
     }
 
+        /**
+     * Menampilkan halaman detail untuk satu layanan.
+     *
+     * @param \App\Models\ConsultationService $service
+     * @return \Illuminate\View\View
+     */
+    public function showLayanan(ConsultationService $service)
+    {
+        // Dari struktur foldermu, view-nya sepertinya ada di 'front.layanan_show'
+        // Jika nama file-nya beda, sesuaikan di sini.
+        return view('front.layanan_show', compact('service'));
+    }
     /**
      * Memeriksa ketersediaan jadwal layanan.
      */

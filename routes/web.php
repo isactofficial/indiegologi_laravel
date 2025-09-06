@@ -42,6 +42,9 @@ Route::get('/', [FrontController::class, 'index'])->name('front.index')->middlew
 Route::get('/articles', [FrontController::class, 'articles'])->name('front.articles')->middleware('track.views:articles');
 Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name('front.articles.show')->middleware('track.views:articles');
 Route::get('/layanan', [FrontController::class, 'layanan'])->name('front.layanan')->middleware('track.views:layanan');
+
+Route::get('/layanan/{service}', [FrontController::class, 'showLayanan'])->name('layanan.show');
+
 Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact')->middleware('track.views:contact');
 Route::get('/sketches', [FrontController::class, 'sketches_show'])->name('front.sketch')->middleware('track.views:sketches');
 Route::get('/sketches/{sketch:slug}', [FrontController::class, 'showDetail'])->name('front.sketches.detail')->middleware('track.views:sketches');
