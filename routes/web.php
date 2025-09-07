@@ -172,10 +172,41 @@ Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'r
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
 Route::get('/users/profile/{user}', [ConsultationBookingController::class, 'showUserProfile'])->name('admin.users.show');
 
+
+
+
 Route::get('/tes-403', function () {
     abort(403, 'Akses Ditolak.');
 });
 
 Route::get('/tes-500', function () {
     abort(500, 'Terjadi Kesalahan Server.');
+});
+
+Route::get('/test-401', function () {
+    abort(401); // Memicu error Unauthorized
+});
+
+Route::get('/test-419', function () {
+    abort(419); // Memicu error Page Expired
+});
+
+Route::get('/test-429', function () {
+    abort(429); // Memicu error Too Many Requests
+});
+
+Route::get('/test-503', function () {
+    abort(503); // Memicu error Service Unavailable
+});
+
+Route::get('/test-400', function () {
+    abort(400);
+});
+
+Route::get('/test-413', function () {
+    abort(413);
+});
+
+Route::get('/test-502', function () {
+    abort(502);
 });

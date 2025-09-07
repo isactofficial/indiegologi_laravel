@@ -211,15 +211,11 @@
 
             function isLastStep(stepId) {
                 const flow = stepFlow[stepId];
-
-                // Jika langkah ini secara langsung menuju submit
                 if (flow.next === 'submit') {
                     return true;
                 }
-
                 if (flow.conditional) {
                     const choice = document.querySelector(`input[name="${flow.field}"]:checked`);
-
                     if (!choice) {
                         return false;
                     }
@@ -233,8 +229,6 @@
 
             function updateUI() {
                 const currentStepId = stepHistory[stepHistory.length - 1];
-
-                // Logika progress bar
                 const totalMainSteps = 4;
                 let currentStepNumber = 0;
                 if (currentStepId.includes('1')) currentStepNumber = 1;
@@ -245,10 +239,8 @@
                 const progress = ((currentStepNumber -1) / totalMainSteps) * 100;
                 progressBar.style.width = `${progress}%`;
 
-                // Menampilkan/menyembunyikan tombol kembali
                 prevBtn.style.display = (stepHistory.length > 1) ? 'inline-block' : 'none';
 
-                // Logika menampilkan tombol Lanjutkan atau Selesai
                 if (isLastStep(currentStepId)) {
                     nextBtn.style.display = 'none';
                     submitBtn.style.display = 'inline-block';
@@ -258,7 +250,6 @@
                 }
             }
 
-            // Menambahkan event listener ke semua radio button untuk update UI secara real-time
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.addEventListener('change', updateUI);
             });
@@ -283,7 +274,8 @@
                 }
 
                 if (nextStepId === 'submit') {
-                    form.submit();
+                    // Memicu event 'submit' pada form, bukan melakukan submit default
+                    form.dispatchEvent(new Event('submit', { cancelable: true }));
                 } else {
                     stepHistory.push(nextStepId);
                     showStep(nextStepId);
@@ -299,6 +291,48 @@
 
             nextBtn.addEventListener('click', navigateNext);
             prevBtn.addEventListener('click', navigateBack);
+
+            form.addEventListener('submit', function(event) {
+                // Mencegah form melakukan submit standar yang akan me-refresh halaman
+                event.preventDefault();
+
+                // Mengubah teks tombol & menonaktifkannya untuk mencegah klik ganda
+                submitBtn.textContent = 'Memproses...';
+                submitBtn.disabled = true;
+
+                // Mengumpulkan data dari form
+                const formData = new FormData(form);
+                const actionUrl = form.getAttribute('action');
+
+                // Mengirim data ke server menggunakan Fetch API
+                fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(response => {
+                    // Cek apakah server merespon dengan sukses (status code 2xx)
+                    if (response.ok) {
+                        // Jika sukses, arahkan ke homepage
+                        console.log('Data berhasil disimpan!');
+                        window.location.href = '/';
+                    } else {
+                        // Jika ada error dari server, tampilkan pesan
+                        throw new Error('Gagal menyimpan data ke server.');
+                    }
+                })
+                .catch(error => {
+                    // Tangani jika ada error koneksi atau error dari server
+                    console.error('Terjadi kesalahan:', error);
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                    // Kembalikan tombol ke keadaan semula
+                    submitBtn.textContent = 'Selesai & Lanjutkan';
+                    submitBtn.disabled = false;
+                });
+            });
 
             showStep('step-1');
         });
