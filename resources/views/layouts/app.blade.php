@@ -85,6 +85,49 @@
             font-weight: 700;
         }
 
+        .navbar .dropdown-menu {
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.07);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-top: 0.5rem;
+        }
+        .navbar .dropdown-item {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            padding: 0.5rem 1.25rem;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* Animasi hover */
+        }
+
+        /* Menghilangkan panah & styling item dropdown */
+        .navbar .nav-link.dropdown-toggle::after {
+            display: none;
+        }
+        .navbar .dropdown-item:hover {
+            background-color: rgba(12, 44, 90, 0.05); /* Warna hover lembut */
+            color: var(--indiegologi-primary);
+        }
+        .navbar .dropdown-item.active,
+        .navbar .dropdown-item:active {
+            background-color: var(--indiegologi-primary) !important;
+            color: #fff !important;
+            border-radius: 8px;
+        }
+
+        @media (min-width: 992px) {
+            .navbar .dropdown:hover .dropdown-menu {
+                display: block;
+                margin-top: 0;
+            }
+            .navbar .dropdown-menu.align-text-dropdown {
+                min-width: 100%;
+            }
+            .navbar .dropdown-menu.align-text-dropdown .dropdown-item {
+                padding-left: 1rem;
+                padding-right: 1rem;
+                text-align: center;
+            }
+        }
+
         .cart-badge {
             position: absolute;
             top: -5px;
@@ -146,11 +189,20 @@
             padding: 0.75rem;
             font-weight: 600;
         }
-        
-        /* Navbar Search Dropdown Styling */
+
+        .offcanvas-body .dropdown-menu {
+            border: none;
+            box-shadow: none;
+            padding-left: 2.5rem;
+            background-color: transparent;
+        }
+        .offcanvas-body .dropdown-item {
+            padding: 0.5rem 0;
+        }
+
         .search-container {
             position: relative;
-            display: flex; 
+            display: flex;
             align-items: center;
         }
 
@@ -220,19 +272,18 @@
                 padding-right: 1rem;
             }
 
-            /* [IMPROVEMENT - FINAL FIX] Mengubah posisi dropdown di mobile agar tidak terpotong */
             .search-dropdown {
-                position: fixed; /* Membuatnya relatif terhadap layar, bukan ikon */
-                top: 75px;       /* Posisi vertikal sedikit di bawah navbar */
-                left: 1rem;      /* Jarak dari kiri layar, sejajar dengan padding konten */
-                right: 1rem;     /* Jarak dari kanan layar */
-                width: auto;     /* Lebar akan otomatis mengisi ruang antara left dan right */
-                margin-top: 0;   /* Hapus margin-top karena posisi sudah diatur oleh 'top' */
-                transform: translateY(-10px); /* Jaga animasi slide */
+                position: fixed;
+                top: 75px;
+                left: 1rem;
+                right: 1rem;
+                width: auto;
+                margin-top: 0;
+                transform: translateY(-10px);
             }
-            
+
             .search-dropdown.show {
-                transform: translateY(0); /* Jaga animasi slide saat muncul */
+                transform: translateY(0);
             }
 
             #google_translate_element_desktop {
@@ -336,7 +387,7 @@
                         </form>
                     </div>
                 </div>
-                
+
                 <a class="nav-link position-relative fs-4 me-2" href="{{ route('front.cart.view') }}" title="Keranjang">
                     <i class="bi bi-cart"></i>
                     <span class="badge rounded-pill bg-danger cart-badge d-none" id="cart-count-badge-mobile" style="top: -2px; right: -5px;">0</span>
@@ -346,14 +397,30 @@
                 </button>
             </div>
 
+            {{-- ============================================= --}}
             {{-- Desktop Menu --}}
+            {{-- ============================================= --}}
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">Berita</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">Layanan</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">Sketsa</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">Kontak Kami</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.articles*') || request()->routeIs('front.sketch*')) ? 'active' : '' }}" href="{{ route('front.articles') }}" id="navbarBeritaDropdown">
+                            Berita
+                        </a>
+                        <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarBeritaDropdown">
+                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">Sketsa</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.layanan*') || request()->routeIs('front.contact')) ? 'active' : '' }}" href="{{ route('front.layanan') }}" id="navbarLayananDropdown">
+                            Layanan
+                        </a>
+                        <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarLayananDropdown">
+                            <li><a class="dropdown-item {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">Kontak Kami</a></li>
+                        </ul>
+                    </li>
 
                     {{-- Separator --}}
                     <li class="nav-item d-none d-lg-block"><div class="nav-separator"></div></li>
@@ -403,7 +470,7 @@
             </div>
         </div>
     </nav>
-    
+
     {{-- ========================================================================= --}}
     {{-- OFFCANVAS MENU (MOBILE)                                                 --}}
     {{-- ========================================================================= --}}
@@ -423,14 +490,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body d-flex flex-column">
-            
+
             {{-- Main Navigation --}}
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}"><i class="bi bi-house"></i><span>Beranda</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-newspaper"></i><span>Berita</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-newspaper"></i><span>Artikel</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-brush"></i><span>Sketsa</span></a></li>
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}"><i class="bi bi-grid"></i><span>Layanan</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-pencil-square"></i><span>Sketsa</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-envelope"></i><span>Kontak Kami</span></a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-telephone"></i><span>Kontak Kami</span></a></li>
             </ul>
             <hr>
 
@@ -523,7 +590,7 @@
                     }
                 }
             };
-            
+
             updateBadge($('#cart-count-badge-offcanvas'), tempCartCount);
             updateBadge($('#cart-count-badge-desktop'), tempCartCount);
             updateBadge($('#cart-count-badge-mobile'), tempCartCount);
@@ -535,10 +602,10 @@
                 let lastScrollTop = 0;
                 window.addEventListener('scroll', function() {
                     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    if (scrollTop > 10) { navbar.classList.add('scrolled'); } 
+                    if (scrollTop > 10) { navbar.classList.add('scrolled'); }
                     else { navbar.classList.remove('scrolled'); }
                     if (window.innerWidth >= 992) {
-                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) { navbar.classList.add('navbar-hidden'); } 
+                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) { navbar.classList.add('navbar-hidden'); }
                         else { navbar.classList.remove('navbar-hidden'); }
                     }
                     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
@@ -553,13 +620,13 @@
 
             $('.search-toggle').on('click', function(e) {
                 e.preventDefault();
-                e.stopPropagation(); 
-                
+                e.stopPropagation();
+
                 $('.search-dropdown.show').not($(this).siblings('.search-dropdown')).removeClass('show');
-                
+
                 var dropdown = $(this).siblings('.search-dropdown');
                 dropdown.toggleClass('show');
-                
+
                 if (dropdown.hasClass('show')) {
                     dropdown.find('input[type="search"]').focus();
                 }
