@@ -2,39 +2,35 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\URL; // Tambahkan ini untuk menggunakan facade URL
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
-use App\Models\User;           // Import model User
-use App\Observers\UserObserver; // Import observer UserObserver
+use App\Models\User;
+use App\Observers\UserObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        // Pakai Bootstrap untuk pagination
+        // Gunakan Bootstrap untuk pagination
         Paginator::useBootstrap();
 
         // Daftarkan UserObserver untuk model User
-        User::observe(UserObserver::class); // BARIS INI DITAMBAHKAN
+        User::observe(UserObserver::class);
 
-        // Paksa HTTPS di environment non-local
-        if (env('APP_ENV') !== 'local') {
+        // Paksa HTTPS hanya jika environment = production
+        if (app()->environment('production')) {
             URL::forceScheme('https');
         }
     }

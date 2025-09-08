@@ -1,0 +1,166 @@
+:root {
+    --text-color : #0C2C5A;
+  }
+    .carousel-container {
+
+        max-width: 1200px;
+        margin: 0px auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .carousel-title {
+        text-align: left;
+        font-size: 36;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: var(--text-color);
+      }
+
+      .carousel-subtitle {
+        text-align: left;
+        color: var(--text-color);
+        margin-bottom: 30px;
+        margin-bottom: 20px;
+      }
+
+      .carousel {
+        padding-top: 30px;
+        position: relative;
+        height: 480px;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+      }
+
+      .carousel-images {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        transform-style: preserve-3d;
+      }
+
+      .image-item {
+        position: absolute;
+        width: 50%;
+        height: 480px;
+        left: 25%;
+        padding: 10px;
+        background-color: white;
+        transition: all 0.5s ease;
+        cursor: pointer;
+        transform-style: preserve-3d;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .image-item img {
+        width: 100%;
+        height: calc(100% - 50px);
+        object-fit: cover;
+      }
+
+      .image-item h1 {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        color: var(--text-color);
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        padding: 10px;
+      }
+
+      .image-item.active {
+        z-index: 10;
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+
+      .image-item.prev {
+        z-index: 5;
+        opacity: 1;
+        transform: translateX(-20%) scale(0.85) ;
+      }
+
+      .image-item.next {
+        z-index: 5;
+        opacity: 1;
+        transform: translateX(20%) scale(0.85) ;
+      }
+
+      .image-item.prev-hidden {
+        z-index: 4;
+        opacity: 1;
+        transform: translateX(-40%) scale(0.7);
+      }
+
+      .image-item.next-hidden {
+        z-index: 4;
+        opacity: 1;
+        transform: translateX(40%) scale(0.7);
+      }
+
+      .image-item.hidden {
+        opacity: 0;
+        transform: translateX(-200%) scale(0.7);
+      }
+
+      .nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 20;
+        transition: all 0.3s ease;
+      }
+
+      .nav-button:hover {
+        background: white;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .left {
+        left: 7%;
+      }
+
+      .right {
+        right: 7%;
+      }
+
+      .image-description {
+        margin-top: 20px;
+        padding: 10px;
+        font-size: 16px;
+        color: #333;
+      }
+
+      .lihat-semua-btn:hover {
+        background-color: #0C2C5A !important;
+        color: white !important;
+        border-color: #0C2C5A !important;
+    }
+@media (max-width: 768px) {
+  .carousel {
+    height: 300px; /* lebih kecil dari 480px biar tidak gepeng */
+  }
+
+  .image-item {
+    height: 300px; /* sesuaikan dengan carousel */
+    width: 80%;    /* agar tidak terlalu lebar di layar kecil */
+    left: 10%;     /* untuk pusatkan elemen */
+  }
+
+  .image-item img {
+    height: calc(100% - 50px);
+  }
+  .image-item img {
+    object-fit: contain;
+  }
+
+}

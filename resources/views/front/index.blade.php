@@ -3,26 +3,24 @@
 @section('title', 'Indiegologi - Homepage')
 
 @push('styles')
-{{-- [BRAND] Import font yang elegan dan modern dari Google Fonts --}}
+{{-- Font dan AOS --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gotham:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
-{{-- STYLE UNTUK ANIMASI AOS --}}
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
 <style>
-/* 0. PERBAIKAN UMUM UNTUK MOBILE */
+/* CSS UMUM - PERBAIKAN UNTUK MOBILE */
 body, html {
-    overflow-x: hidden; /* Mencegah scroll horizontal di seluruh halaman */
+    overflow-x: hidden;
 }
 
 /* 1. Hero Section Styles */
 .hero-section {
     position: relative;
-    height: 100vh; /* Fallback untuk browser lama */
-    height: var(--app-height); /* Menggunakan tinggi dinamis dari JS */
-    min-height: 600px; /* Batas tinggi minimal */
+    height: 100vh;
+    height: var(--app-height);
+    min-height: 600px;
     color: #fff;
 }
 .hero-section .carousel,
@@ -128,13 +126,60 @@ body, html {
     display: none;
 }
 
-/* --- PERBAIKAN STYLE TESTIMONI --- */
+/* ======================================================= */
+/* ===== CSS UNTUK ANIMASI FLIP PADA TESTIMONI ===== */
+/* ======================================================= */
+.testimonial-flip-container {
+    perspective: 1000px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 350px;
+    height: 380px;
+    margin: 0 auto;
+    -webkit-tap-highlight-color: transparent;
+}
+.testimonial-flipper {
+    transition: transform 0.6s, box-shadow 0.3s;
+    transform-style: preserve-3d;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.testimonial-flip-container.is-flipped .testimonial-flipper {
+    transform: rotateY(180deg);
+}
+.testimonial-card-front,
+.testimonial-card-back {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.testimonial-card-front {
+    z-index: 2;
+    transform: rotateY(0deg);
+}
+.testimonial-card-back {
+    transform: rotateY(180deg);
+    background-color: #0C2C5A;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+/* TESTIMONI STYLES */
 .testimonial-card-link {
     display: block;
     color: inherit;
     text-decoration: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 10px; /* Samakan dengan radius kartu */
+    border-radius: 10px;
 }
 .testimonial-card-link:hover {
     transform: translateY(-5px);
@@ -153,7 +198,6 @@ body, html {
     flex-direction: column;
     justify-content: flex-end;
 }
-/* MENGGUNAKAN TAG <img> SEBAGAI LATAR BELAKANG */
 img.testimonial-bg-img {
     position: absolute;
     top: 0;
@@ -161,23 +205,13 @@ img.testimonial-bg-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 10%; /* FOKUS LEBIH KE ATAS, BUKAN HANYA 'TOP' */
+    object-position: center 10%;
     z-index: 1;
     filter: brightness(0.7);
     transition: transform 0.4s ease;
 }
 .testimonial-card-link:hover img.testimonial-bg-img {
     transform: scale(1.05);
-}
-.testimonial-card-link:focus, .testimonial-card-link:focus-visible {
-    outline: none;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15); /* Menyamakan efek fokus dengan efek hover */
-}
-.testimonial-overlay {
-    /*position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 2;
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 40%, transparent 60%);*/
 }
 .testimonial-square-card::after {
     content: '';
@@ -188,7 +222,7 @@ img.testimonial-bg-img {
     height: 100%;
     z-index: 2;
     background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 40%, transparent 60%);
-    border-radius: 10px; /* Samakan dengan radius kartu */
+    border-radius: 10px;
 }
 .testimonial-content {
     position: relative;
@@ -202,14 +236,14 @@ img.testimonial-bg-img {
     font-size: 0.95rem;
     font-weight: 400;
     line-height: 1.6;
-    margin-bottom: 1rem; /* Kurangi sedikit margin-bottom agar ada lebih banyak ruang vertikal */
+    margin-bottom: 1rem;
     font-style: italic;
     display: -webkit-box;
-    -webkit-line-clamp: 6; /* TAMBAH BATAS BARIS JADI 6 ATAU 7 */
+    -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 150px; /* TINGGI MINIMUM DITAMBAH UNTUK MEMBERI RUANG */
+    min-height: 150px;
 }
 .testimonial-author {
     border-top: 1px solid rgba(255,255,255,0.3);
@@ -227,9 +261,8 @@ img.testimonial-bg-img {
     opacity: 0.8;
     margin: 0;
 }
-.testimonial-quote-icon { display: none; }
 
-/* --- STYLE UNTUK MODAL TESTIMONI --- */
+/* MODAL TESTIMONI */
 #testimonialModal .modal-content {
     background-color: #f8f9fa;
     border-radius: 10px;
@@ -260,26 +293,10 @@ img.testimonial-bg-img {
     font-style: italic;
     color: #343a40;
     line-height: 1.7;
-    white-space: pre-wrap; /* Agar baris baru di quote tetap muncul */
+    white-space: pre-wrap;
 }
 
-/* Media query untuk memperbesar foto di modal pada desktop */
-@media (min-width: 768px) {
-    #testimonialModal .modal-dialog {
-        max-width: 600px; /* Lebarkan sedikit modal di desktop */
-    }
-    #testimonialModal .modal-body {
-        padding: 2.5rem;
-    }
-    #testimonialModal img {
-        width: 140px; /* Ukuran foto lebih besar */
-        height: 140px; /* Ukuran foto lebih besar */
-        margin-bottom: 1.5rem;
-    }
-}
-
-
-/* Sisa CSS lainnya */
+/* ARTIKEL STYLES */
 .featured-popular-article-swiper {
     position: relative;
     overflow: hidden !important;
@@ -343,16 +360,6 @@ img.testimonial-bg-img {
 .featured-popular-wrapper .swiper-button-next {
     right: -25px !important;
 }
-.featured-popular-wrapper .swiper-button-next:after,
-.featured-popular-wrapper .swiper-button-prev:after {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-}
-.featured-popular-wrapper .swiper-button-disabled {
-    opacity: 0;
-    pointer-events: none;
-}
 .swiper-button-next,
 .swiper-button-prev {
     top: 50%;
@@ -364,11 +371,6 @@ img.testimonial-bg-img {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     color: #18305b !important;
     transition: opacity 0.2s;
-}
-.swiper-button-next::after,
-.swiper-button-prev::after {
-    font-size: 1.2rem;
-    font-weight: 900;
 }
 .swiper-button-disabled {
     opacity: 0;
@@ -403,8 +405,156 @@ img.testimonial-bg-img {
     text-overflow: ellipsis;
     min-height: 2.5em;
 }
-.featured-popular-title.line-clamp-2 {
-    min-height: 2.4em;
+
+/* =================================================================== */
+/* ===== CSS SKETCH TELLING GALLERY - ANTI KONFLIK ===== */
+/* =================================================================== */
+#sketch-gallery-wrapper .carousel-container {
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 20px; 
+    text-align: center;
+}
+#sketch-gallery-wrapper .carousel-title {
+    font-size: 2.5rem; 
+    margin-bottom: 8px; 
+    font-weight: 800; 
+    color: #0C2C5A;
+    font-family: 'Gotham', sans-serif;
+}
+#sketch-gallery-wrapper .carousel-subtitle {
+    color: #6c757d; 
+    margin-bottom: 30px;
+    font-size: 1.15rem;
+    font-family: 'Playfair Display', serif;
+}
+#sketch-gallery-wrapper .gallery-carousel {
+    padding-top: 30px; 
+    position: relative; 
+    height: 480px;
+    perspective: 1000px; 
+    transform-style: preserve-3d;
+}
+#sketch-gallery-wrapper .gallery-carousel-images {
+    position: relative; 
+    height: 100%; 
+    width: 100%; 
+    transform-style: preserve-3d;
+}
+#sketch-gallery-wrapper .gallery-image-item {
+    position: absolute !important; 
+    display: block !important; 
+    visibility: visible !important;
+    width: 50%; 
+    height: 480px; 
+    left: 25%;
+    padding: 10px; 
+    background-color: white; 
+    transition: all 0.5s ease;
+    cursor: pointer; 
+    transform-style: preserve-3d; 
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+}
+#sketch-gallery-wrapper .gallery-image-item:hover {
+    text-decoration: none;
+    color: inherit;
+}
+#sketch-gallery-wrapper .gallery-image-item img {
+    width: 100%; 
+    height: calc(100% - 50px); 
+    object-fit: cover; 
+    border-radius: 10px;
+}
+#sketch-gallery-wrapper .gallery-image-item h1 {
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    right: 0;
+    background-color: white;
+    color: #0C2C5A;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    margin: 0; 
+    font-family: 'Gotham', sans-serif;
+}
+#sketch-gallery-wrapper .gallery-image-item.active {
+    z-index: 10; 
+    opacity: 1; 
+    transform: translateX(0) scale(1);
+}
+#sketch-gallery-wrapper .gallery-image-item.prev {
+    z-index: 5; 
+    opacity: 1; 
+    transform: translateX(-20%) scale(0.85);
+}
+#sketch-gallery-wrapper .gallery-image-item.next {
+    z-index: 5; 
+    opacity: 1; 
+    transform: translateX(20%) scale(0.85);
+}
+#sketch-gallery-wrapper .gallery-image-item.prev-hidden {
+    z-index: 4; 
+    opacity: 1; 
+    transform: translateX(-40%) scale(0.7);
+}
+#sketch-gallery-wrapper .gallery-image-item.next-hidden {
+    z-index: 4; 
+    opacity: 1; 
+    transform: translateX(40%) scale(0.7);
+}
+#sketch-gallery-wrapper .gallery-image-item.hidden {
+    opacity: 0; 
+    transform: translateX(-200%) scale(0.7);
+}
+#sketch-gallery-wrapper .gallery-nav-button {
+    position: absolute; 
+    top: 50%; 
+    transform: translateY(-50%);
+    background: #fff; 
+    border: none; 
+    width: 40px; 
+    height: 40px;
+    border-radius: 50%; 
+    cursor: pointer; 
+    z-index: 20; 
+    transition: all 0.3s ease;
+    color: #0C2C5A; 
+    font-size: 1.2rem; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+#sketch-gallery-wrapper .gallery-nav-button:hover {
+    background: white; 
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+#sketch-gallery-wrapper .gallery-nav-left { 
+    left: 7%; 
+}
+#sketch-gallery-wrapper .gallery-nav-right { 
+    right: 7%; 
+}
+
+/* RESPONSIVE */
+@media (min-width: 768px) {
+    #testimonialModal .modal-dialog {
+        max-width: 600px;
+    }
+    #testimonialModal .modal-body {
+        padding: 2.5rem;
+    }
+    #testimonialModal img {
+        width: 140px;
+        height: 140px;
+        margin-bottom: 1.5rem;
+    }
 }
 
 @media (max-width: 1200px) {
@@ -415,6 +565,7 @@ img.testimonial-bg-img {
         right: 0 !important;
     }
 }
+
 @media (max-width: 991.98px) {
     .featured-popular-card {
         flex-direction: column !important;
@@ -428,6 +579,7 @@ img.testimonial-bg-img {
         max-width: 100%;
     }
 }
+
 @media (max-width: 767.98px) {
     .hero-title {
         font-size: clamp(1.8rem, 8vw, 2.8rem);
@@ -471,15 +623,27 @@ img.testimonial-bg-img {
     .featured-popular-wrapper .swiper-button-next {
         right: 5px !important;
     }
-    .featured-popular-wrapper .swiper-button-next:after,
-    .featured-popular-wrapper .swiper-button-prev:after {
-        font-size: 1.2rem;
-    }
     h2.fw-bold.mb-3, h2.fw-bold.mb-0 {
         font-size: 1.8rem !important;
     }
     p.text-center.mb-5, p.lead.text-muted {
         font-size: 0.95rem !important;
+    }
+    
+    /* Sketch Gallery Mobile */
+    #sketch-gallery-wrapper .gallery-carousel { 
+        height: 350px; 
+    }
+    #sketch-gallery-wrapper .gallery-image-item { 
+        height: 350px; 
+        width: 60%; 
+        left: 20%; 
+    }
+    #sketch-gallery-wrapper .gallery-nav-left { 
+        left: 2%; 
+    }
+    #sketch-gallery-wrapper .gallery-nav-right { 
+        right: 2%; 
     }
 }
 </style>
@@ -586,7 +750,7 @@ img.testimonial-bg-img {
     </div>
 </section>
 
-{{-- Sisa Konten HTML --}}
+{{-- 2. Artikel Pilihan --}}
 <section class="container py-5 my-5" style="margin-top: 80px;"><br><br><br>
     <div data-aos="fade-down" data-aos-duration="1000">
         <h2 class="text-center fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Artikel Pilihan Kami untuk Anda</h2>
@@ -621,6 +785,7 @@ img.testimonial-bg-img {
     </div>
 </section>
 
+{{-- 3. Artikel Terbaru --}}
 <section class="container py-5 my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0" style="color: #0C2C5A;" data-aos="fade-right" data-aos-duration="800">Wawasan Terbaru untuk Anda</h2>
@@ -653,6 +818,7 @@ img.testimonial-bg-img {
     </div>
 </section>
 
+{{-- 4. Artikel Populer --}}
 <section class="container py-5 my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0" style="color: #0C2C5A;" data-aos="fade-right" data-aos-duration="800">Artikel Pilihan untuk Anda</h2>
@@ -690,7 +856,6 @@ img.testimonial-bg-img {
 
 {{-- 5. Testimoni Section --}}
 @php
-// Data dummy untuk 6 testimoni, pastikan path gambar sesuai dengan folder Anda
 $testimonials = [
     [
         'name' => 'Wira',
@@ -717,13 +882,13 @@ $testimonials = [
         'name' => 'Dean',
         'age' => 36,
         'occupation' => 'Architect',
-        'quote' => 'I consult with indiego about many things, ranging from projects, family, friendships, even finances. The counseling is very helpful in making decisions, even though the sharing method is unique to me. We tell a little story and they immediately respond with real time character sketches, what kind of face are we "presenting" which is our condition at that time that will be examined. For those who are curious, please try it, you will be surprised with a "how come he knows" respond and they will hel to find a solution. Good luck for "indiegologi" through "cerita indiegologi".',
+        'quote' => 'I consult with indiego about many things, ranging from projects, family, friendships, even finances. The counseling is very helpful in making decisions, even though the sharing method is unique to me. We tell a little story and they immediately respond with real time character sketches, what kind of face are we "presenting" which is our condition at that time that will be examined. For those who are curious, please try it, you will be surprised with a "how come he knows" respond and they will help to find a solution. Good luck for "indiegologi" through "cerita indiegologi".',
         'image' => 'assets/testimoni/Dean.jpg'
     ],
     [
         'name' => 'Dienar',
         'age' => 32,
-        'occupation' => 'Enterpreneur',
+        'occupation' => 'Entrepreneur',
         'quote' => 'Konseling sama indiegologi itu enak banget, konseling tapi rasanya kaya curhat ke temen. Pendengar yg sangat baik, solving problem nya tidak menggurui, saran yang diberikan praktikal semua , bukan cuma sekedar teori yg bikin kita bingung harus mulai dari mana . Rasanya nyaman, karena tidak ada judgement, pendekatannya sesuai dengan karakter kita. Dan gak terburu-buru. Selalu menguatkan, bahwa ini semua adalah proses. Thanks a lot Mas, banyak hal yang udah di sharingkan ke aku, dan semuanya ngena banget.',
         'image' => 'assets/testimoni/Dienar 1.jpeg'
     ],
@@ -731,7 +896,7 @@ $testimonials = [
         'name' => 'Dhiana',
         'age' => 42,
         'occupation' => 'HR & GA manager',
-        'quote' => 'Iam amazed, they can define our personal strengths and weaknesses from facial sketches. So its easier to develop and focus on the abilities that we have, the gifts from God. Great talent..😃👍👌',
+        'quote' => 'I am amazed, they can define our personal strengths and weaknesses from facial sketches. So its easier to develop and focus on the abilities that we have, the gifts from God. Great talent!',
         'image' => 'assets/testimoni/Dhiana 1.jpeg'
     ],
 ];
@@ -745,26 +910,31 @@ $testimonials = [
         <div class="swiper-wrapper py-4">
             @foreach ($testimonials as $testi)
             <div class="swiper-slide" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
-                {{-- KARTU DIBUNGKUS DENGAN TAG <a> UNTUK MEMICU MODAL --}}
-                <a href="#" class="testimonial-card-link" 
-                   data-bs-toggle="modal" 
-                   data-bs-target="#testimonialModal"
+                <div class="testimonial-flip-container"
                    data-name="{{ $testi['name'] }}"
                    data-details="{{ $testi['age'] }} Tahun, {{ $testi['occupation'] }}"
                    data-quote="{{ $testi['quote'] }}"
                    data-image="{{ asset($testi['image']) }}">
-                    <div class="testimonial-square-card">
-                        <img src="{{ asset($testi['image']) }}" alt="Foto {{ $testi['name'] }}" class="testimonial-bg-img">
-                        <div class="testimonial-content">
-                            <p class="testimonial-quote">"{{ $testi['quote'] }}"</p>
-                            {{-- Link "Baca selengkapnya" sudah dihapus dari sini --}}
-                            <div class="testimonial-author">
-                                <h5 class="testimonial-name">{{ $testi['name'] }}</h5>
-                                <p class="testimonial-details">{{ $testi['age'] }} Tahun, {{ $testi['occupation'] }}</p>
+                    <div class="testimonial-flipper">
+                        {{-- SISI DEPAN KARTU --}}
+                        <div class="testimonial-card-front">
+                            <div class="testimonial-square-card">
+                                <img src="{{ asset($testi['image']) }}" alt="Foto {{ $testi['name'] }}" class="testimonial-bg-img">
+                                <div class="testimonial-content">
+                                    <p class="testimonial-quote">"{{ $testi['quote'] }}"</p>
+                                    <div class="testimonial-author">
+                                        <h5 class="testimonial-name">{{ $testi['name'] }}</h5>
+                                        <p class="testimonial-details">{{ $testi['age'] }} Tahun, {{ $testi['occupation'] }}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        {{-- SISI BELAKANG KARTU --}}
+                        <div class="testimonial-card-back">
+                            <i class="bi bi-chat-quote-fill fs-1"></i>
+                        </div>
                     </div>
-                </a>
+                </div>
             </div>
             @endforeach
         </div>
@@ -773,40 +943,34 @@ $testimonials = [
     </div>
 </section>
 
-{{-- 6. Sketch Telling (Slider) --}}
-<section class="container py-5 my-5">
-    <div class="w-100 text-center" data-aos="fade-up">
-        <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Sketch Telling</h2>
-        <p class="text-muted mb-0 text-center" style="font-family: 'Playfair Display', sans-serif;">Lihatlah kisah-kisah yang kami visualisasikan</p>
-    </div>
-    <div class="swiper sketch-telling-swiper mt-4">
-        <div class="swiper-wrapper">
-            @forelse ($latest_sketches as $sketch)
-            <div class="swiper-slide pb-3" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 150 }}">
-                <a href="{{ route('front.sketches.detail', $sketch->slug) }}" class="text-decoration-none d-block h-100">
-                    <div class="card border-0 shadow-sm h-100 card-hover-zoom">
-                        <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-img-top"
-                            style="height: 200px; object-fit: cover;">
-                        <div class="card-body text-center">
-                            <h5 class="fw-bold line-clamp-2" style="color: #0C2C5A;">{{ $sketch->title }}</h5>
-                        </div>
-                    </div>
+{{-- 6. SKETCH TELLING (STYLE KERSA) --}}
+<section id="sketch-gallery-wrapper" class="container py-5 my-5">
+    <div class="carousel-container">
+        <h2 class="carousel-title" data-aos="fade-down">Sketch Telling</h2>
+        <p class="carousel-subtitle">Lihatlah kisah-kisah yang kami visualisasikan</p>
+        <div class="gallery-carousel" data-aos="fade-up">
+            <button class="gallery-nav-button gallery-nav-left">&#10094;</button>
+            <div class="gallery-carousel-images" data-aos="zoom-in" data-aos-duration="1000">
+                @forelse ($latest_sketches as $sketch)
+                <a href="{{ route('front.sketches.detail', $sketch->slug) }}" class="gallery-image-item">
+                    <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" />
+                    <h1>{{ Str::limit($sketch->title, 30) }}</h1>
                 </a>
+                @empty
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <p class="text-center text-muted">Belum ada sketsa.</p>
+                </div>
+                @endforelse
             </div>
-            @empty
-            <div class="swiper-slide">
-                <p class="text-center text-muted">Belum ada sketsa.</p>
-            </div>
-            @endforelse
+            <button class="gallery-nav-button gallery-nav-right">&#10095;</button>
         </div>
-        <div class="swiper-button-next sketch-next"></div>
-        <div class="swiper-button-prev sketch-prev"></div>
     </div>
-    <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="300">
-        <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2 text-center" style=" background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Semua Sketsa</a>
+    <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="300">
+        <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2" style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Semua Sketsa</a>
     </div>
 </section>
 
+{{-- 7. Layanan Unggulan --}}
 <section class="py-5 my-5 bg-light">
     <div class="container text-center" data-aos="fade-down">
         <h2 class="fw-bold mb-1 text-center" style="color: #0C2C5A;">Layanan Unggulan Kami</h2>
@@ -835,12 +999,12 @@ $testimonials = [
             @endforelse
         </div>
         <div class="text-center mt-5" data-aos="zoom-in" data-aos-delay="300">
-            <a href="{{ route('front.layanan') }}" class="btn btn-primary px-4 py-2" style=" background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Semua Layanan</a>
+            <a href="{{ route('front.layanan') }}" class="btn btn-primary px-4 py-2" style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Semua Layanan</a>
         </div>
     </div>
 </section>
 
-{{-- Tambahkan kode ini TEPAT SEBELUM tag @endsection --}}
+{{-- Modal Testimoni --}}
 <div class="modal fade" id="testimonialModal" tabindex="-1" aria-labelledby="testimonialModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -860,12 +1024,46 @@ $testimonials = [
 @endsection
 
 @push('scripts')
-{{-- Skrip untuk Swiper.js (slider) --}}
+{{-- Swiper.js Configurations --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        new Swiper('.featured-popular-article-swiper', { loop: true, slidesPerView: 1, spaceBetween: 20, centeredSlides: true, navigation: { nextEl: '.featured-popular-next', prevEl: '.featured-popular-prev', }, autoHeight: true, });
-        new Swiper('.latest-articles-swiper', { loop: true, navigation: { nextEl: '.latest-articles-next', prevEl: '.latest-articles-prev', }, breakpoints: { 640: { slidesPerView: 1, spaceBetween: 20 }, 768: { slidesPerView: 2, spaceBetween: 30 }, 1024: { slidesPerView: 3, spaceBetween: 40 }, } });
-        new Swiper('.popular-articles-swiper', { loop: true, navigation: { nextEl: '.popular-articles-next', prevEl: '.popular-articles-prev', }, breakpoints: { 640: { slidesPerView: 1, spaceBetween: 20 }, 768: { slidesPerView: 2, spaceBetween: 30 }, 1024: { slidesPerView: 3, spaceBetween: 40 }, } });
+        new Swiper('.featured-popular-article-swiper', { 
+            loop: true, 
+            slidesPerView: 1, 
+            spaceBetween: 20, 
+            centeredSlides: true, 
+            navigation: { 
+                nextEl: '.featured-popular-next', 
+                prevEl: '.featured-popular-prev', 
+            }, 
+            autoHeight: true, 
+        });
+
+        new Swiper('.latest-articles-swiper', { 
+            loop: true, 
+            navigation: { 
+                nextEl: '.latest-articles-next', 
+                prevEl: '.latest-articles-prev', 
+            }, 
+            breakpoints: { 
+                640: { slidesPerView: 1, spaceBetween: 20 }, 
+                768: { slidesPerView: 2, spaceBetween: 30 }, 
+                1024: { slidesPerView: 3, spaceBetween: 40 }, 
+            } 
+        });
+
+        new Swiper('.popular-articles-swiper', { 
+            loop: true, 
+            navigation: { 
+                nextEl: '.popular-articles-next', 
+                prevEl: '.popular-articles-prev', 
+            }, 
+            breakpoints: { 
+                640: { slidesPerView: 1, spaceBetween: 20 }, 
+                768: { slidesPerView: 2, spaceBetween: 30 }, 
+                1024: { slidesPerView: 3, spaceBetween: 40 }, 
+            } 
+        });
         
         new Swiper('.testimonials-swiper', { 
             loop: true, 
@@ -880,17 +1078,86 @@ $testimonials = [
                 1024: { slidesPerView: 3, spaceBetween: 40 }, 
             } 
         });
-
-        new Swiper('.sketch-telling-swiper', { loop: true, navigation: { nextEl: '.sketch-next', prevEl: '.sketch-prev', }, breakpoints: { 640: { slidesPerView: 1, spaceBetween: 20 }, 768: { slidesPerView: 2, spaceBetween: 30 }, 1024: { slidesPerView: 3, spaceBetween: 40 }, } });
     });
 </script>
 
-{{-- SCRIPT UNTUK ANIMASI AOS DENGAN LOGIKA KUSTOM --}}
+{{-- AOS Animation --}}
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
-{{-- SKRIP-SKRIP KUSTOM --}}
+{{-- Sketch Gallery JavaScript (Style Kersa) --}}
 <script>
-    // --- SCRIPT UNTUK MENGATASI MASALAH 100VH DI MOBILE BROWSER ---
+document.addEventListener("DOMContentLoaded", () => {
+    const galleryWrapper = document.getElementById("sketch-gallery-wrapper");
+    if (galleryWrapper) {
+        const images = galleryWrapper.querySelectorAll(".gallery-image-item");
+        const leftButton = galleryWrapper.querySelector(".gallery-nav-left");
+        const rightButton = galleryWrapper.querySelector(".gallery-nav-right");
+        const carousel = galleryWrapper.querySelector(".gallery-carousel");
+
+        if (images.length === 0 || !leftButton || !rightButton) {
+            return;
+        }
+
+        let currentIndex = 0;
+        let autoSlideInterval;
+
+        function updateClasses() {
+            images.forEach((image, index) => {
+                image.classList.remove("active", "prev", "next", "prev-hidden", "next-hidden", "hidden");
+
+                if (index === currentIndex) {
+                    image.classList.add("active");
+                } else if (index === (currentIndex - 1 + images.length) % images.length) {
+                    image.classList.add("prev");
+                } else if (index === (currentIndex + 1) % images.length) {
+                    image.classList.add("next");
+                } else if (index === (currentIndex - 2 + images.length) % images.length) {
+                    image.classList.add("prev-hidden");
+                } else if (index === (currentIndex + 2) % images.length) {
+                    image.classList.add("next-hidden");
+                } else {
+                    image.classList.add("hidden");
+                }
+            });
+        }
+
+        function playSlide() {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateClasses();
+        }
+        
+        function resetAutoSlide() {
+            clearInterval(autoSlideInterval);
+            autoSlideInterval = setInterval(playSlide, 5000);
+        }
+
+        rightButton.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateClasses();
+            resetAutoSlide();
+        });
+
+        leftButton.addEventListener("click", () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateClasses();
+            resetAutoSlide();
+        });
+        
+        if (carousel) {
+            carousel.addEventListener("mouseenter", () => clearInterval(autoSlideInterval));
+            carousel.addEventListener("mouseleave", () => resetAutoSlide());
+        }
+
+        // Initialize
+        updateClasses();
+        resetAutoSlide();
+    }
+});
+</script>
+
+{{-- Custom Scripts --}}
+<script>
+    // App height untuk mobile
     const setAppHeight = () => {
         const doc = document.documentElement;
         doc.style.setProperty('--app-height', `${window.innerHeight}px`);
@@ -898,33 +1165,57 @@ $testimonials = [
     window.addEventListener('resize', setAppHeight);
     setAppHeight();
 
+    // Modal testimoni dengan flip animation
+    const testimonialModal = document.getElementById('testimonialModal');
+    
+    if (testimonialModal) {
+        const modalInstance = new bootstrap.Modal(testimonialModal);
+        const testimonialCards = document.querySelectorAll('.testimonial-flip-container');
 
-        // --- SCRIPT UNTUK MODAL TESTIMONI ---
-        const testimonialModal = document.getElementById('testimonialModal');
-        testimonialModal.addEventListener('show.bs.modal', event => {
-        // Tombol/Link yang memicu modal (sekarang adalah tag <a> pembungkus)
-        const triggerLink = event.relatedTarget;
-        
-        // Ekstrak data dari atribut data-*
-        const name = triggerLink.getAttribute('data-name');
-        const details = triggerLink.getAttribute('data-details');
-        const quote = triggerLink.getAttribute('data-quote');
-        const image = triggerLink.getAttribute('data-image');
+        testimonialCards.forEach(card => {
+            card.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
 
-        // Update konten modal
-        const modalImage = testimonialModal.querySelector('#modal-image');
-        const modalName = testimonialModal.querySelector('#modal-name');
-        const modalDetails = testimonialModal.querySelector('#modal-details');
-        const modalQuote = testimonialModal.querySelector('#modal-quote');
+                // 1. Tambahkan kelas 'is-flipped' untuk memicu animasi CSS
+                this.classList.add('is-flipped');
 
-        modalImage.src = image;
-        modalName.textContent = name;
-        modalDetails.textContent = details;
-        modalQuote.textContent = `"${quote}"`;
-    });
+                // 2. Ambil data dari atribut data-* kartu yang diklik
+                const name = this.getAttribute('data-name');
+                const details = this.getAttribute('data-details');
+                const quote = this.getAttribute('data-quote');
+                const image = this.getAttribute('data-image');
 
+                // 3. Tunggu animasi flip selesai (600ms), baru tampilkan modal
+                setTimeout(() => {
+                    // Update konten di dalam modal dengan data yang baru diambil
+                    const modalImage = testimonialModal.querySelector('#modal-image');
+                    const modalName = testimonialModal.querySelector('#modal-name');
+                    const modalDetails = testimonialModal.querySelector('#modal-details');
+                    const modalQuote = testimonialModal.querySelector('#modal-quote');
 
-    // --- SCRIPT UNTUK ANIMASI AOS ---
+                    if (modalImage) modalImage.src = image;
+                    if (modalName) modalName.textContent = name;
+                    if (modalDetails) modalDetails.textContent = details;
+                    if (modalQuote) modalQuote.textContent = `"${quote}"`;
+
+                    // Tampilkan modal
+                    modalInstance.show();
+                }, 600); // Durasi sama dengan transition pada .testimonial-flipper di CSS
+            });
+        });
+
+        // 4. Tambahkan event listener untuk membalikkan kartu saat modal ditutup
+        testimonialModal.addEventListener('hidden.bs.modal', () => {
+            // Cari kartu yang sedang dalam keadaan 'flipped' dan kembalikan
+            const flippedCard = document.querySelector('.testimonial-flip-container.is-flipped');
+            if (flippedCard) {
+                flippedCard.classList.remove('is-flipped');
+            }
+        });
+    }
+
+    // AOS initialization
     AOS.init({
         duration: 900,
         easing: 'ease-in-out-sine',
@@ -932,7 +1223,7 @@ $testimonials = [
         offset: 120,
     });
 
-    // --- SCRIPT KUSTOM UNTUK ANIMASI MENGHILANG SAAT SCROLL KE ATAS ---
+    // AOS scroll behavior
     let lastScrollTop = 0;
     const allAosElements = document.querySelectorAll('[data-aos]');
     window.addEventListener('scroll', function() {
