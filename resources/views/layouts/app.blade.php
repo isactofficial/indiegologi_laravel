@@ -126,6 +126,11 @@
                 padding-right: 1rem;
                 text-align: center;
             }
+            /* [MODIFIED] Membuat menu utama tidak bisa diklik di desktop */
+            #navbarContent .nav-item.dropdown > .nav-link.dropdown-toggle {
+                pointer-events: none;
+                cursor: default;
+            }
         }
 
         .cart-badge {
@@ -405,19 +410,23 @@
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">Beranda</a></li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.articles*') || request()->routeIs('front.sketch*')) ? 'active' : '' }}" href="{{ route('front.articles') }}" id="navbarBeritaDropdown">
+                        <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.articles*') || request()->routeIs('front.sketch*')) ? 'active' : '' }}" href="#" id="navbarBeritaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Berita
                         </a>
                         <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarBeritaDropdown">
+                            <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">Artikel</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">Sketsa</a></li>
                         </ul>
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.layanan*') || request()->routeIs('front.contact')) ? 'active' : '' }}" href="{{ route('front.layanan') }}" id="navbarLayananDropdown">
-                            Layanan
+                        <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.layanan*') || request()->routeIs('front.contact')) ? 'active' : '' }}" href="#" id="navbarTentangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tentang Kami
                         </a>
-                        <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarLayananDropdown">
+                        <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarTentangDropdown">
+                            <li><a class="dropdown-item {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">Layanan</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">Kontak Kami</a></li>
                         </ul>
                     </li>
@@ -494,10 +503,32 @@
             {{-- Main Navigation --}}
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}"><i class="bi bi-house"></i><span>Beranda</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-newspaper"></i><span>Artikel</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-brush"></i><span>Sketsa</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}"><i class="bi bi-grid"></i><span>Layanan</span></a></li>
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-telephone"></i><span>Kontak Kami</span></a></li>
+
+                <li class="nav-item">
+                    <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.articles*') || request()->routeIs('front.sketch*')) ? 'active' : '' }}" href="#collapseBerita" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseBerita">
+                        <i class="bi bi-newspaper"></i><span>Berita</span>
+                    </a>
+                    <div class="collapse" id="collapseBerita">
+                        <ul class="navbar-nav dropdown-menu">
+                            <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">Artikel</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">Sketsa</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.layanan*') || request()->routeIs('front.contact')) ? 'active' : '' }}" href="#collapseTentang" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseTentang">
+                        <i class="bi bi-info-circle"></i><span>Tentang Kami</span>
+                    </a>
+                    <div class="collapse" id="collapseTentang">
+                        <ul class="navbar-nav dropdown-menu">
+                            <li><a class="dropdown-item {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">Layanan</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">Kontak Kami</a></li>
+                        </ul>
+                    </div>
+                </li>
             </ul>
             <hr>
 

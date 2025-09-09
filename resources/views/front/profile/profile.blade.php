@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- CSS khusus untuk halaman profil (Tetap sama seperti sebelumnya) ----}}
 {{-- CSS khusus untuk halaman profil --}}
 <style>
     /* Indiegologi Brand Colors */
@@ -365,7 +366,7 @@
     }
 </style>
 
-{{-- Konten utama halaman profil --}}
+{{-- KONTEN UTAMA HALAMAN PROFIL --}}
 <div class="container-profile">
     @if(session('success'))
     <div class="alert alert-success text-center mb-4">
@@ -385,8 +386,7 @@
         <div class="text-center mb-4">
             <div class="mx-auto rounded-circle overflow-hidden shadow-sm profile-photo-container" style="width:120px; height:120px; background:#e0e0e0; border: 3px solid var(--indiegologi-primary);">
                 @if(optional($user->profile)->profile_photo)
-                <img src="{{ asset('storage/' . $user->profile->profile_photo) }}" alt="Profile Photo"
-                     class="w-100 h-100 object-fit-cover">
+                <img src="{{ asset('storage/' . $user->profile->profile_photo) }}" alt="Profile Photo" class="w-100 h-100 object-fit-cover">
                 @else
                 <div class="d-flex align-items-center justify-content-center h-100 text-muted bg-light">
                     <i class="fas fa-user-circle" style="font-size: 3rem; color: #b0b0b0;"></i>
@@ -442,6 +442,22 @@
                     <p class="info-value">{{ optional($user->profile)->description ?? '-' }}</p>
                 </div>
             </div>
+
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Zodiak</div>
+                    {{-- Menampilkan data dari kolom 'zodiac' di database --}}
+                    <div class="info-value">{{ optional($user->profile)->zodiac ?? '-' }}</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div>
+                    <div class="info-label">Shio & Elemen</div>
+                    {{-- Menampilkan data dari kolom 'shio_element' di database --}}
+                    <div class="info-value">{{ optional($user->profile)->shio_element ?? '-' }}</div>
+                </div>
+            </div>
+
         </div>
     </div>
 

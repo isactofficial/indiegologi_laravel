@@ -390,13 +390,25 @@ img.testimonial-bg-img {
     top: 0; left: 0; width: 100%; height: 100%;
     object-fit: cover;
 }
+
+/* Efek hover zoom untuk kartu */
 .card-hover-zoom {
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
+
 .card-hover-zoom:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
 }
+
+.latest-articles-swiper{
+    padding: 2rem 1rem;
+}
+
+.popular-articles-swiper{
+    padding: 2rem 1rem;
+}
+
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -410,51 +422,51 @@ img.testimonial-bg-img {
 /* ===== CSS SKETCH TELLING GALLERY - ANTI KONFLIK ===== */
 /* =================================================================== */
 #sketch-gallery-wrapper .carousel-container {
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 20px; 
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
     text-align: center;
 }
 #sketch-gallery-wrapper .carousel-title {
-    font-size: 2.5rem; 
-    margin-bottom: 8px; 
-    font-weight: 800; 
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    font-weight: 800;
     color: #0C2C5A;
     font-family: 'Gotham', sans-serif;
 }
 #sketch-gallery-wrapper .carousel-subtitle {
-    color: #6c757d; 
+    color: #6c757d;
     margin-bottom: 30px;
     font-size: 1.15rem;
     font-family: 'Playfair Display', serif;
 }
 #sketch-gallery-wrapper .gallery-carousel {
-    padding-top: 30px; 
-    position: relative; 
+    padding-top: 30px;
+    position: relative;
     height: 480px;
-    perspective: 1000px; 
+    perspective: 1000px;
     transform-style: preserve-3d;
 }
 #sketch-gallery-wrapper .gallery-carousel-images {
-    position: relative; 
-    height: 100%; 
-    width: 100%; 
+    position: relative;
+    height: 100%;
+    width: 100%;
     transform-style: preserve-3d;
 }
 #sketch-gallery-wrapper .gallery-image-item {
-    position: absolute !important; 
-    display: block !important; 
+    position: absolute !important;
+    display: block !important;
     visibility: visible !important;
-    width: 50%; 
-    height: 480px; 
+    width: 50%;
+    height: 480px;
     left: 25%;
-    padding: 10px; 
-    background-color: white; 
+    padding: 10px;
+    background-color: white;
     transition: all 0.5s ease;
-    cursor: pointer; 
-    transform-style: preserve-3d; 
+    cursor: pointer;
+    transform-style: preserve-3d;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     text-decoration: none;
     color: inherit;
@@ -464,15 +476,15 @@ img.testimonial-bg-img {
     color: inherit;
 }
 #sketch-gallery-wrapper .gallery-image-item img {
-    width: 100%; 
-    height: calc(100% - 50px); 
-    object-fit: cover; 
+    width: 100%;
+    height: calc(100% - 50px);
+    object-fit: cover;
     border-radius: 10px;
 }
 #sketch-gallery-wrapper .gallery-image-item h1 {
-    position: absolute; 
-    bottom: 0; 
-    left: 0; 
+    position: absolute;
+    bottom: 0;
+    left: 0;
     right: 0;
     background-color: white;
     color: #0C2C5A;
@@ -480,66 +492,66 @@ img.testimonial-bg-img {
     font-weight: bold;
     text-align: center;
     padding: 10px;
-    margin: 0; 
+    margin: 0;
     font-family: 'Gotham', sans-serif;
 }
 #sketch-gallery-wrapper .gallery-image-item.active {
-    z-index: 10; 
-    opacity: 1; 
+    z-index: 10;
+    opacity: 1;
     transform: translateX(0) scale(1);
 }
 #sketch-gallery-wrapper .gallery-image-item.prev {
-    z-index: 5; 
-    opacity: 1; 
+    z-index: 5;
+    opacity: 1;
     transform: translateX(-20%) scale(0.85);
 }
 #sketch-gallery-wrapper .gallery-image-item.next {
-    z-index: 5; 
-    opacity: 1; 
+    z-index: 5;
+    opacity: 1;
     transform: translateX(20%) scale(0.85);
 }
 #sketch-gallery-wrapper .gallery-image-item.prev-hidden {
-    z-index: 4; 
-    opacity: 1; 
+    z-index: 4;
+    opacity: 1;
     transform: translateX(-40%) scale(0.7);
 }
 #sketch-gallery-wrapper .gallery-image-item.next-hidden {
-    z-index: 4; 
-    opacity: 1; 
+    z-index: 4;
+    opacity: 1;
     transform: translateX(40%) scale(0.7);
 }
 #sketch-gallery-wrapper .gallery-image-item.hidden {
-    opacity: 0; 
+    opacity: 0;
     transform: translateX(-200%) scale(0.7);
 }
 #sketch-gallery-wrapper .gallery-nav-button {
-    position: absolute; 
-    top: 50%; 
+    position: absolute;
+    top: 50%;
     transform: translateY(-50%);
-    background: #fff; 
-    border: none; 
-    width: 40px; 
+    background: #fff;
+    border: none;
+    width: 40px;
     height: 40px;
-    border-radius: 50%; 
-    cursor: pointer; 
-    z-index: 20; 
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 20;
     transition: all 0.3s ease;
-    color: #0C2C5A; 
-    font-size: 1.2rem; 
+    color: #0C2C5A;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 #sketch-gallery-wrapper .gallery-nav-button:hover {
-    background: white; 
+    background: white;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
-#sketch-gallery-wrapper .gallery-nav-left { 
-    left: 7%; 
+#sketch-gallery-wrapper .gallery-nav-left {
+    left: 7%;
 }
-#sketch-gallery-wrapper .gallery-nav-right { 
-    right: 7%; 
+#sketch-gallery-wrapper .gallery-nav-right {
+    right: 7%;
 }
 
 /* RESPONSIVE */
@@ -629,21 +641,21 @@ img.testimonial-bg-img {
     p.text-center.mb-5, p.lead.text-muted {
         font-size: 0.95rem !important;
     }
-    
+
     /* Sketch Gallery Mobile */
-    #sketch-gallery-wrapper .gallery-carousel { 
-        height: 350px; 
+    #sketch-gallery-wrapper .gallery-carousel {
+        height: 350px;
     }
-    #sketch-gallery-wrapper .gallery-image-item { 
-        height: 350px; 
-        width: 60%; 
-        left: 20%; 
+    #sketch-gallery-wrapper .gallery-image-item {
+        height: 350px;
+        width: 60%;
+        left: 20%;
     }
-    #sketch-gallery-wrapper .gallery-nav-left { 
-        left: 2%; 
+    #sketch-gallery-wrapper .gallery-nav-left {
+        left: 2%;
     }
-    #sketch-gallery-wrapper .gallery-nav-right { 
-        right: 2%; 
+    #sketch-gallery-wrapper .gallery-nav-right {
+        right: 2%;
     }
 }
 </style>
@@ -1027,56 +1039,56 @@ $testimonials = [
 {{-- Swiper.js Configurations --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        new Swiper('.featured-popular-article-swiper', { 
-            loop: true, 
-            slidesPerView: 1, 
-            spaceBetween: 20, 
-            centeredSlides: true, 
-            navigation: { 
-                nextEl: '.featured-popular-next', 
-                prevEl: '.featured-popular-prev', 
-            }, 
-            autoHeight: true, 
-        });
-
-        new Swiper('.latest-articles-swiper', { 
-            loop: true, 
-            navigation: { 
-                nextEl: '.latest-articles-next', 
-                prevEl: '.latest-articles-prev', 
-            }, 
-            breakpoints: { 
-                640: { slidesPerView: 1, spaceBetween: 20 }, 
-                768: { slidesPerView: 2, spaceBetween: 30 }, 
-                1024: { slidesPerView: 3, spaceBetween: 40 }, 
-            } 
-        });
-
-        new Swiper('.popular-articles-swiper', { 
-            loop: true, 
-            navigation: { 
-                nextEl: '.popular-articles-next', 
-                prevEl: '.popular-articles-prev', 
-            }, 
-            breakpoints: { 
-                640: { slidesPerView: 1, spaceBetween: 20 }, 
-                768: { slidesPerView: 2, spaceBetween: 30 }, 
-                1024: { slidesPerView: 3, spaceBetween: 40 }, 
-            } 
-        });
-        
-        new Swiper('.testimonials-swiper', { 
-            loop: true, 
-            navigation: { 
-                nextEl: '.testimonials-next', 
-                prevEl: '.testimonials-prev', 
-            }, 
+        new Swiper('.featured-popular-article-swiper', {
+            loop: true,
             slidesPerView: 1,
             spaceBetween: 20,
-            breakpoints: { 
-                768: { slidesPerView: 2, spaceBetween: 30 }, 
-                1024: { slidesPerView: 3, spaceBetween: 40 }, 
-            } 
+            centeredSlides: true,
+            navigation: {
+                nextEl: '.featured-popular-next',
+                prevEl: '.featured-popular-prev',
+            },
+            autoHeight: true,
+        });
+
+        new Swiper('.latest-articles-swiper', {
+            loop: true,
+            navigation: {
+                nextEl: '.latest-articles-next',
+                prevEl: '.latest-articles-prev',
+            },
+            breakpoints: {
+                640: { slidesPerView: 1, spaceBetween: 20 },
+                768: { slidesPerView: 2, spaceBetween: 30 },
+                1024: { slidesPerView: 3, spaceBetween: 40 },
+            }
+        });
+
+        new Swiper('.popular-articles-swiper', {
+            loop: true,
+            navigation: {
+                nextEl: '.popular-articles-next',
+                prevEl: '.popular-articles-prev',
+            },
+            breakpoints: {
+                640: { slidesPerView: 1, spaceBetween: 20 },
+                768: { slidesPerView: 2, spaceBetween: 30 },
+                1024: { slidesPerView: 3, spaceBetween: 40 },
+            }
+        });
+
+        new Swiper('.testimonials-swiper', {
+            loop: true,
+            navigation: {
+                nextEl: '.testimonials-next',
+                prevEl: '.testimonials-prev',
+            },
+            slidesPerView: 1,
+            spaceBetween: 20,
+            breakpoints: {
+                768: { slidesPerView: 2, spaceBetween: 30 },
+                1024: { slidesPerView: 3, spaceBetween: 40 },
+            }
         });
     });
 </script>
@@ -1125,7 +1137,7 @@ document.addEventListener("DOMContentLoaded", () => {
             currentIndex = (currentIndex + 1) % images.length;
             updateClasses();
         }
-        
+
         function resetAutoSlide() {
             clearInterval(autoSlideInterval);
             autoSlideInterval = setInterval(playSlide, 5000);
@@ -1142,7 +1154,7 @@ document.addEventListener("DOMContentLoaded", () => {
             updateClasses();
             resetAutoSlide();
         });
-        
+
         if (carousel) {
             carousel.addEventListener("mouseenter", () => clearInterval(autoSlideInterval));
             carousel.addEventListener("mouseleave", () => resetAutoSlide());
@@ -1167,7 +1179,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Modal testimoni dengan flip animation
     const testimonialModal = document.getElementById('testimonialModal');
-    
+
     if (testimonialModal) {
         const modalInstance = new bootstrap.Modal(testimonialModal);
         const testimonialCards = document.querySelectorAll('.testimonial-flip-container');
@@ -1219,7 +1231,7 @@ document.addEventListener("DOMContentLoaded", () => {
     AOS.init({
         duration: 900,
         easing: 'ease-in-out-sine',
-        once: false, 
+        once: false,
         offset: 120,
     });
 
@@ -1234,7 +1246,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     element.classList.remove('aos-animate');
                 }
             });
-        } 
+        }
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     }, false);
 </script>
