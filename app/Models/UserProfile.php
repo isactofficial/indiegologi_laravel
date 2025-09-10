@@ -25,7 +25,8 @@ class UserProfile extends Model
         'phone_number',
         'social_media',
         'description',
-
+        'zodiac',         // <-- [DITAMBAHKAN]
+        'shio_element',   // <-- [DITAMBAHKAN]
     ];
 
     /**

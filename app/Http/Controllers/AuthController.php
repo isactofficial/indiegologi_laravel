@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\UserProfile;
 use App\Models\CartItem;
 use App\Models\ConsultationService;
 use Illuminate\Support\Facades\Hash;
@@ -21,33 +22,26 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Validasi input login
+        // ... (Fungsi login Anda tidak perlu diubah)
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        // Coba autentikasi pengguna
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             $user = Auth::user();
 
-            // Pindahkan data keranjang sementara dari form login ke database
             $tempCartData = $request->input('temp_cart_data');
             if ($tempCartData) {
                 try {
                     $tempCartItems = json_decode($tempCartData, true);
-
                     if ($tempCartItems) {
                         foreach ($tempCartItems as $serviceId => $item) {
                             $service = ConsultationService::find($serviceId);
                             if ($service) {
-                                // Simpan item keranjang ke database
                                 CartItem::updateOrCreate(
-                                    [
-                                        'user_id' => $user->id,
-                                        'service_id' => $service->id,
-                                    ],
+                                    ['user_id' => $user->id, 'service_id' => $service->id],
                                     [
                                         'price' => $service->price,
                                         'hourly_price' => $service->hourly_price,
@@ -69,19 +63,16 @@ class AuthController extends Controller
                 }
             }
 
-            // PENTING: Perbaikan di sini, ganti hasRole() dengan method yang ada
             if ($user->isAdmin()) {
                 return redirect()->intended(route('admin.dashboard'));
             } elseif ($user->isAuthor()) {
                 return redirect()->intended(route('author.dashboard'));
-            } else { // Asumsikan role default adalah 'reader'
+            } else {
                 return redirect()->intended(route('reader.dashboard'));
             }
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        return back()->withErrors(['email' => 'The provided credentials do not match our records.',])->onlyInput('email');
     }
 
     public function showRegister()
@@ -89,11 +80,20 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function register(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'birthdate' => 'required|date',
+            'gender' => 'required|string|in:male,female,other',
+            'phone_number' => 'required|string|max:15',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -101,13 +101,28 @@ class AuthController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
+            'role' => 'reader',
         ]);
 
-        // PENTING: Set role default untuk pengguna baru
-        $user->role = 'reader'; // Atau role default lain yang Anda tetapkan
-        $user->save();
+        if ($user) {
+            // [DIUBAH] Menggunakan updateOrCreate untuk mencegah error duplikasi
+            UserProfile::updateOrCreate(
+                ['user_id' => $user->id], // Cari profil dengan user_id ini...
+                [                          // ...lalu update dengan data ini (atau buat baru jika tidak ditemukan)
+                    'name' => $validatedData['name'],
+                    'email' => $validatedData['email'],
+                    'birthdate' => $validatedData['birthdate'],
+                    'gender' => $validatedData['gender'],
+                    'phone_number' => $validatedData['phone_number'],
+                ]
+            );
+        }
 
         Auth::login($user);
+
+        if ($user->onboarding_completed_at === null) {
+            return redirect()->route('onboarding.start');
+        }
 
         return $this->redirectDashboard();
     }
@@ -117,16 +132,13 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect('/');
     }
 
     public function redirectDashboard()
     {
         $user = Auth::user();
-
         if ($user) {
-            // PENTING: Perbaikan di sini, ganti hasRole() dengan method yang ada
             if ($user->isAdmin()) {
                 return redirect()->route('admin.dashboard');
             } elseif ($user->isAuthor()) {
@@ -135,7 +147,6 @@ class AuthController extends Controller
                 return redirect()->route('reader.dashboard');
             }
         }
-
         return redirect('/');
     }
 }

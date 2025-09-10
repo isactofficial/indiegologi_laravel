@@ -16,9 +16,9 @@
             --indiegologi-dark-text: #212529;
             --indiegologi-light-text: #ffffff;
             --indiegologi-muted-text: #6c757d;
-            --strength-weak: #dc3545;      /* Merah untuk password lemah */
+            --strength-weak: #dc3545;     /* Merah untuk password lemah */
             --strength-medium: #ffc107;   /* Kuning untuk cukup kuat */
-            --strength-strong: #28a745;    /* Hijau untuk kuat */
+            --strength-strong: #28a745;   /* Hijau untuk kuat */
         }
 
         body {
@@ -79,7 +79,7 @@
             font-weight: 500;
         }
 
-        .form-control {
+        .form-control, .form-select {
             border-radius: 12px;
             padding: 0.85rem 1.25rem;
             border: 1px solid #e0e0e0;
@@ -87,7 +87,7 @@
             transition: all 0.3s ease;
         }
 
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             border-color: var(--indiegologi-primary);
             box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.1);
             background-color: #ffffff;
@@ -101,11 +101,11 @@
             color: var(--indiegologi-primary);
         }
 
-        .form-control.border-start-0 {
+        .form-control.border-start-0, .form-select.border-start-0 {
             border-left: none;
         }
-
-       .btn-primary {
+        
+        .btn-primary {
             background-color: var(--indiegologi-primary);
             border: none;
             border-radius: 12px;
@@ -222,6 +222,9 @@
         .delay-9 { animation-delay: 0.9s; }
         .delay-10 { animation-delay: 1.0s; }
         .delay-11 { animation-delay: 1.1s; }
+        .delay-12 { animation-delay: 1.2s; }
+        .delay-13 { animation-delay: 1.3s; }
+        .delay-14 { animation-delay: 1.4s; }
 
 
         /* Styling untuk feedback password */
@@ -256,7 +259,7 @@
             h1.h3 {
                 font-size: 1.8rem;
             }
-            .form-control {
+            .form-control, .form-select {
                 padding: 0.65rem 1rem;
             }
             .btn-primary, .btn-back {
@@ -313,7 +316,45 @@
                                 </div>
                             </div>
 
-                            <div class="mb-2 animate-item delay-6">
+                            <div class="mb-3 animate-item delay-6">
+                                <label for="birthdate" class="form-label">Tanggal Lahir</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    <input type="date" name="birthdate" id="birthdate" required
+                                           class="form-control border-start-0" value="{{ old('birthdate') }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 animate-item delay-7">
+                                <label for="gender" class="form-label">Jenis Kelamin</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-venus-mars"></i>
+                                    </span>
+                                    <select name="gender" id="gender" required class="form-select border-start-0">
+                                        <option value="" disabled selected>Pilih jenis kelamin Anda</option>
+                                        <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Laki-laki</option>
+                                        <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Perempuan</option>
+                                        <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 animate-item delay-8">
+                                <label for="phone_number" class="form-label">Nomor Telepon</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-phone"></i>
+                                    </span>
+                                    <input type="tel" name="phone_number" id="phone_number" required
+                                           class="form-control border-start-0"
+                                           placeholder="Contoh: 081234567890" value="{{ old('phone_number') }}">
+                                </div>
+                            </div>
+
+                            <div class="mb-2 animate-item delay-9">
                                 <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -329,7 +370,7 @@
                                 <div id="password-strength-status" class="password-feedback"></div>
                             </div>
 
-                            <div class="mb-4 animate-item delay-7">
+                            <div class="mb-4 animate-item delay-10">
                                 <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
@@ -341,15 +382,15 @@
                                 </div>
                             </div>
 
-                            <button type="submit" id="register-btn" class="btn btn-primary w-100 mb-4 animate-item delay-8" disabled>
+                            <button type="submit" id="register-btn" class="btn btn-primary w-100 mb-4 animate-item delay-11" disabled>
                                 <i class="fas fa-user-plus me-2"></i> Daftar Akun
                             </button>
 
-                            <div class="text-center text-muted mb-4 animate-item delay-9">
+                            <div class="text-center text-muted mb-4 animate-item delay-12">
                                 Sudah punya akun? <a href="{{ route('login') }}" class="text-decoration-none fw-medium text-primary">Masuk di sini</a>
                             </div>
 
-                            <div class="text-center animate-item delay-10">
+                            <div class="text-center animate-item delay-13">
                                 <p class="text-muted mb-3">Atau daftar dengan</p>
                                 <div class="social-login">
                                     <a href="{{ route('auth.google') }}" class="d-flex align-items-center justify-content-center text-decoration-none">
@@ -363,7 +404,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="text-center mt-3 animate-item delay-11">
+                            <div class="text-center mt-3 animate-item delay-14">
                                 <a href="{{ route('front.index') }}" class="btn btn-back w-100">
                                     <i class="fas fa-arrow-left me-2"></i> Kembali ke Beranda
                                 </a>
@@ -389,7 +430,6 @@
 
                 strengthStatus.classList.remove('weak', 'medium', 'strong');
 
-                // 1. Cek panjang karakter dan spasi
                 if (password.length < 8) {
                     feedbackText = 'Minimal 8 karakter.';
                     strengthStatus.classList.add('weak');
@@ -399,29 +439,27 @@
                     strengthStatus.classList.add('weak');
                     registerBtn.disabled = true;
                 } else {
-                    // 2. Hitung jenis karakter
-                    if (/[a-z]/.test(password)) score++; // Huruf kecil
-                    if (/[A-Z]/.test(password)) score++; // Huruf besar
-                    if (/[0-9]/.test(password)) score++; // Angka
-                    if (/[^a-zA-Z0-9]/.test(password)) score++; // Simbol
+                    if (/[a-z]/.test(password)) score++;
+                    if (/[A-Z]/.test(password)) score++;
+                    if (/[0-9]/.test(password)) score++;
+                    if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-                    // 3. Beri feedback berdasarkan skor
                     switch (score) {
                         case 1:
                             feedbackText = 'Password lemah';
                             strengthStatus.classList.add('weak');
-                            registerBtn.disabled = true; // Tidak bisa daftar dengan password lemah
+                            registerBtn.disabled = true;
                             break;
                         case 2:
                             feedbackText = 'Password cukup kuat';
                             strengthStatus.classList.add('medium');
-                            registerBtn.disabled = false; // Boleh daftar
+                            registerBtn.disabled = false;
                             break;
                         case 3:
                         case 4:
                             feedbackText = 'Password kuat';
                             strengthStatus.classList.add('strong');
-                            registerBtn.disabled = false; // Boleh daftar
+                            registerBtn.disabled = false;
                             break;
                         default:
                             feedbackText = '';

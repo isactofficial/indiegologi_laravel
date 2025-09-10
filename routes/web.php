@@ -96,7 +96,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-
+});
     // [BARU] Cart Routes
     Route::prefix('cart')->name('front.cart.')->group(function () {
         // Hapus rute 'view' dari sini, sudah dipindahkan ke atas
@@ -111,11 +111,11 @@ Route::middleware(['auth'])->group(function () {
     // [PENTING: TAMBAHKAN ROUTE INI UNTUK CEK KETERSEDIAAN JADWAL]
     Route::post('/check-availability', [FrontController::class, 'checkBookingAvailability'])->name('front.check.availability');
 
-    // [BARU] Grup Rute untuk Onboarding
-    Route::prefix('onboarding')->name('onboarding.')->group(function () {
-        Route::get('/', [OnboardingController::class, 'show'])->name('show');
-        Route::post('/', [OnboardingController::class, 'store'])->name('store');
-    });
+// [BARU] Grup Rute untuk Onboarding
+Route::prefix('onboarding')->name('onboarding.')->group(function () {
+    // Diubah agar cocok dengan panggilan di AuthController
+    Route::get('/', [OnboardingController::class, 'show'])->name('show'); // Nama route menjadi onboarding.start
+    Route::post('/', [OnboardingController::class, 'store'])->name('store');
 });
 
 
