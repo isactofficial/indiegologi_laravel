@@ -2,91 +2,128 @@
 
 @section('title', $sketch->title)
 
+@push('styles')
+{{-- Import Font untuk Judul --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+{{-- STYLE UNTUK ANIMASI AOS --}}
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+{{-- CSS Kustom untuk Halaman Detail --}}
+<style>
+    .sketch-detail-container {
+        max-width: 800px;
+        margin: auto;
+    }
+    .sketch-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #0C2C5A;
+        line-height: 1.3;
+    }
+    .sketch-meta-info {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px;
+        padding: 15px 0;
+        margin: 20px 0;
+        border-top: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
+        color: #6c757d;
+    }
+    .meta-item {
+        display: flex;
+        align-items: center;
+    }
+    .meta-item i {
+        margin-right: 8px;
+        color: #0C2C5A;
+    }
+    .status-badge {
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 50px;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        background-color: #e3e9f4;
+        color: #0C2C5A;
+    }
+    .article-content {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        margin-top: 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .article-content p {
+        /* Menjaga format paragraf dari textarea */
+        white-space: pre-wrap;
+        /* MEMASTIKAN TEKS TANPA SPASI TETAP RAPI */
+        overflow-wrap: break-word;
+        /* Gaya tipografi untuk kenyamanan membaca */
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #343a40;
+    }
+</style>
+@endpush
+
+
 @section('content')
-{{-- Kontainer utama dengan animasi fade-in --}}
-<div class="container py-5 pb-12 px-4 mx-auto" data-aos="fade-in"><br><br>
-    {{-- Tombol kembali dengan animasi fade-right --}}
-    <div class="mb-4" data-aos="fade-right">
-        <a href="{{ route('front.sketch') }}" class="btn px-4 py-2" style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 8px;">
-            <i class="fas fa-arrow-left me-2"></i>KEMBALI
-        </a>
-    </div>
+<div class="container py-5 pb-12 px-4">
+    <div class="sketch-detail-container">
 
-    {{-- Bagian Atas: Status di Kiri, Tanggal di Kanan dengan animasi fade-up --}}
-    <div class="d-flex justify-content-between align-items-center mb-3" data-aos="fade-up" data-aos-delay="100">
-        {{-- Status di Kiri --}}
-        <span class="fw-semibold px-3 py-1 text-uppercase" style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 999px; font-size: 0.85rem; letter-spacing: 0.5px;">
-            {{-- Menggunakan data status dari model, jika ada. Default ke 'Published' jika tidak ada. --}}
-            {{ $sketch->status ?? 'Published' }}
-        </span>
-        {{-- Tanggal di Kanan --}}
-        <span class="text-muted">
-            <i class="fas fa-calendar-alt me-2"></i>{{ $sketch->created_at->format('d F Y') }}
-        </span>
-    </div>
+        {{-- Tombol Kembali --}}
+        <div class="mb-4" data-aos="fade-right">
+            <a href="{{ route('front.sketch') }}" class="btn px-4 py-2" style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 8px;">
+                <i class="fas fa-arrow-left me-2"></i>KEMBALI
+            </a>
+        </div>
 
-    {{-- Judul dengan animasi fade-up dan delay --}}
-    <h1 style="color: #0C2C5A;" class="fw-bold mb-2" data-aos="fade-up" data-aos-delay="200">{{ $sketch->title }}</h1>
+        {{-- Judul Sketsa --}}
+        <h1 class="sketch-title mt-4" data-aos="fade-up">{{ $sketch->title }}</h1>
 
-    {{-- Nama Penulis dengan animasi fade-up dan delay --}}
-    <p class="mb-4" data-aos="fade-up" data-aos-delay="300">
-        <span class="text-muted">Oleh:</span>
-        <span class="fw-semibold" style="color: #0C2C5A;">{{ $sketch->author ?? 'Unknown' }}</span>
-    </p>
+        {{-- Meta Info (Penulis, Tanggal, Status) --}}
+        <div class="sketch-meta-info" data-aos="fade-up" data-aos-delay="100">
+            <div class="meta-item">
+                <i class="fas fa-user-edit"></i>
+                <span>Oleh: <strong>{{ $sketch->author ?? 'Unknown' }}</strong></span>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>{{ $sketch->created_at->format('d F Y') }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="status-badge">{{ $sketch->status ?? 'Published' }}</span>
+            </div>
+        </div>
 
-    {{-- Gambar Sketsa dengan animasi zoom-in-up --}}
-    <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="img-fluid rounded-4 shadow-sm mb-4"
-         style="width: 100%; max-height: 600px; object-fit: cover;" data-aos="zoom-in-up" data-aos-delay="400">
+        {{-- Gambar Sketsa --}}
+        <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="img-fluid rounded-4 shadow-sm my-4"
+             style="width: 100%; max-height: 500px; object-fit: cover;" data-aos="zoom-in-up" data-aos-delay="200">
 
-    {{-- Deskripsi dengan animasi fade-up --}}
-    <div style="background-color: #0C2C5A; color: white; padding: 16px; border-radius: 4px;" data-aos="fade-up" data-aos-delay="100">
-        <p class="mb-0">
-            {!! nl2br(e($sketch->content)) !!}
-        </p>
+        {{-- Konten Artikel --}}
+        <div class="article-content" data-aos="fade-up" data-aos-delay="300">
+            <p>{{ $sketch->content }}</p>
+        </div>
+
     </div>
 </div>
 @endsection
-
-@push('styles')
-{{-- STYLE UNTUK ANIMASI AOS --}}
-<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-@endpush
 
 @push('scripts')
 {{-- SCRIPT UNTUK ANIMASI AOS --}}
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-    // Inisialisasi AOS
     AOS.init({
         duration: 900,
         easing: 'ease-in-out-sine',
-        // 'once' diatur ke false agar animasi bisa di-reset saat scroll ke atas
-        once: false,
-        offset: 120,
+        once: true, // Animasi hanya berjalan sekali agar tidak mengganggu saat scroll
+        offset: 100,
     });
-
-    // --- SCRIPT KUSTOM UNTUK PERILAKU ANIMASI SPESIFIK ---
-    let lastScrollTop = 0;
-    const allAosElements = document.querySelectorAll('[data-aos]');
-
-    // Tambahkan event listener saat window di-scroll
-    window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-        if (scrollTop < lastScrollTop) {
-            // JIKA ARAH SCROLL KE ATAS
-            allAosElements.forEach(function(element) {
-                // Cek jika elemen berada di bawah viewport (tidak terlihat)
-                if (element.getBoundingClientRect().top > window.innerHeight) {
-                    // "Reset" animasi dengan menghapus kelas 'aos-animate'
-                    element.classList.remove('aos-animate');
-                }
-            });
-        }
-        // Biarkan AOS menangani animasi secara normal saat scroll ke bawah
-
-        // Update posisi scroll terakhir
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    }, false);
 </script>
 @endpush
