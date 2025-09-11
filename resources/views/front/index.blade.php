@@ -397,16 +397,20 @@ img.testimonial-bg-img {
 }
 
 .card-hover-zoom:hover {
-    transform: translateY(-5px) scale(1.1);
+    transform: translateY(-5px) scale(1.25);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
 }
 
 .latest-articles-swiper{
-    padding: 2rem 1rem;
+    padding: 3.5rem 2rem;
+    padding-left: 3rem;
+    padding-right: 2.3rem;
 }
 
 .popular-articles-swiper{
-    padding: 2rem 1rem;
+    padding: 3.5rem 2rem;
+    padding-left: 3rem;
+    padding-right: 2.3rem;
 }
 
 .line-clamp-2 {
@@ -554,6 +558,82 @@ img.testimonial-bg-img {
     right: 7%;
 }
 
+/* ===== KONSULTASI GRATIS SECTION ===== */
+.consultation-section {
+    position: relative;
+    padding: 100px 0;
+    margin-top: 80px;
+    margin-bottom: 80px;
+    background-image: url('{{ asset('assets/carousel/kobu-agency-7okkFhxrxNw-unsplash.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Parallax effect */
+    color: #fff;
+}
+.consultation-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(12, 44, 90, 0.8);
+    z-index: 1;
+}
+.consultation-section .container {
+    position: relative;
+    z-index: 2;
+}
+.consultation-subheading {
+    text-transform: lowercase;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+    font-family: 'Playfair Display', serif;
+}
+.consultation-heading {
+    font-family: 'Gotham', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+.consultation-divider {
+    width: 80px;
+    margin: 0 auto 1.5rem auto;
+    border: 0;
+    border-top: 2px solid #ff9800;
+    opacity: 1;
+}
+.consultation-text {
+    max-width: 60ch;
+    margin: 0 auto 2.5rem auto;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    font-family: 'Gotham', sans-serif;
+    color: rgba(255, 255, 255, 0.9);
+}
+.consultation-button {
+    background-color: #ff9800;
+    border-color: #ff9800;
+    color: #fff;
+    padding: 0.8rem 2.5rem;
+    font-weight: 700;
+    font-family: 'Gotham', sans-serif;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+.consultation-button:hover {
+    background-color: #f57c00;
+    border-color: #f57c00;
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+
 /* RESPONSIVE */
 @media (min-width: 768px) {
     #testimonialModal .modal-dialog {
@@ -656,6 +736,20 @@ img.testimonial-bg-img {
     }
     #sketch-gallery-wrapper .gallery-nav-right {
         right: 2%;
+    }
+
+    /* Consultation Section Mobile */
+    .consultation-section {
+        padding: 80px 0;
+        margin-top: 60px;
+        margin-bottom: 60px;
+        background-attachment: scroll; /* Disable parallax on mobile for performance */
+    }
+    .consultation-heading {
+        font-size: clamp(2rem, 8vw, 2.5rem);
+    }
+    .consultation-text {
+        font-size: 1rem;
     }
 }
 </style>
@@ -866,6 +960,23 @@ img.testimonial-bg-img {
     </div>
 </section>
 
+{{-- Konsultasi Gratis --}}
+<section class="consultation-section">
+    <div class="container text-center">
+        <div data-aos="fade-up">
+            <p class="consultation-subheading">Layanan Spesial</p>
+            <h2 class="consultation-heading">Konsultasi Gratis</h2>
+            <hr class="consultation-divider">
+            <p class="consultation-text">
+                Kami siap membantu Anda menemukan potensi diri dan meraih kesejahteraan.
+                Konsultasikan perjalanan Anda bersama kami sekarang juga, gratis!
+            </p>
+            <a href="{{ route('front.layanan') }}" class="btn consultation-button">Konsultasi Gratis Sekarang</a>
+        </div>
+    </div>
+</section>
+
+
 {{-- 5. Testimoni Section --}}
 @php
 $testimonials = [
@@ -916,7 +1027,7 @@ $testimonials = [
 <section class="container py-5 my-5">
     <div class="text-center" data-aos="fade-up">
         <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Kisah Testimoni dari Keluarga Indiegologi</h2>
-        <p style="font-size:1.15rem; color:#6c757d; font-family: 'Playfair Display', sans-serif;">Kumpulan cerita tulus dari mereka yang telah berproses dengan indielogi untuk menemukan kedamaian,kebahagiaan dan cinta diri</p>
+        <p style="font-size:1.15rem; color:#6c757d; font-family: 'Playfair Display', sans-serif;">Dengarkan cerita tulus dari mereka yang telah berproses bersama kami.</p>
     </div>
     <div class="swiper testimonials-swiper mt-5">
         <div class="swiper-wrapper py-4">
