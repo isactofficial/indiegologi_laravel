@@ -916,7 +916,7 @@ $testimonials = [
 <section class="container py-5 my-5">
     <div class="text-center" data-aos="fade-up">
         <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Kisah Testimoni dari Keluarga Indiegologi</h2>
-        <p style="font-size:1.15rem; color:#6c757d; font-family: 'Playfair Display', sans-serif;">Dengarkan cerita tulus dari mereka yang telah berproses bersama kami.</p>
+        <p style="font-size:1.15rem; color:#6c757d; font-family: 'Playfair Display', sans-serif;">Kumpulan cerita tulus dari mereka yang telah berproses dengan indielogi untuk menemukan kedamaian,kebahagiaan dan cinta diri</p>
     </div>
     <div class="swiper testimonials-swiper mt-5">
         <div class="swiper-wrapper py-4">

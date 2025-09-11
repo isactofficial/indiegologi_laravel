@@ -291,7 +291,7 @@
                 transform: translateY(0);
             }
 
-            #google_translate_element_desktop {
+            #google_translate_element_desktop_target {
                 display: none !important;
             }
 
@@ -307,7 +307,7 @@
                 background-color: #fff;
             }
 
-            #google_translate_element_mobile .goog-te-gadget {
+            #google_translate_element_mobile_target .goog-te-gadget {
                 display: block !important;
                 width: 100% !important;
                 height: auto !important;
@@ -373,6 +373,9 @@
 </head>
 
 <body>
+    {{-- [MODIFIED] Kontainer sumber untuk widget Translate --}}
+    <div id="google_translate_element_source" style="display: none;"></div>
+
     <nav class="navbar navbar-expand-lg fixed-top py-3">
         <div class="container-fluid">
             {{-- Brand/Logo --}}
@@ -471,8 +474,8 @@
                                 <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">Login</a>
                             @endauth
 
-                            {{-- Widget Google Translate bawaan untuk Desktop --}}
-                            <div id="google_translate_element_desktop" class="d-none d-lg-block"></div>
+                            {{-- [MODIFIED] Target untuk Google Translate Desktop --}}
+                            <div id="google_translate_element_desktop_target" class="d-none d-lg-block"></div>
                         </div>
                     </li>
                 </ul>
@@ -532,9 +535,9 @@
             </ul>
             <hr>
 
-            {{-- Widget Google Translate bawaan untuk Mobile --}}
+            {{-- [MODIFIED] Target untuk Google Translate Mobile --}}
             <div class="mobile-translate-container">
-                <div id="google_translate_element_mobile"></div>
+                <div id="google_translate_element_mobile_target"></div>
             </div>
             <hr>
 
@@ -580,18 +583,45 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-    {{-- Google Translate Script --}}
+    {{-- [MODIFIED] Google Translate Script --}}
     <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement(
-                {pageLanguage: 'id', includedLanguages: 'id,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
-                'google_translate_element_desktop'
-            );
-            new google.translate.TranslateElement(
-                {pageLanguage: 'id', includedLanguages: 'id,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
-                'google_translate_element_mobile'
-            );
+        // Fungsi untuk memindahkan widget Google Translate
+        function moveGoogleTranslateWidget() {
+            const sourceElement = document.getElementById('google_translate_element_source');
+            const desktopTarget = document.getElementById('google_translate_element_desktop_target');
+            const mobileTarget = document.getElementById('google_translate_element_mobile_target');
+            const widget = sourceElement.querySelector('.goog-te-gadget');
+
+            if (widget && desktopTarget && mobileTarget) {
+                // Cek ukuran layar
+                if (window.innerWidth >= 992) {
+                    // Layar besar (desktop), pindahkan ke target desktop
+                    if (!desktopTarget.contains(widget)) {
+                        desktopTarget.appendChild(widget);
+                    }
+                } else {
+                    // Layar kecil (mobile), pindahkan ke target mobile
+                    if (!mobileTarget.contains(widget)) {
+                        mobileTarget.appendChild(widget);
+                    }
+                }
+            }
         }
+
+        // Fungsi inisialisasi Google Translate
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'id',
+                includedLanguages: 'id,en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element_source'); // Inisialisasi HANYA SEKALI di kontainer sumber
+
+            // Kita perlu sedikit jeda agar widget selesai dirender sebelum dipindahkan
+            setTimeout(moveGoogleTranslateWidget, 500);
+        }
+        
+        // Tambahkan event listener untuk resize
+        window.addEventListener('resize', moveGoogleTranslateWidget);
     </script>
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
@@ -644,6 +674,9 @@
             }
 
             updateCartCount();
+            
+            // [MODIFIED] Panggil fungsi pemindahan saat halaman dimuat
+            moveGoogleTranslateWidget();
 
             $('form.logout-form').on('submit', function() {
                 localStorage.removeItem('tempCart');

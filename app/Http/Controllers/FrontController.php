@@ -28,15 +28,69 @@ class FrontController extends Controller
         return view('front.index', compact('latest_articles', 'popular_articles', 'latest_sketches', 'services'));
     }
 
-    public function articles()
+    /**
+     * Display articles for frontend with popular article highlight
+     */
+    public function articles(Request $request)
     {
-        $articles = Article::where('status', 'published')->latest()->paginate(6);
-        return view('front.articles', compact('articles'));
+        $filter = $request->query('filter', '');
+
+        $articlesQuery = Article::whereIn('status', ['Published', 'published']);
+
+        // Apply filtering
+        switch ($filter) {
+            case 'latest':
+                $articlesQuery->orderBy('created_at', 'desc');
+                break;
+            case 'popular':
+                $articlesQuery->orderBy('views', 'desc');
+                break;
+            case 'author':
+                $articlesQuery->orderBy('author', 'asc');
+                break;
+            default:
+                $articlesQuery->orderBy('created_at', 'desc');
+                break;
+        }
+
+        // Get the most popular article first
+        $popularArticle = Article::whereIn('status', ['Published', 'published'])
+            ->orderBy('views', 'desc')
+            ->first();
+
+        // Get paginated articles (exclude popular article if it exists to avoid duplication)
+        if ($popularArticle) {
+            $articlesQuery->where('id', '!=', $popularArticle->id);
+        }
+
+        $articles = $articlesQuery->paginate(9)->withQueryString();
+
+        return view('front.articles', compact('articles', 'popularArticle'));
     }
 
+    /**
+     * Display a single article and increment view count
+     */
     public function showArticle(Article $article)
     {
+        // Only show published articles (case-sensitive check)
+        if (strtolower($article->status) !== 'published') {
+            abort(404);
+        }
+
+        // Increment views count
         $article->increment('views');
+
+        // Eager load relationships for better performance
+        $article->load([
+            'subheadings.paragraphs' => function ($query) {
+                $query->orderBy('order_number');
+            },
+            'comments.user' => function ($query) {
+                $query->latest();
+            }
+        ]);
+
         return view('front.article_show', compact('article'));
     }
 
@@ -75,7 +129,7 @@ class FrontController extends Controller
         return view('front.contact');
     }
 
-        /**
+    /**
      * Menampilkan halaman detail untuk satu layanan.
      *
      * @param \App\Models\ConsultationService $service
@@ -83,10 +137,9 @@ class FrontController extends Controller
      */
     public function showLayanan(ConsultationService $service)
     {
-        // Dari struktur foldermu, view-nya sepertinya ada di 'front.layanan_show'
-        // Jika nama file-nya beda, sesuaikan di sini.
         return view('front.layanan_show', compact('service'));
     }
+
     /**
      * Memeriksa ketersediaan jadwal layanan.
      */

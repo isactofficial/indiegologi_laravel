@@ -8,6 +8,54 @@
     <h2 class="fw-bold mb-4 text-center section-title-articles" data-aos="fade-down">Wawasan & Inspirasi Terbaru dari Indiegologi</h2>
     <p class="text-center mb-5 text-muted" data-aos="fade-down" data-aos-delay="150">Jelajahi kumpulan artikel inspiratif dan informatif yang kami kurasi, dirancang untuk mendukung perjalanan kesejahteraan dan pertumbuhan pribadi Anda.</p>
 
+    {{-- Most Popular Article Section --}}
+    @if(isset($popularArticle) && $popularArticle)
+    <div class="mb-5" data-aos="zoom-in" data-aos-delay="200">
+        <div class="popular-article-container">
+            <div class="popular-badge mb-3">
+                <span class="badge-popular">
+                    <i class="fas fa-fire me-2"></i>Artikel Terpopuler
+                </span>
+            </div>
+            <div class="popular-article-card">
+                <div class="row g-0 align-items-center">
+                    <div class="col-md-6">
+                        <div class="popular-thumbnail-wrapper">
+                            <img src="{{ asset('storage/' . $popularArticle->thumbnail) }}" 
+                                 class="popular-thumbnail" 
+                                 alt="{{ $popularArticle->title }}">
+                            <div class="popular-overlay">
+                                <div class="popular-stats">
+                                    <span class="views-count">
+                                        <i class="fas fa-eye me-1"></i>{{ number_format($popularArticle->views) }} views
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="popular-content p-4">
+                            <h3 class="popular-title mb-3">{{ $popularArticle->title }}</h3>
+                            <p class="popular-description mb-3">{{ Str::words(strip_tags($popularArticle->description), 20, '...') }}</p>
+                            <div class="popular-meta mb-3">
+                                <small class="text-muted">
+                                    <i class="far fa-calendar-alt me-1"></i>{{ $popularArticle->created_at->format('d F Y') }}
+                                    <span class="mx-2">•</span>
+                                    <i class="fas fa-user me-1"></i>{{ $popularArticle->author }}
+                                </small>
+                            </div>
+                            <a href="{{ route('front.articles.show', $popularArticle->slug) }}" 
+                               class="btn btn-popular">
+                                Baca Selengkapnya <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     {{-- Filter dropdown with a fade-left animation --}}
     <div class="mb-4 d-flex justify-content-end" data-aos="fade-left" data-aos-delay="300">
         <form action="{{ route('front.articles') }}" method="GET">
@@ -96,6 +144,133 @@
         background-color: var(--indiegologi-primary);
         border-radius: 2px;
     }
+
+    /* Popular Article Styles */
+    .popular-article-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .popular-article-card {
+        background: linear-gradient(135deg, rgba(12, 44, 90, 0.05), rgba(12, 44, 90, 0.1));
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 2px solid rgba(12, 44, 90, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+    }
+    .popular-article-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+    .popular-badge-top {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 10;
+    }
+    .badge-popular-new {
+        background: linear-gradient(135deg, var(--indiegologi-primary), #1e4a72);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 15px rgba(12, 44, 90, 0.3);
+        display: inline-block;
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    .popular-thumbnail-wrapper {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+    }
+    .popular-thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    .popular-article-card:hover .popular-thumbnail {
+        transform: scale(1.05);
+    }
+    .popular-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.5));
+        display: flex;
+        align-items: flex-end;
+        padding: 20px;
+    }
+    .popular-stats {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 8px 16px;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+    }
+    .views-count {
+        color: var(--indiegologi-primary);
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .popular-content {
+        min-height: 320px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 2rem !important;
+        padding-right: 80px !important; /* More space for badge */
+    }
+    .popular-title {
+        color: var(--indiegologi-primary);
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+        flex-shrink: 0;
+    }
+    .popular-description {
+        color: var(--indiegologi-muted);
+        line-height: 1.6;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+    .popular-meta {
+        color: var(--indiegologi-muted);
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        flex-shrink: 0;
+    }
+    .btn-popular {
+        background: linear-gradient(135deg, var(--indiegologi-primary), #1e4a72);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 4px 15px rgba(12, 44, 90, 0.3);
+        align-self: flex-start;
+        margin-top: auto;
+    }
+    .btn-popular:hover {
+        background: linear-gradient(135deg, #1e4a72, var(--indiegologi-primary));
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(12, 44, 90, 0.4);
+        color: white;
+    }
+
     .form-select {
         width: 200px;
         display: inline-block;
@@ -214,6 +389,25 @@
         .description-text { -webkit-line-clamp: 2; font-size: 12px; }
         .form-select { width: 100%; }
         .d-flex.justify-content-end { justify-content: center !important; }
+        
+        /* Mobile Popular Article Styles */
+        .popular-article-card .row {
+            flex-direction: column;
+        }
+        .popular-thumbnail-wrapper {
+            height: 200px;
+        }
+        .popular-content {
+            height: auto;
+            padding: 1.5rem !important;
+        }
+        .popular-title {
+            font-size: 1.3rem;
+        }
+        .badge-popular {
+            font-size: 0.9rem;
+            padding: 10px 20px;
+        }
     }
     @media (max-width: 575.98px) {
         .hero-section-articles { padding-bottom: 2rem; }

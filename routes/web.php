@@ -39,27 +39,33 @@ Route::get('/storage-link', function () {
 // ======================================================================
 
 Route::get('/', [FrontController::class, 'index'])->name('front.index')->middleware('track.views:homepage');
+
+// Articles routes with popular article support
 Route::get('/articles', [FrontController::class, 'articles'])->name('front.articles')->middleware('track.views:articles');
 Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name('front.articles.show')->middleware('track.views:articles');
-Route::get('/layanan', [FrontController::class, 'layanan'])->name('front.layanan')->middleware('track.views:layanan');
 
+// Layanan routes
+Route::get('/layanan', [FrontController::class, 'layanan'])->name('front.layanan')->middleware('track.views:layanan');
 Route::get('/layanan/{service}', [FrontController::class, 'showLayanan'])->name('layanan.show');
 
+// Contact route
 Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact')->middleware('track.views:contact');
+
+// Sketches routes
 Route::get('/sketches', [FrontController::class, 'sketches_show'])->name('front.sketch')->middleware('track.views:sketches');
 Route::get('/sketches/{sketch:slug}', [FrontController::class, 'showDetail'])->name('front.sketches.detail')->middleware('track.views:sketches');
 
-// Rute searchbar
+// Search route
 Route::get('/search', [FrontController::class, 'search'])->name('search.results');
 
-// PENTING: Pindahkan rute keranjang belanja ke sini, di luar middleware auth.
+// Cart route (public access)
 Route::get('/cart', [FrontController::class, 'viewCart'])->name('front.cart.view');
 
 // ======================================================================
 // Rute Chatbot BOTMAN
 // ======================================================================
 
-// Rute ini yang akan menangani semua pesan dari BotMan dan mengarahkannya ke ChatbotController
+// Route untuk menangani semua pesan dari BotMan dan mengarahkannya ke ChatbotController
 Route::match(['get', 'post'], 'botman', [ChatbotController::class, 'handle']);
 
 // ======================================================================
@@ -81,14 +87,13 @@ Route::post('forgot-password', [ResetPasswordController::class, 'sendResetLinkEm
 Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-
 // ======================================================================
 // Rute Pengguna yang Diautentikasi
 // ======================================================================
 
 Route::middleware(['auth'])->group(function () {
-    // Comment management
-    Route::post('/articles/{article}/comments', [CommentController::class, 'store'])->name('comments.store');
+    // Comment management - Fixed to use slug consistently
+    Route::post('/articles/{article:slug}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
@@ -96,10 +101,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-});
-    // [BARU] Cart Routes
+
+    // Cart Routes (authenticated users)
     Route::prefix('cart')->name('front.cart.')->group(function () {
-        // Hapus rute 'view' dari sini, sudah dipindahkan ke atas
         Route::post('/add', [FrontController::class, 'addToCart'])->name('add');
         Route::post('/remove', [FrontController::class, 'removeFromCart'])->name('remove');
         Route::post('/update-summary', [FrontController::class, 'updateCartSummary'])->name('updateSummary');
@@ -108,16 +112,15 @@ Route::middleware(['auth'])->group(function () {
     // Checkout Route
     Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
 
-    // [PENTING: TAMBAHKAN ROUTE INI UNTUK CEK KETERSEDIAAN JADWAL]
+    // Check availability route
     Route::post('/check-availability', [FrontController::class, 'checkBookingAvailability'])->name('front.check.availability');
 
-// [BARU] Grup Rute untuk Onboarding
-Route::prefix('onboarding')->name('onboarding.')->group(function () {
-    // Diubah agar cocok dengan panggilan di AuthController
-    Route::get('/', [OnboardingController::class, 'show'])->name('show'); // Nama route menjadi onboarding.start
-    Route::post('/', [OnboardingController::class, 'store'])->name('store');
+    // Onboarding Routes
+    Route::prefix('onboarding')->name('onboarding.')->group(function () {
+        Route::get('/', [OnboardingController::class, 'show'])->name('show');
+        Route::post('/', [OnboardingController::class, 'store'])->name('store');
+    });
 });
-
 
 // ======================================================================
 // Rute Admin
@@ -126,12 +129,12 @@ Route::prefix('onboarding')->name('onboarding.')->group(function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->name('dashboard');
 
-    // Article management
+    // Article management (Admin)
     Route::get('/articles/approval', [ArticleController::class, 'approval'])->name('articles.approval');
-    Route::put('/articles/{article}/status', [ArticleController::class, 'updateStatus'])->name('articles.updateStatus');
+    Route::put('/articles/{article:slug}/status', [ArticleController::class, 'updateStatus'])->name('articles.updateStatus');
     Route::resource('articles', ArticleController::class)->parameters(['articles' => 'article:slug']);
 
-    // Sketsa management
+    // Sketches management
     Route::resource('sketches', SketchController::class)->parameters(['sketches' => 'sketch:slug']);
 
     // Consultation Service management
@@ -144,9 +147,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('consultation-bookings', ConsultationBookingController::class);
     Route::get('consultation-bookings/{consultationBooking}/download-pdf', [ConsultationBookingController::class, 'downloadPdf'])->name('consultation-bookings.download-pdf');
 
-
+    // Admin can also manage comments
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('admin.comments.destroy');
 });
-
 
 // ======================================================================
 // Role-Based Dashboards
@@ -164,16 +167,37 @@ Route::middleware(['auth', 'role:reader'])->group(function () {
     })->name('reader.dashboard');
 });
 
-// This route will display the invoice to the user
+// ======================================================================
+// Additional Routes
+// ======================================================================
+
+// Invoice route
 Route::get('/invoice/{consultationBooking}', [InvoiceController::class, 'show'])->name('invoice.show');
 
 // Google OAuth routes
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
+
+// User profile route for admin
 Route::get('/users/profile/{user}', [ConsultationBookingController::class, 'showUserProfile'])->name('admin.users.show');
 
+// ======================================================================
+// Test Routes (Development Only - Remove in Production)
+// ======================================================================
 
-
+Route::get('/debug-article/{slug}', function($slug) {
+    $article = \App\Models\Article::where('slug', $slug)->first();
+    if (!$article) {
+        return response()->json(['error' => 'Article not found', 'slug' => $slug]);
+    }
+    return response()->json([
+        'found' => true,
+        'title' => $article->title,
+        'status' => $article->status,
+        'views' => $article->views,
+        'slug' => $article->slug
+    ]);
+});
 
 Route::get('/tes-403', function () {
     abort(403, 'Akses Ditolak.');
@@ -184,19 +208,19 @@ Route::get('/tes-500', function () {
 });
 
 Route::get('/test-401', function () {
-    abort(401); // Memicu error Unauthorized
+    abort(401);
 });
 
 Route::get('/test-419', function () {
-    abort(419); // Memicu error Page Expired
+    abort(419);
 });
 
 Route::get('/test-429', function () {
-    abort(429); // Memicu error Too Many Requests
+    abort(429);
 });
 
 Route::get('/test-503', function () {
-    abort(503); // Memicu error Service Unavailable
+    abort(503);
 });
 
 Route::get('/test-400', function () {
