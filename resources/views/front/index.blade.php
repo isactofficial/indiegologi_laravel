@@ -722,20 +722,41 @@ img.testimonial-bg-img {
         font-size: 0.95rem !important;
     }
 
-    /* Sketch Gallery Mobile */
+    /* Sketch Gallery Mobile - DIPERBAIKI */
+    #sketch-gallery-wrapper .carousel-title {
+        font-size: 2rem;
+    }
+    #sketch-gallery-wrapper .carousel-subtitle {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
     #sketch-gallery-wrapper .gallery-carousel {
-        height: 350px;
+        height: 320px; /* Dikurangi dari 480px untuk membuat lebih kotak */
+        padding-top: 20px;
     }
     #sketch-gallery-wrapper .gallery-image-item {
-        height: 350px;
-        width: 60%;
-        left: 20%;
+        height: 320px; /* Sesuaikan dengan carousel height */
+        width: 70%; /* Diperlebar dari 60% */
+        left: 15%; /* Disesuaikan untuk centering */
+        padding: 8px; /* Dikurangi padding */
+    }
+    #sketch-gallery-wrapper .gallery-image-item img {
+        height: calc(100% - 40px); /* Disesuaikan dengan padding yang lebih kecil */
+    }
+    #sketch-gallery-wrapper .gallery-image-item h1 {
+        font-size: 16px; /* Dikurangi dari 20px */
+        padding: 8px; /* Dikurangi dari 10px */
     }
     #sketch-gallery-wrapper .gallery-nav-left {
-        left: 2%;
+        left: 5%; /* Dipindah lebih dekat */
     }
     #sketch-gallery-wrapper .gallery-nav-right {
-        right: 2%;
+        right: 5%; /* Dipindah lebih dekat */
+    }
+    #sketch-gallery-wrapper .gallery-nav-button {
+        width: 35px; /* Dikurangi dari 40px */
+        height: 35px; /* Dikurangi dari 40px */
+        font-size: 1rem; /* Dikurangi dari 1.2rem */
     }
 
     /* Consultation Section Mobile */
@@ -750,6 +771,38 @@ img.testimonial-bg-img {
     }
     .consultation-text {
         font-size: 1rem;
+    }
+}
+
+/* Extra small screens (phones in portrait) - TAMBAHAN UNTUK SKETCH GALLERY */
+@media (max-width: 575.98px) {
+    #sketch-gallery-wrapper .gallery-carousel {
+        height: 280px; /* Lebih kompak untuk layar sangat kecil */
+    }
+    
+    #sketch-gallery-wrapper .gallery-image-item {
+        height: 280px;
+        width: 75%; /* Sedikit lebih lebar pada layar sangat kecil */
+        left: 12.5%; /* Disesuaikan untuk centering */
+    }
+    
+    #sketch-gallery-wrapper .gallery-nav-left {
+        left: 2%;
+    }
+    
+    #sketch-gallery-wrapper .gallery-nav-right {
+        right: 2%;
+    }
+    
+    #sketch-gallery-wrapper .gallery-nav-button {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    #sketch-gallery-wrapper .gallery-image-item h1 {
+        font-size: 14px;
+        padding: 6px;
     }
 }
 </style>
