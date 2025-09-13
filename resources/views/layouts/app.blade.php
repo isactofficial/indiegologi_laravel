@@ -86,7 +86,7 @@
         }
 
         .navbar .dropdown-menu {
-            border-radius: 12px;
+            border-radius: 5px;
             border: 1px solid rgba(0,0,0,0.07);
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             margin-top: 0.5rem;
@@ -619,7 +619,7 @@
             // Kita perlu sedikit jeda agar widget selesai dirender sebelum dipindahkan
             setTimeout(moveGoogleTranslateWidget, 500);
         }
-        
+
         // Tambahkan event listener untuk resize
         window.addEventListener('resize', moveGoogleTranslateWidget);
     </script>
@@ -674,7 +674,7 @@
             }
 
             updateCartCount();
-            
+
             // [MODIFIED] Panggil fungsi pemindahan saat halaman dimuat
             moveGoogleTranslateWidget();
 

@@ -18,7 +18,6 @@ use App\Http\Controllers\Admin\ConsultationBookingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
-use App\Http\Controllers\Admin\TestimonialController;
 
 // Route for storage link
 Route::get('/storage-link', function () {
@@ -144,10 +143,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Referral Codes management
     Route::resource('referral-codes', ReferralCodeController::class);
 
-    Route::resource('testimonials', TestimonialController::class);
-    Route::patch('testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])
-    ->name('testimonials.toggle-status');
-
     // Consultation Booking management
     Route::resource('consultation-bookings', ConsultationBookingController::class);
     Route::get('consultation-bookings/{consultationBooking}/download-pdf', [ConsultationBookingController::class, 'downloadPdf'])->name('consultation-bookings.download-pdf');
@@ -177,7 +172,11 @@ Route::middleware(['auth', 'role:reader'])->group(function () {
 // ======================================================================
 
 // Invoice route
+// Rute untuk menampilkan halaman web invoice
 Route::get('/invoice/{consultationBooking}', [InvoiceController::class, 'show'])->name('invoice.show');
+
+// Rute yang dipanggil oleh tombol "Unduh PDF"
+Route::get('/invoice/{consultationBooking}/download', [InvoiceController::class, 'downloadPdf'])->name('admin.consultation-bookings.download-pdf');
 
 // Google OAuth routes
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');

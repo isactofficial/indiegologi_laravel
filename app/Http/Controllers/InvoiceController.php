@@ -3,28 +3,46 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConsultationBooking;
-use App\Models\User; // 1. IMPORT MODEL USER
-use Illuminate\Http\Request;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf; // Pastikan ini di-import
 
 class InvoiceController extends Controller
 {
+    /**
+     * Menampilkan halaman invoice di web
+     */
     public function show(ConsultationBooking $consultationBooking)
     {
-        // Load necessary relationships for the view
-        $consultationBooking->load('services', 'invoice', 'user');
-
-        // 2. AMBIL DATA ADMIN DARI DATABASE
-        $admin = User::where('role', 'admin')
-                       ->whereIn('id', [1, 2])
-                       ->first();
-
-        // 3. SIAPKAN NAMA ADMIN DENGAN FALLBACK
+        $consultationBooking->load('services', 'invoice', 'user.profile');
+        $admin = User::where('role', 'admin')->whereIn('id', [1, 2])->first();
         $adminName = $admin ? $admin->name : 'Admin Indiegologi';
 
-        // 4. KIRIM SEMUA DATA KE VIEW
         return view('invoice.show', [
             'consultationBooking' => $consultationBooking,
             'adminName' => $adminName,
         ]);
+    }
+
+    /**
+     * Membuat PDF langsung dari Blade View (Metode DomPDF)
+     */
+    public function downloadPdf(ConsultationBooking $consultationBooking)
+    {
+        // 1. Load data yang diperlukan
+        $consultationBooking->load('services', 'invoice', 'user.profile');
+        $admin = User::where('role', 'admin')->whereIn('id', [1, 2])->first();
+        $adminName = $admin ? $admin->name : 'Admin Indiegologi';
+
+        $data = [
+            'consultationBooking' => $consultationBooking,
+            'adminName' => $adminName,
+        ];
+
+        // 2. Render view 'invoice.pdf' yang akan kita perbaiki di bawah
+        $pdf = PDF::loadView('invoice.pdf', $data)->setPaper('a4', 'portrait');
+
+        // 3. Kirim PDF ke browser untuk diunduh
+        $fileName = 'invoice-' . optional($consultationBooking->invoice)->invoice_no . '.pdf';
+        return $pdf->download($fileName);
     }
 }

@@ -1,8 +1,9 @@
-@extends('layouts.app')
-
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
     <style>
-        /* Styling for the user-facing invoice */
         .section {
             font-family: 'Playfair Display', serif;
             padding: 20px;
@@ -230,19 +231,10 @@
             }
         }
     </style>
-
-    <div class="section container-fluid px-4 py-5">
-        <div class="d-flex justify-content-start mb-4 no-print" style="max-width: 800px; margin: 0 auto;">
-            <a href="{{ route('front.cart.view') }}" class="btn px-4 py-2" style="background-color: #F0F5FF; color: #5B93FF; border-radius: 8px;">
-                <i class="fas fa-arrow-left me-2"></i> Kembali ke Keranjang
-            </a>
-            <a href="{{ route('admin.consultation-bookings.download-pdf', $consultationBooking->id) }}" class="btn btn-primary px-4 py-2 ms-3">
-                <i class="fas fa-download me-2"></i> Unduh PDF
-            </a>
-        </div>
-
-        <div class="invoice-wrapper">
-            @include('invoice.partials.invoice-content')
-        </div>
+</head>
+<body>
+    <div class="invoice-wrapper">
+        @include('invoice.partials.invoice-content')
     </div>
-@endsection
+</body>
+</html>
