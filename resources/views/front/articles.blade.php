@@ -21,15 +21,15 @@
                 <div class="row g-0 align-items-center">
                     <div class="col-md-6">
                         <div class="popular-thumbnail-wrapper">
-                            <img src="{{ asset('storage/' . $popularArticle->thumbnail) }}" 
-                                 class="popular-thumbnail" 
+                            <img src="{{ asset('storage/' . $popularArticle->thumbnail) }}"
+                                 class="popular-thumbnail"
                                  alt="{{ $popularArticle->title }}">
                             <div class="popular-overlay">
                                 <div class="popular-stats">
                                     <span class="views-count">
                                         <i class="fas fa-eye me-1"></i>{{ number_format($popularArticle->views) }} views
                                     </span>
-                                </div>
+                                 </div>
                             </div>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                                     <i class="fas fa-user me-1"></i>{{ $popularArticle->author }}
                                 </small>
                             </div>
-                            <a href="{{ route('front.articles.show', $popularArticle->slug) }}" 
+                            <a href="{{ route('front.articles.show', $popularArticle->slug) }}"
                                class="btn btn-popular">
                                 Baca Selengkapnya <i class="fas fa-arrow-right ms-1"></i>
                             </a>
@@ -93,9 +93,24 @@
     </div>
 
     {{-- Pagination with a fade-up animation --}}
-    <div class="mt-4 d-flex justify-content-center" data-aos="fade-up">
-        {{ $articles->links() }}
-    </div>
+    @if ($articles->hasPages())
+        <div class="mt-4 d-flex justify-content-center" data-aos="fade-up">
+            {{ $articles->links() }}
+        </div>
+    @elseif ($articles->total() > 0)
+        {{-- Fallback to show a simple page '1' if there are articles but not enough for multiple pages --}}
+        <div class="mt-4 d-flex justify-content-center" data-aos="fade-up">
+             <ul class="pagination">
+                <li class="page-item disabled" aria-disabled="true">
+                    <span class="page-link" aria-hidden="true">&lsaquo;</span>
+                </li>
+                <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
+                <li class="page-item disabled" aria-disabled="true">
+                    <span class="page-link" aria-hidden="true">&rsaquo;</span>
+                </li>
+            </ul>
+        </div>
+    @endif
 
 </div>
 
@@ -340,24 +355,23 @@
         --pagination-active-color: white;
         --pagination-hover-bg: rgba(12, 44, 90, 0.8);
         --pagination-hover-color: white;
-        --pagination-border-color: var(--indiegologi-primary);
-        --pagination-disabled-color: rgba(12, 44, 90, 0.4);
-        --pagination-disabled-border: rgba(12, 44, 90, 0.2);
+        --pagination-border-color: #dee2e6; /* Softer border for non-active */
+        --pagination-disabled-color: #6c757d;
+        --pagination-disabled-border: #dee2e6;
     }
     .pagination .page-item { margin: 0 5px; }
     .pagination .page-link {
-        border-radius: 8px;
-        padding: 10px 15px;
-        min-width: 40px;
-        text-align: center;
+        border-radius: 50%; /* Make it a circle */
+        width: 40px;       /* Set fixed width */
+        height: 40px;      /* Set fixed height */
+        padding: 0;        /* Remove padding to respect width/height */
         font-weight: 500;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 40px;
         color: var(--pagination-link-color);
-        background-color: transparent;
+        background-color: white; /* White background for non-active */
         border: 1px solid var(--pagination-border-color);
     }
     .pagination .page-item.active .page-link {
@@ -378,7 +392,7 @@
         color: var(--pagination-disabled-color);
         pointer-events: none;
         border-color: var(--pagination-disabled-border);
-        background-color: transparent;
+        background-color: #f8f9fa; /* Lighter background for disabled */
         transform: none;
         box-shadow: none;
     }
@@ -389,7 +403,7 @@
         .description-text { -webkit-line-clamp: 2; font-size: 12px; }
         .form-select { width: 100%; }
         .d-flex.justify-content-end { justify-content: center !important; }
-        
+
         /* Mobile Popular Article Styles */
         .popular-article-card .row {
             flex-direction: column;

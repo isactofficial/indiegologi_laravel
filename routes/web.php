@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\ConsultationBookingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\Admin\TestimonialController;
 
 // Route for storage link
 Route::get('/storage-link', function () {
@@ -142,6 +143,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Referral Codes management
     Route::resource('referral-codes', ReferralCodeController::class);
+
+    Route::resource('testimonials', TestimonialController::class);
+    Route::patch('testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])
+    ->name('testimonials.toggle-status');
 
     // Consultation Booking management
     Route::resource('consultation-bookings', ConsultationBookingController::class);

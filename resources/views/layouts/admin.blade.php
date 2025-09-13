@@ -128,6 +128,9 @@
                 <a href="{{ route('admin.consultation-bookings.index') }}" class="{{ request()->routeIs('admin.consultation-bookings.*') ? 'active' : '' }}">
                     <i class="fas fa-calendar-check"></i> Manajemen Booking
                 </a>
+                <a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
+                   <i class="fas fa-comments"></i> Manajemen Testimoni
+                </a>
                 <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
                     <i class="fas fa-user-circle"></i> Profil
                 </a>

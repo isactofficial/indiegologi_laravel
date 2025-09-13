@@ -9,6 +9,7 @@ use App\Models\ReferralCode;
 use App\Models\CartItem;
 use App\Models\BookingService;
 use App\Models\Invoice;
+use App\Models\Testimonial; // Tambahkan use statement untuk Testimonial
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -25,7 +26,13 @@ class FrontController extends Controller
         $popular_articles = Article::where('status', 'published')->orderBy('views', 'desc')->take(6)->get();
         $latest_sketches = Sketch::where('status', 'published')->latest()->take(6)->get();
         $services = ConsultationService::take(3)->get();
-        return view('front.index', compact('latest_articles', 'popular_articles', 'latest_sketches', 'services'));
+        
+        // Tambahkan data testimoni dari database
+        $testimonials = Testimonial::active()
+            ->ordered()
+            ->get();
+            
+        return view('front.index', compact('latest_articles', 'popular_articles', 'latest_sketches', 'services', 'testimonials'));
     }
 
     /**
@@ -63,7 +70,7 @@ class FrontController extends Controller
             $articlesQuery->where('id', '!=', $popularArticle->id);
         }
 
-        $articles = $articlesQuery->paginate(9)->withQueryString();
+        $articles = $articlesQuery->paginate(6)->withQueryString();
 
         return view('front.articles', compact('articles', 'popularArticle'));
     }
