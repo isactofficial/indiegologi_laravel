@@ -9,7 +9,7 @@ use App\Models\ReferralCode;
 use App\Models\CartItem;
 use App\Models\BookingService;
 use App\Models\Invoice;
-use App\Models\Testimonial; // Tambahkan use statement untuk Testimonial
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -138,13 +138,58 @@ class FrontController extends Controller
 
     /**
      * Menampilkan halaman detail untuk satu layanan.
-     *
-     * @param \App\Models\ConsultationService $service
-     * @return \Illuminate\View\View
      */
     public function showLayanan(ConsultationService $service)
     {
         return view('front.layanan_show', compact('service'));
+    }
+
+    /**
+     * NEW: Get service pricing for guest cart calculations
+     */
+    public function getServicePricing(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'service_ids' => 'required|array',
+            'service_ids.*' => 'string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid service IDs',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $serviceIds = $request->input('service_ids');
+        $pricing = [];
+
+        foreach ($serviceIds as $serviceId) {
+            if ($serviceId === 'free-consultation') {
+                $pricing['free-consultation'] = [
+                    'title' => 'Konsultasi Gratis',
+                    'price' => 0,
+                    'hourly_price' => 0,
+                    'thumbnail' => 'https://placehold.co/60x60/D4AF37/ffffff?text=Gratis'
+                ];
+            } else {
+                $service = ConsultationService::find($serviceId);
+                if ($service) {
+                    $pricing[$serviceId] = [
+                        'title' => $service->title,
+                        'price' => (float) $service->price,
+                        'hourly_price' => (float) ($service->hourly_price ?? 0),
+                        'thumbnail' => $service->thumbnail ? asset('storage/' . $service->thumbnail) : 'https://placehold.co/60x60/cccccc/ffffff?text=No+Image'
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'pricing' => $pricing
+        ]);
     }
 
     /**
@@ -156,7 +201,7 @@ class FrontController extends Controller
             'booked_date' => 'required|date_format:Y-m-d',
             'booked_time' => 'required|date_format:H:i',
             'hours_booked' => 'required|integer|min:0',
-            'service_id' => 'required|exists:consultation_services,id',
+            'service_id' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -184,6 +229,28 @@ class FrontController extends Controller
 
         $requestedEnd = $requestedStart->copy()->addHours($hoursBooked);
 
+        // Handle free consultation separately
+        if ($serviceId === 'free-consultation') {
+            // Check for existing free consultation bookings in cart_items first
+            $existingCartBooking = CartItem::where('service_id', 'free-consultation')
+                ->where('booked_date', $bookedDate)
+                ->where('booked_time', $bookedTime)
+                ->exists();
+
+            if ($existingCartBooking) {
+                return response()->json([
+                    'available' => false,
+                    'message' => 'Jadwal konsultasi gratis yang Anda pilih sudah terisi. Silakan pilih waktu lain.'
+                ], 409);
+            }
+
+            return response()->json([
+                'available' => true,
+                'message' => 'Jadwal konsultasi gratis tersedia.'
+            ]);
+        }
+
+        // Handle regular services
         $service = ConsultationService::find($serviceId);
         if (!$service) {
             return response()->json([
@@ -192,31 +259,25 @@ class FrontController extends Controller
             ], 404);
         }
 
-        $existingBookings = BookingService::where('service_id', $serviceId)
-            ->whereHas('invoice', function ($query) {
-                $query->where('payment_status', 'paid')
-                    ->orWhere(function ($query) {
-                        $query->whereIn('payment_status', ['unpaid', 'pending'])
-                            ->where('due_date', '>=', now());
-                    });
-            })
+        // Check existing bookings in cart_items and booking_service tables
+        $existingCartBookings = CartItem::where('service_id', $serviceId)
+            ->where('booked_date', $bookedDate)
             ->get();
 
-        foreach ($existingBookings as $booking) {
+        foreach ($existingCartBookings as $booking) {
             try {
                 $existingStart = Carbon::parse("{$booking->booked_date} {$booking->booked_time}");
+                $existingEnd = $existingStart->copy()->addHours($booking->hours);
+
+                if ($requestedStart->lt($existingEnd) && $existingStart->lt($requestedEnd)) {
+                    return response()->json([
+                        'available' => false,
+                        'message' => 'Jadwal yang Anda pilih sudah terisi. Silakan pilih waktu lain.'
+                    ], 409);
+                }
             } catch (\Exception $e) {
-                Log::warning("Failed to parse existing booking start time for booking ID {$booking->id}: {$booking->booked_date} {$booking->booked_time} - " . $e->getMessage());
+                Log::warning("Failed to parse cart booking time: " . $e->getMessage());
                 continue;
-            }
-
-            $existingEnd = $existingStart->copy()->addHours($booking->hours_booked);
-
-            if ($requestedStart->lt($existingEnd) && $existingStart->lt($requestedEnd)) {
-                return response()->json([
-                    'available' => false,
-                    'message' => 'Jadwal yang Anda pilih sudah terisi. Silakan pilih waktu lain.'
-                ], 409);
             }
         }
 
@@ -237,13 +298,94 @@ class FrontController extends Controller
             return response()->json(['success' => false, 'message' => 'Anda harus login untuk menambahkan layanan.'], 401);
         }
 
+        // Handle free consultation
+        if ($request->input('id') === 'free-consultation') {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|string',
+                'hours' => 'required|integer|min:1|max:1',
+                'booked_date' => 'required|date|after:today',
+                'booked_time' => 'required|date_format:H:i',
+                'session_type' => 'required|string|in:Online,Offline',
+                'offline_address' => 'required_if:session_type,Offline|nullable|string',
+                'contact_preference' => 'required|string|in:chat_only,chat_and_call',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal. Pastikan semua kolom terisi dengan benar.',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $validatedData = $validator->validated();
+
+            try {
+                $user = Auth::user();
+
+                // Check if user already has a free consultation in cart
+                $existingFreeConsultation = CartItem::where('user_id', $user->id)
+                    ->where('service_id', 'free-consultation')
+                    ->first();
+
+                if ($existingFreeConsultation) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda sudah memiliki konsultasi gratis di keranjang. Setiap pengguna hanya bisa mendapatkan satu sesi konsultasi gratis.'
+                    ], 422);
+                }
+
+                // Create free consultation cart item
+                CartItem::create([
+                    'user_id' => $user->id,
+                    'service_id' => 'free-consultation',
+                    'price' => 0,
+                    'hourly_price' => 0,
+                    'quantity' => 1,
+                    'hours' => 1,
+                    'booked_date' => $validatedData['booked_date'],
+                    'booked_time' => $validatedData['booked_time'],
+                    'session_type' => $validatedData['session_type'],
+                    'offline_address' => $validatedData['offline_address'] ?? null,
+                    'contact_preference' => $validatedData['contact_preference'],
+                    'referral_code' => null,
+                    'payment_type' => 'full_payment'
+                ]);
+
+                $cartCount = CartItem::where('user_id', $user->id)->count();
+
+                Log::info('Free consultation added to cart for user: ' . $user->id, [
+                    'booked_date' => $validatedData['booked_date'],
+                    'booked_time' => $validatedData['booked_time'],
+                    'session_type' => $validatedData['session_type']
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Konsultasi gratis berhasil ditambahkan ke keranjang!',
+                    'cart_count' => $cartCount
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('Add free consultation to cart failed: ' . $e->getMessage(), [
+                    'user_id' => Auth::id(),
+                    'data' => $validatedData
+                ]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan konsultasi gratis ke keranjang. Detail: ' . $e->getMessage()
+                ], 500);
+            }
+        }
+
+        // Handle regular services
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:consultation_services,id',
-            'hours' => 'required|integer|min:0',
-            'booked_date' => 'required|date',
+            'hours' => 'required|integer|min:1',
+            'booked_date' => 'required|date|after:today',
             'booked_time' => 'required|date_format:H:i',
             'session_type' => 'required|string|in:Online,Offline',
-            'offline_address' => 'nullable|string',
+            'offline_address' => 'required_if:session_type,Offline|nullable|string',
             'referral_code' => 'nullable|string|exists:referral_codes,code',
             'contact_preference' => 'required|string|in:chat_only,chat_and_call',
         ]);
@@ -269,7 +411,7 @@ class FrontController extends Controller
                 ],
                 [
                     'price' => $service->price,
-                    'hourly_price' => $service->hourly_price,
+                    'hourly_price' => $service->hourly_price ?? 0,
                     'quantity' => 1,
                     'hours' => (int)$validatedData['hours'],
                     'booked_date' => $validatedData['booked_date'],
@@ -278,10 +420,17 @@ class FrontController extends Controller
                     'offline_address' => $validatedData['offline_address'] ?? null,
                     'contact_preference' => $validatedData['contact_preference'],
                     'referral_code' => $validatedData['referral_code'] ?? null,
+                    'payment_type' => 'full_payment'
                 ]
             );
 
             $cartCount = CartItem::where('user_id', $user->id)->count();
+
+            Log::info('Service added to cart for user: ' . $user->id, [
+                'service_id' => $service->id,
+                'service_title' => $service->title,
+                'hours' => $validatedData['hours']
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -290,10 +439,123 @@ class FrontController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Add to cart failed: ' . $e->getMessage() . ' - Data: ' . json_encode($validatedData));
+            Log::error('Add to cart failed: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'data' => $validatedData
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal menambahkan layanan ke keranjang. Detail: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Transfer temp cart to database when user logs in
+     */
+    public function transferTempCart()
+    {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
+        }
+
+        try {
+            $user = Auth::user();
+            $tempCartData = session('temp_cart', []);
+            
+            if (empty($tempCartData)) {
+                return response()->json(['success' => true, 'message' => 'No temp cart to transfer']);
+            }
+
+            $transferredCount = 0;
+
+            foreach ($tempCartData as $serviceId => $itemData) {
+                try {
+                    // Handle free consultation
+                    if ($serviceId === 'free-consultation') {
+                        // Check if user already has free consultation
+                        $existing = CartItem::where('user_id', $user->id)
+                            ->where('service_id', 'free-consultation')
+                            ->first();
+                        
+                        if (!$existing) {
+                            CartItem::create([
+                                'user_id' => $user->id,
+                                'service_id' => 'free-consultation',
+                                'price' => 0,
+                                'hourly_price' => 0,
+                                'quantity' => 1,
+                                'hours' => 1,
+                                'booked_date' => $itemData['booked_date'],
+                                'booked_time' => $itemData['booked_time'],
+                                'session_type' => $itemData['session_type'],
+                                'offline_address' => $itemData['offline_address'] ?? null,
+                                'contact_preference' => $itemData['contact_preference'],
+                                'referral_code' => null,
+                                'payment_type' => 'full_payment'
+                            ]);
+                            $transferredCount++;
+                        }
+                    } else {
+                        // Handle regular services
+                        $service = ConsultationService::find($serviceId);
+                        if ($service) {
+                            CartItem::updateOrCreate(
+                                [
+                                    'user_id' => $user->id,
+                                    'service_id' => $service->id,
+                                ],
+                                [
+                                    'price' => $service->price,
+                                    'hourly_price' => $service->hourly_price ?? 0,
+                                    'quantity' => 1,
+                                    'hours' => (int)($itemData['hours'] ?? 1),
+                                    'booked_date' => $itemData['booked_date'],
+                                    'booked_time' => $itemData['booked_time'],
+                                    'session_type' => $itemData['session_type'],
+                                    'offline_address' => $itemData['offline_address'] ?? null,
+                                    'contact_preference' => $itemData['contact_preference'],
+                                    'referral_code' => $itemData['referral_code'] ?? null,
+                                    'payment_type' => 'full_payment'
+                                ]
+                            );
+                            $transferredCount++;
+                        }
+                    }
+                } catch (\Exception $itemException) {
+                    Log::error('Failed to transfer individual cart item: ' . $itemException->getMessage(), [
+                        'service_id' => $serviceId,
+                        'user_id' => $user->id,
+                        'item_data' => $itemData
+                    ]);
+                }
+            }
+
+            // Clear temp cart from session
+            session()->forget('temp_cart');
+
+            $cartCount = CartItem::where('user_id', $user->id)->count();
+
+            Log::info('Temp cart transfer completed', [
+                'user_id' => $user->id,
+                'transferred_items' => $transferredCount,
+                'total_cart_count' => $cartCount
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Temp cart transferred successfully',
+                'cart_count' => $cartCount,
+                'transferred_items' => $transferredCount
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Transfer temp cart failed: ' . $e->getMessage(), [
+                'user_id' => Auth::id()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to transfer temp cart'
             ], 500);
         }
     }
@@ -372,7 +634,15 @@ class FrontController extends Controller
                             ->first();
 
         if ($cartItem) {
+            $itemTitle = $cartItem->isFreeConsultation() ? 'Konsultasi Gratis' : ($cartItem->service->title ?? 'Layanan');
             $cartItem->delete();
+            
+            Log::info('Item removed from cart', [
+                'user_id' => Auth::id(),
+                'item_title' => $itemTitle,
+                'service_id' => $cartItem->service_id
+            ]);
+            
             return redirect()->back()->with('success', 'Layanan berhasil dihapus dari keranjang.');
         }
 
@@ -398,14 +668,20 @@ class FrontController extends Controller
         $totalDiscount = 0.0;
 
         foreach ($cartItems as $item) {
-            $subtotal += $item->item_subtotal;
-            $totalDiscount += $item->discount_amount;
+            // Handle free consultation
+            if ($item->service_id === 'free-consultation') {
+                $subtotal += 0; // Free consultation has no cost
+                $totalDiscount += 0;
+            } else {
+                $subtotal += $item->item_subtotal;
+                $totalDiscount += $item->discount_amount;
+            }
         }
 
         $grandTotal = $subtotal - $totalDiscount;
         $totalToPayNow = $grandTotal;
 
-        if ($globalPaymentType == 'dp') {
+        if ($globalPaymentType == 'dp' && $grandTotal > 0) {
             $totalToPayNow = $grandTotal * 0.5;
         }
 
@@ -422,6 +698,7 @@ class FrontController extends Controller
             'totalDiscount' => number_format($totalDiscount, 0, ',', '.'),
             'grandTotal' => number_format($grandTotal, 0, ',', '.'),
             'totalToPayNow' => number_format($totalToPayNow, 0, ',', '.'),
+            'success' => true,
         ];
     }
     

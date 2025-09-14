@@ -10,7 +10,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    /* Your existing CSS remains unchanged */
     :root {
         --brand-primary: #0C2C5A;
         --brand-text: #212529;
@@ -75,6 +74,15 @@
     .remove-btn:hover { color: var(--brand-danger); }
     .remove-btn i { transition: transform 0.2s ease-in-out; }
     .remove-btn:hover i { transform: scale(1.15); }
+    .free-consultation-badge {
+        background: linear-gradient(45deg, #D4AF37, #FFD700);
+        color: white;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 15px;
+        font-weight: bold;
+        margin-left: 0.5rem;
+    }
     @media (min-width: 992px) {
         .sticky-summary {
             position: sticky;
@@ -123,7 +131,7 @@
 
         @auth
             @if ($cartItems->isEmpty())
-                {{-- Empty cart message with zoom-in animation --}}
+                {{-- Empty cart message --}}
                 <div class="text-center py-5" data-aos="zoom-in">
                     <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
                     <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
@@ -131,16 +139,17 @@
                     <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
                 </div>
             @else
-                {{-- Cart header with fade-down animation --}}
+                {{-- Cart header --}}
                 <div class="text-center mb-5 cart-header" data-aos="fade-down">
                     <h1 class="section-title">Keranjang Belanja Anda</h1>
                     <p class="lead text-muted">Satu langkah lagi untuk menjadi versi terbaik Anda.</p>
                 </div>
+                
                 <form action="{{ route('checkout.process') }}" method="POST" id="cart-form-logged-in">
                     @csrf
                     <div class="row g-4 g-lg-5">
                         <div class="col-lg-7">
-                            {{-- "Select All" card with fade-right animation --}}
+                            {{-- Select All card --}}
                             <div class="card mb-3 shadow-sm border-0" data-aos="fade-right">
                                 <div class="card-body p-3">
                                     <div class="form-check">
@@ -151,22 +160,51 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            {{-- Cart Items Loop --}}
                             @foreach ($cartItems as $item)
-                                {{-- Each cart item with a staggered fade-right animation --}}
                                 <div class="card mb-3 cart-item-card" data-service-id="{{ $item->service_id }}" data-aos="fade-right" data-aos-delay="{{ $loop->index * 100 }}">
                                     <div class="card-body p-4">
                                         <div class="row">
+                                            {{-- Item Details Column --}}
                                             <div class="col-12 col-md-7 mb-4 mb-md-0">
                                                 <div class="d-flex align-items-start">
                                                     <div class="form-check me-3 pt-1">
-                                                        <input class="form-check-input item-checkbox" type="checkbox" name="selected_items[]" value="{{ $item->id }}" id="item-{{ $item->id }}" checked>
+                                                        <input class="form-check-input item-checkbox" type="checkbox" 
+                                                               name="selected_items[]" value="{{ $item->id }}" 
+                                                               id="item-{{ $item->id }}" checked>
                                                     </div>
-                                                    <img src="{{ asset('storage/' . $item->service->thumbnail) }}" alt="{{ $item->service->title }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                                    
+                                                    <div class="position-relative me-3">
+                                                        <img src="{{ $item->service_thumbnail }}" 
+                                                             alt="{{ $item->service_title }}" 
+                                                             class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                    </div>
+                                                    
                                                     <div class="flex-grow-1">
-                                                        <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">{{ $item->service->title }}</h5>
+                                                        <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">
+                                                            {{ $item->service_title }}
+                                                            @if($item->isFreeConsultation())
+                                                                <span class="free-consultation-badge">GRATIS</span>
+                                                            @endif
+                                                        </h5>
+                                                        
                                                         <ul class="item-details-list">
-                                                            <li><i class="bi bi-calendar-check"></i>{{ \Carbon\Carbon::parse($item->booked_date)->translatedFormat('d M Y') }}, {{ $item->booked_time }}</li>
-                                                            <li><i class="bi bi-camera-video"></i>{{ $item->session_type }} & {{ $item->contact_preference == 'chat_only' ? 'Chat' : 'Chat & Call' }}</li>
+                                                            <li>
+                                                                <i class="bi bi-calendar-check"></i>
+                                                                {{ \Carbon\Carbon::parse($item->booked_date)->translatedFormat('d M Y') }}, 
+                                                                {{ $item->booked_time }}
+                                                                @if($item->isFreeConsultation())
+                                                                    (1 jam)
+                                                                @else
+                                                                    ({{ $item->hours }} jam)
+                                                                @endif
+                                                            </li>
+                                                            <li>
+                                                                <i class="bi bi-camera-video"></i>
+                                                                {{ $item->session_type }} & 
+                                                                {{ $item->contact_preference == 'chat_only' ? 'Chat' : 'Chat & Call' }}
+                                                            </li>
                                                             @if($item->offline_address)
                                                                 <li><i class="bi bi-geo-alt"></i>{{ $item->offline_address }}</li>
                                                             @endif
@@ -174,37 +212,69 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            
+                                            {{-- Pricing Column --}}
                                             <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
-                                                <ul class="list-group list-group-flush price-details-list small">
-                                                    <li class="list-group-item d-flex justify-content-between">
-                                                        <span class="text-muted">Harga Dasar:</span>
-                                                        <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
-                                                    </li>
-                                                    @if ($item->hours > 0)
-                                                    <li class="list-group-item d-flex justify-content-between">
-                                                        <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
-                                                        <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
-                                                    </li>
-                                                    @endif
-                                                    <li class="list-group-item d-flex justify-content-between">
-                                                        <span class="text-muted">Subtotal:</span>
-                                                        <span class="text-muted">Rp {{ number_format($item->item_subtotal, 0, ',', '.') }}</span>
-                                                    </li>
-                                                    @php $itemDiscount = $item->item_subtotal - $item->final_item_price; @endphp
-                                                    @if ($itemDiscount > 0)
-                                                    <li class="list-group-item d-flex justify-content-between">
-                                                        <span style="color: var(--brand-danger);">Diskon:</span>
-                                                        <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
-                                                    </li>
-                                                    @endif
-                                                </ul>
-                                                <hr class="my-2" style="border-color: var(--brand-border);">
-                                                <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                    <span>Total Item:</span>
-                                                    <span>Rp {{ number_format($item->final_item_price, 0, ',', '.') }}</span>
-                                                </p>
+                                                @if($item->isFreeConsultation())
+                                                    {{-- Free consultation pricing --}}
+                                                    <ul class="list-group list-group-flush price-details-list small">
+                                                        <li class="list-group-item d-flex justify-content-between">
+                                                            <span class="text-muted">Harga Dasar:</span>
+                                                            <span class="text-success fw-bold">GRATIS</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between">
+                                                            <span class="text-muted">Durasi:</span>
+                                                            <span class="text-muted">1 Jam</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between">
+                                                            <span class="text-muted">Subtotal:</span>
+                                                            <span class="text-success">Rp 0</span>
+                                                        </li>
+                                                    </ul>
+                                                    <hr class="my-2" style="border-color: var(--brand-border);">
+                                                    <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                                        <span>Total Item:</span>
+                                                        <span>Rp 0</span>
+                                                    </p>
+                                                @else
+                                                    {{-- Regular service pricing --}}
+                                                    <ul class="list-group list-group-flush price-details-list small">
+                                                        <li class="list-group-item d-flex justify-content-between">
+                                                            <span class="text-muted">Harga Dasar:</span>
+                                                            <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                                                        </li>
+                                                        @if ($item->hours > 0)
+                                                        <li class="list-group-item d-flex justify-content-between">
+                                                            <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
+                                                            <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
+                                                        </li>
+                                                        @endif
+                                                        <li class="list-group-item d-flex justify-content-between">
+                                                            <span class="text-muted">Subtotal:</span>
+                                                            <span class="text-muted">Rp {{ number_format($item->item_subtotal, 0, ',', '.') }}</span>
+                                                        </li>
+                                                        @php $itemDiscount = $item->item_subtotal - $item->final_item_price; @endphp
+                                                        @if ($itemDiscount > 0)
+                                                        <li class="list-group-item d-flex justify-content-between">
+                                                            <span style="color: var(--brand-danger);">Diskon:</span>
+                                                            <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
+                                                        </li>
+                                                        @endif
+                                                    </ul>
+                                                    <hr class="my-2" style="border-color: var(--brand-border);">
+                                                    <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                                        <span>Total Item:</span>
+                                                        <span>Rp {{ number_format($item->final_item_price, 0, ',', '.') }}</span>
+                                                    </p>
+                                                @endif
+                                                
+                                                {{-- Action Buttons --}}
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
+                                                    @if(!$item->isFreeConsultation())
+                                                        <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
+                                                    @else
+                                                        <span class="text-muted small">Konsultasi Gratis</span>
+                                                    @endif
                                                     <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="Hapus item">
                                                         <i class="bi bi-trash3-fill fs-5"></i>
                                                     </button>
@@ -215,7 +285,8 @@
                                 </div>
                             @endforeach
                         </div>
-                        {{-- Summary card with fade-left animation --}}
+                        
+                        {{-- Summary Section --}}
                         <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
                             <div class="summary-card sticky-summary">
                                 <div class="card-body p-4">
@@ -253,14 +324,17 @@
                         </div>
                     </div>
                 </form>
+                
+                {{-- Hidden form for removing items --}}
                 <form id="remove-item-form" action="{{ route('front.cart.remove') }}" method="POST" style="display: none;">
                     @csrf
                     <input type="hidden" name="id" id="remove-item-id">
                 </form>
             @endif
         @else
+            {{-- Guest Cart Display --}}
             <div id="temp-cart-display">
-                <div class="text-center py-5 empty-cart-message" data-aos="zoom-in">
+                <div class="text-center py-5" data-aos="zoom-in">
                     <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
                     <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
                     <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
@@ -274,7 +348,7 @@
 @endsection
 
 @push('scripts')
-{{-- SCRIPT UNTUK ANIMASI AOS --}}
+{{-- AOS Animation --}}
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
     AOS.init({
@@ -283,298 +357,394 @@
         once: false,
         offset: 100,
     });
-
-    let lastScrollTop = 0;
-    const allAosElements = document.querySelectorAll('[data-aos]');
-    window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop < lastScrollTop) {
-            allAosElements.forEach(function(element) {
-                if (element.getBoundingClientRect().top > window.innerHeight) {
-                    element.classList.remove('aos-animate');
-                }
-            });
-        }
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    }, false);
 </script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    /* Your existing JavaScript logic remains unchanged */
-    const translations = {
-        success: "Berhasil!",
-        failure: "Gagal!",
-        info: "Perhatian!",
-        referral_applied: "Kode referral berhasil diterapkan!",
-        referral_invalid: "Kode referral tidak valid atau sudah kadaluarsa.",
-        referral_not_found: "Kode referral tidak ditemukan.",
-        referral_enter_first: "Silakan masukkan kode referral terlebih dahulu.",
-        generic_error: "Terjadi kesalahan, silakan coba lagi.",
-        validation_fails: "Validasi gagal. Silakan periksa input Anda.",
-        schedule_unavailable: "Jadwal tidak tersedia. Silakan pilih waktu lain.",
-        schedule_check_error: "Terjadi kesalahan saat memeriksa jadwal. Coba lagi.",
-    };
+$(document).ready(function() {
+    // ===========================================
+    // FUNGSI UNTUK USER YANG SUDAH LOGIN
+    // ===========================================
+    @auth
+        // Hapus temp cart untuk user yang sudah login
+        localStorage.removeItem('tempCart');
 
-    function getTempCart() {
-        try {
-            const cart = localStorage.getItem('tempCart');
-            return cart ? JSON.parse(cart) : {};
-        } catch (e) {
-            console.error("Failed to parse tempCart from localStorage", e);
-            return {};
-        }
-    }
-
-    function saveTempCart(cart) {
-        try {
-            localStorage.setItem('tempCart', JSON.stringify(cart));
-        } catch (e) {
-            console.error("Failed to save tempCart to localStorage", e);
-        }
-    }
-
-    function calculateSummary(cartItems, paymentType) {
-        let subtotal = 0;
-        let totalDiscount = 0;
-        let grandTotal = 0;
-
-        for (const id in cartItems) {
-            const item = cartItems[id];
-            const itemSubtotal = (parseFloat(item.price) || 0) + (parseFloat(item.hourly_price) || 0) * (parseInt(item.hours) || 0);
-            const discountAmount = (itemSubtotal * (parseFloat(item.discount_percentage) || 0)) / 100;
-            const finalItemPrice = itemSubtotal - discountAmount;
-
-            subtotal += itemSubtotal;
-            totalDiscount += discountAmount;
-            grandTotal += finalItemPrice;
+        // Update ringkasan keranjang
+        function updateSummary() {
+            let selectedIds = [];
+            $('.item-checkbox:checked').each(function() {
+                selectedIds.push($(this).val());
+            });
+            let selectedPaymentType = $('#payment-type-select').val();
+            
+            $.ajax({
+                url: '{{ route("front.cart.updateSummary") }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    ids: selectedIds,
+                    payment_type: selectedPaymentType
+                },
+                success: function(response) {
+                    $('#summary-subtotal').text('Rp ' + response.subtotal);
+                    $('#summary-discount').text('- Rp ' + response.totalDiscount);
+                    $('#summary-grandtotal').text('Rp ' + response.grandTotal);
+                    $('#summary-totalpay').text('Rp ' + response.totalToPayNow);
+                    $('button[type="submit"]').prop('disabled', selectedIds.length === 0);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating summary:', error);
+                }
+            });
         }
 
-        let totalToPayNow = grandTotal;
-        if (paymentType === 'dp') {
-            totalToPayNow = grandTotal * 0.5;
+        // Event handlers untuk user yang login
+        $('.item-checkbox, #select-all, #payment-type-select').on('change', function() {
+            if ($(this).is('#select-all')) {
+                $('.item-checkbox').prop('checked', this.checked);
+            } else {
+                $('#select-all').prop('checked', $('.item-checkbox:checked').length === $('.item-checkbox').length);
+            }
+            updateSummary();
+        });
+
+        $('.remove-btn').on('click', function() {
+            let itemId = $(this).data('id');
+            Swal.fire({
+                title: 'Hapus Item?',
+                text: "Apakah Anda yakin ingin menghapus item ini dari keranjang?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#remove-item-id').val(itemId);
+                    $('#remove-item-form').submit();
+                }
+            });
+        });
+
+        // Update awal
+        updateSummary();
+
+    @else
+        // ===========================================
+        // FUNGSI UNTUK GUEST USER (TEMP CART)
+        // ===========================================
+        
+        // Fungsi untuk temp cart
+        function getTempCart() {
+            try {
+                const cart = localStorage.getItem('tempCart');
+                return cart ? JSON.parse(cart) : {};
+            } catch (e) {
+                console.error("Error parsing temp cart:", e);
+                return {};
+            }
         }
 
-        return {
-            subtotal: subtotal.toLocaleString('id-ID'),
-            totalDiscount: totalDiscount.toLocaleString('id-ID'),
-            grandTotal: grandTotal.toLocaleString('id-ID'),
-            totalToPayNow: totalToPayNow.toLocaleString('id-ID')
-        };
-    }
+        function saveTempCart(cart) {
+            try {
+                localStorage.setItem('tempCart', JSON.stringify(cart));
+            } catch (e) {
+                console.error("Error saving temp cart:", e);
+            }
+        }
 
-    function renderTempCart(cartItems) {
-        const container = $('#temp-cart-display');
-        container.empty();
+        // Fetch pricing dari server
+        async function fetchServicePricing(serviceIds) {
+            try {
+                const response = await fetch('{{ route("front.service.pricing") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        service_ids: serviceIds
+                    })
+                });
 
-        if (Object.keys(cartItems).length === 0) {
-            container.html(`
-                <div class="text-center py-5" data-aos="zoom-in">
-                    <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
-                    <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
-                    <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
-                    <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
+                const data = await response.json();
+                return data.success ? data.pricing : {};
+            } catch (error) {
+                console.error('Error fetching service pricing:', error);
+                return {};
+            }
+        }
+
+        // Hitung summary dengan pricing yang benar
+        function calculateSummary(cartItems, paymentType, pricingData = {}) {
+            let subtotal = 0;
+            let totalDiscount = 0;
+            let grandTotal = 0;
+
+            for (const [id, item] of Object.entries(cartItems)) {
+                if (id === 'free-consultation') continue;
+                
+                let basePrice = 0;
+                let hourlyPrice = 0;
+                
+                if (pricingData[id]) {
+                    basePrice = parseFloat(pricingData[id].price) || 0;
+                    hourlyPrice = parseFloat(pricingData[id].hourly_price) || 0;
+                } else {
+                    basePrice = parseFloat(item.price) || 0;
+                    hourlyPrice = parseFloat(item.hourly_price) || 0;
+                }
+                
+                const hours = parseInt(item.hours) || 1;
+                const itemSubtotal = basePrice + (hourlyPrice * hours);
+                const discountAmount = (itemSubtotal * (parseFloat(item.discount_percentage) || 0)) / 100;
+                const finalItemPrice = itemSubtotal - discountAmount;
+
+                subtotal += itemSubtotal;
+                totalDiscount += discountAmount;
+                grandTotal += finalItemPrice;
+            }
+
+            let totalToPayNow = grandTotal;
+            if (paymentType === 'dp') {
+                totalToPayNow = grandTotal * 0.5;
+            }
+
+            return {
+                subtotal: subtotal.toLocaleString('id-ID'),
+                totalDiscount: totalDiscount.toLocaleString('id-ID'),
+                grandTotal: grandTotal.toLocaleString('id-ID'),
+                totalToPayNow: totalToPayNow.toLocaleString('id-ID')
+            };
+        }
+
+        // Render temp cart
+        async function renderTempCart(cartItems) {
+            const container = $('#temp-cart-display');
+            container.empty();
+
+            if (Object.keys(cartItems).length === 0) {
+                container.html(`
+                    <div class="text-center py-5" data-aos="zoom-in">
+                        <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
+                        <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
+                        <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
+                        <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
+                    </div>
+                `);
+                AOS.refresh();
+                return;
+            }
+
+            // Fetch pricing data
+            const serviceIds = Object.keys(cartItems);
+            const pricingData = await fetchServicePricing(serviceIds);
+
+            // Build cart display
+            const cartHeader = `
+                <div class="text-center mb-5 cart-header" data-aos="fade-down">
+                    <h1 class="section-title">Keranjang Belanja Anda</h1>
+                    <p class="lead text-muted">Satu langkah lagi untuk menjadi versi terbaik Anda.</p>
                 </div>
-            `);
-            // Re-initialize AOS for the newly added empty cart message
-            AOS.refresh();
-            return;
-        }
+                <div class="alert alert-info" role="alert" data-aos="fade-in" data-aos-delay="100">
+                    <h5 class="alert-heading">Keranjang Sementara</h5>
+                    <p>Layanan yang Anda pilih disimpan sementara. <a href="{{ route('login') }}">Login</a> untuk melanjutkan pembayaran.</p>
+                </div>
+            `;
 
-        const cartHeader = `
-            <div class="text-center mb-5 cart-header" data-aos="fade-down">
-                <h1 class="section-title">Keranjang Belanja Anda</h1>
-                <p class="lead text-muted">Satu langkah lagi untuk menjadi versi terbaik Anda.</p>
-            </div>
-            <div class="alert alert-info" role="alert" data-aos="fade-in" data-aos-delay="100">
-                <h5 class="alert-heading">Keranjang Sementara</h5>
-                <p>Layanan yang Anda pilih saat ini disimpan secara sementara di perangkat Anda. <a href="{{ route('login') }}">Silakan login</a> untuk menyimpannya secara permanen dan melanjutkan ke pembayaran.</p>
-            </div>
-        `;
+            container.append(cartHeader);
 
-        container.append(cartHeader);
+            const row = $('<div class="row g-4 g-lg-5"></div>');
+            const cartListCol = $('<div class="col-lg-7"></div>');
 
-        const row = $('<div class="row g-4 g-lg-5"></div>');
-        const cartListCol = $('<div class="col-lg-7"></div>');
+            // Generate cart items
+            Object.keys(cartItems).forEach((serviceId, index) => {
+                const item = cartItems[serviceId];
+                const isFree = serviceId === 'free-consultation';
+                
+                let basePrice = 0, hourlyPrice = 0, serviceTitle = 'Layanan';
+                let serviceThumbnail = 'https://placehold.co/60x60/cccccc/ffffff?text=No+Image';
+                
+                if (pricingData[serviceId]) {
+                    basePrice = pricingData[serviceId].price;
+                    hourlyPrice = pricingData[serviceId].hourly_price;
+                    serviceTitle = pricingData[serviceId].title;
+                    serviceThumbnail = pricingData[serviceId].thumbnail;
+                }
+                
+                const hours = parseInt(item.hours) || 1;
+                const itemSubtotal = isFree ? 0 : basePrice + (hourlyPrice * hours);
+                const discountAmount = isFree ? 0 : (itemSubtotal * (parseFloat(item.discount_percentage) || 0)) / 100;
+                const finalItemPrice = itemSubtotal - discountAmount;
 
-        let checkedItems = [];
-
-        Object.keys(cartItems).forEach((serviceId, index) => {
-            const item = cartItems[serviceId];
-            checkedItems.push(serviceId);
-
-            const itemSubtotal = (parseFloat(item.price) || 0) + (parseFloat(item.hourly_price) || 0) * (parseInt(item.hours) || 0);
-            const discountAmount = (itemSubtotal * (parseFloat(item.discount_percentage) || 0)) / 100;
-            const finalItemPrice = itemSubtotal - discountAmount;
-
-            const itemHtml = `
-                <div class="card mb-3 cart-item-card" data-service-id="${serviceId}" data-aos="fade-right" data-aos-delay="${index * 100}">
-                    <div class="card-body p-4">
-                        <div class="row">
-                            <div class="col-12 col-md-7 mb-4 mb-md-0">
-                                <div class="d-flex align-items-start">
-                                    <div class="form-check me-3 pt-1">
-                                        <input class="form-check-input item-checkbox-temp" type="checkbox" data-id="${serviceId}" checked>
+                const itemHtml = `
+                    <div class="card mb-3 cart-item-card" data-service-id="${serviceId}" data-aos="fade-right" data-aos-delay="${index * 100}">
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-12 col-md-7 mb-4 mb-md-0">
+                                    <div class="d-flex align-items-start">
+                                        <div class="position-relative me-3">
+                                            <img src="${serviceThumbnail}" alt="${serviceTitle}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">
+                                                ${serviceTitle}
+                                                ${isFree ? '<span class="free-consultation-badge">GRATIS</span>' : ''}
+                                            </h5>
+                                            <ul class="item-details-list">
+                                                <li><i class="bi bi-calendar-check"></i>${new Date(item.booked_date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'})}, ${item.booked_time} ${isFree ? '(1 jam)' : '(' + hours + ' jam)'}</li>
+                                                <li><i class="bi bi-camera-video"></i>${item.session_type} & ${item.contact_preference === 'chat_only' ? 'Chat' : 'Chat & Call'}</li>
+                                                ${item.offline_address ? `<li><i class="bi bi-geo-alt"></i>${item.offline_address}</li>` : ''}
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <img src="{{ asset('storage/') }}/${item.service_thumbnail}" alt="${item.service_title}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
-                                    <div class="flex-grow-1">
-                                        <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">${item.service_title}</h5>
-                                        <ul class="item-details-list">
-                                            <li><i class="bi bi-calendar-check"></i>${new Date(item.booked_date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'})}, ${item.booked_time}</li>
-                                            <li><i class="bi bi-camera-video"></i>${item.session_type} & ${item.contact_preference === 'chat_only' ? 'Chat' : 'Chat & Call'}</li>
-                                            ${item.offline_address ? `<li><i class="bi bi-geo-alt"></i>${item.offline_address}</li>` : ''}
+                                </div>
+                                <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
+                                    ${isFree ? `
+                                        <ul class="list-group list-group-flush price-details-list small">
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span class="text-muted">Harga Dasar:</span>
+                                                <span class="text-success fw-bold">GRATIS</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span class="text-muted">Durasi:</span>
+                                                <span class="text-muted">1 Jam</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span class="text-muted">Subtotal:</span>
+                                                <span class="text-success">Rp 0</span>
+                                            </li>
                                         </ul>
+                                        <hr class="my-2" style="border-color: var(--brand-border);">
+                                        <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                            <span>Total Item:</span>
+                                            <span>Rp 0</span>
+                                        </p>
+                                    ` : `
+                                        <ul class="list-group list-group-flush price-details-list small">
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span class="text-muted">Harga Dasar:</span>
+                                                <span class="text-muted">Rp ${basePrice.toLocaleString('id-ID')}</span>
+                                            </li>
+                                            ${hourlyPrice > 0 && hours > 0 ? `
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span class="text-muted">Per Jam (${hours} jam):</span>
+                                                <span class="text-muted">Rp ${(hourlyPrice * hours).toLocaleString('id-ID')}</span>
+                                            </li>` : ''}
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span class="text-muted">Subtotal:</span>
+                                                <span class="text-muted">Rp ${itemSubtotal.toLocaleString('id-ID')}</span>
+                                            </li>
+                                            ${discountAmount > 0 ? `
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span style="color: var(--brand-danger);">Diskon:</span>
+                                                <span style="color: var(--brand-danger);">- Rp ${discountAmount.toLocaleString('id-ID')}</span>
+                                            </li>` : ''}
+                                        </ul>
+                                        <hr class="my-2" style="border-color: var(--brand-border);">
+                                        <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                            <span>Total Item:</span>
+                                            <span>Rp ${finalItemPrice.toLocaleString('id-ID')}</span>
+                                        </p>
+                                    `}
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        ${!isFree ? '<a href="{{ route("front.layanan") }}" class="btn btn-brand-outline">Pesan Lagi</a>' : '<span class="text-muted small">Konsultasi Gratis</span>'}
+                                        <button type="button" class="btn btn-link p-0 remove-btn-temp" data-id="${serviceId}" title="Hapus item">
+                                            <i class="bi bi-trash3-fill fs-5"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
-                                <ul class="list-group list-group-flush price-details-list small">
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span class="text-muted">Harga Dasar:</span>
-                                        <span class="text-muted">Rp ${ (parseFloat(item.price) || 0).toLocaleString('id-ID') }</span>
-                                    </li>
-                                    ${item.hours > 0 ? `
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span class="text-muted">Per Jam (${item.hours} jam):</span>
-                                        <span class="text-muted">Rp ${ (parseFloat(item.hourly_price) * item.hours).toLocaleString('id-ID') }</span>
-                                    </li>` : ''}
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span class="text-muted">Subtotal:</span>
-                                        <span class="text-muted">Rp ${ itemSubtotal.toLocaleString('id-ID') }</span>
-                                    </li>
-                                    ${discountAmount > 0 ? `
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span style="color: var(--brand-danger);">Diskon:</span>
-                                        <span style="color: var(--brand-danger);">- Rp ${ discountAmount.toLocaleString('id-ID') }</span>
-                                    </li>` : ''}
-                                </ul>
-                                <hr class="my-2" style="border-color: var(--brand-border);">
-                                <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                    <span>Total Item:</span>
-                                    <span>Rp ${ finalItemPrice.toLocaleString('id-ID') }</span>
-                                </p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
-                                    <button type="button" class="btn btn-link p-0 remove-btn-temp" data-id="${serviceId}" title="Hapus item">
-                                        <i class="bi bi-trash3-fill fs-5"></i>
-                                    </button>
-                                </div>
+                        </div>
+                    </div>
+                `;
+                cartListCol.append(itemHtml);
+            });
+
+            // Build summary
+            const summary = calculateSummary(cartItems, 'full_payment', pricingData);
+            const summaryCol = `
+                <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
+                    <div class="summary-card sticky-summary">
+                        <div class="card-body p-4">
+                            <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">Ringkasan Pesanan</h4>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal Semua Item</span>
+                                <span class="text-muted" id="summary-subtotal-temp">Rp ${summary.subtotal}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted">Total Diskon</span>
+                                <span class="text-danger" id="summary-discount-temp">- Rp ${summary.totalDiscount}</span>
+                            </div>
+                            <div class="d-flex justify-content-between fw-bold fs-5 mb-3" style="color: var(--brand-text);">
+                                <span>Grand Total Akhir</span>
+                                <span id="summary-grandtotal-temp">Rp ${summary.grandTotal}</span>
+                            </div>
+                            <hr style="border-color: var(--brand-border);">
+                            <div class="mb-3">
+                                <label for="payment-type-select-temp" class="form-label fw-bold" style="color: var(--brand-text);">Pilih Tipe Pembayaran</label>
+                                <select class="form-select" id="payment-type-select-temp">
+                                    <option value="full_payment" selected>Pembayaran Penuh</option>
+                                    <option value="dp">DP (50%)</option>
+                                </select>
+                            </div>
+                            <hr style="border-color: var(--brand-border);">
+                            <div class="d-flex justify-content-between fw-bolder fs-4 mt-3" style="color: var(--brand-primary);">
+                                <span style="white-space: nowrap; margin-right: 1rem;">Total Bayar Sekarang</span>
+                                <span id="summary-totalpay-temp">Rp ${summary.totalToPayNow}</span>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <a href="{{ route('login') }}" class="btn btn-checkout">Login untuk Checkout</a>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
-            cartListCol.append(itemHtml);
-        });
 
-        const summary = calculateSummary(cartItems, 'full_payment');
-        const summaryCol = `
-            <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
-                <div class="summary-card sticky-summary">
-                    <div class="card-body p-4">
-                        <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">Ringkasan Pesanan</h4>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Subtotal Semua Item</span>
-                            <span class="text-muted" id="summary-subtotal-temp">Rp ${summary.subtotal}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span class="text-muted">Total Diskon</span>
-                            <span class="text-danger" id="summary-discount-temp">- Rp ${summary.totalDiscount}</span>
-                        </div>
-                        <div class="d-flex justify-content-between fw-bold fs-5 mb-3" style="color: var(--brand-text);">
-                            <span>Grand Total Akhir</span>
-                            <span id="summary-grandtotal-temp">Rp ${summary.grandTotal}</span>
-                        </div>
-                        <hr style="border-color: var(--brand-border);">
-                        <div class="mb-3">
-                            <label for="payment-type-select-temp" class="form-label fw-bold" style="color: var(--brand-text);">Pilih Tipe Pembayaran</label>
-                            <select class="form-select" id="payment-type-select-temp">
-                                <option value="full_payment" selected>Pembayaran Penuh</option>
-                                <option value="dp">DP (50%)</option>
-                            </select>
-                        </div>
-                        <hr style="border-color: var(--brand-border);">
-                        <div class="d-flex justify-content-between fw-bolder fs-4 mt-3" style="color: var(--brand-primary);">
-                            <span style="white-space: nowrap; margin-right: 1rem;">Total Bayar Sekarang</span>
-                            <span id="summary-totalpay-temp">Rp ${summary.totalToPayNow}</span>
-                        </div>
-                        <div class="d-grid mt-4">
-                            <a href="{{ route('login') }}" class="btn btn-checkout">Login untuk Checkout</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        row.append(cartListCol).append(summaryCol);
-        container.append(row);
+            row.append(cartListCol).append(summaryCol);
+            container.append(row);
+            AOS.refresh();
 
-        // Re-initialize AOS for all the newly added elements
-        AOS.refresh();
+            // Event handlers untuk temp cart
+            $('#payment-type-select-temp').on('change', function() {
+                const tempCart = getTempCart();
+                const summary = calculateSummary(tempCart, $(this).val(), pricingData);
+                $('#summary-subtotal-temp').text('Rp ' + summary.subtotal);
+                $('#summary-discount-temp').text('- Rp ' + summary.totalDiscount);
+                $('#summary-grandtotal-temp').text('Rp ' + summary.grandTotal);
+                $('#summary-totalpay-temp').text('Rp ' + summary.totalToPayNow);
+            });
 
-        $('#payment-type-select-temp').on('change', function() {
-            const tempCart = getTempCart();
-            const summary = calculateSummary(tempCart, $(this).val());
-            $('#summary-subtotal-temp').text('Rp ' + summary.subtotal);
-            $('#summary-discount-temp').text('- Rp ' + summary.totalDiscount);
-            $('#summary-grandtotal-temp').text('Rp ' + summary.grandTotal);
-            $('#summary-totalpay-temp').text('Rp ' + summary.totalToPayNow);
-        });
-
-        $('.remove-btn-temp').on('click', function() {
-            const serviceId = $(this).data('id');
-            const tempCart = getTempCart();
-            delete tempCart[serviceId];
-            saveTempCart(tempCart);
-            renderTempCart(tempCart);
-        });
-    }
-
-    $(document).ready(function() {
-        @auth
-            localStorage.removeItem('tempCart');
-
-            function updateSummary() {
-                let selectedIds = [];
-                $('.item-checkbox:checked').each(function() {
-                    selectedIds.push($(this).val());
-                });
-                let selectedPaymentType = $('#payment-type-select').val();
-                $.ajax({
-                    url: '{{ route("front.cart.updateSummary") }}',
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        ids: selectedIds,
-                        payment_type: selectedPaymentType
-                    },
-                    success: function(response) {
-                        $('#summary-subtotal').text('Rp ' + response.subtotal);
-                        $('#summary-discount').text('- Rp ' + response.totalDiscount);
-                        $('#summary-grandtotal').text('Rp ' + response.grandTotal);
-                        $('#summary-totalpay').text('Rp ' + response.totalToPayNow);
-                        $('button[type="submit"]').prop('disabled', selectedIds.length === 0);
+            $('.remove-btn-temp').on('click', function() {
+                const serviceId = $(this).data('id');
+                Swal.fire({
+                    title: 'Hapus Item?',
+                    text: "Apakah Anda yakin ingin menghapus item ini dari keranjang?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const tempCart = getTempCart();
+                        delete tempCart[serviceId];
+                        saveTempCart(tempCart);
+                        renderTempCart(tempCart);
+                        Swal.fire('Dihapus!', 'Item telah dihapus dari keranjang.', 'success');
                     }
                 });
-            }
-            $('.item-checkbox, #select-all, #payment-type-select').on('change', function() {
-                if ($(this).is('#select-all')) {
-                    $('.item-checkbox').prop('checked', this.checked);
-                } else {
-                    $('#select-all').prop('checked', $('.item-checkbox:checked').length === $('.item-checkbox').length);
-                }
-                updateSummary();
             });
-            $('.remove-btn').on('click', function() {
-                let itemId = $(this).data('id');
-                $('#remove-item-id').val(itemId);
-                $('#remove-item-form').submit();
-            });
-            updateSummary();
-        @else
-            const tempCart = getTempCart();
-            renderTempCart(tempCart);
-        @endauth
-    });
+        }
+
+        // Render temp cart untuk guest user
+        const tempCart = getTempCart();
+        renderTempCart(tempCart);
+    @endauth
+});
 </script>
 @endpush

@@ -35,7 +35,10 @@ class CartItem extends Model
         'item_subtotal',
         'discount_amount',
         'final_item_price',
-        'total_to_pay', // Tetap ada, tapi logikanya akan sederhana (harga penuh)
+        'total_to_pay',
+        'service_title', // Add virtual attributes for free consultation
+        'service_description',
+        'service_thumbnail',
     ];
 
     /**
@@ -70,6 +73,12 @@ class CartItem extends Model
      */
     public function getItemSubtotalAttribute(): float
     {
+        // Handle free consultation
+        if ($this->service_id === 'free-consultation') {
+            return 0.0;
+        }
+
+        // For regular services
         return (float)$this->price + ((float)$this->hourly_price * (int)$this->hours);
     }
 
@@ -81,6 +90,11 @@ class CartItem extends Model
      */
     public function getDiscountAmountAttribute(): float
     {
+        // Free consultation has no discount
+        if ($this->service_id === 'free-consultation') {
+            return 0.0;
+        }
+
         $itemDiscount = 0.0;
 
         // Pastikan ada kode referral dan relasi referralCode sudah dimuat
@@ -122,5 +136,56 @@ class CartItem extends Model
     public function getTotalToPayAttribute(): float
     {
         return $this->final_item_price;
+    }
+
+    // Scopes untuk konsultasi gratis
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
+
+    public function scopeFreeConsultation($query)
+    {
+        return $query->where('service_id', 'free-consultation');
+    }
+
+    public function scopeRegularServices($query)
+    {
+        return $query->where('service_id', '!=', 'free-consultation');
+    }
+
+    // Helper Methods untuk konsultasi gratis
+    public function isFreeConsultation()
+    {
+        return $this->service_id === 'free-consultation';
+    }
+
+    public function getServiceTitleAttribute()
+    {
+        if ($this->isFreeConsultation()) {
+            return 'Konsultasi Gratis';
+        }
+
+        return $this->service ? $this->service->title : 'Layanan Tidak Ditemukan';
+    }
+
+    public function getServiceDescriptionAttribute()
+    {
+        if ($this->isFreeConsultation()) {
+            return 'Sesi konsultasi gratis 1 jam untuk pengguna baru';
+        }
+
+        return $this->service ? $this->service->short_description : '';
+    }
+
+    public function getServiceThumbnailAttribute()
+    {
+        if ($this->isFreeConsultation()) {
+            return 'https://placehold.co/100x100/D4AF37/ffffff?text=Gratis';
+        }
+
+        return $this->service && $this->service->thumbnail 
+            ? asset('storage/' . $this->service->thumbnail)
+            : 'https://placehold.co/100x100/cccccc/ffffff?text=No+Image';
     }
 }

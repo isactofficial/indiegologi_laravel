@@ -61,6 +61,9 @@ Route::get('/search', [FrontController::class, 'search'])->name('search.results'
 // Cart route (public access)
 Route::get('/cart', [FrontController::class, 'viewCart'])->name('front.cart.view');
 
+// NEW: Service pricing route for guest cart pricing
+Route::post('/get-service-pricing', [FrontController::class, 'getServicePricing'])->name('front.service.pricing');
+
 // ======================================================================
 // Rute Chatbot BOTMAN
 // ======================================================================
@@ -107,6 +110,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/add', [FrontController::class, 'addToCart'])->name('add');
         Route::post('/remove', [FrontController::class, 'removeFromCart'])->name('remove');
         Route::post('/update-summary', [FrontController::class, 'updateCartSummary'])->name('updateSummary');
+        // Transfer temp cart route for free consultation support
+        Route::post('/transfer-temp-cart', [FrontController::class, 'transferTempCart'])->name('transfer-temp');
     });
 
     // Checkout Route
@@ -148,7 +153,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('consultation-bookings/{consultationBooking}/download-pdf', [ConsultationBookingController::class, 'downloadPdf'])->name('consultation-bookings.download-pdf');
 
     // Admin can also manage comments
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('admin.comments.destroy');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('admin.admin.comments.destroy');
 });
 
 // ======================================================================

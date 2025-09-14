@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Login - Indiegologi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -27,7 +28,7 @@
             justify-content: center;
             color: var(--indiegologi-dark-text);
             padding: 2rem 0;
-            overflow-x: hidden; /* Mencegah scroll horizontal karena animasi */
+            overflow-x: hidden;
         }
 
         .card {
@@ -112,12 +113,23 @@
             box-shadow: 0 4px 15px rgba(12, 44, 90, 0.2);
             transition: all 0.3s ease;
             letter-spacing: 0.03em;
+            position: relative;
         }
 
         .btn-primary:hover {
             background-color: #082142;
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(12, 44, 90, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background-color: #6c757d;
+            transform: none;
+        }
+
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
         }
 
         .alert {
@@ -189,7 +201,7 @@
             color: inherit;
         }
 
-        /* [ANIMASI] CSS untuk animasi staggered fade-in */
+        /* Animasi CSS untuk animasi staggered fade-in */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -201,10 +213,9 @@
             }
         }
         .animate-item {
-            opacity: 0; /* Sembunyikan elemen secara default */
+            opacity: 0;
             animation: fadeInUp 0.6s ease-out forwards;
         }
-        /* Memberi jeda (delay) yang berbeda pada setiap elemen */
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
@@ -213,7 +224,6 @@
         .delay-6 { animation-delay: 0.6s; }
         .delay-7 { animation-delay: 0.7s; }
         .delay-8 { animation-delay: 0.8s; }
-
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center py-4 py-sm-5">
@@ -227,7 +237,7 @@
                             <i class="fas fa-heart logo-icon"></i>
                         </div>
                         <h1 class="h3 fw-bold mb-1">Selamat Datang di Indiegologi</h1>
-                        <p class="text-muted mb-0">Masuk ke akun Anda dan **mulai kembangkan ide brilian**!</p>
+                        <p class="text-muted mb-0">Masuk ke akun Anda dan <strong>mulai kembangkan ide brilian</strong>!</p>
                     </div>
 
                     @if(session('success'))
@@ -254,7 +264,8 @@
                                 </span>
                                 <input type="email" name="email" id="email" required
                                        class="form-control border-start-0"
-                                       placeholder="nama@indiegologi.com">
+                                       placeholder="nama@indiegologi.com"
+                                       value="{{ old('email') }}">
                             </div>
                         </div>
 
@@ -277,8 +288,13 @@
                         </div>
 
                         <div class="animate-item delay-4">
-                            <button type="submit" class="btn btn-primary w-100 mb-4">
-                                <i class="fas fa-sign-in-alt me-2"></i> Masuk Akun
+                            <button type="submit" class="btn btn-primary w-100 mb-4" id="login-button">
+                                <span id="login-text">
+                                    <i class="fas fa-sign-in-alt me-2"></i> Masuk Akun
+                                </span>
+                                <span id="login-loading" class="d-none">
+                                    <span class="spinner-border spinner-border-sm me-2"></span> Memproses...
+                                </span>
                             </button>
                         </div>
                         
@@ -317,14 +333,92 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const loginForm = document.getElementById('login-form');
+        const loginButton = document.getElementById('login-button');
+        const loginText = document.getElementById('login-text');
+        const loginLoading = document.getElementById('login-loading');
+        
+        // Function to get temp cart item count
+        function getTempCartItemCount() {
+            try {
+                const tempCart = localStorage.getItem('tempCart');
+                if (tempCart && tempCart !== '{}') {
+                    const cartData = JSON.parse(tempCart);
+                    return Object.keys(cartData).length;
+                }
+            } catch (error) {
+                console.error('Error counting temp cart items:', error);
+            }
+            return 0;
+        }
+
+        // Handle form submission
         if (loginForm) {
             loginForm.addEventListener('submit', function(event) {
+                // Show loading state
+                loginButton.disabled = true;
+                loginText.classList.add('d-none');
+                loginLoading.classList.remove('d-none');
+                
+                // Get temp cart data from localStorage
                 const tempCartData = localStorage.getItem('tempCart');
-                if (tempCartData) {
-                    const tempCartInput = document.getElementById('temp-cart-input');
-                    tempCartInput.value = tempCartData;
+                
+                if (tempCartData && tempCartData !== '{}') {
+                    try {
+                        // Validate and count items
+                        const cartObj = JSON.parse(tempCartData);
+                        const itemCount = Object.keys(cartObj).length;
+                        
+                        if (itemCount > 0) {
+                            // Set temp cart data to hidden input
+                            const tempCartInput = document.getElementById('temp-cart-input');
+                            tempCartInput.value = tempCartData;
+                            
+                            console.log(`Preparing to transfer ${itemCount} items from temp cart`);
+                            
+                            // Check if free consultation exists
+                            if (cartObj['free-consultation']) {
+                                console.log('Free consultation detected in temp cart');
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error processing temp cart data:', error);
+                    }
                 }
+
+                // Reset loading state after 10 seconds (fallback)
+                setTimeout(() => {
+                    if (loginButton.disabled) {
+                        loginButton.disabled = false;
+                        loginText.classList.remove('d-none');
+                        loginLoading.classList.add('d-none');
+                    }
+                }, 10000);
             });
+        }
+
+        // Handle page visibility change to reset button if needed
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && loginButton && loginButton.disabled) {
+                // Reset button state when page becomes visible again
+                setTimeout(() => {
+                    loginButton.disabled = false;
+                    loginText.classList.remove('d-none');
+                    loginLoading.classList.add('d-none');
+                }, 1000);
+            }
+        });
+
+        // Clear temp cart on successful login (based on URL parameters)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('login_success') === '1' || urlParams.get('cart_transferred') === '1') {
+            localStorage.removeItem('tempCart');
+            console.log('Temp cart cleared based on URL parameter');
+        }
+
+        // Log temp cart status for debugging
+        const tempCartCount = getTempCartItemCount();
+        if (tempCartCount > 0) {
+            console.log(`Current temp cart has ${tempCartCount} items`);
         }
     });
 </script>
