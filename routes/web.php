@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\SketchController;
 use App\Http\Controllers\Admin\ReferralCodeController;
 use App\Http\Controllers\Admin\ConsultationServiceController;
 use App\Http\Controllers\Admin\ConsultationBookingController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
@@ -151,6 +152,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Consultation Booking management
     Route::resource('consultation-bookings', ConsultationBookingController::class);
     Route::get('consultation-bookings/{consultationBooking}/download-pdf', [ConsultationBookingController::class, 'downloadPdf'])->name('consultation-bookings.download-pdf');
+
+    // Testimonials management - ROUTE BARU YANG DITAMBAHKAN
+    Route::resource('testimonials', TestimonialController::class);
+    Route::put('/testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
 
     // Admin can also manage comments
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('admin.admin.comments.destroy');
