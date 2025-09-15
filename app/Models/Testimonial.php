@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Testimonial extends Model
 {
@@ -11,7 +12,7 @@ class Testimonial extends Model
 
     protected $fillable = [
         'name',
-        'age', 
+        'age',
         'occupation',
         'quote',
         'image',
@@ -25,6 +26,20 @@ class Testimonial extends Model
         'sort_order' => 'integer'
     ];
 
+    protected function age(): Attribute
+    {
+        return Attribute::make(
+            get: function ($originalAge) {
+                if (!$this->created_at) {
+                    return $originalAge;
+                }
+                $yearsPassed = now()->year - $this->created_at->year;
+
+                return $originalAge + $yearsPassed;
+            }
+        );
+    }
+    
     /**
      * Scope untuk mendapatkan testimoni yang aktif
      */
