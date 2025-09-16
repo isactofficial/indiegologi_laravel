@@ -201,6 +201,20 @@
             color: inherit;
         }
 
+        /* Cart notification badge */
+        .cart-notification {
+            background-color: rgba(12, 44, 90, 0.1);
+            border-left: 4px solid var(--indiegologi-primary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .cart-notification i {
+            color: var(--indiegologi-primary);
+        }
+
         /* Animasi CSS untuk animasi staggered fade-in */
         @keyframes fadeInUp {
             from {
@@ -238,6 +252,12 @@
                         </div>
                         <h1 class="h3 fw-bold mb-1">Selamat Datang di Indiegologi</h1>
                         <p class="text-muted mb-0">Masuk ke akun Anda dan <strong>mulai kembangkan ide brilian</strong>!</p>
+                    </div>
+
+                    <!-- Cart notification (will be shown by JavaScript if cart has items) -->
+                    <div id="cart-notification" class="cart-notification animate-item delay-2" style="display: none;">
+                        <i class="fas fa-shopping-cart me-2"></i>
+                        <span id="cart-message">Anda memiliki <strong id="cart-count">0</strong> item di keranjang yang akan dipindahkan ke akun Anda setelah login.</span>
                     </div>
 
                     @if(session('success'))
@@ -331,96 +351,192 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const loginForm = document.getElementById('login-form');
-        const loginButton = document.getElementById('login-button');
-        const loginText = document.getElementById('login-text');
-        const loginLoading = document.getElementById('login-loading');
-        
-        // Function to get temp cart item count
-        function getTempCartItemCount() {
-            try {
-                const tempCart = localStorage.getItem('tempCart');
-                if (tempCart && tempCart !== '{}') {
-                    const cartData = JSON.parse(tempCart);
-                    return Object.keys(cartData).length;
-                }
-            } catch (error) {
-                console.error('Error counting temp cart items:', error);
-            }
-            return 0;
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('login-form');
+    const loginButton = document.getElementById('login-button');
+    const loginText = document.getElementById('login-text');
+    const loginLoading = document.getElementById('login-loading');
+    const cartNotification = document.getElementById('cart-notification');
+    const cartCountElement = document.getElementById('cart-count');
+    const cartMessage = document.getElementById('cart-message');
+    
+    // Function to get temp cart data
+    function getTempCart() {
+        try {
+            const tempCart = localStorage.getItem('tempCart');
+            return tempCart ? JSON.parse(tempCart) : {};
+        } catch (error) {
+            console.error('Error getting temp cart:', error);
+            return {};
         }
+    }
+    
+    // Function to analyze temp cart contents with enhanced support for free consultation
+    function analyzeTempCart() {
+        const tempCart = getTempCart();
+        const analysis = {
+            total: 0,
+            regular_services: 0,
+            legacy_free_consultation: 0,
+            new_free_consultation: 0,
+            details: []
+        };
 
-        // Handle form submission
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(event) {
-                // Show loading state
-                loginButton.disabled = true;
-                loginText.classList.add('d-none');
-                loginLoading.classList.remove('d-none');
-                
-                // Get temp cart data from localStorage
-                const tempCartData = localStorage.getItem('tempCart');
-                
-                if (tempCartData && tempCartData !== '{}') {
-                    try {
-                        // Validate and count items
-                        const cartObj = JSON.parse(tempCartData);
-                        const itemCount = Object.keys(cartObj).length;
-                        
-                        if (itemCount > 0) {
-                            // Set temp cart data to hidden input
-                            const tempCartInput = document.getElementById('temp-cart-input');
-                            tempCartInput.value = tempCartData;
-                            
-                            console.log(`Preparing to transfer ${itemCount} items from temp cart`);
-                            
-                            // Check if free consultation exists
-                            if (cartObj['free-consultation']) {
-                                console.log('Free consultation detected in temp cart');
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error processing temp cart data:', error);
-                    }
-                }
-
-                // Reset loading state after 10 seconds (fallback)
-                setTimeout(() => {
-                    if (loginButton.disabled) {
-                        loginButton.disabled = false;
-                        loginText.classList.remove('d-none');
-                        loginLoading.classList.add('d-none');
-                    }
-                }, 10000);
-            });
-        }
-
-        // Handle page visibility change to reset button if needed
-        document.addEventListener('visibilitychange', function() {
-            if (!document.hidden && loginButton && loginButton.disabled) {
-                // Reset button state when page becomes visible again
-                setTimeout(() => {
-                    loginButton.disabled = false;
-                    loginText.classList.remove('d-none');
-                    loginLoading.classList.add('d-none');
-                }, 1000);
+        Object.keys(tempCart).forEach(key => {
+            const item = tempCart[key];
+            analysis.total++;
+            
+            if (key === 'free-consultation') {
+                analysis.legacy_free_consultation++;
+                analysis.details.push({
+                    type: 'legacy_free_consultation',
+                    key: key,
+                    description: 'Konsultasi Gratis (Legacy)'
+                });
+            } else if (item && item.consultation_type === 'free-consultation-new') {
+                analysis.new_free_consultation++;
+                analysis.details.push({
+                    type: 'new_free_consultation',
+                    key: key,
+                    description: 'Konsultasi Gratis (Baru)',
+                    type_id: item.free_consultation_type_id,
+                    schedule_id: item.free_consultation_schedule_id
+                });
+            } else if (key.startsWith('free-consultation-')) {
+                analysis.new_free_consultation++;
+                analysis.details.push({
+                    type: 'new_free_consultation',
+                    key: key,
+                    description: 'Konsultasi Gratis (Baru)',
+                    type_id: item.free_consultation_type_id,
+                    schedule_id: item.free_consultation_schedule_id
+                });
+            } else {
+                analysis.regular_services++;
+                analysis.details.push({
+                    type: 'regular_service',
+                    key: key,
+                    description: 'Layanan Reguler'
+                });
             }
         });
 
-        // Clear temp cart on successful login (based on URL parameters)
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('login_success') === '1' || urlParams.get('cart_transferred') === '1') {
-            localStorage.removeItem('tempCart');
-            console.log('Temp cart cleared based on URL parameter');
+        return analysis;
+    }
+    
+    // Function to display cart notification
+    function showCartNotification() {
+        const analysis = analyzeTempCart();
+        
+        if (analysis.total > 0) {
+            cartCountElement.textContent = analysis.total;
+            
+            // Create detailed message
+            let message = `Anda memiliki <strong>${analysis.total}</strong> item di keranjang: `;
+            let messageDetails = [];
+            
+            if (analysis.regular_services > 0) {
+                messageDetails.push(`${analysis.regular_services} layanan reguler`);
+            }
+            if (analysis.legacy_free_consultation > 0) {
+                messageDetails.push(`${analysis.legacy_free_consultation} konsultasi gratis (legacy)`);
+            }
+            if (analysis.new_free_consultation > 0) {
+                messageDetails.push(`${analysis.new_free_consultation} konsultasi gratis (baru)`);
+            }
+            
+            message += messageDetails.join(', ') + '. Item akan dipindahkan ke akun Anda setelah login.';
+            cartMessage.innerHTML = message;
+            
+            cartNotification.style.display = 'block';
+            
+            console.log('Cart analysis:', analysis);
+            
+            return true;
         }
+        
+        return false;
+    }
 
-        // Log temp cart status for debugging
-        const tempCartCount = getTempCartItemCount();
-        if (tempCartCount > 0) {
-            console.log(`Current temp cart has ${tempCartCount} items`);
+    // Handle form submission with enhanced temp cart support
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(event) {
+            // Show loading state
+            loginButton.disabled = true;
+            loginText.classList.add('d-none');
+            loginLoading.classList.remove('d-none');
+            
+            // Get temp cart data from localStorage
+            const tempCart = getTempCart();
+            
+            if (Object.keys(tempCart).length > 0) {
+                try {
+                    const analysis = analyzeTempCart();
+                    
+                    if (analysis.total > 0) {
+                        // Set temp cart data to hidden input
+                        const tempCartInput = document.getElementById('temp-cart-input');
+                        tempCartInput.value = JSON.stringify(tempCart);
+                        
+                        console.log(`Preparing to transfer ${analysis.total} items from temp cart:`, analysis);
+                        
+                        // Enhanced logging for free consultation items
+                        analysis.details.forEach(detail => {
+                            if (detail.type === 'new_free_consultation') {
+                                console.log(`New free consultation detected - Type ID: ${detail.type_id}, Schedule ID: ${detail.schedule_id}`);
+                            } else if (detail.type === 'legacy_free_consultation') {
+                                console.log('Legacy free consultation detected');
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error processing temp cart data:', error);
+                }
+            }
+
+            // Reset loading state after 10 seconds (fallback)
+            setTimeout(() => {
+                if (loginButton.disabled) {
+                    loginButton.disabled = false;
+                    loginText.classList.remove('d-none');
+                    loginLoading.classList.add('d-none');
+                }
+            }, 10000);
+        });
+    }
+
+    // Handle page visibility change to reset button if needed
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && loginButton && loginButton.disabled) {
+            // Reset button state when page becomes visible again
+            setTimeout(() => {
+                loginButton.disabled = false;
+                loginText.classList.remove('d-none');
+                loginLoading.classList.add('d-none');
+            }, 1000);
         }
     });
+
+    // Clear temp cart on successful login (based on URL parameters)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('login_success') === '1' || urlParams.get('cart_transferred') === '1') {
+        localStorage.removeItem('tempCart');
+        console.log('Temp cart cleared based on URL parameter');
+    }
+
+    // Initialize cart notification display
+    const hasCartItems = showCartNotification();
+    if (hasCartItems) {
+        console.log('Cart notification displayed');
+    }
+    
+    // For debugging - expose functions to window
+    window.debugCart = {
+        getTempCart: getTempCart,
+        analyzeTempCart: analyzeTempCart,
+        showCartNotification: showCartNotification
+    };
+});
 </script>
 </body>
 </html>

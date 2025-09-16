@@ -24,6 +24,8 @@ class BookingService extends Pivot
         'invoice_id',
         'user_id',
         'contact_preference',
+        'free_consultation_type_id',
+        'free_consultation_schedule_id',
     ];
 
     protected $casts = [
@@ -35,6 +37,7 @@ class BookingService extends Pivot
         'hours_booked' => 'integer',
     ];
 
+    // Existing relationships
     public function referralCode()
     {
         return $this->belongsTo(ReferralCode::class, 'referral_code_id');
@@ -50,7 +53,18 @@ class BookingService extends Pivot
         return $this->belongsTo(User::class);
     }
 
-    // Scopes
+    // New relationships for free consultation
+    public function freeConsultationType()
+    {
+        return $this->belongsTo(FreeConsultationType::class, 'free_consultation_type_id');
+    }
+
+    public function freeConsultationSchedule()
+    {
+        return $this->belongsTo(FreeConsultationSchedule::class, 'free_consultation_schedule_id');
+    }
+
+    // Updated scopes
     public function scopeForUser($query, $userId)
     {
         return $query->where('user_id', $userId);
@@ -58,12 +72,25 @@ class BookingService extends Pivot
 
     public function scopeFreeConsultation($query)
     {
-        return $query->where('service_id', 'free-consultation');
+        return $query->where('service_id', 'free-consultation')
+                     ->orWhereNotNull('free_consultation_type_id');
+    }
+
+    public function scopeNewFreeConsultation($query)
+    {
+        return $query->whereNotNull('free_consultation_type_id');
+    }
+
+    public function scopeLegacyFreeConsultation($query)
+    {
+        return $query->where('service_id', 'free-consultation')
+                     ->whereNull('free_consultation_type_id');
     }
 
     public function scopeRegularServices($query)
     {
-        return $query->where('service_id', '!=', 'free-consultation');
+        return $query->where('service_id', '!=', 'free-consultation')
+                     ->whereNull('free_consultation_type_id');
     }
 
     public function scopePaidBookings($query)
@@ -81,9 +108,20 @@ class BookingService extends Pivot
         });
     }
 
+    // Updated helper methods
     public function isFreeConsultation()
     {
-        return $this->service_id === 'free-consultation';
+        return $this->service_id === 'free-consultation' || $this->free_consultation_type_id !== null;
+    }
+
+    public function isNewFreeConsultation()
+    {
+        return $this->free_consultation_type_id !== null;
+    }
+
+    public function isLegacyFreeConsultation()
+    {
+        return $this->service_id === 'free-consultation' && $this->free_consultation_type_id === null;
     }
 
     public function isValidBooking()
@@ -95,5 +133,38 @@ class BookingService extends Pivot
         return $this->invoice->payment_status === 'paid' || 
                (in_array($this->invoice->payment_status, ['unpaid', 'pending']) && 
                 $this->invoice->due_date >= now());
+    }
+
+    // Get service title for display
+    public function getServiceTitleAttribute()
+    {
+        if ($this->isNewFreeConsultation()) {
+            return $this->freeConsultationType ? 
+                'Konsultasi Gratis - ' . $this->freeConsultationType->name : 
+                'Konsultasi Gratis';
+        }
+
+        if ($this->isLegacyFreeConsultation()) {
+            return 'Konsultasi Gratis';
+        }
+
+        // For regular services, you would access through the relationship
+        // This assumes you have a service relationship in ConsultationBooking
+        return 'Layanan Konsultasi';
+    }
+
+    // Get formatted schedule info
+    public function getFormattedScheduleAttribute()
+    {
+        if ($this->isNewFreeConsultation() && $this->freeConsultationSchedule) {
+            return $this->freeConsultationSchedule->formatted_date_time;
+        }
+
+        if ($this->booked_date && $this->booked_time) {
+            return $this->booked_date->format('d M Y') . ' ' . 
+                   $this->booked_time->format('H:i');
+        }
+
+        return '';
     }
 }

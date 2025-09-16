@@ -12,6 +12,7 @@
 <style>
     :root {
         --brand-primary: #0C2C5A;
+        --brand-gold: #FFB700;
         --brand-text: #212529;
         --brand-text-muted: #6c757d;
         --brand-background: #f8f9fa;
@@ -75,13 +76,26 @@
     .remove-btn i { transition: transform 0.2s ease-in-out; }
     .remove-btn:hover i { transform: scale(1.15); }
     .free-consultation-badge {
-        background: linear-gradient(45deg, #D4AF37, #FFD700);
+        background: linear-gradient(45deg, var(--brand-gold), #FFC533);
         color: white;
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
         border-radius: 15px;
         font-weight: bold;
         margin-left: 0.5rem;
+    }
+    /* Override warna hijau default Bootstrap menjadi biru Indiegologi */
+    .text-success {
+        color: var(--brand-primary) !important;
+    }
+    /* Style untuk checkbox yang di-check */
+    .form-check-input:checked {
+        background-color: var(--brand-primary);
+        border-color: var(--brand-primary);
+    }
+    .form-check-input:focus {
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.25);
     }
     @media (min-width: 992px) {
         .sticky-summary {
@@ -108,6 +122,18 @@
     .price-details-list .list-group-item {
         padding: 0.5rem 0; border: 0; background-color: transparent;
     }
+    /* Style untuk thumbnail konsultasi gratis */
+    .cart-item-card img[alt*="Konsultasi Gratis"] {
+        background-color: #0C2C5A !important;
+        background-image: url('https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS') !important;
+    }
+    
+    /* Override untuk placeholder image konsultasi gratis di guest cart */
+    .cart-item-card img[src*="placehold.co"][src*="D4AF37"],
+    .cart-item-card img[src*="placehold.co"][src*="FFB700"] {
+        content: url('https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS') !important;
+    }
+    
     @media (max-width: 767.98px) {
         .cart-header .section-title {
             font-size: 2rem;
@@ -220,7 +246,7 @@
                                                     <ul class="list-group list-group-flush price-details-list small">
                                                         <li class="list-group-item d-flex justify-content-between">
                                                             <span class="text-muted">Harga Dasar:</span>
-                                                            <span class="text-success fw-bold">GRATIS</span>
+                                                            <span class="fw-bold" style="color: var(--brand-primary);">GRATIS</span>
                                                         </li>
                                                         <li class="list-group-item d-flex justify-content-between">
                                                             <span class="text-muted">Durasi:</span>
@@ -228,7 +254,7 @@
                                                         </li>
                                                         <li class="list-group-item d-flex justify-content-between">
                                                             <span class="text-muted">Subtotal:</span>
-                                                            <span class="text-success">Rp 0</span>
+                                                            <span style="color: var(--brand-primary);">Rp 0</span>
                                                         </li>
                                                     </ul>
                                                     <hr class="my-2" style="border-color: var(--brand-border);">
@@ -396,6 +422,8 @@ $(document).ready(function() {
                 },
                 error: function(xhr, status, error) {
                     console.error('Error updating summary:', error);
+                    // Tambahkan notifikasi error jika perlu
+                    Swal.fire('Error', 'Gagal memperbarui ringkasan pesanan.', 'error');
                 }
             });
         }
@@ -429,21 +457,48 @@ $(document).ready(function() {
             });
         });
 
-        // Update awal
+        // Update awal saat halaman dimuat
         updateSummary();
+        
+        // Fix thumbnail konsultasi gratis menjadi biru
+        function fixFreeConsultationThumbnails() {
+            $('.cart-item-card img').each(function() {
+                const $img = $(this);
+                const alt = $img.attr('alt');
+                const src = $img.attr('src');
+                
+                // Check if this is a free consultation thumbnail
+                if (alt && alt.toLowerCase().includes('konsultasi gratis')) {
+                    // Replace with blue thumbnail
+                    $img.attr('src', 'https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS');
+                }
+                
+                // Also check src for placeholder images with yellow/gold colors
+                if (src && src.includes('placehold.co') && (src.includes('D4AF37') || src.includes('FFB700') || src.includes('text=FREE'))) {
+                    $img.attr('src', 'https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS');
+                }
+            });
+        }
+        
+        // Run fix on page load
+        fixFreeConsultationThumbnails();
+        
+        // Run fix again after any dynamic content updates
+        setTimeout(fixFreeConsultationThumbnails, 500);
 
     @else
         // ===========================================
         // FUNGSI UNTUK GUEST USER (TEMP CART)
         // ===========================================
         
-        // Fungsi untuk temp cart
+        // Helper untuk manajemen localStorage
         function getTempCart() {
             try {
                 const cart = localStorage.getItem('tempCart');
                 return cart ? JSON.parse(cart) : {};
             } catch (e) {
                 console.error("Error parsing temp cart:", e);
+                localStorage.removeItem('tempCart'); // Hapus data korup
                 return {};
             }
         }
@@ -455,9 +510,21 @@ $(document).ready(function() {
                 console.error("Error saving temp cart:", e);
             }
         }
+        
+        // [BARU] Helper untuk mendeteksi konsultasi gratis (legacy & baru)
+        function isFreeConsultation(serviceId, item) {
+            return serviceId === 'free-consultation' || (item && item.consultation_type === 'free-consultation-new');
+        }
 
-        // Fetch pricing dari server
-        async function fetchServicePricing(serviceIds) {
+        // Fetch pricing dari server hanya untuk layanan reguler
+        async function fetchServicePricing(cartItems) {
+            // [DIPERBAIKI] Filter hanya service ID yang bukan konsultasi gratis
+            const regularServiceIds = Object.keys(cartItems).filter(id => !isFreeConsultation(id, cartItems[id]));
+
+            if (regularServiceIds.length === 0) {
+                return {}; // Tidak perlu panggil API jika hanya ada item gratis
+            }
+
             try {
                 const response = await fetch('{{ route("front.service.pricing") }}', {
                     method: 'POST',
@@ -466,26 +533,28 @@ $(document).ready(function() {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        service_ids: serviceIds
+                        service_ids: regularServiceIds // Kirim ID yang sudah difilter
                     })
                 });
 
+                if (!response.ok) throw new Error('Network response was not ok.');
                 const data = await response.json();
                 return data.success ? data.pricing : {};
             } catch (error) {
                 console.error('Error fetching service pricing:', error);
-                return {};
+                return {}; // Kembalikan objek kosong jika gagal
             }
         }
 
-        // Hitung summary dengan pricing yang benar
+        // Hitung summary dengan data harga yang benar
         function calculateSummary(cartItems, paymentType, pricingData = {}) {
             let subtotal = 0;
             let totalDiscount = 0;
             let grandTotal = 0;
 
             for (const [id, item] of Object.entries(cartItems)) {
-                if (id === 'free-consultation') continue;
+                // [DIPERBAIKI] Gunakan helper untuk skip semua jenis konsultasi gratis
+                if (isFreeConsultation(id, item)) continue;
                 
                 let basePrice = 0;
                 let hourlyPrice = 0;
@@ -493,14 +562,11 @@ $(document).ready(function() {
                 if (pricingData[id]) {
                     basePrice = parseFloat(pricingData[id].price) || 0;
                     hourlyPrice = parseFloat(pricingData[id].hourly_price) || 0;
-                } else {
-                    basePrice = parseFloat(item.price) || 0;
-                    hourlyPrice = parseFloat(item.hourly_price) || 0;
                 }
                 
                 const hours = parseInt(item.hours) || 1;
                 const itemSubtotal = basePrice + (hourlyPrice * hours);
-                const discountAmount = (itemSubtotal * (parseFloat(item.discount_percentage) || 0)) / 100;
+                const discountAmount = 0; // Asumsi diskon dihitung di backend, untuk guest kita tampilkan 0
                 const finalItemPrice = itemSubtotal - discountAmount;
 
                 subtotal += itemSubtotal;
@@ -509,22 +575,23 @@ $(document).ready(function() {
             }
 
             let totalToPayNow = grandTotal;
-            if (paymentType === 'dp') {
+            if (paymentType === 'dp' && grandTotal > 0) {
                 totalToPayNow = grandTotal * 0.5;
             }
 
+            const formatToIDR = (num) => num.toLocaleString('id-ID');
             return {
-                subtotal: subtotal.toLocaleString('id-ID'),
-                totalDiscount: totalDiscount.toLocaleString('id-ID'),
-                grandTotal: grandTotal.toLocaleString('id-ID'),
-                totalToPayNow: totalToPayNow.toLocaleString('id-ID')
+                subtotal: formatToIDR(subtotal),
+                totalDiscount: formatToIDR(totalDiscount),
+                grandTotal: formatToIDR(grandTotal),
+                totalToPayNow: formatToIDR(totalToPayNow)
             };
         }
 
-        // Render temp cart
+        // Render temp cart dengan logika yang disempurnakan
         async function renderTempCart(cartItems) {
             const container = $('#temp-cart-display');
-            container.empty();
+            container.empty().html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Memuat keranjang...</p></div>');
 
             if (Object.keys(cartItems).length === 0) {
                 container.html(`
@@ -539,11 +606,10 @@ $(document).ready(function() {
                 return;
             }
 
-            // Fetch pricing data
-            const serviceIds = Object.keys(cartItems);
-            const pricingData = await fetchServicePricing(serviceIds);
+            // [DIPERBAIKI] Fetch pricing data hanya untuk item yang relevan
+            const pricingData = await fetchServicePricing(cartItems);
+            container.empty();
 
-            // Build cart display
             const cartHeader = `
                 <div class="text-center mb-5 cart-header" data-aos="fade-down">
                     <h1 class="section-title">Keranjang Belanja Anda</h1>
@@ -551,34 +617,41 @@ $(document).ready(function() {
                 </div>
                 <div class="alert alert-info" role="alert" data-aos="fade-in" data-aos-delay="100">
                     <h5 class="alert-heading">Keranjang Sementara</h5>
-                    <p>Layanan yang Anda pilih disimpan sementara. <a href="{{ route('login') }}">Login</a> untuk melanjutkan pembayaran.</p>
+                    <p class="mb-0">Layanan yang Anda pilih disimpan sementara. <a href="{{ route('login') }}" class="alert-link">Masuk atau Daftar</a> untuk melanjutkan ke pembayaran.</p>
                 </div>
             `;
-
             container.append(cartHeader);
 
             const row = $('<div class="row g-4 g-lg-5"></div>');
             const cartListCol = $('<div class="col-lg-7"></div>');
 
-            // Generate cart items
-            Object.keys(cartItems).forEach((serviceId, index) => {
-                const item = cartItems[serviceId];
-                const isFree = serviceId === 'free-consultation';
-                
-                let basePrice = 0, hourlyPrice = 0, serviceTitle = 'Layanan';
-                let serviceThumbnail = 'https://placehold.co/60x60/cccccc/ffffff?text=No+Image';
-                
-                if (pricingData[serviceId]) {
-                    basePrice = pricingData[serviceId].price;
-                    hourlyPrice = pricingData[serviceId].hourly_price;
-                    serviceTitle = pricingData[serviceId].title;
-                    serviceThumbnail = pricingData[serviceId].thumbnail;
+            Object.entries(cartItems).forEach(([serviceId, item], index) => {
+                // [DIPERBAIKI] Logika terpusat untuk mendeteksi item gratis dan menyiapkan datanya
+                const isFree = isFreeConsultation(serviceId, item);
+                let serviceTitle, serviceThumbnail;
+                let basePrice = 0, hourlyPrice = 0;
+
+                if (isFree) {
+                    serviceTitle = "Konsultasi Gratis";
+                    serviceThumbnail = `https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS`;
+                } else if (pricingData[serviceId]) {
+                    const details = pricingData[serviceId];
+                    serviceTitle = details.title;
+                    serviceThumbnail = details.thumbnail || 'https://placehold.co/60x60/cccccc/ffffff?text=No+Image';
+                    basePrice = parseFloat(details.price) || 0;
+                    hourlyPrice = parseFloat(details.hourly_price) || 0;
+                } else {
+                    // Fallback jika API gagal atau data tidak ditemukan
+                    serviceTitle = "Layanan Tidak Tersedia";
+                    serviceThumbnail = 'https://placehold.co/60x60/dc3545/ffffff?text=Error';
                 }
                 
                 const hours = parseInt(item.hours) || 1;
                 const itemSubtotal = isFree ? 0 : basePrice + (hourlyPrice * hours);
-                const discountAmount = isFree ? 0 : (itemSubtotal * (parseFloat(item.discount_percentage) || 0)) / 100;
-                const finalItemPrice = itemSubtotal - discountAmount;
+                const finalItemPrice = itemSubtotal; // Diskon tidak dihitung untuk guest
+                
+                // [DIPERBAIKI] Format tanggal yang lebih aman
+                const displayDate = item.booked_date ? new Date(item.booked_date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : 'Jadwal belum dipilih';
 
                 const itemHtml = `
                     <div class="card mb-3 cart-item-card" data-service-id="${serviceId}" data-aos="fade-right" data-aos-delay="${index * 100}">
@@ -592,10 +665,10 @@ $(document).ready(function() {
                                         <div class="flex-grow-1">
                                             <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">
                                                 ${serviceTitle}
-                                                ${isFree ? '<span class="free-consultation-badge">GRATIS</span>' : ''}
+                                                ${isFree ? '<span style="background: linear-gradient(45deg, #FFB700, #FFC533); color: white; font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 15px; font-weight: bold; margin-left: 0.5rem;">GRATIS</span>' : ''}
                                             </h5>
                                             <ul class="item-details-list">
-                                                <li><i class="bi bi-calendar-check"></i>${new Date(item.booked_date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'})}, ${item.booked_time} ${isFree ? '(1 jam)' : '(' + hours + ' jam)'}</li>
+                                                <li><i class="bi bi-calendar-check"></i>${displayDate}, ${item.booked_time} ${isFree ? '(1 jam)' : '(' + hours + ' jam)'}</li>
                                                 <li><i class="bi bi-camera-video"></i>${item.session_type} & ${item.contact_preference === 'chat_only' ? 'Chat' : 'Chat & Call'}</li>
                                                 ${item.offline_address ? `<li><i class="bi bi-geo-alt"></i>${item.offline_address}</li>` : ''}
                                             </ul>
@@ -606,55 +679,26 @@ $(document).ready(function() {
                                     ${isFree ? `
                                         <ul class="list-group list-group-flush price-details-list small">
                                             <li class="list-group-item d-flex justify-content-between">
-                                                <span class="text-muted">Harga Dasar:</span>
-                                                <span class="text-success fw-bold">GRATIS</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between">
-                                                <span class="text-muted">Durasi:</span>
-                                                <span class="text-muted">1 Jam</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between">
-                                                <span class="text-muted">Subtotal:</span>
-                                                <span class="text-success">Rp 0</span>
+                                                <span class="text-muted">Harga:</span>
+                                                <span class="fw-bold" style="color: #0C2C5A;">GRATIS</span>
                                             </li>
                                         </ul>
                                         <hr class="my-2" style="border-color: var(--brand-border);">
                                         <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
                                             <span>Total Item:</span>
-                                            <span>Rp 0</span>
+                                            <span style="color: #0C2C5A;">Rp 0</span>
                                         </p>
                                     ` : `
                                         <ul class="list-group list-group-flush price-details-list small">
-                                            <li class="list-group-item d-flex justify-content-between">
-                                                <span class="text-muted">Harga Dasar:</span>
-                                                <span class="text-muted">Rp ${basePrice.toLocaleString('id-ID')}</span>
-                                            </li>
-                                            ${hourlyPrice > 0 && hours > 0 ? `
-                                            <li class="list-group-item d-flex justify-content-between">
-                                                <span class="text-muted">Per Jam (${hours} jam):</span>
-                                                <span class="text-muted">Rp ${(hourlyPrice * hours).toLocaleString('id-ID')}</span>
-                                            </li>` : ''}
-                                            <li class="list-group-item d-flex justify-content-between">
-                                                <span class="text-muted">Subtotal:</span>
-                                                <span class="text-muted">Rp ${itemSubtotal.toLocaleString('id-ID')}</span>
-                                            </li>
-                                            ${discountAmount > 0 ? `
-                                            <li class="list-group-item d-flex justify-content-between">
-                                                <span style="color: var(--brand-danger);">Diskon:</span>
-                                                <span style="color: var(--brand-danger);">- Rp ${discountAmount.toLocaleString('id-ID')}</span>
-                                            </li>` : ''}
+                                            <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Harga Dasar:</span><span class="text-muted">Rp ${basePrice.toLocaleString('id-ID')}</span></li>
+                                            ${hourlyPrice > 0 && hours > 0 ? `<li class="list-group-item d-flex justify-content-between"><span class="text-muted">Per Jam (${hours} jam):</span><span class="text-muted">Rp ${(hourlyPrice * hours).toLocaleString('id-ID')}</span></li>` : ''}
+                                            <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Subtotal:</span><span class="text-muted">Rp ${itemSubtotal.toLocaleString('id-ID')}</span></li>
                                         </ul>
-                                        <hr class="my-2" style="border-color: var(--brand-border);">
-                                        <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                            <span>Total Item:</span>
-                                            <span>Rp ${finalItemPrice.toLocaleString('id-ID')}</span>
-                                        </p>
+                                        <hr class="my-2" style="border-color: var(--brand-border);"><p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);"><span>Total Item:</span><span>Rp ${finalItemPrice.toLocaleString('id-ID')}</span></p>
                                     `}
                                     <div class="d-flex justify-content-between align-items-center">
                                         ${!isFree ? '<a href="{{ route("front.layanan") }}" class="btn btn-brand-outline">Pesan Lagi</a>' : '<span class="text-muted small">Konsultasi Gratis</span>'}
-                                        <button type="button" class="btn btn-link p-0 remove-btn-temp" data-id="${serviceId}" title="Hapus item">
-                                            <i class="bi bi-trash3-fill fs-5"></i>
-                                        </button>
+                                        <button type="button" class="btn btn-link p-0 remove-btn-temp" data-id="${serviceId}" title="Hapus item"><i class="bi bi-trash3-fill fs-5"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -671,34 +715,12 @@ $(document).ready(function() {
                     <div class="summary-card sticky-summary">
                         <div class="card-body p-4">
                             <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">Ringkasan Pesanan</h4>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Subtotal Semua Item</span>
-                                <span class="text-muted" id="summary-subtotal-temp">Rp ${summary.subtotal}</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-3">
-                                <span class="text-muted">Total Diskon</span>
-                                <span class="text-danger" id="summary-discount-temp">- Rp ${summary.totalDiscount}</span>
-                            </div>
-                            <div class="d-flex justify-content-between fw-bold fs-5 mb-3" style="color: var(--brand-text);">
-                                <span>Grand Total Akhir</span>
-                                <span id="summary-grandtotal-temp">Rp ${summary.grandTotal}</span>
-                            </div>
-                            <hr style="border-color: var(--brand-border);">
-                            <div class="mb-3">
-                                <label for="payment-type-select-temp" class="form-label fw-bold" style="color: var(--brand-text);">Pilih Tipe Pembayaran</label>
-                                <select class="form-select" id="payment-type-select-temp">
-                                    <option value="full_payment" selected>Pembayaran Penuh</option>
-                                    <option value="dp">DP (50%)</option>
-                                </select>
-                            </div>
-                            <hr style="border-color: var(--brand-border);">
-                            <div class="d-flex justify-content-between fw-bolder fs-4 mt-3" style="color: var(--brand-primary);">
-                                <span style="white-space: nowrap; margin-right: 1rem;">Total Bayar Sekarang</span>
-                                <span id="summary-totalpay-temp">Rp ${summary.totalToPayNow}</span>
-                            </div>
-                            <div class="d-grid mt-4">
-                                <a href="{{ route('login') }}" class="btn btn-checkout">Login untuk Checkout</a>
-                            </div>
+                            <div class="d-flex justify-content-between mb-2"><span class="text-muted">Subtotal Semua Item</span><span class="text-muted" id="summary-subtotal-temp">Rp ${summary.subtotal}</span></div>
+                            <div class="d-flex justify-content-between mb-3"><span class="text-muted">Total Diskon</span><span class="text-danger" id="summary-discount-temp">- Rp ${summary.totalDiscount}</span></div>
+                            <div class="d-flex justify-content-between fw-bold fs-5 mb-3" style="color: var(--brand-text);"><span>Grand Total Akhir</span><span id="summary-grandtotal-temp">Rp ${summary.grandTotal}</span></div>
+                            <hr style="border-color: var(--brand-border);"><div class="mb-3"><label for="payment-type-select-temp" class="form-label fw-bold" style="color: var(--brand-text);">Pilih Tipe Pembayaran</label><select class="form-select" id="payment-type-select-temp"><option value="full_payment" selected>Pembayaran Penuh</option><option value="dp">DP (50%)</option></select></div>
+                            <hr style="border-color: var(--brand-border);"><div class="d-flex justify-content-between fw-bolder fs-4 mt-3" style="color: var(--brand-primary);"><span style="white-space: nowrap; margin-right: 1rem;">Total Bayar Sekarang</span><span id="summary-totalpay-temp">Rp ${summary.totalToPayNow}</span></div>
+                            <div class="d-grid mt-4"><a href="{{ route('login') }}" class="btn btn-checkout">Masuk untuk Checkout</a></div>
                         </div>
                     </div>
                 </div>
@@ -708,8 +730,8 @@ $(document).ready(function() {
             container.append(row);
             AOS.refresh();
 
-            // Event handlers untuk temp cart
-            $('#payment-type-select-temp').on('change', function() {
+            // Event handlers untuk temp cart (delegasi event untuk elemen yang baru dibuat)
+            container.on('change', '#payment-type-select-temp', function() {
                 const tempCart = getTempCart();
                 const summary = calculateSummary(tempCart, $(this).val(), pricingData);
                 $('#summary-subtotal-temp').text('Rp ' + summary.subtotal);
@@ -718,30 +740,25 @@ $(document).ready(function() {
                 $('#summary-totalpay-temp').text('Rp ' + summary.totalToPayNow);
             });
 
-            $('.remove-btn-temp').on('click', function() {
+            container.on('click', '.remove-btn-temp', function() {
                 const serviceId = $(this).data('id');
                 Swal.fire({
-                    title: 'Hapus Item?',
-                    text: "Apakah Anda yakin ingin menghapus item ini dari keranjang?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal'
+                    title: 'Hapus Item?', text: "Item ini akan dihapus dari keranjang sementara Anda.", icon: 'warning',
+                    showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!', cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         const tempCart = getTempCart();
                         delete tempCart[serviceId];
                         saveTempCart(tempCart);
-                        renderTempCart(tempCart);
+                        renderTempCart(tempCart); // Re-render the cart
                         Swal.fire('Dihapus!', 'Item telah dihapus dari keranjang.', 'success');
                     }
                 });
             });
         }
 
-        // Render temp cart untuk guest user
+        // Inisialisasi render temp cart untuk guest user
         const tempCart = getTempCart();
         renderTempCart(tempCart);
     @endauth

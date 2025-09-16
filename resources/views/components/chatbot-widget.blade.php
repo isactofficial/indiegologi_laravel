@@ -55,11 +55,18 @@
     }
     .chatbot-close-btn { cursor: pointer; opacity: 0.8; }
     .chatbot-close-btn:hover { opacity: 1; }
+    
+    /* == BAGIAN YANG DIUBAH ADA DI SINI == */
     .chatbot-messages {
         flex-grow: 1;
         padding: 1rem;
         overflow-y: auto;
+        /* Menghilangkan gambar dan menggantinya dengan warna putih */
+        background-image: none;
+        background-color: #ffffff; /* Kode hex untuk warna putih */
     }
+    /* == AKHIR DARI BAGIAN YANG DIUBAH == */
+
     .message {
         margin-bottom: 1rem;
         display: flex;

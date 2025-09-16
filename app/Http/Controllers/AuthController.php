@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\CartItem;
 use App\Models\ConsultationService;
+use App\Models\FreeConsultationType;
+use App\Models\FreeConsultationSchedule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
@@ -49,7 +51,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Transfer temp cart data from localStorage to database
+     * Enhanced temp cart data transfer with support for new free consultation system
      */
     private function transferTempCartData(Request $request, User $user)
     {
@@ -68,14 +70,65 @@ class AuthController extends Controller
 
             foreach ($tempCartItems as $serviceId => $item) {
                 try {
-                    // Handle free consultation
-                    if ($serviceId === 'free-consultation') {
-                        // Check if user already has free consultation in cart
-                        $existingFreeConsultation = CartItem::where('user_id', $user->id)
-                            ->where('service_id', 'free-consultation')
+                    // Handle new free consultation system
+                    if (isset($item['consultation_type']) && $item['consultation_type'] === 'free-consultation-new') {
+                        $typeId = $item['free_consultation_type_id'];
+                        $scheduleId = $item['free_consultation_schedule_id'];
+
+                        // Check if user already has this type of consultation in cart
+                        $existingCartItem = CartItem::where('user_id', $user->id)
+                            ->where('free_consultation_type_id', $typeId)
                             ->first();
 
-                        if (!$existingFreeConsultation) {
+                        if (!$existingCartItem) {
+                            // Verify schedule still exists and is available
+                            $schedule = FreeConsultationSchedule::where('id', $scheduleId)
+                                ->where('type_id', $typeId)
+                                ->first();
+
+                            if ($schedule && $schedule->isAvailable()) {
+                                CartItem::create([
+                                    'user_id' => $user->id,
+                                    'service_id' => null,
+                                    'free_consultation_type_id' => $typeId,
+                                    'free_consultation_schedule_id' => $scheduleId,
+                                    'price' => 0,
+                                    'hourly_price' => 0,
+                                    'quantity' => 1,
+                                    'hours' => 1,
+                                    'booked_date' => $schedule->scheduled_date,
+                                    'booked_time' => $schedule->scheduled_time,
+                                    'session_type' => $item['session_type'] ?? 'Online',
+                                    'offline_address' => $item['offline_address'] ?? null,
+                                    'contact_preference' => $item['contact_preference'] ?? 'chat_and_call',
+                                    'referral_code' => null,
+                                    'payment_type' => 'full_payment'
+                                ]);
+
+                                // Reserve the schedule slot
+                                $schedule->incrementBooking();
+
+                                Log::info('New free consultation transferred to cart for user: ' . $user->id, [
+                                    'type_id' => $typeId,
+                                    'schedule_id' => $scheduleId
+                                ]);
+                            } else {
+                                Log::warning('Free consultation schedule no longer available during transfer', [
+                                    'user_id' => $user->id,
+                                    'schedule_id' => $scheduleId,
+                                    'type_id' => $typeId
+                                ]);
+                            }
+                        }
+                    }
+                    // Handle legacy free consultation
+                    elseif ($serviceId === 'free-consultation') {
+                        // Check if user already has free consultation
+                        $existing = CartItem::where('user_id', $user->id)
+                            ->where('service_id', 'free-consultation')
+                            ->first();
+                        
+                        if (!$existing) {
                             CartItem::create([
                                 'user_id' => $user->id,
                                 'service_id' => 'free-consultation',
@@ -92,10 +145,11 @@ class AuthController extends Controller
                                 'payment_type' => 'full_payment'
                             ]);
 
-                            Log::info('Free consultation transferred to cart for user: ' . $user->id);
+                            Log::info('Legacy free consultation transferred to cart for user: ' . $user->id);
                         }
-                    } else {
-                        // Handle regular services
+                    } 
+                    // Handle regular services
+                    else {
                         $service = ConsultationService::find($serviceId);
                         
                         if ($service) {

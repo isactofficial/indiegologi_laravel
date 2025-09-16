@@ -10,6 +10,8 @@ use App\Models\CartItem;
 use App\Models\BookingService;
 use App\Models\Invoice;
 use App\Models\Testimonial;
+use App\Models\FreeConsultationType;
+use App\Models\FreeConsultationSchedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -32,7 +34,23 @@ class FrontController extends Controller
             ->ordered()
             ->get();
             
-        return view('front.index', compact('latest_articles', 'popular_articles', 'latest_sketches', 'services', 'testimonials'));
+        // --- TAMBAHKAN KODE INI ---
+        // Mengambil semua jenis konsultasi gratis yang statusnya 'active'
+        // dan memuat relasi 'availableSchedules' secara efisien (Eager Loading).
+        $freeConsultationTypes = FreeConsultationType::with('availableSchedules')
+                                    ->active() // Menggunakan scopeActive() dari model
+                                    ->get();
+        // -------------------------
+            
+        // --- UBAH BARIS RETURN ---
+        return view('front.index', compact(
+            'latest_articles', 
+            'popular_articles', 
+            'latest_sketches', 
+            'services', 
+            'testimonials',
+            'freeConsultationTypes' // Tambahkan variabel baru ini
+        ));
     }
 
     /**
@@ -117,6 +135,11 @@ class FrontController extends Controller
     {
         $services = ConsultationService::whereIn('status', ['published', 'special'])->latest()->paginate(6);
         $referralCodes = ReferralCode::all();
+        
+        // Get free consultation types with their available schedules
+        $freeConsultationTypes = FreeConsultationType::active()
+            ->with(['availableSchedules'])
+            ->get();
 
         $cartCount = 0;
         if (Auth::check()) {
@@ -128,7 +151,7 @@ class FrontController extends Controller
             }
         }
 
-        return view('front.services.index', compact('services', 'referralCodes', 'cartCount'));
+        return view('front.services.index', compact('services', 'referralCodes', 'cartCount', 'freeConsultationTypes'));
     }
 
     public function contact()
@@ -189,6 +212,111 @@ class FrontController extends Controller
         return response()->json([
             'success' => true,
             'pricing' => $pricing
+        ]);
+    }
+
+    /**
+     * Get available schedules for a specific free consultation type
+     */
+    public function getFreeConsultationSchedules(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'type_id' => 'required|exists:free_consultation_types,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid consultation type',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $typeId = $request->input('type_id');
+        
+        $schedules = FreeConsultationSchedule::forType($typeId)
+            ->available()
+            ->future()
+            ->orderBy('scheduled_date')
+            ->orderBy('scheduled_time')
+            ->get()
+            ->map(function ($schedule) {
+                return [
+                    'id' => $schedule->id,
+                    'date' => $schedule->scheduled_date->format('Y-m-d'),
+                    'time' => $schedule->scheduled_time->format('H:i'),
+                    'formatted_datetime' => $schedule->formatted_date_time,
+                    'available_slots' => $schedule->max_participants - $schedule->current_bookings
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'schedules' => $schedules
+        ]);
+    }
+
+    /**
+     * Check availability for new free consultation booking
+     */
+    public function checkFreeConsultationAvailability(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id' => 'required|exists:free_consultation_schedules,id',
+            'type_id' => 'required|exists:free_consultation_types,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'available' => false,
+                'message' => 'Invalid schedule or consultation type.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $scheduleId = $request->input('schedule_id');
+        $typeId = $request->input('type_id');
+
+        $schedule = FreeConsultationSchedule::where('id', $scheduleId)
+            ->where('type_id', $typeId)
+            ->first();
+
+        if (!$schedule) {
+            return response()->json([
+                'available' => false,
+                'message' => 'Jadwal tidak ditemukan.'
+            ], 404);
+        }
+
+        if (!$schedule->isAvailable()) {
+            return response()->json([
+                'available' => false,
+                'message' => 'Jadwal sudah tidak tersedia. Silakan pilih jadwal lain.'
+            ], 409);
+        }
+
+        // Check if user already has this type of consultation in cart
+        if (Auth::check()) {
+            $existingCartItem = CartItem::where('user_id', Auth::id())
+                ->where('free_consultation_type_id', $typeId)
+                ->first();
+
+            if ($existingCartItem) {
+                return response()->json([
+                    'available' => false,
+                    'message' => 'Anda sudah memiliki konsultasi gratis jenis ini di keranjang.'
+                ], 409);
+            }
+        }
+
+        return response()->json([
+            'available' => true,
+            'message' => 'Jadwal tersedia.',
+            'schedule' => [
+                'id' => $schedule->id,
+                'formatted_datetime' => $schedule->formatted_date_time,
+                'available_slots' => $schedule->max_participants - $schedule->current_bookings
+            ]
         ]);
     }
 
@@ -290,7 +418,7 @@ class FrontController extends Controller
     // --- Metode Keranjang Belanja ---
 
     /**
-     * Menambahkan layanan ke keranjang belanja.
+     * Updated addToCart method to support new free consultation system
      */
     public function addToCart(Request $request)
     {
@@ -298,7 +426,104 @@ class FrontController extends Controller
             return response()->json(['success' => false, 'message' => 'Anda harus login untuk menambahkan layanan.'], 401);
         }
 
-        // Handle free consultation
+        // Handle new free consultation system
+        if ($request->input('consultation_type') === 'free-consultation-new') {
+            $validator = Validator::make($request->all(), [
+                'free_consultation_type_id' => 'required|exists:free_consultation_types,id',
+                'free_consultation_schedule_id' => 'required|exists:free_consultation_schedules,id',
+                'session_type' => 'required|string|in:Online,Offline',
+                'offline_address' => 'required_if:session_type,Offline|nullable|string',
+                'contact_preference' => 'required|string|in:chat_only,chat_and_call',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal. Pastikan semua kolom terisi dengan benar.',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $validatedData = $validator->validated();
+
+            try {
+                $user = Auth::user();
+                $typeId = $validatedData['free_consultation_type_id'];
+                $scheduleId = $validatedData['free_consultation_schedule_id'];
+
+                // Verify schedule availability
+                $schedule = FreeConsultationSchedule::where('id', $scheduleId)
+                    ->where('type_id', $typeId)
+                    ->first();
+
+                if (!$schedule || !$schedule->isAvailable()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Jadwal yang dipilih sudah tidak tersedia.'
+                    ], 422);
+                }
+
+                // Check if user already has this type of consultation
+                $existingCartItem = CartItem::where('user_id', $user->id)
+                    ->where('free_consultation_type_id', $typeId)
+                    ->first();
+
+                if ($existingCartItem) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda sudah memiliki konsultasi gratis jenis ini di keranjang.'
+                    ], 422);
+                }
+
+                // Create new free consultation cart item
+                CartItem::create([
+                    'user_id' => $user->id,
+                    'service_id' => null, // No service_id for new system
+                    'free_consultation_type_id' => $typeId,
+                    'free_consultation_schedule_id' => $scheduleId,
+                    'price' => 0,
+                    'hourly_price' => 0,
+                    'quantity' => 1,
+                    'hours' => 1,
+                    'booked_date' => $schedule->scheduled_date,
+                    'booked_time' => $schedule->scheduled_time,
+                    'session_type' => $validatedData['session_type'],
+                    'offline_address' => $validatedData['offline_address'] ?? null,
+                    'contact_preference' => $validatedData['contact_preference'],
+                    'referral_code' => null,
+                    'payment_type' => 'full_payment'
+                ]);
+
+                // Reserve the schedule slot
+                $schedule->incrementBooking();
+
+                $cartCount = CartItem::where('user_id', $user->id)->count();
+
+                Log::info('New free consultation added to cart for user: ' . $user->id, [
+                    'type_id' => $typeId,
+                    'schedule_id' => $scheduleId,
+                    'session_type' => $validatedData['session_type']
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Konsultasi gratis berhasil ditambahkan ke keranjang!',
+                    'cart_count' => $cartCount
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('Add new free consultation to cart failed: ' . $e->getMessage(), [
+                    'user_id' => Auth::id(),
+                    'data' => $validatedData
+                ]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan konsultasi gratis ke keranjang. Detail: ' . $e->getMessage()
+                ], 500);
+            }
+        }
+
+        // Handle legacy free consultation
         if ($request->input('id') === 'free-consultation') {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|string',
@@ -567,7 +792,7 @@ class FrontController extends Controller
     {
         if (Auth::check()) {
             $userId = Auth::id();
-            $cartItems = CartItem::with(['service', 'referralCode'])
+            $cartItems = CartItem::with(['service', 'referralCode', 'freeConsultationType', 'freeConsultationSchedule'])
                                       ->where('user_id', $userId)
                                       ->get();
             $summary = $this->calculateSummary($cartItems->pluck('id')->toArray(), 'full_payment');
@@ -617,7 +842,7 @@ class FrontController extends Controller
     }
 
     /**
-     * Menghapus item dari keranjang belanja.
+     * Updated removeFromCart to handle new free consultation system
      */
     public function removeFromCart(Request $request)
     {
@@ -634,13 +859,20 @@ class FrontController extends Controller
                             ->first();
 
         if ($cartItem) {
-            $itemTitle = $cartItem->isFreeConsultation() ? 'Konsultasi Gratis' : ($cartItem->service->title ?? 'Layanan');
+            $itemTitle = $cartItem->service_title;
+            
+            // If removing new free consultation, release the schedule slot
+            if ($cartItem->isNewFreeConsultation() && $cartItem->freeConsultationSchedule) {
+                $cartItem->freeConsultationSchedule->decrementBooking();
+            }
+            
             $cartItem->delete();
             
             Log::info('Item removed from cart', [
                 'user_id' => Auth::id(),
                 'item_title' => $itemTitle,
-                'service_id' => $cartItem->service_id
+                'service_id' => $cartItem->service_id,
+                'free_consultation_type_id' => $cartItem->free_consultation_type_id
             ]);
             
             return redirect()->back()->with('success', 'Layanan berhasil dihapus dari keranjang.');
@@ -668,8 +900,8 @@ class FrontController extends Controller
         $totalDiscount = 0.0;
 
         foreach ($cartItems as $item) {
-            // Handle free consultation
-            if ($item->service_id === 'free-consultation') {
+            // Handle free consultation (both old and new)
+            if ($item->isFreeConsultation()) {
                 $subtotal += 0; // Free consultation has no cost
                 $totalDiscount += 0;
             } else {

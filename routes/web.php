@@ -45,7 +45,7 @@ Route::get('/', [FrontController::class, 'index'])->name('front.index')->middlew
 Route::get('/articles', [FrontController::class, 'articles'])->name('front.articles')->middleware('track.views:articles');
 Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])->name('front.articles.show')->middleware('track.views:articles');
 
-// Layanan routes
+// Layanan routes - FIXED: Keep original route name for backward compatibility
 Route::get('/layanan', [FrontController::class, 'layanan'])->name('front.layanan')->middleware('track.views:layanan');
 Route::get('/layanan/{service}', [FrontController::class, 'showLayanan'])->name('layanan.show');
 
@@ -62,8 +62,14 @@ Route::get('/search', [FrontController::class, 'search'])->name('search.results'
 // Cart route (public access)
 Route::get('/cart', [FrontController::class, 'viewCart'])->name('front.cart.view');
 
-// NEW: Service pricing route for guest cart pricing
+// Service pricing route for guest cart pricing
 Route::post('/get-service-pricing', [FrontController::class, 'getServicePricing'])->name('front.service.pricing');
+
+// NEW: Free Consultation API Routes (Public Access for AJAX calls)
+Route::prefix('api/free-consultation')->name('api.free-consultation.')->group(function () {
+    Route::get('/schedules', [FrontController::class, 'getFreeConsultationSchedules'])->name('schedules');
+    Route::post('/check-availability', [FrontController::class, 'checkFreeConsultationAvailability'])->name('check-availability');
+});
 
 // ======================================================================
 // Rute Chatbot BOTMAN
@@ -118,15 +124,23 @@ Route::middleware(['auth'])->group(function () {
     // Checkout Route
     Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
 
-    // Check availability route
+    // Check availability routes
     Route::post('/check-availability', [FrontController::class, 'checkBookingAvailability'])->name('front.check.availability');
 
-    // Onboarding Routes
+    // Onboarding Routes - FIXED: Added both routes with correct names
     Route::prefix('onboarding')->name('onboarding.')->group(function () {
         Route::get('/', [OnboardingController::class, 'show'])->name('show');
+        Route::get('/start', [OnboardingController::class, 'show'])->name('start'); // Added this route
         Route::post('/', [OnboardingController::class, 'store'])->name('store');
     });
 });
+
+// ======================================================================
+// Invoice Routes (Public for PDF downloads)
+// ======================================================================
+
+Route::get('/invoice/{consultationBooking}', [InvoiceController::class, 'show'])->name('invoice.show');
+Route::get('/invoice/{consultationBooking}/download', [InvoiceController::class, 'downloadPdf'])->name('invoice.download');
 
 // ======================================================================
 // Rute Admin
@@ -153,9 +167,22 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('consultation-bookings', ConsultationBookingController::class);
     Route::get('consultation-bookings/{consultationBooking}/download-pdf', [ConsultationBookingController::class, 'downloadPdf'])->name('consultation-bookings.download-pdf');
 
-    // Testimonials management - ROUTE BARU YANG DITAMBAHKAN
+    // Testimonials management
     Route::resource('testimonials', TestimonialController::class);
     Route::put('/testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
+
+    // NEW: Free Consultation Management
+    Route::prefix('free-consultation')->name('free-consultation.')->group(function () {
+        // Free consultation types management
+        Route::resource('types', App\Http\Controllers\Admin\FreeConsultationTypeController::class);
+        
+        // Free consultation schedules management
+        Route::resource('schedules', App\Http\Controllers\Admin\FreeConsultationScheduleController::class);
+        
+        // Bulk operations for schedules
+        Route::post('schedules/bulk-create', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'bulkCreate'])->name('schedules.bulk-create');
+        Route::put('schedules/{schedule}/toggle-availability', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'toggleAvailability'])->name('schedules.toggle-availability');
+    });
 
     // Admin can also manage comments
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('admin.admin.comments.destroy');
@@ -180,13 +207,6 @@ Route::middleware(['auth', 'role:reader'])->group(function () {
 // ======================================================================
 // Additional Routes
 // ======================================================================
-
-// Invoice route
-// Rute untuk menampilkan halaman web invoice
-Route::get('/invoice/{consultationBooking}', [InvoiceController::class, 'show'])->name('invoice.show');
-
-// Rute yang dipanggil oleh tombol "Unduh PDF"
-Route::get('/invoice/{consultationBooking}/download', [InvoiceController::class, 'downloadPdf'])->name('admin.consultation-bookings.download-pdf');
 
 // Google OAuth routes
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
@@ -213,38 +233,29 @@ Route::get('/debug-article/{slug}', function($slug) {
     ]);
 });
 
-Route::get('/tes-403', function () {
-    abort(403, 'Akses Ditolak.');
-});
+// Test error routes
+Route::get('/tes-403', function () { abort(403, 'Akses Ditolak.'); });
+Route::get('/tes-500', function () { abort(500, 'Terjadi Kesalahan Server.'); });
+Route::get('/test-401', function () { abort(401); });
+Route::get('/test-419', function () { abort(419); });
+Route::get('/test-429', function () { abort(429); });
+Route::get('/test-503', function () { abort(503); });
+Route::get('/test-400', function () { abort(400); });
+Route::get('/test-413', function () { abort(413); });
+Route::get('/test-502', function () { abort(502); });
 
-Route::get('/tes-500', function () {
-    abort(500, 'Terjadi Kesalahan Server.');
-});
-
-Route::get('/test-401', function () {
-    abort(401);
-});
-
-Route::get('/test-419', function () {
-    abort(419);
-});
-
-Route::get('/test-429', function () {
-    abort(429);
-});
-
-Route::get('/test-503', function () {
-    abort(503);
-});
-
-Route::get('/test-400', function () {
-    abort(400);
-});
-
-Route::get('/test-413', function () {
-    abort(413);
-});
-
-Route::get('/test-502', function () {
-    abort(502);
+// NEW: Test routes for free consultation system (Development only)
+Route::prefix('test-free-consultation')->group(function () {
+    Route::get('/types', function () {
+        return response()->json(\App\Models\FreeConsultationType::with('availableSchedules')->get());
+    });
+    
+    Route::get('/schedules/{typeId}', function ($typeId) {
+        return response()->json(\App\Models\FreeConsultationSchedule::where('type_id', $typeId)->available()->future()->get());
+    });
+    
+    Route::get('/cart-items', function () {
+        if (!auth()->check()) return response()->json(['error' => 'Not authenticated']);
+        return response()->json(\App\Models\CartItem::where('user_id', auth()->id())->with(['freeConsultationType', 'freeConsultationSchedule'])->get());
+    });
 });

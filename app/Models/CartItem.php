@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon; // Pastikan Carbon diimpor untuk validasi tanggal
+use Carbon\Carbon;
 
 class CartItem extends Model
 {
     use HasFactory;
 
-    // Izinkan kolom ini untuk diisi secara massal
     protected $fillable = [
         'user_id',
         'service_id',
+        'free_consultation_type_id',
+        'free_consultation_schedule_id',
         'quantity',
         'price',
         'hourly_price',
@@ -23,122 +24,48 @@ class CartItem extends Model
         'session_type',
         'offline_address',
         'contact_preference',
-        'payment_type', // Tetap ada di fillable untuk kompatibilitas database/data lama
+        'payment_type',
         'referral_code',
     ];
 
-    /**
-     * Tambahkan properti virtual (accessors) untuk perhitungan harga.
-     * Ini akan membuat properti seperti $item->item_subtotal bisa diakses.
-     */
     protected $appends = [
         'item_subtotal',
         'discount_amount',
         'final_item_price',
         'total_to_pay',
-        'service_title', // Add virtual attributes for free consultation
+        'service_title',
         'service_description',
         'service_thumbnail',
     ];
 
-    /**
-     * Relasi ke model User
-     */
+    // Existing relationships
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Relasi ke model ConsultationService
-     */
     public function service()
     {
         return $this->belongsTo(ConsultationService::class, 'service_id');
     }
 
-    /**
-     * Relasi ke model ReferralCode
-     * Ini tetap diperlukan untuk memuat data ReferralCode yang terkait.
-     */
     public function referralCode()
     {
         return $this->belongsTo(ReferralCode::class, 'referral_code', 'code');
     }
 
-    /**
-     * Accessor untuk menghitung subtotal per item (harga dasar + harga per jam).
-     *
-     * @return float
-     */
-    public function getItemSubtotalAttribute(): float
+    // New relationships for free consultation
+    public function freeConsultationType()
     {
-        // Handle free consultation
-        if ($this->service_id === 'free-consultation') {
-            return 0.0;
-        }
-
-        // For regular services
-        return (float)$this->price + ((float)$this->hourly_price * (int)$this->hours);
+        return $this->belongsTo(FreeConsultationType::class, 'free_consultation_type_id');
     }
 
-    /**
-     * Accessor untuk menghitung jumlah diskon per item.
-     * Logika validasi referral code ditempatkan di sini.
-     *
-     * @return float
-     */
-    public function getDiscountAmountAttribute(): float
+    public function freeConsultationSchedule()
     {
-        // Free consultation has no discount
-        if ($this->service_id === 'free-consultation') {
-            return 0.0;
-        }
-
-        $itemDiscount = 0.0;
-
-        // Pastikan ada kode referral dan relasi referralCode sudah dimuat
-        if ($this->referral_code && $this->referralCode) {
-            $referral = $this->referralCode;
-
-            // Validasi apakah kode referral sudah kedaluwarsa
-            $isExpired = $referral->valid_until && Carbon::now()->gt($referral->valid_until);
-
-            // Validasi apakah batas penggunaan sudah tercapai
-            $isUsedUp = $referral->max_uses && $referral->current_uses >= $referral->max_uses;
-
-            // Jika kode referral tidak kedaluwarsa dan belum habis batas pakainya
-            if (!$isExpired && !$isUsedUp) {
-                $itemSubtotal = $this->item_subtotal;
-                $itemDiscount = ($itemSubtotal * $referral->discount_percentage) / 100;
-            }
-        }
-        return (float)$itemDiscount;
+        return $this->belongsTo(FreeConsultationSchedule::class, 'free_consultation_schedule_id');
     }
 
-    /**
-     * Accessor untuk menghitung harga akhir per item setelah diskon.
-     *
-     * @return float
-     */
-    public function getFinalItemPriceAttribute(): float
-    {
-        return $this->item_subtotal - $this->discount_amount;
-    }
-
-    /**
-     * Accessor untuk menghitung total yang harus dibayar sekarang untuk item ini.
-     * Karena payment_type global, accessor ini akan selalu mengembalikan harga penuh item.
-     * Logika DP/Full Payment akan ditangani di calculateSummary() di controller.
-     *
-     * @return float
-     */
-    public function getTotalToPayAttribute(): float
-    {
-        return $this->final_item_price;
-    }
-
-    // Scopes untuk konsultasi gratis
+    // Updated scopes
     public function scopeForUser($query, $userId)
     {
         return $query->where('user_id', $userId);
@@ -146,23 +73,94 @@ class CartItem extends Model
 
     public function scopeFreeConsultation($query)
     {
-        return $query->where('service_id', 'free-consultation');
+        return $query->where('service_id', 'free-consultation')
+                     ->orWhereNotNull('free_consultation_type_id');
+    }
+
+    public function scopeNewFreeConsultation($query)
+    {
+        return $query->whereNotNull('free_consultation_type_id');
+    }
+
+    public function scopeLegacyFreeConsultation($query) 
+    {
+        return $query->where('service_id', 'free-consultation')
+                     ->whereNull('free_consultation_type_id');
     }
 
     public function scopeRegularServices($query)
     {
-        return $query->where('service_id', '!=', 'free-consultation');
+        return $query->where('service_id', '!=', 'free-consultation')
+                     ->whereNull('free_consultation_type_id');
     }
 
-    // Helper Methods untuk konsultasi gratis
+    // Updated helper methods
     public function isFreeConsultation()
     {
-        return $this->service_id === 'free-consultation';
+        return $this->service_id === 'free-consultation' || $this->free_consultation_type_id !== null;
+    }
+
+    public function isNewFreeConsultation()
+    {
+        return $this->free_consultation_type_id !== null;
+    }
+
+    public function isLegacyFreeConsultation()
+    {
+        return $this->service_id === 'free-consultation' && $this->free_consultation_type_id === null;
+    }
+
+    // Updated accessors
+    public function getItemSubtotalAttribute(): float
+    {
+        if ($this->isFreeConsultation()) {
+            return 0.0;
+        }
+
+        return (float)$this->price + ((float)$this->hourly_price * (int)$this->hours);
+    }
+
+    public function getDiscountAmountAttribute(): float
+    {
+        if ($this->isFreeConsultation()) {
+            return 0.0;
+        }
+
+        $itemDiscount = 0.0;
+
+        if ($this->referral_code && $this->referralCode) {
+            $referral = $this->referralCode;
+            $isExpired = $referral->valid_until && Carbon::now()->gt($referral->valid_until);
+            $isUsedUp = $referral->max_uses && $referral->current_uses >= $referral->max_uses;
+
+            if (!$isExpired && !$isUsedUp) {
+                $itemSubtotal = $this->item_subtotal;
+                $itemDiscount = ($itemSubtotal * $referral->discount_percentage) / 100;
+            }
+        }
+
+        return (float)$itemDiscount;
+    }
+
+    public function getFinalItemPriceAttribute(): float
+    {
+        return $this->item_subtotal - $this->discount_amount;
+    }
+
+    public function getTotalToPayAttribute(): float
+    {
+        return $this->final_item_price;
     }
 
     public function getServiceTitleAttribute()
     {
-        if ($this->isFreeConsultation()) {
+        if ($this->isNewFreeConsultation()) {
+            return $this->freeConsultationType ? 
+                'Konsultasi Gratis - ' . $this->freeConsultationType->name : 
+                'Konsultasi Gratis';
+        }
+
+        if ($this->isLegacyFreeConsultation()) {
             return 'Konsultasi Gratis';
         }
 
@@ -171,7 +169,17 @@ class CartItem extends Model
 
     public function getServiceDescriptionAttribute()
     {
-        if ($this->isFreeConsultation()) {
+        if ($this->isNewFreeConsultation()) {
+            if ($this->freeConsultationType && $this->freeConsultationSchedule) {
+                return $this->freeConsultationType->description . ' - ' . 
+                       $this->freeConsultationSchedule->formatted_date_time;
+            }
+            return $this->freeConsultationType ? 
+                $this->freeConsultationType->description : 
+                'Sesi konsultasi gratis';
+        }
+
+        if ($this->isLegacyFreeConsultation()) {
             return 'Sesi konsultasi gratis 1 jam untuk pengguna baru';
         }
 
@@ -187,5 +195,20 @@ class CartItem extends Model
         return $this->service && $this->service->thumbnail 
             ? asset('storage/' . $this->service->thumbnail)
             : 'https://placehold.co/100x100/cccccc/ffffff?text=No+Image';
+    }
+
+    // Get formatted schedule info for new free consultation
+    public function getFormattedScheduleAttribute()
+    {
+        if ($this->isNewFreeConsultation() && $this->freeConsultationSchedule) {
+            return $this->freeConsultationSchedule->formatted_date_time;
+        }
+
+        if ($this->booked_date && $this->booked_time) {
+            return Carbon::parse($this->booked_date)->format('d M Y') . ' ' . 
+                   Carbon::parse($this->booked_time)->format('H:i');
+        }
+
+        return '';
     }
 }
