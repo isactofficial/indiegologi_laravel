@@ -88,7 +88,9 @@
                                 <p class="mb-0 text-muted small">Indiegologi Official</p>
                             </div>
                         </a>
-                        <a href="https://wa.me/6281234567890" target="_blank" class="d-flex align-items-center text-decoration-none p-3 rounded-3 contact-link">
+
+                        {{-- ===== PERUBAHAN DI SINI ===== --}}
+                        <a href="https://wa.me/6282220955595" target="_blank" class="d-flex align-items-center text-decoration-none p-3 rounded-3 contact-link">
                             <div class="me-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center" style="background-color: #D6E4FF; width: 50px; height: 50px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#0C2C5A" class="bi bi-whatsapp" viewBox="0 0 16 16">
@@ -98,9 +100,10 @@
                             </div>
                             <div>
                                 <h6 class="fw-bold mb-0" style="color: #0C2C5A;">WhatsApp</h6>
-                                <p class="mb-0 text-muted small">+62 812-3456-7890</p>
+                                <p class="mb-0 text-muted small">+62 822-2095-5595</p>
                             </div>
                         </a>
+
                         <a href="mailto:indiegologiofficial@gmail.com" class="d-flex align-items-center text-decoration-none p-3 rounded-3 contact-link">
                             <div class="me-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center" style="background-color: #D6E4FF; width: 50px; height: 50px;">
