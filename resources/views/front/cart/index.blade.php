@@ -43,6 +43,42 @@
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(12, 44, 90, 0.1);
     }
+    
+    /* Ensure equal height for cart items */
+    .cart-item-card .card-body {
+        min-height: 320px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .cart-item-card .row {
+        flex: 1;
+        display: flex;
+        align-items: stretch;
+    }
+    
+    /* Make the pricing column fill available space */
+    .cart-item-card .col-md-5 {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    /* Pricing section styling */
+    .pricing-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 240px;
+    }
+    
+    /* Action buttons stay at bottom */
+    .cart-item-actions {
+        margin-top: auto;
+        padding-top: 1rem;
+    }
+    
     .item-details-list {
         list-style: none; padding: 0; margin: 0; font-size: 0.9rem;
     }
@@ -84,6 +120,12 @@
         font-weight: bold;
         margin-left: 0.5rem;
     }
+    
+    /* Free consultation spacing to match height */
+    .free-consultation-spacer {
+        height: 80px;
+    }
+    
     /* Override warna hijau default Bootstrap menjadi biru Indiegologi */
     .text-success {
         color: var(--brand-primary) !important;
@@ -146,6 +188,12 @@
         }
         .summary-card .fs-4 {
             font-size: 1.2rem !important;
+        }
+        .cart-item-card .card-body {
+            min-height: auto;
+        }
+        .pricing-section {
+            min-height: auto;
         }
     }
 </style>
@@ -241,69 +289,85 @@
                                             
                                             {{-- Pricing Column --}}
                                             <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
-                                                @if($item->isFreeConsultation())
-                                                    {{-- Free consultation pricing --}}
-                                                    <ul class="list-group list-group-flush price-details-list small">
-                                                        <li class="list-group-item d-flex justify-content-between">
-                                                            <span class="text-muted">Harga Dasar:</span>
-                                                            <span class="fw-bold" style="color: var(--brand-primary);">GRATIS</span>
-                                                        </li>
-                                                        <li class="list-group-item d-flex justify-content-between">
-                                                            <span class="text-muted">Durasi:</span>
-                                                            <span class="text-muted">1 Jam</span>
-                                                        </li>
-                                                        <li class="list-group-item d-flex justify-content-between">
-                                                            <span class="text-muted">Subtotal:</span>
-                                                            <span style="color: var(--brand-primary);">Rp 0</span>
-                                                        </li>
-                                                    </ul>
-                                                    <hr class="my-2" style="border-color: var(--brand-border);">
-                                                    <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                        <span>Total Item:</span>
-                                                        <span>Rp 0</span>
-                                                    </p>
-                                                @else
-                                                    {{-- Regular service pricing --}}
-                                                    <ul class="list-group list-group-flush price-details-list small">
-                                                        <li class="list-group-item d-flex justify-content-between">
-                                                            <span class="text-muted">Harga Dasar:</span>
-                                                            <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
-                                                        </li>
-                                                        @if ($item->hours > 0)
-                                                        <li class="list-group-item d-flex justify-content-between">
-                                                            <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
-                                                            <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
-                                                        </li>
-                                                        @endif
-                                                        <li class="list-group-item d-flex justify-content-between">
-                                                            <span class="text-muted">Subtotal:</span>
-                                                            <span class="text-muted">Rp {{ number_format($item->item_subtotal, 0, ',', '.') }}</span>
-                                                        </li>
-                                                        @php $itemDiscount = $item->item_subtotal - $item->final_item_price; @endphp
-                                                        @if ($itemDiscount > 0)
-                                                        <li class="list-group-item d-flex justify-content-between">
-                                                            <span style="color: var(--brand-danger);">Diskon:</span>
-                                                            <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
-                                                        </li>
-                                                        @endif
-                                                    </ul>
-                                                    <hr class="my-2" style="border-color: var(--brand-border);">
-                                                    <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                        <span>Total Item:</span>
-                                                        <span>Rp {{ number_format($item->final_item_price, 0, ',', '.') }}</span>
-                                                    </p>
-                                                @endif
-                                                
-                                                {{-- Action Buttons --}}
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    @if(!$item->isFreeConsultation())
-                                                        <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
+                                                <div class="pricing-section">
+                                                    @if($item->isFreeConsultation())
+                                                        {{-- Free consultation pricing --}}
+                                                        <div>
+                                                            <ul class="list-group list-group-flush price-details-list small">
+                                                                <li class="list-group-item d-flex justify-content-between">
+                                                                    <span class="text-muted">Harga Dasar:</span>
+                                                                    <span class="fw-bold" style="color: var(--brand-primary);">GRATIS</span>
+                                                                </li>
+                                                                <li class="list-group-item d-flex justify-content-between">
+                                                                    <span class="text-muted">Durasi:</span>
+                                                                    <span class="text-muted">1 Jam</span>
+                                                                </li>
+                                                                <li class="list-group-item d-flex justify-content-between">
+                                                                    <span class="text-muted">Sesi:</span>
+                                                                    <span class="text-muted">{{ $item->session_type }}</span>
+                                                                </li>
+                                                                <li class="list-group-item d-flex justify-content-between">
+                                                                    <span class="text-muted">Subtotal:</span>
+                                                                    <span style="color: var(--brand-primary);">Rp 0</span>
+                                                                </li>
+                                                            </ul>
+                                                            
+                                                            {{-- Spacer to match regular service height --}}
+                                                            <div class="free-consultation-spacer"></div>
+                                                            
+                                                            <hr class="my-2" style="border-color: var(--brand-border);">
+                                                            <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                                                <span>Total Item:</span>
+                                                                <span>Rp 0</span>
+                                                            </p>
+                                                        </div>
                                                     @else
-                                                        <span class="text-muted small">Konsultasi Gratis</span>
+                                                        {{-- Regular service pricing --}}
+                                                        <div>
+                                                            <ul class="list-group list-group-flush price-details-list small">
+                                                                <li class="list-group-item d-flex justify-content-between">
+                                                                    <span class="text-muted">Harga Dasar:</span>
+                                                                    <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                                                                </li>
+                                                                @if ($item->hours > 0)
+                                                                <li class="list-group-item d-flex justify-content-between">
+                                                                    <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
+                                                                    <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
+                                                                </li>
+                                                                @endif
+                                                                <li class="list-group-item d-flex justify-content-between">
+                                                                    <span class="text-muted">Subtotal:</span>
+                                                                    <span class="text-muted">Rp {{ number_format($item->item_subtotal, 0, ',', '.') }}</span>
+                                                                </li>
+                                                                @php $itemDiscount = $item->item_subtotal - $item->final_item_price; @endphp
+                                                                @if ($itemDiscount > 0)
+                                                                <li class="list-group-item d-flex justify-content-between">
+                                                                    <span style="color: var(--brand-danger);">Diskon:</span>
+                                                                    <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
+                                                                </li>
+                                                                @endif
+                                                            </ul>
+                                                            <hr class="my-2" style="border-color: var(--brand-border);">
+                                                            <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                                                <span>Total Item:</span>
+                                                                <span>Rp {{ number_format($item->final_item_price, 0, ',', '.') }}</span>
+                                                            </p>
+                                                        </div>
                                                     @endif
-                                                    <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="Hapus item">
-                                                        <i class="bi bi-trash3-fill fs-5"></i>
-                                                    </button>
+                                                    
+                                                    {{-- Action Buttons --}}
+                                                    <div class="cart-item-actions">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            @if(!$item->isFreeConsultation())
+                                                                <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
+                                                            @else
+                                                                <span class="text-muted small">Konsultasi Gratis</span>
+                                                            @endif
+                                                            <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="Hapus item">
+                                                                <i class="bi bi-trash3-fill fs-5"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -422,7 +486,6 @@ $(document).ready(function() {
                 },
                 error: function(xhr, status, error) {
                     console.error('Error updating summary:', error);
-                    // Tambahkan notifikasi error jika perlu
                     Swal.fire('Error', 'Gagal memperbarui ringkasan pesanan.', 'error');
                 }
             });
@@ -467,23 +530,17 @@ $(document).ready(function() {
                 const alt = $img.attr('alt');
                 const src = $img.attr('src');
                 
-                // Check if this is a free consultation thumbnail
                 if (alt && alt.toLowerCase().includes('konsultasi gratis')) {
-                    // Replace with blue thumbnail
                     $img.attr('src', 'https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS');
                 }
                 
-                // Also check src for placeholder images with yellow/gold colors
                 if (src && src.includes('placehold.co') && (src.includes('D4AF37') || src.includes('FFB700') || src.includes('text=FREE'))) {
                     $img.attr('src', 'https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS');
                 }
             });
         }
         
-        // Run fix on page load
         fixFreeConsultationThumbnails();
-        
-        // Run fix again after any dynamic content updates
         setTimeout(fixFreeConsultationThumbnails, 500);
 
     @else
@@ -491,14 +548,13 @@ $(document).ready(function() {
         // FUNGSI UNTUK GUEST USER (TEMP CART)
         // ===========================================
         
-        // Helper untuk manajemen localStorage
         function getTempCart() {
             try {
                 const cart = localStorage.getItem('tempCart');
                 return cart ? JSON.parse(cart) : {};
             } catch (e) {
                 console.error("Error parsing temp cart:", e);
-                localStorage.removeItem('tempCart'); // Hapus data korup
+                localStorage.removeItem('tempCart');
                 return {};
             }
         }
@@ -511,18 +567,15 @@ $(document).ready(function() {
             }
         }
         
-        // [BARU] Helper untuk mendeteksi konsultasi gratis (legacy & baru)
         function isFreeConsultation(serviceId, item) {
             return serviceId === 'free-consultation' || (item && item.consultation_type === 'free-consultation-new');
         }
 
-        // Fetch pricing dari server hanya untuk layanan reguler
         async function fetchServicePricing(cartItems) {
-            // [DIPERBAIKI] Filter hanya service ID yang bukan konsultasi gratis
             const regularServiceIds = Object.keys(cartItems).filter(id => !isFreeConsultation(id, cartItems[id]));
 
             if (regularServiceIds.length === 0) {
-                return {}; // Tidak perlu panggil API jika hanya ada item gratis
+                return {};
             }
 
             try {
@@ -533,7 +586,7 @@ $(document).ready(function() {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        service_ids: regularServiceIds // Kirim ID yang sudah difilter
+                        service_ids: regularServiceIds
                     })
                 });
 
@@ -542,18 +595,16 @@ $(document).ready(function() {
                 return data.success ? data.pricing : {};
             } catch (error) {
                 console.error('Error fetching service pricing:', error);
-                return {}; // Kembalikan objek kosong jika gagal
+                return {};
             }
         }
 
-        // Hitung summary dengan data harga yang benar
         function calculateSummary(cartItems, paymentType, pricingData = {}) {
             let subtotal = 0;
             let totalDiscount = 0;
             let grandTotal = 0;
 
             for (const [id, item] of Object.entries(cartItems)) {
-                // [DIPERBAIKI] Gunakan helper untuk skip semua jenis konsultasi gratis
                 if (isFreeConsultation(id, item)) continue;
                 
                 let basePrice = 0;
@@ -566,7 +617,7 @@ $(document).ready(function() {
                 
                 const hours = parseInt(item.hours) || 1;
                 const itemSubtotal = basePrice + (hourlyPrice * hours);
-                const discountAmount = 0; // Asumsi diskon dihitung di backend, untuk guest kita tampilkan 0
+                const discountAmount = 0;
                 const finalItemPrice = itemSubtotal - discountAmount;
 
                 subtotal += itemSubtotal;
@@ -588,7 +639,6 @@ $(document).ready(function() {
             };
         }
 
-        // Render temp cart dengan logika yang disempurnakan
         async function renderTempCart(cartItems) {
             const container = $('#temp-cart-display');
             container.empty().html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Memuat keranjang...</p></div>');
@@ -606,7 +656,6 @@ $(document).ready(function() {
                 return;
             }
 
-            // [DIPERBAIKI] Fetch pricing data hanya untuk item yang relevan
             const pricingData = await fetchServicePricing(cartItems);
             container.empty();
 
@@ -626,7 +675,6 @@ $(document).ready(function() {
             const cartListCol = $('<div class="col-lg-7"></div>');
 
             Object.entries(cartItems).forEach(([serviceId, item], index) => {
-                // [DIPERBAIKI] Logika terpusat untuk mendeteksi item gratis dan menyiapkan datanya
                 const isFree = isFreeConsultation(serviceId, item);
                 let serviceTitle, serviceThumbnail;
                 let basePrice = 0, hourlyPrice = 0;
@@ -641,16 +689,14 @@ $(document).ready(function() {
                     basePrice = parseFloat(details.price) || 0;
                     hourlyPrice = parseFloat(details.hourly_price) || 0;
                 } else {
-                    // Fallback jika API gagal atau data tidak ditemukan
                     serviceTitle = "Layanan Tidak Tersedia";
                     serviceThumbnail = 'https://placehold.co/60x60/dc3545/ffffff?text=Error';
                 }
                 
                 const hours = parseInt(item.hours) || 1;
                 const itemSubtotal = isFree ? 0 : basePrice + (hourlyPrice * hours);
-                const finalItemPrice = itemSubtotal; // Diskon tidak dihitung untuk guest
+                const finalItemPrice = itemSubtotal;
                 
-                // [DIPERBAIKI] Format tanggal yang lebih aman
                 const displayDate = item.booked_date ? new Date(item.booked_date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : 'Jadwal belum dipilih';
 
                 const itemHtml = `
@@ -665,7 +711,7 @@ $(document).ready(function() {
                                         <div class="flex-grow-1">
                                             <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">
                                                 ${serviceTitle}
-                                                ${isFree ? '<span style="background: linear-gradient(45deg, #FFB700, #FFC533); color: white; font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 15px; font-weight: bold; margin-left: 0.5rem;">GRATIS</span>' : ''}
+                                                ${isFree ? '<span class="free-consultation-badge">GRATIS</span>' : ''}
                                             </h5>
                                             <ul class="item-details-list">
                                                 <li><i class="bi bi-calendar-check"></i>${displayDate}, ${item.booked_time} ${isFree ? '(1 jam)' : '(' + hours + ' jam)'}</li>
@@ -676,29 +722,56 @@ $(document).ready(function() {
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
-                                    ${isFree ? `
-                                        <ul class="list-group list-group-flush price-details-list small">
-                                            <li class="list-group-item d-flex justify-content-between">
-                                                <span class="text-muted">Harga:</span>
-                                                <span class="fw-bold" style="color: #0C2C5A;">GRATIS</span>
-                                            </li>
-                                        </ul>
-                                        <hr class="my-2" style="border-color: var(--brand-border);">
-                                        <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                            <span>Total Item:</span>
-                                            <span style="color: #0C2C5A;">Rp 0</span>
-                                        </p>
-                                    ` : `
-                                        <ul class="list-group list-group-flush price-details-list small">
-                                            <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Harga Dasar:</span><span class="text-muted">Rp ${basePrice.toLocaleString('id-ID')}</span></li>
-                                            ${hourlyPrice > 0 && hours > 0 ? `<li class="list-group-item d-flex justify-content-between"><span class="text-muted">Per Jam (${hours} jam):</span><span class="text-muted">Rp ${(hourlyPrice * hours).toLocaleString('id-ID')}</span></li>` : ''}
-                                            <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Subtotal:</span><span class="text-muted">Rp ${itemSubtotal.toLocaleString('id-ID')}</span></li>
-                                        </ul>
-                                        <hr class="my-2" style="border-color: var(--brand-border);"><p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);"><span>Total Item:</span><span>Rp ${finalItemPrice.toLocaleString('id-ID')}</span></p>
-                                    `}
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        ${!isFree ? '<a href="{{ route("front.layanan") }}" class="btn btn-brand-outline">Pesan Lagi</a>' : '<span class="text-muted small">Konsultasi Gratis</span>'}
-                                        <button type="button" class="btn btn-link p-0 remove-btn-temp" data-id="${serviceId}" title="Hapus item"><i class="bi bi-trash3-fill fs-5"></i></button>
+                                    <div class="pricing-section">
+                                        ${isFree ? `
+                                            <div>
+                                                <ul class="list-group list-group-flush price-details-list small">
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span class="text-muted">Harga Dasar:</span>
+                                                        <span class="fw-bold" style="color: #0C2C5A;">GRATIS</span>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span class="text-muted">Durasi:</span>
+                                                        <span class="text-muted">1 Jam</span>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span class="text-muted">Sesi:</span>
+                                                        <span class="text-muted">${item.session_type}</span>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span class="text-muted">Subtotal:</span>
+                                                        <span style="color: #0C2C5A;">Rp 0</span>
+                                                    </li>
+                                                </ul>
+                                                
+                                                <div class="free-consultation-spacer"></div>
+                                                
+                                                <hr class="my-2" style="border-color: var(--brand-border);">
+                                                <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                                    <span>Total Item:</span>
+                                                    <span style="color: #0C2C5A;">Rp 0</span>
+                                                </p>
+                                            </div>
+                                        ` : `
+                                            <div>
+                                                <ul class="list-group list-group-flush price-details-list small">
+                                                    <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Harga Dasar:</span><span class="text-muted">Rp ${basePrice.toLocaleString('id-ID')}</span></li>
+                                                    ${hourlyPrice > 0 && hours > 0 ? `<li class="list-group-item d-flex justify-content-between"><span class="text-muted">Per Jam (${hours} jam):</span><span class="text-muted">Rp ${(hourlyPrice * hours).toLocaleString('id-ID')}</span></li>` : ''}
+                                                    <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Subtotal:</span><span class="text-muted">Rp ${itemSubtotal.toLocaleString('id-ID')}</span></li>
+                                                </ul>
+                                                <hr class="my-2" style="border-color: var(--brand-border);">
+                                                <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                                    <span>Total Item:</span>
+                                                    <span>Rp ${finalItemPrice.toLocaleString('id-ID')}</span>
+                                                </p>
+                                            </div>
+                                        `}
+                                        <div class="cart-item-actions">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                ${!isFree ? '<a href="{{ route("front.layanan") }}" class="btn btn-brand-outline">Pesan Lagi</a>' : '<span class="text-muted small">Konsultasi Gratis</span>'}
+                                                <button type="button" class="btn btn-link p-0 remove-btn-temp" data-id="${serviceId}" title="Hapus item"><i class="bi bi-trash3-fill fs-5"></i></button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -708,7 +781,6 @@ $(document).ready(function() {
                 cartListCol.append(itemHtml);
             });
 
-            // Build summary
             const summary = calculateSummary(cartItems, 'full_payment', pricingData);
             const summaryCol = `
                 <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
@@ -730,7 +802,6 @@ $(document).ready(function() {
             container.append(row);
             AOS.refresh();
 
-            // Event handlers untuk temp cart (delegasi event untuk elemen yang baru dibuat)
             container.on('change', '#payment-type-select-temp', function() {
                 const tempCart = getTempCart();
                 const summary = calculateSummary(tempCart, $(this).val(), pricingData);
@@ -751,14 +822,13 @@ $(document).ready(function() {
                         const tempCart = getTempCart();
                         delete tempCart[serviceId];
                         saveTempCart(tempCart);
-                        renderTempCart(tempCart); // Re-render the cart
+                        renderTempCart(tempCart);
                         Swal.fire('Dihapus!', 'Item telah dihapus dari keranjang.', 'success');
                     }
                 });
             });
         }
 
-        // Inisialisasi render temp cart untuk guest user
         const tempCart = getTempCart();
         renderTempCart(tempCart);
     @endauth

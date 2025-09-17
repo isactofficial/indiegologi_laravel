@@ -482,161 +482,254 @@
             text-overflow: ellipsis;
             min-height: 2.5em;
         }
+/* =================================================================== */
+/* ===== CSS SKETCH TELLING CAROUSEL - PENYEMPURNAAN JARAK AKHIR ===== */
+/* =================================================================== */
+#sketch-gallery-wrapper .carousel-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
 
-        /* =================================================================== */
-        /* ===== CSS SKETCH TELLING GALLERY - ANTI KONFLIK ===== */
-        /* =================================================================== */
-        #sketch-gallery-wrapper .carousel-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
+#sketch-gallery-wrapper .carousel-title {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    font-weight: 800;
+    color: #0C2C5A;
+    font-family: 'Gotham', sans-serif;
+}
 
-        #sketch-gallery-wrapper .carousel-title {
-            font-size: 2.5rem;
-            margin-bottom: 8px;
-            font-weight: 800;
-            color: #0C2C5A;
-            font-family: 'Gotham', sans-serif;
-        }
+#sketch-gallery-wrapper .carousel-subtitle {
+    color: #6c757d;
+    margin-bottom: 30px;
+    font-size: 1.15rem;
+    font-family: 'Playfair Display', serif;
+}
 
-        #sketch-gallery-wrapper .carousel-subtitle {
-            color: #6c757d;
-            margin-bottom: 30px;
-            font-size: 1.15rem;
-            font-family: 'Playfair Display', serif;
-        }
+#sketch-gallery-wrapper .gallery-carousel {
+    padding-top: 30px;
+    position: relative;
+    height: 520px;
+    perspective: 1500px;
+    transform-style: preserve-3d;
+}
 
-        #sketch-gallery-wrapper .gallery-carousel {
-            padding-top: 30px;
-            position: relative;
-            height: 480px;
-            perspective: 1000px;
-            transform-style: preserve-3d;
-        }
+#sketch-gallery-wrapper .gallery-carousel-images {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    transform-style: preserve-3d;
+}
 
-        #sketch-gallery-wrapper .gallery-carousel-images {
-            position: relative;
-            height: 100%;
-            width: 100%;
-            transform-style: preserve-3d;
-        }
+#sketch-gallery-wrapper .gallery-image-item {
+    position: absolute !important;
+    display: block !important;
+    visibility: visible !important;
+    width: 320px;
+    height: 480px;
+    left: calc(50% - 160px);
+    transition: all 0.5s ease;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    text-decoration: none;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    /* KUNCI UTAMA: Mengatur jarak vertikal */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Mendorong header ke atas & footer ke bawah */
+    padding: 30px 25px; /* Padding atas-bawah ditambah */
+    box-sizing: border-box;
+}
 
-        #sketch-gallery-wrapper .gallery-image-item {
-            position: absolute !important;
-            display: block !important;
-            visibility: visible !important;
-            width: 50%;
-            height: 480px;
-            left: 25%;
-            padding: 10px;
-            background-color: white;
-            transition: all 0.5s ease;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            text-decoration: none;
-            color: inherit;
-        }
+#sketch-gallery-wrapper .gallery-image-item:hover {
+    text-decoration: none;
+    color: inherit;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
 
-        #sketch-gallery-wrapper .gallery-image-item:hover {
-            text-decoration: none;
-            color: inherit;
-        }
+#sketch-gallery-wrapper .sketch-card-header,
+#sketch-gallery-wrapper .sketch-card-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0C2C5A;
+    margin: 0;
+}
 
-        #sketch-gallery-wrapper .gallery-image-item img {
-            width: 100%;
-            height: calc(100% - 50px);
-            object-fit: cover;
-            border-radius: 10px;
-        }
+#sketch-gallery-wrapper .sketch-card-middle-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
 
-        #sketch-gallery-wrapper .gallery-image-item h1 {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: white;
-            color: #0C2C5A;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            padding: 10px;
-            margin: 0;
-            font-family: 'Gotham', sans-serif;
-        }
+#sketch-gallery-wrapper .sketch-circular-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px; /* Jarak ke subtitle ditambah */
+}
 
-        #sketch-gallery-wrapper .gallery-image-item.active {
-            z-index: 10;
-            opacity: 1;
-            transform: translateX(0) scale(1);
-        }
+#sketch-gallery-wrapper .sketch-card-subtitle {
+    font-family: 'Gotham', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0C2C5A;
+    line-height: 1.3;
+    margin: 0 0 15px 0; /* Jarak ke deskripsi ditambah */
+    text-transform: uppercase;
+    white-space: nowrap;
+}
 
-        #sketch-gallery-wrapper .gallery-image-item.prev {
-            z-index: 5;
-            opacity: 1;
-            transform: translateX(-20%) scale(0.85);
-        }
+#sketch-gallery-wrapper .sketch-card-description {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    display: -webkit-box;
+}
 
-        #sketch-gallery-wrapper .gallery-image-item.next {
-            z-index: 5;
-            opacity: 1;
-            transform: translateX(20%) scale(0.85);
-        }
+/* Positioning (VERSI LEBIH LEBAR SESUAI GAMBAR) */
+#sketch-gallery-wrapper .gallery-image-item.active { z-index: 10; opacity: 1; transform: translateX(0) scale(1); }
+#sketch-gallery-wrapper .gallery-image-item.prev { z-index: 8; opacity: 1; transform: translateX(-220px) scale(0.9); }
+#sketch-gallery-wrapper .gallery-image-item.next { z-index: 8; opacity: 1; transform: translateX(220px) scale(0.9); }
+#sketch-gallery-wrapper .gallery-image-item.prev-hidden { z-index: 6; opacity: 1; transform: translateX(-440px) scale(0.8); }
+#sketch-gallery-wrapper .gallery-image-item.next-hidden { z-index: 6; opacity: 1; transform: translateX(440px) scale(0.8); }
+#sketch-gallery-wrapper .gallery-image-item.hidden { opacity: 0; transform: scale(0.7); z-index: 1; }
 
-        #sketch-gallery-wrapper .gallery-image-item.prev-hidden {
-            z-index: 4;
-            opacity: 1;
-            transform: translateX(-40%) scale(0.7);
-        }
+/* Navigation buttons (Dipojokkan) */
+#sketch-gallery-wrapper .gallery-nav-button { position: absolute; top: 50%; transform: translateY(-50%); background: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 20; transition: all 0.3s ease; color: #0C2C5A; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); }
+#sketch-gallery-wrapper .gallery-nav-button:hover { background: white; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3); }
+#sketch-gallery-wrapper .gallery-nav-left { left: 1%; }
+#sketch-gallery-wrapper .gallery-nav-right { right: 1%; }
 
-        #sketch-gallery-wrapper .gallery-image-item.next-hidden {
-            z-index: 4;
-            opacity: 1;
-            transform: translateX(40%) scale(0.7);
-        }
+/* Responsive (disederhanakan) */
+@media (max-width: 768px) {
+    #sketch-gallery-wrapper .gallery-carousel {
+        height: 450px;
+    }
+    #sketch-gallery-wrapper .gallery-image-item {
+        width: 280px;
+        height: 420px;
+        left: calc(50% - 140px);
+    }
+    #sketch-gallery-wrapper .sketch-circular-image {
+        width: 120px;
+        height: 120px;
+    }
+    #sketch-gallery-wrapper .sketch-card-title {
+        font-size: 1.1rem;
+    }
+     #sketch-gallery-wrapper .gallery-image-item.prev,
+     #sketch-gallery-wrapper .gallery-image-item.next,
+     #sketch-gallery-wrapper .gallery-image-item.prev-hidden,
+     #sketch-gallery-wrapper .gallery-image-item.next-hidden {
+        display: none !important; /* Sembunyikan kartu samping di mobile untuk fokus */
+     }
+}
 
-        #sketch-gallery-wrapper .gallery-image-item.hidden {
-            opacity: 0;
-            transform: translateX(-200%) scale(0.7);
-        }
+@media (max-width: 768px) {
+    #sketch-gallery-wrapper .carousel-title {
+        font-size: 2rem;
+    }
 
-        #sketch-gallery-wrapper .gallery-nav-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #fff;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 20;
-            transition: all 0.3s ease;
-            color: #0C2C5A;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-        }
+    #sketch-gallery-wrapper .carousel-subtitle {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
 
-        #sketch-gallery-wrapper .gallery-nav-button:hover {
-            background: white;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-        }
+    #sketch-gallery-wrapper .gallery-carousel {
+        height: 420px;
+        padding-top: 20px;
+    }
 
-        #sketch-gallery-wrapper .gallery-nav-left {
-            left: 7%;
-        }
+    #sketch-gallery-wrapper .gallery-image-item {
+        height: 420px;
+        width: 70%;
+        left: 15%;
+        padding: 10px;
+        padding-top: 30px;
+    }
 
-        #sketch-gallery-wrapper .gallery-nav-right {
-            right: 7%;
-        }
+    #sketch-gallery-wrapper .sketch-circular-image {
+        width: 140px;
+        height: 140px;
+        margin-bottom: 20px;
+    }
 
+    #sketch-gallery-wrapper .sketch-main-title {
+        font-size: 1.5rem;
+    }
+
+    #sketch-gallery-wrapper .sketch-description {
+        font-size: 0.9rem;
+    }
+
+    #sketch-gallery-wrapper .gallery-nav-left {
+        left: 5%;
+    }
+
+    #sketch-gallery-wrapper .gallery-nav-right {
+        right: 5%;
+    }
+
+    #sketch-gallery-wrapper .gallery-nav-button {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    #sketch-gallery-wrapper .gallery-carousel {
+        height: 380px;
+    }
+
+    #sketch-gallery-wrapper .gallery-image-item {
+        height: 380px;
+        width: 75%;
+        left: 12.5%;
+        padding-top: 25px;
+    }
+
+    #sketch-gallery-wrapper .sketch-circular-image {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 15px;
+    }
+
+    #sketch-gallery-wrapper .sketch-main-title {
+        font-size: 1.3rem;
+    }
+
+    #sketch-gallery-wrapper .sketch-description {
+        font-size: 0.85rem;
+    }
+
+    #sketch-gallery-wrapper .gallery-nav-left {
+        left: 2%;
+    }
+
+    #sketch-gallery-wrapper .gallery-nav-right {
+        right: 2%;
+    }
+
+    #sketch-gallery-wrapper .gallery-nav-button {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+}
         /* ===== KONSULTASI GRATIS SECTION ===== */
         .consultation-section {
             position: relative;
@@ -1365,34 +1458,54 @@
             <div class="swiper-button-prev testimonials-prev"></div>
         </div>
     </section>
-    {{-- 6. SKETCH TELLING (STYLE KERSA) --}}
-    <section id="sketch-gallery-wrapper" class="container py-5 my-5">
-        <div class="carousel-container">
-            <h2 class="carousel-title" data-aos="fade-down">Sketch Telling</h2>
-            <p class="carousel-subtitle">Lihatlah kisah-kisah yang kami visualisasikan</p>
-            <div class="gallery-carousel" data-aos="fade-up">
-                <button class="gallery-nav-button gallery-nav-left">&#10094;</button>
-                <div class="gallery-carousel-images" data-aos="zoom-in" data-aos-duration="1000">
-                    @forelse ($latest_sketches as $sketch)
-                        <a href="{{ route('front.sketches.detail', $sketch->slug) }}" class="gallery-image-item">
-                            <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" />
-                            <h1>{{ Str::limit($sketch->title, 30) }}</h1>
-                        </a>
-                    @empty
-                        <div class="d-flex justify-content-center align-items-center h-100">
-                            <p class="text-center text-muted">Belum ada sketsa.</p>
+    {{-- 6. SKETCH TELLING (CAROUSEL DENGAN TAMPILAN KARTU BARU - PERBAIKAN FINAL) --}}
+<section id="sketch-gallery-wrapper" class="container py-5 my-5">
+    <div class="carousel-container">
+        <h2 class="carousel-title" data-aos="fade-down">Sketch Telling</h2>
+        <p class="carousel-subtitle" data-aos="fade-up" data-aos-delay="100">
+            Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang lebih dalam tentang berbagai perjalanan hidup
+        </p>
+        <div class="gallery-carousel" data-aos="fade-up">
+            <button class="gallery-nav-button gallery-nav-left">&#10094;</button>
+            <div class="gallery-carousel-images" data-aos="zoom-in" data-aos-duration="1000">
+                @forelse ($latest_sketches as $sketch)
+                    <a href="{{ route('front.sketch.show', $sketch->slug) }}" class="gallery-image-item">
+                        <p class="sketch-card-header">Sketch Telling</p>
+                        
+                        <div class="sketch-card-middle-content">
+                            <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="sketch-circular-image" />
+                            <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
+                            <p class="sketch-card-description">
+                                {{-- Mengambil dari kolom 'content' bukan 'title' --}}
+                                {{ Str::limit(strip_tags($sketch->content), 120) }}
+                            </p>
                         </div>
-                    @endforelse
-                </div>
-                <button class="gallery-nav-button gallery-nav-right">&#10095;</button>
+                        
+                        <p class="sketch-card-brand">Indiegologi</p>
+                    </a>
+                @empty
+                    {{-- Konten Fallback jika tidak ada sketsa --}}
+                    <div class="gallery-image-item">
+                        <p class="sketch-card-header">Sketch Telling</p>
+                        <div class="sketch-card-middle-content">
+                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop&crop=face" alt="Default" class="sketch-circular-image">
+                            <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
+                            <p class="sketch-card-description">Mulai hari dengan ketenangan dan fokus yang jernih untuk perjalanan hidup yang lebih baik.</p>
+                        </div>
+                        <p class="sketch-card-brand">Indiegologi</p>
+                    </div>
+                @endforelse
             </div>
+            <button class="gallery-nav-button gallery-nav-right">&#10095;</button>
         </div>
-        <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="300">
-            <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2"
-                style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat
-                Semua Sketsa</a>
-        </div>
-    </section>
+    </div>
+    <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="300">
+        <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2"
+            style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">
+            Lihat Semua Sketsa
+        </a>
+    </div>
+</section>
 
     {{-- 7. Layanan Unggulan --}}
     <section class="py-5 my-5 bg-light">

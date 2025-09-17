@@ -208,6 +208,10 @@ Route::middleware(['auth', 'role:reader'])->group(function () {
 // Additional Routes
 // ======================================================================
 
+// Letakkan ini di dalam grup route yang sesuai, misalnya di bawah route untuk homepage.
+
+Route::get('/sketch/{sketch:slug}', [FrontController::class, 'sketchShow'])->name('front.sketch.show');
+
 // Google OAuth routes
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);

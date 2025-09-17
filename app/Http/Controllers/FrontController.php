@@ -33,6 +33,8 @@ class FrontController extends Controller
         $testimonials = Testimonial::active()
             ->ordered()
             ->get();
+
+        
             
         // --- TAMBAHKAN KODE INI ---
         // Mengambil semua jenis konsultasi gratis yang statusnya 'active'
@@ -51,6 +53,14 @@ class FrontController extends Controller
             'testimonials',
             'freeConsultationTypes' // Tambahkan variabel baru ini
         ));
+    }
+
+    public function sketchShow(Sketch $sketch)
+    {
+        // Ubah dari 'front.sketch_show' menjadi 'front.sketch_detail'
+        return view('front.sketch_detail', [
+            'sketch' => $sketch
+        ]);
     }
 
     /**
