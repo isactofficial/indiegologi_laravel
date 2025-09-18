@@ -3,235 +3,114 @@
 namespace App\Http\Controllers;
 
 use BotMan\BotMan\BotMan;
-use App\Models\Article;
-use App\Models\Sketch;
-use App\Models\ConsultationService;
+use Illuminate\Http\Request;
 use BotMan\BotMan\BotManFactory;
 use BotMan\BotMan\Drivers\DriverManager;
-use BotMan\BotMan\Messages\Outgoing\Question;
-use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use BotMan\BotMan\Messages\Attachments\Image;
-use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
-use Illuminate\Support\Str;
+use BotMan\Drivers\Web\WebDriver;
+use Illuminate\Support\Facades\Log;
+use App\Models\Article;
 
 class ChatbotController extends Controller
 {
     /**
-     * Handle the incoming chatbot requests.
+     * Handle the BotMan conversation.
+     *
+     * @param Request $request
+     * @return void
      */
-    public function handle()
+    public function handle(Request $request)
     {
-        DriverManager::loadDriver(\BotMan\Drivers\Web\WebDriver::class);
+        try {
+            DriverManager::loadDriver(WebDriver::class);
 
-        $config = [
-            'web' => [
-                'matchingData' => [
-                    'driver' => 'web',
+            $config = [
+                'web' => [
+                    'matchingData' => [
+                        'driver' => 'web',
+                    ],
                 ],
-            ],
-        ];
+            ];
 
-        $botman = BotManFactory::create($config);
+            $botman = BotManFactory::create($config, null, $request);
 
-        // --- Logika Respons Chatbot Cerdas ---
+            // Perintah: 'help', 'bantuan', 'start', 'hi', 'hello'
+            $botman->hears('.*(help|bantuan|start|hi|hello).*', function (BotMan $bot) {
+                $response = "🎨 Selamat datang di *Indiegologi Assistant*!\n\n";
+                $response .= "Saya bisa membantu Anda menavigasi website. Berikut perintah yang tersedia:\n";
+                $response .= "• `artikel` - Menampilkan artikel terbaru\n";
+                $response .= "• `layanan` - Membuka halaman layanan kami\n";
+                $response .= "• `sketsa` - Melihat galeri sketsa\n";
+                $response .= "• `kontak` - Membuka halaman kontak\n\n";
+                $response .= "Ketik salah satu perintah di atas untuk memulai.";
+                $bot->reply($response);
+            });
 
-        // Respon sapaan yang lebih ramah dan informatif
-        $botman->hears('^(halo|hi|hai|selamat pagi|selamat siang|selamat sore|selamat malam)$', function (BotMan $bot) {
-            $bot->reply('Halo! 👋 Saya Mindie, asisten virtual Indiegologi. Ada yang bisa saya bantu? Kamu bisa tanya tentang "layanan", "artikel terbaru", atau "sketsa".');
-        });
+            // Perintah: 'artikel'
+            $botman->hears('.*(artikel|article|blog).*', function (BotMan $bot) {
+                $articles = Article::where('status', 'published')
+                                   ->latest()
+                                   ->take(3)
+                                   ->get();
 
-        // Respon untuk 'siapa namamu'
-        $botman->hears('siapa namamu', function (BotMan $bot) {
-            $bot->reply('Saya Mindie, asisten virtual yang siap membantumu menjelajahi Indiegologi.');
-        });
-        
-        // Respon untuk 'terima kasih'
-        $botman->hears('^(terima kasih|makasih|thanks|thx)$', function (BotMan $bot) {
-            $bot->reply('Sama-sama! Jika ada hal lain yang ingin kamu tanyakan, jangan ragu ya. 😊');
-        });
+                if ($articles->isEmpty()) {
+                    $bot->reply("Saat ini belum ada artikel yang dipublikasikan. Silakan cek lagi nanti!");
+                    return;
+                }
 
-        // Respon interaktif untuk permintaan "layanan"
-        $botman->hears('^(tampilkan|info|apa saja)?\s?(layanan|service|jasa|konsultasi)', function (BotMan $bot) {
-            $this->showServices($bot);
-        });
+                $response = "Berikut adalah 3 artikel terbaru kami:\n\n";
+                foreach ($articles as $article) {
+                    $articleUrl = route('front.articles.show', $article);
+                    $response .= "📄 *" . $article->title . "*\n";
+                    // Menggunakan link HTML yang lebih ramah
+                    $response .= '<a href="' . $articleUrl . '" target="_blank" class="chatbot-link">Lihat Artikel</a>' . "\n\n";
+                }
+                $response .= "Anda juga bisa melihat semua artikel dengan menekan tombol di bawah ini:\n";
+                $response .= '<a href="' . route('front.articles') . '" target="_blank" class="chatbot-button">Lihat Semua Artikel</a>';
+                $bot->reply($response);
+            });
 
-        // Respon interaktif untuk permintaan "artikel"
-        $botman->hears('^(tampilkan|info|lihat)?\s?(artikel|tulisan|blog)\s?(terbaru)?', function (BotMan $bot) {
-            $this->showRecentArticles($bot);
-        });
+            // Perintah: 'layanan'
+            $botman->hears('.*(layanan|services|service).*', function (BotMan $bot) {
+                $url = route('front.layanan');
+                $response = "Kami menyediakan berbagai layanan desain dan konsultasi.\n\n";
+                $response .= "Silakan klik tombol di bawah ini untuk melihat daftar lengkap layanan kami:\n";
+                // Mengirimkan HTML untuk tombol
+                $response .= '<a href="' . $url . '" target="_blank" class="chatbot-button">Buka Halaman Layanan</a>';
+                $bot->reply($response);
+            });
 
-        // Respon interaktif untuk permintaan "sketsa"
-        $botman->hears('^(tampilkan|info|lihat)?\s?(sketsa|sketch|desain|karya)\s?(terbaru)?', function (BotMan $bot) {
-            $this->showRecentSketches($bot);
-        });
-
-$botman->fallback(function ($bot) {
-            // 1. Dapatkan pesan mentah (payload)
-            $message = $bot->getMessage();
-            $payload = $message->getPayload();
-
-            // 2. JIKA INI ADALAH KLIK TOMBOL, ABAIKAN DAN HENTIKAN
-            // Ini mencegah error saat tombol benar-benar di-klik nanti.
-            if (isset($payload['type']) && $payload['type'] === 'web_button_callback') {
-                return;
-            }
-
-            // 3. Dapatkan teks pesan
-            $keyword = $message->getText();
-
-            // 4. JIKA PESAN KOSONG ATAU NULL (KARENA EFEK "GEMA"), ABAIKAN
-            // Ini adalah perbaikan utama untuk masalah di screenshot-mu.
-            if (empty($keyword) || strtolower($keyword) === 'null') {
-                // Jangan balas apa-apa, cukup hentikan eksekusi.
-                return;
-            }
-
-            // 5. HANYA JIKA ADA KATA KUNCI ASLI, LAKUKAN PENCARIAN
-            $this->performSearch($bot, $keyword);
-        });
-
-
-        $botman->listen();
-    }
-
-    /**
-     * Mengambil dan menampilkan layanan konsultasi secara dinamis.
-     */
-    private function showServices(BotMan $bot)
-    {
-        $services = ConsultationService::where('status', 'published')->orWhere('status', 'special')->get();
-
-        if ($services->isEmpty()) {
-            $bot->reply('Saat ini kami belum memiliki layanan yang tersedia. Silakan cek kembali nanti.');
-            return;
-        }
-
-        $bot->reply('Tentu, ini adalah beberapa layanan unggulan yang kami tawarkan:');
-
-        foreach ($services as $service) {
-            // Membuat pesan dengan gambar (thumbnail)
-            $attachment = new Image(url('storage/' . $service->thumbnail));
-            $message = OutgoingMessage::create()->withAttachment($attachment);
-            $bot->reply($message);
+            // Perintah: 'sketsa'
+            // Perintah: 'sketsa'
+$botman->hears('.*(sketsa|sketch).*', function (BotMan $bot) {
+    $url = route('front.sketch'); // <--- BENAR, sesuai dengan web.php
+    $response = "Temukan inspirasi dari galeri sketsa hasil karya tim kami.\n\n";
+    $response .= "Silakan klik tombol di bawah ini untuk melihat galeri sketsa kami:\n";
+    $response .= '<a href="' . $url . '" target="_blank" class="chatbot-button">Lihat Galeri Sketsa</a>';
+    $bot->reply($response);
+});
             
-            // Membuat pertanyaan dengan tombol
-            $question = Question::create("✨ *{$service->title}*\n\n{$service->short_description}")
-                ->addButtons([
-                    Button::create('Lihat Detail Layanan')->url(url('/layanan/' . $service->id)),
-                ]);
+            // Perintah: 'kontak'
+            $botman->hears('.*(kontak|contact|hubungi).*', function (BotMan $bot) {
+                $url = route('front.contact');
+                $response = "Punya pertanyaan atau ingin memulai proyek?\n\n";
+                $response .= "Anda dapat menghubungi kami melalui halaman kontak dengan menekan tombol berikut:\n";
+                // Mengirimkan HTML untuk tombol
+                $response .= '<a href="' . $url . '" target="_blank" class="chatbot-button">Hubungi Kami</a>';
+                $bot->reply($response);
+            });
 
-            $bot->reply($question);
-        }
-    }
+            // Fallback untuk pesan yang tidak dikenali
+            $botman->fallback(function (BotMan $bot) {
+                $bot->reply("Maaf, saya tidak mengerti. Ketik `help` untuk melihat daftar perintah yang tersedia.");
+            });
 
-    /**
-     * Mengambil dan menampilkan 3 artikel terbaru.
-     */
-    private function showRecentArticles(BotMan $bot)
-    {
-        $articles = Article::where('status', 'Published')->latest()->take(3)->get();
+            $botman->listen();
 
-        if ($articles->isEmpty()) {
-            $bot->reply('Maaf, belum ada artikel yang dipublikasikan saat ini.');
-            return;
-        }
-
-        $bot->reply('Ini dia 3 artikel terbaru dari kami, semoga bisa memberimu inspirasi:');
-
-        foreach ($articles as $article) {
-            $attachment = new Image(url('storage/' . $article->thumbnail));
-            $message = OutgoingMessage::create()->withAttachment($attachment);
-            $bot->reply($message);
-            
-            $question = Question::create("📄 *{$article->title}*\n\n" . Str::limit($article->description, 100))
-                ->addButtons([
-                    Button::create('Baca Selengkapnya')->url(url('/articles/' . $article->slug)),
-                ]);
-
-            $bot->reply($question);
-        }
-    }
-
-    /**
-     * Mengambil dan menampilkan 3 sketsa terbaru.
-     */
-    private function showRecentSketches(BotMan $bot)
-    {
-        $sketches = Sketch::where('status', 'Published')->latest()->take(3)->get();
-
-        if ($sketches->isEmpty()) {
-            $bot->reply('Belum ada sketsa yang bisa ditampilkan saat ini.');
-            return;
-        }
-
-        $bot->reply('Berikut adalah beberapa sketsa dan karya terbaru kami:');
-
-        foreach ($sketches as $sketch) {
-            $attachment = new Image(url('storage/' . $sketch->thumbnail));
-            $message = OutgoingMessage::create()->withAttachment($attachment);
-            $bot->reply($message);
-
-            $question = Question::create("🎨 *{$sketch->title}*\n\nOleh: {$sketch->author}")
-                ->addButtons([
-                    Button::create('Lihat Sketsa')->url(url('/sketches/' . $sketch->slug)),
-                ]);
-            
-            $bot->reply($question);
-        }
-    }
-
-    /**
-     * Melakukan pencarian berdasarkan kata kunci di semua sumber daya.
-     */
-    private function performSearch(BotMan $bot, $keyword)
-    {
-        $services = ConsultationService::where('title', 'LIKE', "%{$keyword}%")
-            ->orWhere('short_description', 'LIKE', "%{$keyword}%")
-            ->whereIn('status', ['published', 'special'])
-            ->get();
-
-        $articles = Article::where('title', 'LIKE', "%{$keyword}%")
-            ->orWhere('description', 'LIKE', "%{$keyword}%")
-            ->where('status', 'Published')
-            ->get();
-
-        $sketches = Sketch::where('title', 'LIKE', "%{$keyword}%")
-            ->orWhere('content', 'LIKE', "%{$keyword}%")
-            ->where('status', 'Published')
-            ->get();
-
-         if ($services->isEmpty() && $articles->isEmpty() && $sketches->isEmpty()) {
-            $bot->reply("Maaf, saya tidak dapat menemukan apa pun yang cocok dengan kata kunci \"{$keyword}\". 🙁\n\nAnda bisa mencoba kata kunci lain atau tanyakan tentang \"layanan\", \"artikel\", atau \"sketsa\".");
-            return;
-        }
-
-        $bot->reply('Saya menemukan beberapa hal yang mungkin relevan dengan pencarianmu:');
-
-        // Menampilkan hasil pencarian layanan
-        foreach ($services as $service) {
-            $question = Question::create(" Layanan: *{$service->title}*")
-                ->addButtons([
-                    Button::create('Lihat Detail')->url(url('/layanan/' . $service->id)),
-                ]);
-            $bot->reply($question);
-        }
-
-        // Menampilkan hasil pencarian artikel
-        foreach ($articles as $article) {
-             $question = Question::create("Artikel: *{$article->title}*")
-                ->addButtons([
-                    Button::create('Baca Artikel')->url(url('/articles/' . $article->slug)),
-                ]);
-            $bot->reply($question);
-        }
-
-        // Menampilkan hasil pencarian sketsa
-        foreach ($sketches as $sketch) {
-             $question = Question::create("Sketsa: *{$sketch->title}*")
-                ->addButtons([
-                    Button::create('Lihat Sketsa')->url(url('/sketches/' . $sketch->slug)),
-                ]);
-            $bot->reply($question);
+        } catch (\Exception $e) {
+            Log::error('BotMan Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            return response()->json([
+                'messages' => [['text' => 'Maaf, terjadi kesalahan pada server chatbot.']]
+            ]);
         }
     }
 }

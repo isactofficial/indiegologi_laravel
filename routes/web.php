@@ -19,7 +19,14 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
+use Illuminate\Http\Request;
 
+Route::post('/test-simple', function() {
+    return response()->json(['status' => 'OK', 'message' => 'Simple test works']);
+})->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
+Route::match(['get', 'post'], '/botman-test', [ChatbotController::class, 'handle'])
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 // Route for storage link
 Route::get('/storage-link', function () {
     $targetFolder = base_path() . '/storage/app/public';
@@ -34,6 +41,8 @@ Route::get('/storage-link', function () {
     }
     return "Symlink already exists.";
 });
+
+Route::match(['get', 'post'], '/botman', [ChatbotController::class, 'handle']);
 
 // ======================================================================
 // Rute Publik (Akses Tanpa Login)
@@ -71,12 +80,6 @@ Route::prefix('api/free-consultation')->name('api.free-consultation.')->group(fu
     Route::post('/check-availability', [FrontController::class, 'checkFreeConsultationAvailability'])->name('check-availability');
 });
 
-// ======================================================================
-// Rute Chatbot BOTMAN
-// ======================================================================
-
-// Route untuk menangani semua pesan dari BotMan dan mengarahkannya ke ChatbotController
-Route::match(['get', 'post'], 'botman', [ChatbotController::class, 'handle']);
 
 // ======================================================================
 // Rute Autentikasi
@@ -207,6 +210,14 @@ Route::middleware(['auth', 'role:reader'])->group(function () {
 // ======================================================================
 // Additional Routes
 // ======================================================================
+
+Route::post('/test-chatbot', function(Request $request) {
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Test endpoint works',
+        'received' => $request->all()
+    ]);
+});
 
 // Letakkan ini di dalam grup route yang sesuai, misalnya di bawah route untuk homepage.
 

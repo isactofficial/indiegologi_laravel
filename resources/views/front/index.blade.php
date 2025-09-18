@@ -513,6 +513,7 @@
     height: 520px;
     perspective: 1500px;
     transform-style: preserve-3d;
+    overflow: hidden; /* TAMBAHKAN INI untuk menyembunyikan bagian kartu yang keluar */
 }
 
 #sketch-gallery-wrapper .gallery-carousel-images {
@@ -536,11 +537,10 @@
     text-decoration: none;
     background-color: #ffffff;
     border: 1px solid #e0e0e0;
-    /* KUNCI UTAMA: Mengatur jarak vertikal */
+    /* STRUKTUR BARU: Distribusi ruang yang merata */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Mendorong header ke atas & footer ke bawah */
-    padding: 30px 25px; /* Padding atas-bawah ditambah */
+    padding: 25px; /* Padding seragam di semua sisi */
     box-sizing: border-box;
 }
 
@@ -551,13 +551,22 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-#sketch-gallery-wrapper .sketch-card-header,
-#sketch-gallery-wrapper .sketch-card-brand {
+#sketch-gallery-wrapper .sketch-card-header {
     font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: #0C2C5A;
-    margin: 0;
+    margin: 0 0 20px 0;
+    text-align: center;
+}
+
+#sketch-gallery-wrapper .sketch-card-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0C2C5A;
+    margin: 20px 0 0 0;
+    text-align: center;
 }
 
 #sketch-gallery-wrapper .sketch-card-middle-content {
@@ -599,29 +608,80 @@
     display: -webkit-box;
 }
 
-/* Positioning (VERSI LEBIH LEBAR SESUAI GAMBAR) */
-#sketch-gallery-wrapper .gallery-image-item.active { z-index: 10; opacity: 1; transform: translateX(0) scale(1); }
-#sketch-gallery-wrapper .gallery-image-item.prev { z-index: 8; opacity: 1; transform: translateX(-220px) scale(0.9); }
-#sketch-gallery-wrapper .gallery-image-item.next { z-index: 8; opacity: 1; transform: translateX(220px) scale(0.9); }
-#sketch-gallery-wrapper .gallery-image-item.prev-hidden { z-index: 6; opacity: 1; transform: translateX(-440px) scale(0.8); }
-#sketch-gallery-wrapper .gallery-image-item.next-hidden { z-index: 6; opacity: 1; transform: translateX(440px) scale(0.8); }
-#sketch-gallery-wrapper .gallery-image-item.hidden { opacity: 0; transform: scale(0.7); z-index: 1; }
+/* Positioning (VERSI LEBIH SEMPIT AGAR HANYA SETENGAH TERLIHAT) */
+#sketch-gallery-wrapper .gallery-image-item.active { 
+    z-index: 10; 
+    opacity: 1; 
+    transform: translateX(0) scale(1); 
+}
+#sketch-gallery-wrapper .gallery-image-item.prev { 
+    z-index: 8; 
+    opacity: 1; 
+    transform: translateX(-180px) scale(0.9); /* DIPERSEMPIT dari -220px menjadi -240px */
+}
+#sketch-gallery-wrapper .gallery-image-item.next { 
+    z-index: 8; 
+    opacity: 1; 
+    transform: translateX(180px) scale(0.9); /* DIPERSEMPIT dari 220px menjadi 240px */
+}
+#sketch-gallery-wrapper .gallery-image-item.prev-hidden { 
+    z-index: 6; 
+    opacity: 1; 
+    transform: translateX(-360px) scale(0.8); /* DIPERSEMPIT dari -440px menjadi -480px */
+}
+#sketch-gallery-wrapper .gallery-image-item.next-hidden { 
+    z-index: 6; 
+    opacity: 1; 
+    transform: translateX(360px) scale(0.8); /* DIPERSEMPIT dari 440px menjadi 480px */
+}
+#sketch-gallery-wrapper .gallery-image-item.hidden { 
+    opacity: 0; 
+    transform: scale(0.7); 
+    z-index: 1; 
+}
 
 /* Navigation buttons (Dipojokkan) */
-#sketch-gallery-wrapper .gallery-nav-button { position: absolute; top: 50%; transform: translateY(-50%); background: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 20; transition: all 0.3s ease; color: #0C2C5A; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); }
-#sketch-gallery-wrapper .gallery-nav-button:hover { background: white; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3); }
-#sketch-gallery-wrapper .gallery-nav-left { left: 1%; }
-#sketch-gallery-wrapper .gallery-nav-right { right: 1%; }
+#sketch-gallery-wrapper .gallery-nav-button { 
+    position: absolute; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    background: #fff; 
+    border: none; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    cursor: pointer; 
+    z-index: 20; 
+    transition: all 0.3s ease; 
+    color: #0C2C5A; 
+    font-size: 1.2rem; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); 
+}
+#sketch-gallery-wrapper .gallery-nav-button:hover { 
+    background: white; 
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3); 
+}
+#sketch-gallery-wrapper .gallery-nav-left { 
+    left: 1%; 
+}
+#sketch-gallery-wrapper .gallery-nav-right { 
+    right: 1%; 
+}
 
 /* Responsive (disederhanakan) */
 @media (max-width: 768px) {
     #sketch-gallery-wrapper .gallery-carousel {
         height: 450px;
+        overflow: visible; /* Kembalikan ke visible untuk mobile agar tidak terpotong */
     }
     #sketch-gallery-wrapper .gallery-image-item {
         width: 280px;
         height: 420px;
         left: calc(50% - 140px);
+        padding: 25px 20px 35px 20px; /* Padding disesuaikan untuk mobile */
     }
     #sketch-gallery-wrapper .sketch-circular-image {
         width: 120px;
@@ -659,6 +719,7 @@
         left: 15%;
         padding: 10px;
         padding-top: 30px;
+        padding-bottom: 30px; /* Tambahkan padding bawah untuk mobile */
     }
 
     #sketch-gallery-wrapper .sketch-circular-image {
@@ -689,6 +750,7 @@
         font-size: 1rem;
     }
 }
+
 
 @media (max-width: 575.98px) {
     #sketch-gallery-wrapper .gallery-carousel {

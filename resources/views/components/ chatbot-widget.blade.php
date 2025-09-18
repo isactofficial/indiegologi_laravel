@@ -1,7 +1,6 @@
 {{-- File: resources/views/components/chatbot-widget.blade.php --}}
 
 <div id="chatbot-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-    <!-- Tombol Chat -->
     <button id="chatbot-toggle" style="
         width: 60px; 
         height: 60px; 
@@ -20,7 +19,6 @@
         <i class="bi bi-chat-dots-fill"></i>
     </button>
 
-    <!-- Chat Container -->
     <div id="chatbot-container" style="
         position: absolute; 
         bottom: 70px; 
@@ -35,7 +33,6 @@
         overflow: hidden;
         border: 1px solid #e1e5e9;
     ">
-        <!-- Header -->
         <div style="
             background: linear-gradient(135deg, #0C2C5A, #1a4480);
             color: white; 
@@ -62,7 +59,6 @@
             </button>
         </div>
 
-        <!-- Chat Messages -->
         <div id="chatbot-messages" style="
             flex: 1; 
             padding: 20px; 
@@ -72,7 +68,6 @@
             flex-direction: column;
             gap: 10px;
         ">
-            <!-- Welcome Message -->
             <div style="
                 background: white;
                 padding: 12px 15px;
@@ -88,7 +83,6 @@
             </div>
         </div>
 
-        <!-- Input Area -->
         <div style="
             padding: 15px 20px; 
             border-top: 1px solid #e1e5e9; 
@@ -181,6 +175,46 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
 }
 
+/* --- PERUBAHAN DIMULAI DI SINI --- */
+
+.message-bot a {
+    word-break: break-all;
+}
+
+/* Style untuk tombol utama */
+.message-bot a.chatbot-button {
+    display: block;
+    padding: 10px 15px;
+    margin-top: 8px;
+    background-color: #0C2C5A;
+    color: white !important;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    border: 1px solid #0C2C5A;
+}
+
+.message-bot a.chatbot-button:hover {
+    background-color: #1a4480;
+    color: white !important;
+}
+
+/* Style untuk link yang lebih sederhana (misal: di dalam list artikel) */
+.message-bot a.chatbot-link {
+    color: #0C2C5A;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.message-bot a.chatbot-link:hover {
+    color: #1a4480;
+}
+
+/* --- PERUBAHAN SELESAI DI SINI --- */
+
 .typing-indicator {
     display: flex;
     align-items: center;
@@ -234,6 +268,7 @@
 </style>
 
 <script>
+// Tidak ada perubahan yang diperlukan pada bagian <script>
 document.addEventListener('DOMContentLoaded', function() {
     const chatbotToggle = document.getElementById('chatbot-toggle');
     const chatbotContainer = document.getElementById('chatbot-container');
@@ -332,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
             .replace(/`(.*?)`/g, '<code style="background:#f1f1f1;padding:2px 4px;border-radius:3px;">$1</code>');
         
+        // Karena kita menggunakan innerHTML, link HTML dari controller akan langsung dirender
         messageDiv.innerHTML = formattedText;
         chatbotMessages.appendChild(messageDiv);
         chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
