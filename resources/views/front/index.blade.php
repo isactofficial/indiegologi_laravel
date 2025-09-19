@@ -609,66 +609,66 @@
 }
 
 /* Positioning (VERSI LEBIH SEMPIT AGAR HANYA SETENGAH TERLIHAT) */
-#sketch-gallery-wrapper .gallery-image-item.active { 
-    z-index: 10; 
-    opacity: 1; 
-    transform: translateX(0) scale(1); 
+#sketch-gallery-wrapper .gallery-image-item.active {
+    z-index: 10;
+    opacity: 1;
+    transform: translateX(0) scale(1);
 }
-#sketch-gallery-wrapper .gallery-image-item.prev { 
-    z-index: 8; 
-    opacity: 1; 
+#sketch-gallery-wrapper .gallery-image-item.prev {
+    z-index: 8;
+    opacity: 1;
     transform: translateX(-180px) scale(0.9); /* DIPERSEMPIT dari -220px menjadi -240px */
 }
-#sketch-gallery-wrapper .gallery-image-item.next { 
-    z-index: 8; 
-    opacity: 1; 
+#sketch-gallery-wrapper .gallery-image-item.next {
+    z-index: 8;
+    opacity: 1;
     transform: translateX(180px) scale(0.9); /* DIPERSEMPIT dari 220px menjadi 240px */
 }
-#sketch-gallery-wrapper .gallery-image-item.prev-hidden { 
-    z-index: 6; 
-    opacity: 1; 
+#sketch-gallery-wrapper .gallery-image-item.prev-hidden {
+    z-index: 6;
+    opacity: 1;
     transform: translateX(-360px) scale(0.8); /* DIPERSEMPIT dari -440px menjadi -480px */
 }
-#sketch-gallery-wrapper .gallery-image-item.next-hidden { 
-    z-index: 6; 
-    opacity: 1; 
+#sketch-gallery-wrapper .gallery-image-item.next-hidden {
+    z-index: 6;
+    opacity: 1;
     transform: translateX(360px) scale(0.8); /* DIPERSEMPIT dari 440px menjadi 480px */
 }
-#sketch-gallery-wrapper .gallery-image-item.hidden { 
-    opacity: 0; 
-    transform: scale(0.7); 
-    z-index: 1; 
+#sketch-gallery-wrapper .gallery-image-item.hidden {
+    opacity: 0;
+    transform: scale(0.7);
+    z-index: 1;
 }
 
 /* Navigation buttons (Dipojokkan) */
-#sketch-gallery-wrapper .gallery-nav-button { 
-    position: absolute; 
-    top: 50%; 
-    transform: translateY(-50%); 
-    background: #fff; 
-    border: none; 
-    width: 40px; 
-    height: 40px; 
-    border-radius: 50%; 
-    cursor: pointer; 
-    z-index: 20; 
-    transition: all 0.3s ease; 
-    color: #0C2C5A; 
-    font-size: 1.2rem; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); 
+#sketch-gallery-wrapper .gallery-nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.3s ease;
+    color: #0C2C5A;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
-#sketch-gallery-wrapper .gallery-nav-button:hover { 
-    background: white; 
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3); 
+#sketch-gallery-wrapper .gallery-nav-button:hover {
+    background: white;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
-#sketch-gallery-wrapper .gallery-nav-left { 
-    left: 1%; 
+#sketch-gallery-wrapper .gallery-nav-left {
+    left: 1%;
 }
-#sketch-gallery-wrapper .gallery-nav-right { 
-    right: 1%; 
+#sketch-gallery-wrapper .gallery-nav-right {
+    right: 1%;
 }
 
 /* Responsive (disederhanakan) */
@@ -1205,7 +1205,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="carousel-item" style="background-image: url('{{ asset('assets/carousel/1-2-300x214.jpg') }}');">
+                <div class="carousel-item"
+                    style="background-image: url('{{ asset('assets/carousel/Mindfulness.png') }}'); background-position: center;">
                     <div class="overlay"></div>
                     <div class="carousel-caption">
                         <div class="container">
@@ -1237,7 +1238,7 @@
                 </div>
                 {{-- Slide 6: Seni Menghargai Proses Hidup --}}
                 <div class="carousel-item"
-                    style="background-image: url('{{ asset('assets/carousel/appreciate-the-journey.jpg') }}');">
+                    style="background-image: url('{{ asset('assets/carousel/SMPH.png') }}'); background-position: center;">
                     <div class="overlay"></div>
                     <div class="carousel-caption">
                         <div class="container">
@@ -1252,7 +1253,7 @@
                     </div>
                 </div>
 
-                {{-- Slide 7: Jurnal Reflektif--}}
+                {{-- Slide 7: Jurnal Reflektif --}}
                 <div class="carousel-item"
                     style="background-image: url('{{ asset('assets/carousel/reflective-journaling-moment.jpg') }}');">
                     <div class="overlay"></div>
@@ -1289,15 +1290,21 @@
 
             {{-- Carousel Indicators Updated --}}
             <div class="carousel-indicators">
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"
-                    aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="6" aria-label="Slide 7"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="7" aria-label="Slide 8"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"
+                    aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"
+                    aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4"
+                    aria-label="Slide 5"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="5"
+                    aria-label="Slide 6"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="6"
+                    aria-label="Slide 7"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="7"
+                    aria-label="Slide 8"></button>
             </div>
 
             <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
@@ -1533,7 +1540,7 @@
                 @forelse ($latest_sketches as $sketch)
                     <a href="{{ route('front.sketch.show', $sketch->slug) }}" class="gallery-image-item">
                         <p class="sketch-card-header">Sketch Telling</p>
-                        
+
                         <div class="sketch-card-middle-content">
                             <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="sketch-circular-image" />
                             <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
@@ -1542,7 +1549,7 @@
                                 {{ Str::limit(strip_tags($sketch->content), 120) }}
                             </p>
                         </div>
-                        
+
                         <p class="sketch-card-brand">Indiegologi</p>
                     </a>
                 @empty

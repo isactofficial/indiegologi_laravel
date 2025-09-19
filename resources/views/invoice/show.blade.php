@@ -236,7 +236,7 @@
             <a href="{{ route('front.cart.view') }}" class="btn px-4 py-2" style="background-color: #F0F5FF; color: #5B93FF; border-radius: 8px;">
                 <i class="fas fa-arrow-left me-2"></i> Kembali ke Keranjang
             </a>
-            <a href="{{ route('admin.consultation-bookings.download-pdf', $consultationBooking->id) }}" class="btn btn-primary px-4 py-2 ms-3">
+            <a href="{{ route('invoice.download', $consultationBooking->id) }}" class="btn btn-primary px-4 py-2 ms-3">
                 <i class="fas fa-download me-2"></i> Unduh PDF
             </a>
         </div>

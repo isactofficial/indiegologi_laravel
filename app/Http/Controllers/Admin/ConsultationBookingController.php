@@ -11,8 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-use PDF;
 use App\Models\ConsultationBooking;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ConsultationBookingController extends Controller
 {

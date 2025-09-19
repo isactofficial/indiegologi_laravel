@@ -558,7 +558,7 @@
                 </div>
                 @if ($booking)
                 <div class="appointment-actions">
-                    <a href="{{ route('admin.consultation-bookings.download-pdf', $booking->id) }}" class="btn btn-secondary-outline">
+                    <a href="{{ route('invoice.download', $booking->id) }}" class="btn btn-secondary-outline">
                         <i class="fas fa-download me-2"></i>PDF
                     </a>
                     @if(Str::lower($invoice->payment_status) !== 'paid' && Str::lower($invoice->payment_status) !== 'dibatalkan')

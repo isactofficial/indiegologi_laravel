@@ -2,7 +2,6 @@
     <div class="container">
         <div class="row" style="display: flex; flex-wrap: wrap; gap: 2rem;">
 
-            <!-- Kiri: Logo & Deskripsi -->
             <div class="col-md-4" style="flex: 1; min-width: 250px;">
                 <h4 style="font-weight: bold; margin-bottom: 1rem;">Indiegologi</h4>
                 <p style="font-size: 14px;">
@@ -10,34 +9,37 @@
                     dan intuisi.
                 </p>
                 <div style="margin-top: 1rem;">
-                    <a href="#" style="margin-right: 10px; color: white;"><i class="bi bi-instagram"></i></a>
-                    <a href="#" style="margin-right: 10px; color: white;"><i class="bi bi-whatsapp"></i></a>
-                    <a href="#" style="margin-right: 10px; color: white;"><i class="bi bi-envelope"></i></a>
+                    {{-- Ikon ditautkan ke URL yang sesuai --}}
+                    <a href="https://www.instagram.com/indiegologi/" target="_blank" style="margin-right: 10px; color: white;"><i class="bi bi-instagram"></i></a>
+                    <a href="https://wa.me/6282220955595" target="_blank" style="margin-right: 10px; color: white;"><i class="bi bi-whatsapp"></i></a>
+                    <a href="mailto:indiegologiofficial@gmail.com" style="margin-right: 10px; color: white;"><i class="bi bi-envelope"></i></a>
                 </div>
             </div>
 
-            <!-- Tengah: Layanan -->
             <div class="col-md-4" style="flex: 1; min-width: 200px;">
                 <h6 style="font-weight: bold; margin-bottom: 1rem;">Layanan</h6>
-                <p style="margin-bottom: 0.3rem;">Konseling Offline</p>
-                <p style="margin-bottom: 0.3rem;">---</p>
-                <p style="margin-bottom: 0.3rem;">---</p>
+                @if(isset($servicesForFooter) && $servicesForFooter->count() > 0)
+                    @foreach($servicesForFooter as $service)
+                        <p style="margin-bottom: 0.3rem;">{{ $service->title }}</p>
+                    @endforeach
+                @else
+                    {{-- Tampilan jika tidak ada layanan yang tersedia --}}
+                    <p style="margin-bottom: 0.3rem;">Layanan akan segera hadir.</p>
+                @endif
             </div>
 
-            <!-- Kanan: Kontak -->
             <div class="col-md-4" style="flex: 1; min-width: 200px;">
                 <h6 style="font-weight: bold; margin-bottom: 1rem;">Kontak</h6>
-                <p style="margin-bottom: 0.3rem;">+62 1231234123</p>
-                <p style="margin-bottom: 0.3rem;">unknown@indiegologi.com</p>
-                <p style="margin-bottom: 0.3rem;">Jogjakarta, Indonesia</p>
+                {{-- Informasi kontak diperbarui --}}
+                <p style="margin-bottom: 0.3rem;">+62 822-2095-5595</p>
+                <p style="margin-bottom: 0.3rem;">indiegologiofficial@gmail.com</p>
+                <p style="margin-bottom: 0.3rem;">Yogyakarta, Indonesia</p>
             </div>
 
         </div>
 
-        <!-- Garis Bawah -->
         <hr style="margin-top: 2rem; border-color: #aaa;">
 
-        <!-- Copyright -->
         <div style="text-align: center; font-size: 14px; margin-top: 1rem;">
             &copy; 2025 INDIEGOLOGI by INDIEGOLOGI Official
         </div>
