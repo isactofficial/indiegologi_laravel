@@ -562,11 +562,13 @@
 
 #sketch-gallery-wrapper .sketch-card-brand {
     font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: #0C2C5A;
-    margin: 20px 0 0 0;
     text-align: center;
+    letter-spacing: 0.5px;
+    text-transform: capitalize;
+    margin-top: auto;
 }
 
 #sketch-gallery-wrapper .sketch-card-middle-content {
@@ -575,6 +577,7 @@
     align-items: center;
     text-align: center;
     width: 100%;
+    
 }
 
 #sketch-gallery-wrapper .sketch-circular-image {
@@ -586,26 +589,26 @@
 }
 
 #sketch-gallery-wrapper .sketch-card-subtitle {
-    font-family: 'Gotham', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #0C2C5A;
-    line-height: 1.3;
-    margin: 0 0 15px 0; /* Jarak ke deskripsi ditambah */
-    text-transform: uppercase;
-    white-space: nowrap;
+    font-family: 'Gotham', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+    max-width: 100%;
+    word-wrap: break-word;
 }
 
 #sketch-gallery-wrapper .sketch-card-description {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem;
-    color: #666;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #555;
     line-height: 1.6;
-    margin: 0;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    display: -webkit-box;
+    width: 90%;
+    margin-top: 15px;
+    /* Tidak ada lagi pemotongan teks */
 }
 
 /* Positioning (VERSI LEBIH SEMPIT AGAR HANYA SETENGAH TERLIHAT) */
@@ -617,22 +620,22 @@
 #sketch-gallery-wrapper .gallery-image-item.prev {
     z-index: 8;
     opacity: 1;
-    transform: translateX(-180px) scale(0.9); /* DIPERSEMPIT dari -220px menjadi -240px */
+    transform: translateX(-180px) scale(0.9);
 }
 #sketch-gallery-wrapper .gallery-image-item.next {
     z-index: 8;
     opacity: 1;
-    transform: translateX(180px) scale(0.9); /* DIPERSEMPIT dari 220px menjadi 240px */
+    transform: translateX(180px) scale(0.9);
 }
 #sketch-gallery-wrapper .gallery-image-item.prev-hidden {
     z-index: 6;
     opacity: 1;
-    transform: translateX(-360px) scale(0.8); /* DIPERSEMPIT dari -440px menjadi -480px */
+    transform: translateX(-360px) scale(0.8);
 }
 #sketch-gallery-wrapper .gallery-image-item.next-hidden {
     z-index: 6;
     opacity: 1;
-    transform: translateX(360px) scale(0.8); /* DIPERSEMPIT dari 440px menjadi 480px */
+    transform: translateX(360px) scale(0.8);
 }
 #sketch-gallery-wrapper .gallery-image-item.hidden {
     opacity: 0;
@@ -675,27 +678,40 @@
 @media (max-width: 768px) {
     #sketch-gallery-wrapper .gallery-carousel {
         height: 450px;
-        overflow: visible; /* Kembalikan ke visible untuk mobile agar tidak terpotong */
+        overflow: visible;
     }
     #sketch-gallery-wrapper .gallery-image-item {
         width: 280px;
-        height: 420px;
+        min-height: 420px;
         left: calc(50% - 140px);
-        padding: 25px 20px 35px 20px; /* Padding disesuaikan untuk mobile */
+        padding: 25px 20px 35px 20px;
+        box-sizing: border-box;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
     }
     #sketch-gallery-wrapper .sketch-circular-image {
         width: 120px;
         height: 120px;
     }
     #sketch-gallery-wrapper .sketch-card-title {
-        font-size: 1.1rem;
+        font-size: 1.3rem;
     }
      #sketch-gallery-wrapper .gallery-image-item.prev,
      #sketch-gallery-wrapper .gallery-image-item.next,
      #sketch-gallery-wrapper .gallery-image-item.prev-hidden,
      #sketch-gallery-wrapper .gallery-image-item.next-hidden {
-        display: none !important; /* Sembunyikan kartu samping di mobile untuk fokus */
+        display: none !important;
      }
+
+    #sketch-gallery-wrapper .sketch-card-subtitle {
+        font-size: 0.9rem;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        max-width: 100%;
+        line-height: 1.3;
+    }
 }
 
 @media (max-width: 768px) {
@@ -712,15 +728,7 @@
         height: 420px;
         padding-top: 20px;
     }
-
-    #sketch-gallery-wrapper .gallery-image-item {
-        height: 420px;
-        width: 70%;
-        left: 15%;
-        padding: 10px;
-        padding-top: 30px;
-        padding-bottom: 30px; /* Tambahkan padding bawah untuk mobile */
-    }
+    
 
     #sketch-gallery-wrapper .sketch-circular-image {
         width: 140px;
