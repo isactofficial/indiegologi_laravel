@@ -577,7 +577,7 @@
     align-items: center;
     text-align: center;
     width: 100%;
-    
+
 }
 
 #sketch-gallery-wrapper .sketch-circular-image {
@@ -728,7 +728,7 @@
         height: 420px;
         padding-top: 20px;
     }
-    
+
 
     #sketch-gallery-wrapper .sketch-circular-image {
         width: 140px;
@@ -1104,6 +1104,8 @@
             .testimonial-details {
                 font-size: 0.75rem;
             }
+
+            
         }
 
         /* Extra small screens (phones in portrait) */
@@ -1151,6 +1153,7 @@
                 max-width: 240px;
                 height: 360px;
             }
+
         }
     </style>
 @endpush
@@ -1482,7 +1485,7 @@
     </section>
 
 
-    <section class="container py-5 my-5">
+    <section class="container py-5 my-5" style="max-width: 1060px;">
         <div class="text-center" data-aos="fade-up">
             <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Kisah Testimoni dari Keluarga Indiegologi
             </h2>

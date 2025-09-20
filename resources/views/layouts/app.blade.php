@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
-   
+
     {{-- Custom CSS Files --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
@@ -126,7 +126,7 @@
                 padding-right: 1rem;
                 text-align: center;
             }
-            /* [MODIFIED] Membuat menu utama tidak bisa diklik di desktop */
+            /* Membuat menu utama tidak bisa diklik di desktop */
             #navbarContent .nav-item.dropdown > .nav-link.dropdown-toggle {
                 pointer-events: none;
                 cursor: default;
@@ -373,7 +373,7 @@
 </head>
 
 <body>
-    {{-- [MODIFIED] Kontainer sumber untuk widget Translate --}}
+    {{-- Kontainer sumber untuk widget Translate --}}
     <div id="google_translate_element_source" style="display: none;"></div>
 
     <nav class="navbar navbar-expand-lg fixed-top py-3">
@@ -410,11 +410,11 @@
             {{-- ============================================= --}}
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('front.index') ? 'active' : '' }}" href="{{ route('front.index') }}"><i class="bi bi-house me-2"></i>Beranda</a></li>
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.articles*') || request()->routeIs('front.sketch*')) ? 'active' : '' }}" href="#" id="navbarBeritaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Berita
+                            <i class="bi bi-newspaper me-2"></i>Berita
                         </a>
                         <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarBeritaDropdown">
                             <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">Artikel</a></li>
@@ -425,7 +425,7 @@
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.layanan*') || request()->routeIs('front.contact')) ? 'active' : '' }}" href="#" id="navbarTentangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Tentang Kami
+                            <i class="bi bi-info-circle me-2"></i>Tentang Kami
                         </a>
                         <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarTentangDropdown">
                             <li><a class="dropdown-item {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">Layanan</a></li>
@@ -583,7 +583,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-    {{-- [MODIFIED] Google Translate Script --}}
+    {{-- Google Translate Script --}}
     <script type="text/javascript">
         // Fungsi untuk memindahkan widget Google Translate
         function moveGoogleTranslateWidget() {
@@ -675,7 +675,7 @@
 
             updateCartCount();
 
-            // [MODIFIED] Panggil fungsi pemindahan saat halaman dimuat
+            // Panggil fungsi pemindahan saat halaman dimuat
             moveGoogleTranslateWidget();
 
             $('form.logout-form').on('submit', function() {
