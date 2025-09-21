@@ -3,7 +3,8 @@
         <div class="row" style="display: flex; flex-wrap: wrap; gap: 2rem;">
 
             <div class="col-md-4" style="flex: 1; min-width: 250px;">
-                <h4 style="font-weight: bold; margin-bottom: 1rem;">Indiegologi</h4>
+            {{-- Mengganti H4 dengan tag IMG --}}
+            <img src="{{ asset('assets/img/login.png') }}" alt="Indiegologi Logo" style="height: 70px; width: auto; margin-bottom: 1rem; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));">
                 <p style="font-size: 14px;">
                     Ruang aman untuk eksplorasi diri dengan pendekatan holistik yang menggabungkan psikologi, logika,
                     dan intuisi.

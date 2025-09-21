@@ -378,11 +378,11 @@
 
     <nav class="navbar navbar-expand-lg fixed-top py-3">
         <div class="container-fluid">
-            {{-- Brand/Logo --}}
-            <a class="navbar-brand" href="{{ route('front.index') }}">
-                <h1 class="text-primary m-0 p-0">Indiegologi</h1>
-            </a>
-
+        {{-- Brand/Logo --}}
+        {{-- Kode Baru --}}
+<a class="navbar-brand" href="{{ route('front.index') }}" style="padding-top: 0; padding-bottom: 0; margin-right: 2rem;">
+    <img src="{{ asset('assets/img/login.png') }}" alt="Indiegologi Logo" style="height: 80px; width: auto; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));">
+</a>
             <div class="d-flex align-items-center d-lg-none">
                 <div class="search-container">
                     <a class="nav-link position-relative fs-4 me-2 search-toggle" href="#" title="Cari">

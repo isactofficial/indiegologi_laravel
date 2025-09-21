@@ -158,7 +158,8 @@
         }
 
         .testimonial-flipper {
-            transition: transform 0.6s, box-shadow 0.3s;
+            /* [PERBAIKAN] Mempercepat animasi flip dari 0.6s menjadi 0.4s */
+            transition: transform 0.4s, box-shadow 0.3s;
             transform-style: preserve-3d;
             position: relative;
             width: 100%;
@@ -452,13 +453,13 @@
             object-fit: cover;
         }
 
-        /* Efek hover zoom untuk kartu */
+        /* [PERBAIKAN] Mempercepat efek hover dari 0.4s menjadi 0.3s */
         .card-hover-zoom {
-            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
 
         .card-hover-zoom:hover {
-            transform: translateY(-5px) scale(1.25);
+            transform: translateY(-5px) scale(1.02); /* Sedikit mengurangi scale agar tidak terlalu besar */
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
         }
 
@@ -530,7 +531,8 @@
     width: 320px;
     height: 480px;
     left: calc(50% - 160px);
-    transition: all 0.5s ease;
+    /* [PERBAIKAN] Mempercepat transisi dari 0.5s menjadi 0.4s */
+    transition: all 0.4s ease;
     cursor: pointer;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
@@ -1104,6 +1106,23 @@
             .testimonial-details {
                 font-size: 0.75rem;
             }
+
+            /* ===== [KODE BARU] FIX FOOTER MOBILE AGAR TERSUSUN KE BAWAH ===== */
+@media (max-width: 767.98px) {
+    /* Menargetkan semua kolom di dalam baris footer */
+    .footer-section .row > [class*="col-"] {
+        width: 100%;             /* Paksa lebar jadi 100% */
+        flex: 0 0 100%;          /* Pastikan flexbox juga mengikuti */
+        max-width: 100%;         /* Pastikan max-width juga 100% */
+        margin-bottom: 30px;     /* Beri jarak bawah antar kolom */
+        text-align: center;      /* (Opsional) Buat teks rata tengah */
+    }
+
+    /* Menghilangkan jarak bawah pada kolom terakhir */
+    .footer-section .row > [class*="col-"]:last-child {
+        margin-bottom: 0;
+    }
+}
 
             
         }
@@ -1837,7 +1856,7 @@
                     const quote = this.getAttribute('data-quote');
                     const image = this.getAttribute('data-image');
 
-                    // 3. Tunggu animasi flip selesai (600ms), baru tampilkan modal
+                    // 3. [PERBAIKAN] Tunggu animasi flip selesai (400ms), baru tampilkan modal
                     setTimeout(() => {
                         // Update konten di dalam modal dengan data yang baru diambil
                         const modalImage = testimonialModal.querySelector('#modal-image');
@@ -1852,7 +1871,7 @@
 
                         // Tampilkan modal
                         modalInstance.show();
-                    }, 600); // Durasi sama dengan transition pada .testimonial-flipper di CSS
+                    }, 400); // [PERBAIKAN] Durasi disamakan dengan transisi pada .testimonial-flipper di CSS
                 });
             });
 
@@ -1868,7 +1887,8 @@
 
         // AOS initialization
         AOS.init({
-            duration: 900,
+            // [PERBAIKAN] Mempercepat durasi animasi dari 900ms menjadi 600ms
+            duration: 600,
             easing: 'ease-in-out-sine',
             once: false,
             offset: 120,
