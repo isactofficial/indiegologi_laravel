@@ -459,7 +459,8 @@
         }
 
         .card-hover-zoom:hover {
-            transform: translateY(-5px) scale(1.02); /* Sedikit mengurangi scale agar tidak terlalu besar */
+            transform: translateY(-5px) scale(1.02);
+            /* Sedikit mengurangi scale agar tidak terlalu besar */
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
         }
 
@@ -483,325 +484,352 @@
             text-overflow: ellipsis;
             min-height: 2.5em;
         }
-/* =================================================================== */
-/* ===== CSS SKETCH TELLING CAROUSEL - PENYEMPURNAAN JARAK AKHIR ===== */
-/* =================================================================== */
-#sketch-gallery-wrapper .carousel-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-}
 
-#sketch-gallery-wrapper .carousel-title {
-    font-size: 2.5rem;
-    margin-bottom: 8px;
-    font-weight: 800;
-    color: #0C2C5A;
-    font-family: 'Gotham', sans-serif;
-}
+        /* =================================================================== */
+        /* ===== CSS SKETCH TELLING CAROUSEL - PENYEMPURNAAN JARAK AKHIR ===== */
+        /* =================================================================== */
+        #sketch-gallery-wrapper .carousel-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
 
-#sketch-gallery-wrapper .carousel-subtitle {
-    color: #6c757d;
-    margin-bottom: 30px;
-    font-size: 1.15rem;
-    font-family: 'Playfair Display', serif;
-}
+        #sketch-gallery-wrapper .carousel-title {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            font-weight: 800;
+            color: #0C2C5A;
+            font-family: 'Gotham', sans-serif;
+        }
 
-#sketch-gallery-wrapper .gallery-carousel {
-    padding-top: 30px;
-    position: relative;
-    height: 520px;
-    perspective: 1500px;
-    transform-style: preserve-3d;
-    overflow: hidden; /* TAMBAHKAN INI untuk menyembunyikan bagian kartu yang keluar */
-}
+        #sketch-gallery-wrapper .carousel-subtitle {
+            color: #6c757d;
+            margin-bottom: 30px;
+            font-size: 1.15rem;
+            font-family: 'Playfair Display', serif;
+        }
 
-#sketch-gallery-wrapper .gallery-carousel-images {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    transform-style: preserve-3d;
-}
+        #sketch-gallery-wrapper .gallery-carousel {
+            padding-top: 30px;
+            position: relative;
+            height: 520px;
+            perspective: 1500px;
+            transform-style: preserve-3d;
+            overflow: hidden;
+            /* TAMBAHKAN INI untuk menyembunyikan bagian kartu yang keluar */
+        }
 
-#sketch-gallery-wrapper .gallery-image-item {
-    position: absolute !important;
-    display: block !important;
-    visibility: visible !important;
-    width: 320px;
-    height: 480px;
-    left: calc(50% - 160px);
-    /* [PERBAIKAN] Mempercepat transisi dari 0.5s menjadi 0.4s */
-    transition: all 0.4s ease;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    text-decoration: none;
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    /* STRUKTUR BARU: Distribusi ruang yang merata */
-    display: flex;
-    flex-direction: column;
-    padding: 25px; /* Padding seragam di semua sisi */
-    box-sizing: border-box;
-}
+        #sketch-gallery-wrapper .gallery-carousel-images {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            transform-style: preserve-3d;
+        }
 
-#sketch-gallery-wrapper .gallery-image-item:hover {
-    text-decoration: none;
-    color: inherit;
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
+        #sketch-gallery-wrapper .gallery-image-item {
+            position: absolute !important;
+            display: block !important;
+            visibility: visible !important;
+            width: 320px;
+            height: 480px;
+            left: calc(50% - 160px);
+            /* [PERBAIKAN] Mempercepat transisi dari 0.5s menjadi 0.4s */
+            transition: all 0.4s ease;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            text-decoration: none;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            /* STRUKTUR BARU: Distribusi ruang yang merata */
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            /* Padding seragam di semua sisi */
+            box-sizing: border-box;
+        }
 
-#sketch-gallery-wrapper .sketch-card-header {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #0C2C5A;
-    margin: 0 0 20px 0;
-    text-align: center;
-}
+        #sketch-gallery-wrapper .gallery-image-item:hover {
+            text-decoration: none;
+            color: inherit;
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
 
-#sketch-gallery-wrapper .sketch-card-brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #0C2C5A;
-    text-align: center;
-    letter-spacing: 0.5px;
-    text-transform: capitalize;
-    margin-top: auto;
-}
+        #sketch-gallery-wrapper .sketch-card-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0C2C5A;
+            margin: 0 0 20px 0;
+            text-align: center;
+        }
 
-#sketch-gallery-wrapper .sketch-card-middle-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 100%;
+        #sketch-gallery-wrapper .sketch-card-brand {
+            margin-top: auto;
+            /* Memastikan logo didorong ke bawah */
+            padding-bottom: 10px;
+            /* Tambahkan sedikit padding di bawah logo jika perlu */
+            text-align: center;
+        }
 
-}
-
-#sketch-gallery-wrapper .sketch-circular-image {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 20px; /* Jarak ke subtitle ditambah */
-}
-
-#sketch-gallery-wrapper .sketch-card-subtitle {
-    font-family: 'Gotham', serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #333;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    line-height: 1.4;
-    letter-spacing: 0.5px;
-    max-width: 100%;
-    word-wrap: break-word;
-}
-
-#sketch-gallery-wrapper .sketch-card-description {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    color: #555;
-    line-height: 1.6;
-    width: 90%;
-    margin-top: 15px;
-    /* Tidak ada lagi pemotongan teks */
-}
-
-/* Positioning (VERSI LEBIH SEMPIT AGAR HANYA SETENGAH TERLIHAT) */
-#sketch-gallery-wrapper .gallery-image-item.active {
-    z-index: 10;
-    opacity: 1;
-    transform: translateX(0) scale(1);
-}
-#sketch-gallery-wrapper .gallery-image-item.prev {
-    z-index: 8;
-    opacity: 1;
-    transform: translateX(-180px) scale(0.9);
-}
-#sketch-gallery-wrapper .gallery-image-item.next {
-    z-index: 8;
-    opacity: 1;
-    transform: translateX(180px) scale(0.9);
-}
-#sketch-gallery-wrapper .gallery-image-item.prev-hidden {
-    z-index: 6;
-    opacity: 1;
-    transform: translateX(-360px) scale(0.8);
-}
-#sketch-gallery-wrapper .gallery-image-item.next-hidden {
-    z-index: 6;
-    opacity: 1;
-    transform: translateX(360px) scale(0.8);
-}
-#sketch-gallery-wrapper .gallery-image-item.hidden {
-    opacity: 0;
-    transform: scale(0.7);
-    z-index: 1;
-}
-
-/* Navigation buttons (Dipojokkan) */
-#sketch-gallery-wrapper .gallery-nav-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #fff;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 20;
-    transition: all 0.3s ease;
-    color: #0C2C5A;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-}
-#sketch-gallery-wrapper .gallery-nav-button:hover {
-    background: white;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-}
-#sketch-gallery-wrapper .gallery-nav-left {
-    left: 1%;
-}
-#sketch-gallery-wrapper .gallery-nav-right {
-    right: 1%;
-}
-
-/* Responsive (disederhanakan) */
-@media (max-width: 768px) {
-    #sketch-gallery-wrapper .gallery-carousel {
-        height: 450px;
-        overflow: visible;
-    }
-    #sketch-gallery-wrapper .gallery-image-item {
-        width: 280px;
-        min-height: 420px;
-        left: calc(50% - 140px);
-        padding: 25px 20px 35px 20px;
-        box-sizing: border-box;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: flex-start !important;
-    }
-    #sketch-gallery-wrapper .sketch-circular-image {
-        width: 120px;
-        height: 120px;
-    }
-    #sketch-gallery-wrapper .sketch-card-title {
-        font-size: 1.3rem;
-    }
-     #sketch-gallery-wrapper .gallery-image-item.prev,
-     #sketch-gallery-wrapper .gallery-image-item.next,
-     #sketch-gallery-wrapper .gallery-image-item.prev-hidden,
-     #sketch-gallery-wrapper .gallery-image-item.next-hidden {
-        display: none !important;
-     }
-
-    #sketch-gallery-wrapper .sketch-card-subtitle {
-        font-size: 0.9rem;
-        white-space: normal;
-        overflow: visible;
-        text-overflow: clip;
-        max-width: 100%;
-        line-height: 1.3;
-    }
-}
-
-@media (max-width: 768px) {
-    #sketch-gallery-wrapper .carousel-title {
-        font-size: 2rem;
-    }
-
-    #sketch-gallery-wrapper .carousel-subtitle {
-        font-size: 1rem;
-        margin-bottom: 20px;
-    }
-
-    #sketch-gallery-wrapper .gallery-carousel {
-        height: 420px;
-        padding-top: 20px;
-    }
+        #sketch-gallery-wrapper .sketch-card-brand img {
+            max-height: 47px;
+            /* Maksimal tinggi logo */
+            width: auto;
+            /* Lebar akan menyesuaikan secara proporsional */
+            object-fit: contain;
+            /* Memastikan gambar sepenuhnya terlihat dalam batasnya */
+            filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.4));
+            /* Pertahankan shadow */
+        }
 
 
-    #sketch-gallery-wrapper .sketch-circular-image {
-        width: 140px;
-        height: 140px;
-        margin-bottom: 20px;
-    }
+        #sketch-gallery-wrapper .sketch-card-middle-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
 
-    #sketch-gallery-wrapper .sketch-main-title {
-        font-size: 1.5rem;
-    }
+        }
 
-    #sketch-gallery-wrapper .sketch-description {
-        font-size: 0.9rem;
-    }
+        #sketch-gallery-wrapper .sketch-circular-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            /* Jarak ke subtitle ditambah */
+        }
 
-    #sketch-gallery-wrapper .gallery-nav-left {
-        left: 5%;
-    }
+        #sketch-gallery-wrapper .sketch-card-subtitle {
+            font-family: 'Gotham', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            letter-spacing: 0.5px;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
 
-    #sketch-gallery-wrapper .gallery-nav-right {
-        right: 5%;
-    }
+        #sketch-gallery-wrapper .sketch-card-description {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.6;
+            width: 90%;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            /* Tidak ada lagi pemotongan teks */
+        }
 
-    #sketch-gallery-wrapper .gallery-nav-button {
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
-    }
-}
+        /* Positioning (VERSI LEBIH SEMPIT AGAR HANYA SETENGAH TERLIHAT) */
+        #sketch-gallery-wrapper .gallery-image-item.active {
+            z-index: 10;
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+
+        #sketch-gallery-wrapper .gallery-image-item.prev {
+            z-index: 8;
+            opacity: 1;
+            transform: translateX(-180px) scale(0.9);
+        }
+
+        #sketch-gallery-wrapper .gallery-image-item.next {
+            z-index: 8;
+            opacity: 1;
+            transform: translateX(180px) scale(0.9);
+        }
+
+        #sketch-gallery-wrapper .gallery-image-item.prev-hidden {
+            z-index: 6;
+            opacity: 1;
+            transform: translateX(-360px) scale(0.8);
+        }
+
+        #sketch-gallery-wrapper .gallery-image-item.next-hidden {
+            z-index: 6;
+            opacity: 1;
+            transform: translateX(360px) scale(0.8);
+        }
+
+        #sketch-gallery-wrapper .gallery-image-item.hidden {
+            opacity: 0;
+            transform: scale(0.7);
+            z-index: 1;
+        }
+
+        /* Navigation buttons (Dipojokkan) */
+        #sketch-gallery-wrapper .gallery-nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #fff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+            color: #0C2C5A;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #sketch-gallery-wrapper .gallery-nav-button:hover {
+            background: white;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        #sketch-gallery-wrapper .gallery-nav-left {
+            left: 1%;
+        }
+
+        #sketch-gallery-wrapper .gallery-nav-right {
+            right: 1%;
+        }
+
+        /* Responsive (disederhanakan) */
+        @media (max-width: 768px) {
+            #sketch-gallery-wrapper .gallery-carousel {
+                height: 450px;
+                overflow: visible;
+            }
+
+            #sketch-gallery-wrapper .gallery-image-item {
+                width: 280px;
+                min-height: 420px;
+                left: calc(50% - 140px);
+                padding: 25px 20px 35px 20px;
+                box-sizing: border-box;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+            }
+
+            #sketch-gallery-wrapper .sketch-circular-image {
+                width: 120px;
+                height: 120px;
+            }
+
+            #sketch-gallery-wrapper .sketch-card-title {
+                font-size: 1.3rem;
+            }
+
+            #sketch-gallery-wrapper .gallery-image-item.prev,
+            #sketch-gallery-wrapper .gallery-image-item.next,
+            #sketch-gallery-wrapper .gallery-image-item.prev-hidden,
+            #sketch-gallery-wrapper .gallery-image-item.next-hidden {
+                display: none !important;
+            }
+
+            #sketch-gallery-wrapper .sketch-card-subtitle {
+                font-size: 0.9rem;
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+                max-width: 100%;
+                line-height: 1.3;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #sketch-gallery-wrapper .carousel-title {
+                font-size: 2rem;
+            }
+
+            #sketch-gallery-wrapper .carousel-subtitle {
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+
+            #sketch-gallery-wrapper .gallery-carousel {
+                height: 420px;
+                padding-top: 20px;
+            }
 
 
-@media (max-width: 575.98px) {
-    #sketch-gallery-wrapper .gallery-carousel {
-        height: 380px;
-    }
+            #sketch-gallery-wrapper .sketch-circular-image {
+                width: 140px;
+                height: 140px;
+                margin-bottom: 20px;
+            }
 
-    #sketch-gallery-wrapper .gallery-image-item {
-        height: 380px;
-        width: 75%;
-        left: 12.5%;
-        padding-top: 25px;
-    }
+            #sketch-gallery-wrapper .sketch-main-title {
+                font-size: 1.5rem;
+            }
 
-    #sketch-gallery-wrapper .sketch-circular-image {
-        width: 120px;
-        height: 120px;
-        margin-bottom: 15px;
-    }
+            #sketch-gallery-wrapper .sketch-description {
+                font-size: 0.9rem;
+            }
 
-    #sketch-gallery-wrapper .sketch-main-title {
-        font-size: 1.3rem;
-    }
+            #sketch-gallery-wrapper .gallery-nav-left {
+                left: 5%;
+            }
 
-    #sketch-gallery-wrapper .sketch-description {
-        font-size: 0.85rem;
-    }
+            #sketch-gallery-wrapper .gallery-nav-right {
+                right: 5%;
+            }
 
-    #sketch-gallery-wrapper .gallery-nav-left {
-        left: 2%;
-    }
+            #sketch-gallery-wrapper .gallery-nav-button {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
 
-    #sketch-gallery-wrapper .gallery-nav-right {
-        right: 2%;
-    }
 
-    #sketch-gallery-wrapper .gallery-nav-button {
-        width: 30px;
-        height: 30px;
-        font-size: 0.9rem;
-    }
-}
+        @media (max-width: 575.98px) {
+            #sketch-gallery-wrapper .gallery-carousel {
+                height: 380px;
+            }
+
+            #sketch-gallery-wrapper .gallery-image-item {
+                height: 380px;
+                width: 75%;
+                left: 12.5%;
+                padding-top: 25px;
+            }
+
+            #sketch-gallery-wrapper .sketch-circular-image {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 15px;
+            }
+
+            #sketch-gallery-wrapper .sketch-main-title {
+                font-size: 1.3rem;
+            }
+
+            #sketch-gallery-wrapper .sketch-description {
+                font-size: 0.85rem;
+            }
+
+            #sketch-gallery-wrapper .gallery-nav-left {
+                left: 2%;
+            }
+
+            #sketch-gallery-wrapper .gallery-nav-right {
+                right: 2%;
+            }
+
+            #sketch-gallery-wrapper .gallery-nav-button {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+        }
+
         /* ===== KONSULTASI GRATIS SECTION ===== */
         .consultation-section {
             position: relative;
@@ -929,11 +957,15 @@
         }
 
         @media (max-width: 767.98px) {
+
             /* ===== UNTUK MOBILE ===== */
             .hero-section {
-                height: auto; /* 1. Hapus tinggi layar penuh */
-                min-height: 0; /* Hapus min-height agar tidak mengganggu */
-                padding-top: 125%; /* 2. Ciptakan 'aspect ratio' box (misal: 4:5). Angka ini bisa disesuaikan */
+                height: auto;
+                /* 1. Hapus tinggi layar penuh */
+                min-height: 0;
+                /* Hapus min-height agar tidak mengganggu */
+                padding-top: 125%;
+                /* 2. Ciptakan 'aspect ratio' box (misal: 4:5). Angka ini bisa disesuaikan */
                 position: relative;
             }
 
@@ -949,8 +981,10 @@
             }
 
             .hero-section .carousel-item {
-                background-position: center; /* Fokuskan gambar ke tengah */
+                background-position: center;
+                /* Fokuskan gambar ke tengah */
             }
+
             /* ========== */
 
 
@@ -1108,29 +1142,36 @@
             }
 
             /* ===== [KODE BARU] FIX FOOTER MOBILE AGAR TERSUSUN KE BAWAH ===== */
-@media (max-width: 767.98px) {
-    /* Menargetkan semua kolom di dalam baris footer */
-    .footer-section .row > [class*="col-"] {
-        width: 100%;             /* Paksa lebar jadi 100% */
-        flex: 0 0 100%;          /* Pastikan flexbox juga mengikuti */
-        max-width: 100%;         /* Pastikan max-width juga 100% */
-        margin-bottom: 30px;     /* Beri jarak bawah antar kolom */
-        text-align: center;      /* (Opsional) Buat teks rata tengah */
-    }
+            @media (max-width: 767.98px) {
 
-    /* Menghilangkan jarak bawah pada kolom terakhir */
-    .footer-section .row > [class*="col-"]:last-child {
-        margin-bottom: 0;
-    }
-}
+                /* Menargetkan semua kolom di dalam baris footer */
+                .footer-section .row>[class*="col-"] {
+                    width: 100%;
+                    /* Paksa lebar jadi 100% */
+                    flex: 0 0 100%;
+                    /* Pastikan flexbox juga mengikuti */
+                    max-width: 100%;
+                    /* Pastikan max-width juga 100% */
+                    margin-bottom: 30px;
+                    /* Beri jarak bawah antar kolom */
+                    text-align: center;
+                    /* (Opsional) Buat teks rata tengah */
+                }
 
-            
+                /* Menghilangkan jarak bawah pada kolom terakhir */
+                .footer-section .row>[class*="col-"]:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+
         }
 
         /* Extra small screens (phones in portrait) */
         @media (max-width: 575.98px) {
             .hero-section {
-                 padding-top: 150%; /* Sedikit lebih tinggi untuk layar yang sangat sempit */
+                padding-top: 150%;
+                /* Sedikit lebih tinggi untuk layar yang sangat sempit */
             }
 
             #sketch-gallery-wrapper .gallery-carousel {
@@ -1322,7 +1363,8 @@
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"
                     aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"
+                    aria-label="Slide 2"></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"
                     aria-label="Slide 3"></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"
@@ -1558,53 +1600,63 @@
         </div>
     </section>
     {{-- 6. SKETCH TELLING (CAROUSEL DENGAN TAMPILAN KARTU BARU - PERBAIKAN FINAL) --}}
-<section id="sketch-gallery-wrapper" class="container py-5 my-5">
-    <div class="carousel-container">
-        <h2 class="carousel-title" data-aos="fade-down">Sketch Telling</h2>
-        <p class="carousel-subtitle" data-aos="fade-up" data-aos-delay="100">
-            Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang lebih dalam tentang berbagai perjalanan hidup
-        </p>
-        <div class="gallery-carousel" data-aos="fade-up">
-            <button class="gallery-nav-button gallery-nav-left">&#10094;</button>
-            <div class="gallery-carousel-images" data-aos="zoom-in" data-aos-duration="1000">
-                @forelse ($latest_sketches as $sketch)
-                    <a href="{{ route('front.sketch.show', $sketch->slug) }}" class="gallery-image-item">
-                        <p class="sketch-card-header">Sketch Telling</p>
+    <section id="sketch-gallery-wrapper" class="container py-5 my-5">
+        <div class="carousel-container">
+            <h2 class="carousel-title" data-aos="fade-down">Sketch Telling</h2>
+            <p class="carousel-subtitle" data-aos="fade-up" data-aos-delay="100">
+                Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang lebih dalam tentang
+                berbagai perjalanan hidup
+            </p>
+            <div class="gallery-carousel" data-aos="fade-up">
+                <button class="gallery-nav-button gallery-nav-left">&#10094;</button>
+                <div class="gallery-carousel-images" data-aos="zoom-in" data-aos-duration="1000">
+                    @forelse ($latest_sketches as $sketch)
+                        <a href="{{ route('front.sketch.show', $sketch->slug) }}" class="gallery-image-item">
+                            <p class="sketch-card-header">Sketch Telling</p>
 
-                        <div class="sketch-card-middle-content">
-                            <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="sketch-circular-image" />
-                            <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
-                            <p class="sketch-card-description">
-                                {{-- Mengambil dari kolom 'content' bukan 'title' --}}
-                                {{ Str::limit(strip_tags($sketch->content), 120) }}
-                            </p>
-                        </div>
+                            <div class="sketch-card-middle-content">
+                                <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}"
+                                    class="sketch-circular-image" />
+                                <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
+                                <p class="sketch-card-description">
+                                    {{ Str::limit(strip_tags($sketch->content), 120) }}
+                                </p>
+                            </div>
 
-                        <p class="sketch-card-brand">Indiegologi</p>
-                    </a>
-                @empty
-                    {{-- Konten Fallback jika tidak ada sketsa --}}
-                    <div class="gallery-image-item">
-                        <p class="sketch-card-header">Sketch Telling</p>
-                        <div class="sketch-card-middle-content">
-                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop&crop=face" alt="Default" class="sketch-circular-image">
-                            <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
-                            <p class="sketch-card-description">Mulai hari dengan ketenangan dan fokus yang jernih untuk perjalanan hidup yang lebih baik.</p>
+                            <div class="sketch-card-brand">
+                                <img src="{{ asset('assets/img/login.png') }}" alt="Indiegologi Logo"
+                                    style="height: 70px; width: auto; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));">
+                            </div>
+                        </a>
+                    @empty
+                        {{-- Konten Fallback jika tidak ada sketsa --}}
+                        <div class="gallery-image-item">
+                            <p class="sketch-card-header">Sketch Telling</p>
+                            <div class="sketch-card-middle-content">
+                                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop&crop=face"
+                                    alt="Default" class="sketch-circular-image">
+                                <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
+                                <p class="sketch-card-description">Mulai hari dengan ketenangan dan fokus yang jernih untuk
+                                    perjalanan hidup yang lebih baik.</p>
+                            </div>
+
+                            <div class="sketch-card-brand">
+                                <img src="{{ asset('assets/img/login.png') }}" alt="Indiegologi Logo"
+                                    style="height: 70px; width: auto; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));">
+                            </div>
                         </div>
-                        <p class="sketch-card-brand">Indiegologi</p>
-                    </div>
-                @endforelse
+                    @endforelse
+                </div>
+                <button class="gallery-nav-button gallery-nav-right">&#10095;</button>
             </div>
-            <button class="gallery-nav-button gallery-nav-right">&#10095;</button>
         </div>
-    </div>
-    <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="300">
-        <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2"
-            style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">
-            Lihat Semua Sketsa
-        </a>
-    </div>
-</section>
+        <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="300">
+            <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2"
+                style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">
+                Lihat Semua Sketsa
+            </a>
+        </div>
+    </section>
 
     {{-- 7. Layanan Unggulan --}}
     <section class="py-5 my-5 bg-light">
@@ -1858,20 +1910,22 @@
 
                     // 3. [PERBAIKAN] Tunggu animasi flip selesai (400ms), baru tampilkan modal
                     setTimeout(() => {
-                        // Update konten di dalam modal dengan data yang baru diambil
-                        const modalImage = testimonialModal.querySelector('#modal-image');
-                        const modalName = testimonialModal.querySelector('#modal-name');
-                        const modalDetails = testimonialModal.querySelector('#modal-details');
-                        const modalQuote = testimonialModal.querySelector('#modal-quote');
+                            // Update konten di dalam modal dengan data yang baru diambil
+                            const modalImage = testimonialModal.querySelector('#modal-image');
+                            const modalName = testimonialModal.querySelector('#modal-name');
+                            const modalDetails = testimonialModal.querySelector('#modal-details');
+                            const modalQuote = testimonialModal.querySelector('#modal-quote');
 
-                        if (modalImage) modalImage.src = image;
-                        if (modalName) modalName.textContent = name;
-                        if (modalDetails) modalDetails.textContent = details;
-                        if (modalQuote) modalQuote.textContent = `"${quote}"`;
+                            if (modalImage) modalImage.src = image;
+                            if (modalName) modalName.textContent = name;
+                            if (modalDetails) modalDetails.textContent = details;
+                            if (modalQuote) modalQuote.textContent = `"${quote}"`;
 
-                        // Tampilkan modal
-                        modalInstance.show();
-                    }, 400); // [PERBAIKAN] Durasi disamakan dengan transisi pada .testimonial-flipper di CSS
+                            // Tampilkan modal
+                            modalInstance.show();
+                        },
+                        400
+                    ); // [PERBAIKAN] Durasi disamakan dengan transisi pada .testimonial-flipper di CSS
                 });
             });
 

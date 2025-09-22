@@ -131,6 +131,11 @@
                 pointer-events: none;
                 cursor: default;
             }
+
+            #navbarContent .navbar-nav > .nav-item:nth-child(-n+3) {
+                margin-left: 0.2rem;
+                margin-right: 0.1rem;
+            }
         }
 
         .cart-badge {

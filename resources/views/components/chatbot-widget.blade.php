@@ -1,16 +1,13 @@
-{{-- File: resources/views/components/chatbot-widget.blade.php --}}
-
 <div id="chatbot-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-    <!-- Tombol Chat -->
     <button id="chatbot-toggle" style="
-        width: 60px; 
-        height: 60px; 
-        border-radius: 50%; 
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
         background: linear-gradient(135deg, #0C2C5A, #1a4480);
-        border: none; 
-        color: white; 
-        font-size: 24px; 
-        cursor: pointer; 
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
         box-shadow: 0 4px 12px rgba(12, 44, 90, 0.3);
         transition: all 0.3s ease;
         display: flex;
@@ -20,28 +17,26 @@
         <i class="bi bi-chat-dots-fill"></i>
     </button>
 
-    <!-- Chat Container -->
     <div id="chatbot-container" style="
-        position: absolute; 
-        bottom: 70px; 
-        right: 0; 
-        width: 350px; 
-        height: 500px; 
-        background: white; 
-        border-radius: 15px; 
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        width: 350px;
+        height: 500px;
+        background: white;
+        border-radius: 15px;
         box-shadow: 0 8px 30px rgba(0,0,0,0.15);
         display: none;
         flex-direction: column;
         overflow: hidden;
         border: 1px solid #e1e5e9;
     ">
-        <!-- Header -->
         <div style="
             background: linear-gradient(135deg, #0C2C5A, #1a4480);
-            color: white; 
-            padding: 15px 20px; 
-            display: flex; 
-            justify-content: space-between; 
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         ">
             <div>
@@ -49,10 +44,10 @@
                 <small style="opacity: 0.9;">Online - Siap membantu Anda</small>
             </div>
             <button id="chatbot-close" style="
-                background: none; 
-                border: none; 
-                color: white; 
-                font-size: 18px; 
+                background: none;
+                border: none;
+                color: white;
+                font-size: 18px;
                 cursor: pointer;
                 padding: 5px;
                 opacity: 0.8;
@@ -62,17 +57,15 @@
             </button>
         </div>
 
-        <!-- Chat Messages -->
         <div id="chatbot-messages" style="
-            flex: 1; 
-            padding: 20px; 
-            overflow-y: auto; 
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
             background: #f8f9fa;
             display: flex;
             flex-direction: column;
             gap: 10px;
         ">
-            <!-- Welcome Message -->
             <div style="
                 background: white;
                 padding: 12px 15px;
@@ -82,40 +75,39 @@
                 align-self: flex-start;
             ">
                 <p style="margin: 0; font-size: 14px; line-height: 1.4;">
-                    Halo! Selamat datang di Indiegologi. Saya siap membantu Anda. 
-                    Ketik <strong>help</strong> untuk melihat perintah yang tersedia.
+                    Halo! Selamat datang di Indiegologi. Saya siap membantu Anda.
+                    Klik <a href="#" class="chatbot-command">help</a> untuk melihat perintah yang tersedia.
                 </p>
             </div>
         </div>
 
-        <!-- Input Area -->
         <div style="
-            padding: 15px 20px; 
-            border-top: 1px solid #e1e5e9; 
+            padding: 15px 20px;
+            border-top: 1px solid #e1e5e9;
             background: white;
         ">
             <div style="display: flex; gap: 10px; align-items: center;">
-                <input 
-                    type="text" 
-                    id="chatbot-input" 
+                <input
+                    type="text"
+                    id="chatbot-input"
                     placeholder="Ketik pesan Anda..."
                     style="
-                        flex: 1; 
-                        padding: 10px 15px; 
-                        border: 1px solid #ddd; 
-                        border-radius: 25px; 
+                        flex: 1;
+                        padding: 10px 15px;
+                        border: 1px solid #ddd;
+                        border-radius: 25px;
                         outline: none;
                         font-size: 14px;
                         transition: border-color 0.3s ease;
                     "
                 >
                 <button id="chatbot-send" style="
-                    width: 40px; 
-                    height: 40px; 
-                    border-radius: 50%; 
-                    background: #0C2C5A; 
-                    border: none; 
-                    color: white; 
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    background: #0C2C5A;
+                    border: none;
+                    color: white;
                     cursor: pointer;
                     display: flex;
                     align-items: center;
@@ -181,6 +173,26 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
 }
 
+/* ADDED: Styling untuk link perintah yang bisa diklik */
+.message-bot a.chatbot-command {
+    color: #0C2C5A;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.message-bot a.chatbot-command:hover {
+    color: #1a4480;
+}
+.chatbot-command {
+    color: #0C2C5A;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.chatbot-command:hover {
+    color: #1a4480;
+}
+
 .typing-indicator {
     display: flex;
     align-items: center;
@@ -225,7 +237,7 @@
         width: 300px !important;
         height: 450px !important;
     }
-    
+
     #chatbot-widget {
         bottom: 15px !important;
         right: 15px !important;
@@ -267,6 +279,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Send message on button click
     chatbotSend.addEventListener('click', sendMessage);
 
+    chatbotMessages.addEventListener('click', function(e) {
+        // Cek apakah elemen yang diklik memiliki kelas 'chatbot-command'
+        if (e.target.classList.contains('chatbot-command')) {
+            e.preventDefault(); // Mencegah link default
+            const command = e.target.textContent;
+
+            // Tampilkan perintah sebagai pesan pengguna
+            addMessage(command, 'user');
+
+            // Kirim perintah ke bot
+            sendRequestToBot(command);
+        }
+    });
+
     function sendMessage() {
         const message = chatbotInput.value.trim();
         if (message === '') return;
@@ -275,10 +301,15 @@ document.addEventListener('DOMContentLoaded', function() {
         addMessage(message, 'user');
         chatbotInput.value = '';
 
+        // Send to BotMan
+        sendRequestToBot(message);
+    }
+
+    // MODIFIED: Fungsi untuk mengirim request ke bot dipisahkan
+    function sendRequestToBot(message) {
         // Show typing indicator
         showTypingIndicator();
 
-        // Send to BotMan
         fetch('/botman', {
             method: 'POST',
             headers: {
@@ -318,20 +349,22 @@ document.addEventListener('DOMContentLoaded', function() {
             font-size: 14px;
             line-height: 1.4;
             white-space: pre-wrap;
+            word-wrap: break-word;
         `;
-        
+
         if (sender === 'user') {
             messageDiv.className = 'message-user';
         } else {
             messageDiv.className = 'message-bot';
         }
-        
-        // Format text with basic markdown
+
+        // Format text with basic markdown, tidak akan mengganggu HTML
         const formattedText = text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
             .replace(/`(.*?)`/g, '<code style="background:#f1f1f1;padding:2px 4px;border-radius:3px;">$1</code>');
-        
+
+        // Menggunakan innerHTML agar tag <a> dari backend bisa dirender
         messageDiv.innerHTML = formattedText;
         chatbotMessages.appendChild(messageDiv);
         chatbotMessages.scrollTop = chatbotMessages.scrollHeight;

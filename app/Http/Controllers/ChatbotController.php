@@ -37,11 +37,11 @@ class ChatbotController extends Controller
             $botman->hears('.*(help|bantuan|start|hi|hello).*', function (BotMan $bot) {
                 $response = "🎨 Selamat datang di *Indiegologi Assistant*!\n\n";
                 $response .= "Saya bisa membantu Anda menavigasi website. Berikut perintah yang tersedia:\n";
-                $response .= "• `artikel` - Menampilkan artikel terbaru\n";
-                $response .= "• `layanan` - Membuka halaman layanan kami\n";
-                $response .= "• `sketsa` - Melihat galeri sketsa\n";
-                $response .= "• `kontak` - Membuka halaman kontak\n\n";
-                $response .= "Ketik salah satu perintah di atas untuk memulai.";
+                $response .= '• <a href="#" class="chatbot-command">artikel</a> - Menampilkan artikel terbaru' . "\n";
+                $response .= '• <a href="#" class="chatbot-command">layanan</a> - Membuka halaman layanan kami' . "\n";
+                $response .= '• <a href="#" class="chatbot-command">sketsa</a> - Melihat galeri sketsa' . "\n";
+                $response .= '• <a href="#" class="chatbot-command">kontak</a> - Membuka halaman kontak' . "\n\n";
+                $response .= "Silakan klik salah satu perintah di atas untuk memulai.";
                 $bot->reply($response);
             });
 
@@ -61,7 +61,6 @@ class ChatbotController extends Controller
                 foreach ($articles as $article) {
                     $articleUrl = route('front.articles.show', $article);
                     $response .= "📄 *" . $article->title . "*\n";
-                    // Menggunakan link HTML yang lebih ramah
                     $response .= '<a href="' . $articleUrl . '" target="_blank" class="chatbot-link">Lihat Artikel</a>' . "\n\n";
                 }
                 $response .= "Anda juga bisa melihat semua artikel dengan menekan tombol di bawah ini:\n";
@@ -80,15 +79,14 @@ class ChatbotController extends Controller
             });
 
             // Perintah: 'sketsa'
-            // Perintah: 'sketsa'
-$botman->hears('.*(sketsa|sketch).*', function (BotMan $bot) {
-    $url = route('front.sketch'); // <--- BENAR, sesuai dengan web.php
-    $response = "Temukan inspirasi dari galeri sketsa hasil karya tim kami.\n\n";
-    $response .= "Silakan klik tombol di bawah ini untuk melihat galeri sketsa kami:\n";
-    $response .= '<a href="' . $url . '" target="_blank" class="chatbot-button">Lihat Galeri Sketsa</a>';
-    $bot->reply($response);
-});
-            
+            $botman->hears('.*(sketsa|sketch).*', function (BotMan $bot) {
+                $url = route('front.sketch');
+                $response = "Temukan inspirasi dari galeri sketsa hasil karya tim kami.\n\n";
+                $response .= "Silakan klik tombol di bawah ini untuk melihat galeri sketsa kami:\n";
+                $response .= '<a href="' . $url . '" target="_blank" class="chatbot-button">Lihat Galeri Sketsa</a>';
+                $bot->reply($response);
+            });
+
             // Perintah: 'kontak'
             $botman->hears('.*(kontak|contact|hubungi).*', function (BotMan $bot) {
                 $url = route('front.contact');
