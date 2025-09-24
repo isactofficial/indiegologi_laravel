@@ -111,11 +111,11 @@
         <table class="service-table avoid-break">
             <thead style="background-color: #0C2C5A; color: white;">
                 <tr>
-                    <th style="font-weight: bold; width: 45%; text-align: left;">Deskripsi layanan</th>
-                    <th style="font-weight: bold; width: 10%; text-align: right;">Kuantitas</th>
-                    <th style="font-weight: bold; width: 15%; text-align: right;">Harga Satuan</th>
-                    <th style="font-weight: bold; width: 10%; text-align: right;">Besaran</th>
-                    <th style="font-weight: bold; width: 20%; text-align: right;">Total Line</th>
+                <th>Deskripsi</th>
+        <th class="text-right">kuantitas</th>
+        <th class="text-right">Harga</th>
+        <th class="text-right">Diskon</th>
+        <th class="text-right">Total</th>
                 </tr>
             </thead>
             <tbody>

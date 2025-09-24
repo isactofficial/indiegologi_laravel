@@ -81,11 +81,11 @@
             <table class="service-table">
                 <thead>
                     <tr>
-                        <th>Deskripsi layanan</th>
-                        <th class="text-right">Kuantitas</th>
-                        <th class="text-right">Harga Satuan</th>
-                        <th class="text-right">Besaran</th>
-                        <th class="text-right">Total Line</th>
+                    <th>Deskripsi</th>
+        <th class="text-right">kuantitas</th>
+        <th class="text-right">Harga</th>
+        <th class="text-right">Diskon</th>
+        <th class="text-right">Total</th>
                     </tr>
                 </thead>
                 <tbody>

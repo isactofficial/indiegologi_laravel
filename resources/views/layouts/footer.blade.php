@@ -31,9 +31,17 @@
 
             <div class="col-md-4" style="flex: 1; min-width: 200px;">
                 <h6 style="font-weight: bold; margin-bottom: 1rem;">Kontak</h6>
-                {{-- Informasi kontak diperbarui --}}
-                <p style="margin-bottom: 0.3rem;">+62 822-2095-5595</p>
-                <p style="margin-bottom: 0.3rem;">indiegologiofficial@gmail.com</p>
+                {{-- Informasi kontak diperbarui dengan link WhatsApp --}}
+                <p style="margin-bottom: 0.3rem;">
+                    <a href="https://wa.me/6282220955595" target="_blank" style="color: white; text-decoration: none;">
+                        +62 822-2095-5595
+                    </a>
+                </p>
+                <p style="margin-bottom: 0.3rem;">
+                    <a href="mailto:indiegologiofficial@gmail.com" style="color: white; text-decoration: none;">
+                        indiegologiofficial@gmail.com
+                    </a>
+                </p>
                 <p style="margin-bottom: 0.3rem;">Yogyakarta, Indonesia</p>
             </div>
 
