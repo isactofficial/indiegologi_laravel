@@ -75,7 +75,7 @@
                 align-self: flex-start;
             ">
                 <p style="margin: 0; font-size: 14px; line-height: 1.4;">
-                    Halo! Selamat datang di Indiegologi. Saya siap membantu Anda.
+                    Halo! Selamat datang di Indiegologi. Saya siap membantu Anda.<br>
                     Klik <a href="#" class="chatbot-command">help</a> untuk melihat perintah yang tersedia.
                 </p>
             </div>

@@ -422,9 +422,11 @@
                             <i class="bi bi-newspaper me-2"></i>Berita
                         </a>
                         <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarBeritaDropdown">
-                            <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">Artikel</a></li>
+                            {{-- MODIFIED --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-journal-text me-2"></i>Artikel</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">Sketsa</a></li>
+                            {{-- MODIFIED --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-palette me-2"></i>Sketsa</a></li>
                         </ul>
                     </li>
 
@@ -433,9 +435,11 @@
                             <i class="bi bi-info-circle me-2"></i>Tentang Kami
                         </a>
                         <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarTentangDropdown">
-                            <li><a class="dropdown-item {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">Layanan</a></li>
+                            {{-- MODIFIED --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}"><i class="bi bi-briefcase me-2"></i>Layanan</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">Kontak Kami</a></li>
+                            {{-- MODIFIED --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-person-lines-fill me-2"></i>Kontak Kami</a></li>
                         </ul>
                     </li>
 
@@ -518,9 +522,11 @@
                     </a>
                     <div class="collapse" id="collapseBerita">
                         <ul class="navbar-nav dropdown-menu">
-                            <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}">Artikel</a></li>
+                            {{-- MODIFIED --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-journal-text me-2"></i>Artikel</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}">Sketsa</a></li>
+                            {{-- MODIFIED --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-palette me-2"></i>Sketsa</a></li>
                         </ul>
                     </div>
                 </li>
@@ -531,9 +537,11 @@
                     </a>
                     <div class="collapse" id="collapseTentang">
                         <ul class="navbar-nav dropdown-menu">
-                            <li><a class="dropdown-item {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}">Layanan</a></li>
+                            {{-- MODIFIED --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}"><i class="bi bi-briefcase me-2"></i>Layanan</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}">Kontak Kami</a></li>
+                            {{-- MODIFIED --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-person-lines-fill me-2"></i>Kontak Kami</a></li>
                         </ul>
                     </div>
                 </li>
