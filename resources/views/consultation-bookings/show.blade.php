@@ -173,7 +173,7 @@
                     <th>Quantity</th>
                     <th>Unit Price</th>
                     <th>Amount</th>
-                    <th>Total Line</th>
+                    <th>Total </th>
                 </tr>
             </thead>
             <tbody>

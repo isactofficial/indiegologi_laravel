@@ -48,6 +48,7 @@
     .invoice-top-section {
         display: flex;
         justify-content: space-between;
+        align-items: flex-start;
         gap: 1.5rem;
         margin-bottom: 30px;
     }
@@ -57,7 +58,7 @@
         background-color: #f3faff;
         padding: 20px;
         border-radius: 10px;
-        width: 100%;
+        width: 48%;
         display: grid;
         grid-template-columns: max-content 1fr;
         gap: 8px 10px;
@@ -66,10 +67,13 @@
 
     .grid-full-span {
         grid-column: 1 / -1;
+        margin-bottom: 10px; /* PERBAIKAN: Tambahkan margin bottom yang cukup */
     }
 
     .grid-align-top-left {
         align-self: start;
+        margin-bottom: 8px; /* PERBAIKAN: Ganti margin negatif dengan positif */
+        margin-top: 15px; /* PERBAIKAN: Tambah spacing dari elemen sebelumnya */
     }
 
     .title-underline {
@@ -106,6 +110,14 @@
 
     .invoice-details-info span {
         color: #0F3A77;
+    }
+
+    /* PERBAIKAN: Styling khusus untuk div yang berisi list paket konseling */
+    .invoice-client-info .grid-full-span div {
+        padding-left: 10px;
+        line-height: 1.6; /* Increase line height untuk readability */
+        margin-top: 8px; /* Tambah margin top */
+        margin-bottom: 8px; /* Tambah margin bottom */
     }
 
     /* === PENGATURAN UTAMA TABEL === */
@@ -246,125 +258,148 @@
         }
     }
 
-    /* Perbaikan CSS untuk bagian Dear di mobile */
+    /* PERBAIKAN CSS untuk mobile responsive */
+    @media (max-width: 768px) {
+        .invoice-wrapper {
+            padding: 15px;
+            margin: 20px auto;
+        }
+        
+        .invoice-top-section {
+            gap: 0.5rem; /* PERBAIKAN: Kurangi gap untuk fit mobile */
+            margin-bottom: 20px;
+            /* Tetap flex-direction row untuk bersebelahan */
+        }
 
-/* Perbaikan CSS untuk bagian Dear di mobile */
+        .invoice-client-info,
+        .invoice-details-info {
+            width: 48%; /* PERBAIKAN: Kembali ke 48% untuk bersebelahan */
+            padding: 12px; /* PERBAIKAN: Kurangi padding untuk fit mobile */
+            grid-template-columns: 1fr; /* Single column layout */
+            gap: 8px 0; /* PERBAIKAN: Kurangi gap untuk fit mobile */
+        }
 
-@media (max-width: 768px) {
-    .invoice-wrapper {
-        padding: 15px; /* Lebih besar dari 10px untuk breathing room */
-        margin: 20px auto; /* Kurangi margin top/bottom */
-    }
-    
-    .invoice-top-section {
-        flex-direction: column; 
-        gap: 1rem; /* Kurangi gap antar section */
-        margin-bottom: 20px; /* Kurangi margin bottom */
-    }
+        /* PERBAIKAN: Khusus untuk bagian Dear/Client Info */
+        .invoice-client-info p {
+            margin: 12px 0; /* PERBAIKAN: Increase margin antar paragraph */
+            line-height: 1.6; /* Improve readability */
+        }
 
-    .invoice-client-info,
-    .invoice-details-info {
-        padding: 15px; /* Kurangi padding internal */
-        grid-template-columns: 1fr; /* Single column layout */
-        gap: 8px 0; /* Kurangi gap antar item */
-    }
+        .invoice-client-info p:first-child {
+            font-size: 1rem;
+            margin-bottom: 15px; /* PERBAIKAN: Tambah spacing setelah title */
+        }
 
-    /* Khusus untuk bagian Dear/Client Info */
-    .invoice-client-info p {
-        margin: 8px 0; /* Tambah spacing antar paragraph */
-        line-height: 1.5; /* Improve readability lebih */
-    }
+        /* PERBAIKAN: Fix untuk list paket konseling di mobile */
+        .invoice-client-info .grid-full-span {
+            margin-bottom: 12px; /* PERBAIKAN: Lebih besar margin di mobile */
+        }
 
-    .invoice-client-info p:first-child {
-        font-size: 1rem; /* Sedikit kurangi ukuran title */
-        margin-bottom: 12px; /* Tambah spacing setelah title */
-    }
+        .invoice-client-info .grid-align-top-left {
+            margin-top: 20px; /* PERBAIKAN: Lebih besar spacing di mobile */
+            margin-bottom: 10px;
+        }
 
-    /* Fix untuk list paket konseling */
-    .invoice-client-info div {
-        padding-left: 0; 
-        margin: 8px 0; /* Tambah margin */
-    }
+        .invoice-client-info .grid-full-span div {
+            padding-left: 0;
+            margin: 10px 0; /* PERBAIKAN: Tambah margin di mobile */
+            line-height: 1.7; /* PERBAIKAN: Lebih besar line height di mobile */
+        }
 
-    .invoice-client-info div p {
-        margin-bottom: 6px; /* Tambah spacing dalam list */
-    }
+        .invoice-client-info .grid-full-span div p {
+            margin-bottom: 8px; /* PERBAIKAN: Tambah spacing dalam list */
+        }
 
-    /* Improve spacing untuk bullet points */
-    .invoice-client-info div div {
-        padding-left: 15px; /* Indent untuk bullet points */
-        line-height: 1.4; /* Sedikit tambah line height */
-        margin-top: 4px; /* Tambah space di atas bullet points */
-    }
+        /* PERBAIKAN: Improve spacing untuk bullet points di mobile */
+        .invoice-client-info .grid-full-span div div {
+            padding-left: 15px;
+            line-height: 1.5;
+            margin-top: 6px; /* PERBAIKAN: Tambah space di atas bullet points */
+        }
 
-    /* Perbaiki title underline */
-    .title-underline {
-        padding-bottom: 8px; /* Kurangi padding */
-    }
+        /* Perbaiki title underline */
+        .title-underline {
+            padding-bottom: 8px;
+        }
 
-    .title-underline::after {
-        width: 45px; /* Kurangi lebar garis */
-        height: 2px; /* Sedikit kurangi ketebalan */
-    }
+        .title-underline::after {
+            width: 45px;
+            height: 2px;
+        }
 
-    /* Service table improvements */
-    .service-table {
-        font-size: 0.75rem; /* Sedikit lebih kecil */
-        margin-top: 15px; /* Kurangi margin top */
-    }
+        /* Service table improvements */
+        .service-table {
+            font-size: 0.75rem;
+            margin-top: 15px;
+        }
 
-    .service-table th,
-    .service-table td {
-        padding: 8px 4px; /* Kurangi padding lebih banyak */
-    }
+        .service-table th,
+        .service-table td {
+            padding: 8px 4px;
+        }
 
-    /* Header improvements */
-    .invoice-header {
-        padding-bottom: 15px; /* Kurangi padding */
-        margin-bottom: 20px; /* Kurangi margin */
-    }
+        /* Header improvements */
+        .invoice-header {
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
 
-    .invoice-logo {
-        font-size: 20px; /* Kurangi ukuran logo */
-    }
+        .invoice-logo {
+            font-size: 20px;
+        }
 
-    .invoice-contact-info {
-        font-size: 12px; /* Kurangi ukuran font */
-    }
-}
-
-/* Perbaikan tambahan untuk layar sangat kecil */
-@media (max-width: 480px) {
-    .invoice-wrapper {
-        padding: 12px;
-        margin: 10px auto;
-    }
-    
-    .invoice-client-info,
-    .invoice-details-info {
-        padding: 12px;
+        .invoice-contact-info {
+            font-size: 12px;
+        }
     }
 
-    .service-table {
-        font-size: 0.7rem;
-    }
+    /* PERBAIKAN tambahan untuk layar sangat kecil */
+    @media (max-width: 480px) {
+        .invoice-wrapper {
+            padding: 12px;
+            margin: 10px auto;
+        }
+        
+        .invoice-client-info,
+        .invoice-details-info {
+            padding: 12px;
+        }
 
-    .service-table th,
-    .service-table td {
-        padding: 6px 2px;
-    }
+        /* PERBAIKAN: Lebih besar spacing untuk layar kecil */
+        .invoice-client-info .grid-full-span {
+            margin-bottom: 15px;
+        }
 
-    .invoice-client-info p:first-child {
-        font-size: 0.95rem;
-    }
+        .invoice-client-info .grid-align-top-left {
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
 
-    /* Responsive column widths untuk table di mobile */
-    .service-table th:nth-child(1), .service-table td:nth-child(1) { width: 40%; }
-    .service-table th:nth-child(2), .service-table td:nth-child(2) { width: 10%; }
-    .service-table th:nth-child(3), .service-table td:nth-child(3) { width: 18%; }
-    .service-table th:nth-child(4), .service-table td:nth-child(4) { width: 10%; }
-    .service-table th:nth-child(5), .service-table td:nth-child(5) { width: 22%; }
-}
+        .invoice-client-info .grid-full-span div {
+            margin: 12px 0;
+            line-height: 1.8;
+        }
+
+        .service-table {
+            font-size: 0.7rem;
+        }
+
+        .service-table th,
+        .service-table td {
+            padding: 6px 2px;
+        }
+
+        .invoice-client-info p:first-child {
+            font-size: 0.95rem;
+        }
+
+        /* Responsive column widths untuk table di mobile */
+        .service-table th:nth-child(1), .service-table td:nth-child(1) { width: 40%; }
+        .service-table th:nth-child(2), .service-table td:nth-child(2) { width: 10%; }
+        .service-table th:nth-child(3), .service-table td:nth-child(3) { width: 18%; }
+        .service-table th:nth-child(4), .service-table td:nth-child(4) { width: 10%; }
+        .service-table th:nth-child(5), .service-table td:nth-child(5) { width: 22%; }
+    }
 </style>
     <div class="section container-fluid px-4 py-5">
         <div class="d-flex justify-content-start mb-4 no-print" style="max-width: 800px; margin: 0 auto;">

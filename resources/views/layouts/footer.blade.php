@@ -18,15 +18,37 @@
             </div>
 
             <div class="col-md-4" style="flex: 1; min-width: 200px;">
-                <h6 style="font-weight: bold; margin-bottom: 1rem;">Layanan</h6>
-                @if(isset($servicesForFooter) && $servicesForFooter->count() > 0)
-                    @foreach($servicesForFooter as $service)
-                        <p style="margin-bottom: 0.3rem;">{{ $service->title }}</p>
-                    @endforeach
-                @else
-                    {{-- Tampilan jika tidak ada layanan yang tersedia --}}
-                    <p style="margin-bottom: 0.3rem;">Layanan akan segera hadir.</p>
-                @endif
+                <h6 style="font-weight: bold; margin-bottom: 1rem;">Menu</h6>
+                <p style="margin-bottom: 0.3rem;">
+                    <a href="{{ route('front.index') }}" style="color: white; text-decoration: none; transition: color 0.3s ease;" 
+                       onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='white'">
+                        Beranda
+                    </a>
+                </p>
+                <p style="margin-bottom: 0.3rem;">
+                    <a href="{{ route('front.articles') }}" style="color: white; text-decoration: none; transition: color 0.3s ease;" 
+                       onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='white'">
+                        Artikel
+                    </a>
+                </p>
+                <p style="margin-bottom: 0.3rem;">
+                    <a href="{{ route('front.sketch') }}" style="color: white; text-decoration: none; transition: color 0.3s ease;" 
+                       onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='white'">
+                        Sketsa
+                    </a>
+                </p>
+                <p style="margin-bottom: 0.3rem;">
+                    <a href="{{ route('front.layanan') }}" style="color: white; text-decoration: none; transition: color 0.3s ease;" 
+                       onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='white'">
+                        Layanan
+                    </a>
+                </p>
+                <p style="margin-bottom: 0.3rem;">
+                    <a href="{{ route('front.contact') }}" style="color: white; text-decoration: none; transition: color 0.3s ease;" 
+                       onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='white'">
+                        Kontak Kami
+                    </a>
+                </p>
             </div>
 
             <div class="col-md-4" style="flex: 1; min-width: 200px;">
