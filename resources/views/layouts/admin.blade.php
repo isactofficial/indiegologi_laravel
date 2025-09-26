@@ -50,30 +50,37 @@
             position: fixed;
             left: 0;
             top: 0;
-            z-index: 1000;
+            z-index: 1030;
             transition: all 0.3s ease;
         }
         .sidebar-content { height: 100%; display: flex; flex-direction: column; position: relative; padding-bottom: 80px; }
         .sidebar h4 { font-weight: 700; color: var(--text-dark); margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e9ecef; text-align: center; }
         .sidebar a { font-weight: 500; display: flex; align-items: center; color: var(--text-dark); padding: 12px 20px; margin: 8px 15px; text-decoration: none; transition: all 0.3s ease; border-radius: 10px; }
         .sidebar a i { margin-right: 10px; font-size: 18px; }
-
-        /* Gaya untuk link yang tidak aktif saat di-hover */
         .sidebar a:not(.active):hover {
             background-color: var(--active-bg);
             color: var(--active-text);
             transform: translateX(5px);
         }
-
-        /* [DIUBAH] Gaya untuk link yang aktif agar sesuai gambar */
         .sidebar a.active {
-            background-color: var(--primary-color); /* Latar belakang biru solid */
-            color: #FFFFFF; /* Teks berwarna putih */
+            background-color: var(--primary-color);
+            color: #FFFFFF;
             font-weight: 600;
-            box-shadow: 0 4px 12px rgba(12, 44, 90, 0.3); /* Shadow yang lebih tegas */
+            box-shadow: 0 4px 12px rgba(12, 44, 90, 0.3);
         }
-        .main-content-wrapper { margin-left: var(--sidebar-width); flex-grow: 1; padding: 30px; background-color: var(--bg-light); transition: all 0.3s ease; }
-        .content { padding: 30px; background-color: var(--bg-light); border-radius: 15px; box-shadow: var(--shadow-md); }
+        .main-content-wrapper {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 20px; /* Padding utama untuk jarak dari tepi layar */
+            background-color: var(--bg-light);
+            transition: margin-left 0.3s ease;
+        }
+        .content {
+            padding: 30px; /* Padding internal untuk konten di dalam kartu putih */
+            background-color: #FFFFFF;
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+        }
         .btn-logout {
             bottom: 20px; left: 15px; right: 15px; position: absolute; width: calc(100% - 30px); background-color: #fff; border: 1px solid var(--primary-color); padding: 12px 20px; border-radius: 10px; color: var(--primary-color); font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; text-decoration: none;
         }
@@ -89,23 +96,48 @@
         }
         .logo-container .logo i { font-size: 30px; color: var(--primary-color); }
         .nav-links { flex-grow: 1; }
-        @media (max-width: 768px) {
-            .wrapper { margin-left: -var(--sidebar-width); }
-            .main-content-wrapper { margin-left: 0; }
-            .wrapper.toggled .sidebar { margin-left: 0; }
-            .wrapper.toggled .main-content-wrapper { margin-left: var(--sidebar-width); }
+
+        /* [BARU] Top Header untuk tombol mobile */
+        .mobile-header {
+            display: none; /* Sembunyi di desktop */
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        .mobile-header .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        /* [DIUBAH] Media Query untuk Mobile */
+        @media (max-width: 992px) {
+            .sidebar {
+                left: calc(-1 * var(--sidebar-width)); /* Sembunyikan sidebar ke kiri */
+            }
+            .sidebar.active {
+                left: 0; /* Tampilkan sidebar saat class 'active' ditambahkan */
+            }
+            .main-content-wrapper {
+                margin-left: 0; /* Konten utama jadi full-width */
+                width: 100%;
+            }
+            .mobile-header {
+                display: flex; /* Tampilkan header di mobile */
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="wrapper" id="wrapper">
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-content">
             <div class="logo-container">
-                <div class="logo">
-                    <i class="fas fa-layer-group"></i>
-                </div>
+                <div class="logo"><i class="fas fa-layer-group"></i></div>
                 <h4>Indiegologi</h4>
             </div>
 
@@ -119,7 +151,7 @@
                 <a href="{{ route('admin.sketches.index') }}" class="{{ request()->routeIs('admin.sketches.*') ? 'active' : '' }}">
                     <i class="fas fa-palette"></i> Manajemen Sketsa
                 </a>
-                <a href="{{ route('admin.referral-codes.index') }}" class="{{ request()->routeIs('admin.referral-codes.*') ? 'active' : '' }}">
+                 <a href="{{ route('admin.referral-codes.index') }}" class="{{ request()->routeIs('admin.referral-codes.*') ? 'active' : '' }}">
                     <i class="fas fa-tags"></i> Manajemen Referral
                 </a>
                 <a href="{{ route('admin.consultation-services.index') }}" class="{{ request()->routeIs('admin.consultation-services.*') ? 'active' : '' }}">
@@ -138,14 +170,18 @@
 
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button class="btn-logout">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
+                <button class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </form>
         </div>
     </div>
 
     <div class="main-content-wrapper">
+        <div class="mobile-header">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
         <div class="content">
             @yield('content')
         </div>
@@ -153,6 +189,11 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('active');
+    });
+</script>
 @stack('scripts')
 
 </body>
