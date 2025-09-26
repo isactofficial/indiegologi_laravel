@@ -32,7 +32,7 @@
         border: 1px solid rgba(12, 44, 90, 0.3);
     }
 
-    /* [WARNA DIUBAH] Menyesuaikan warna status seperti file manage.blade.php */
+    /* Menyesuaikan warna status seperti file manage.blade.php */
     .badge-status-published {
         background-color: rgba(0, 97, 122, 0.15);
         color: #00617a;
@@ -47,6 +47,91 @@
         font-weight: 600;
         padding: 0.4em 0.8em;
         border-radius: 0.5rem;
+    }
+
+    /* Penyesuaian Tampilan Mobile */
+    @media (max-width: 767px) {
+        /* Sembunyikan header tabel di mobile */
+        .table thead {
+            display: none;
+        }
+
+        /* Ubah perilaku tabel menjadi block-level elements */
+        .table, .table tbody, .table tr, .table td {
+            display: block;
+            width: 100%;
+        }
+
+        /* Jadikan setiap baris sebagai card */
+        .table tr {
+            margin-bottom: 1.5rem;
+            border: 1px solid #e9ecef;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+        }
+
+        .table tr:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Hapus border bawaan tabel */
+        .table tr[style] {
+            border-bottom: none !important;
+        }
+
+        /* Atur ulang padding dan border sel */
+        .table td {
+            padding: 0.5rem 0.25rem;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: right;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .table td:last-child {
+            border-bottom: none;
+        }
+
+        /* Tambahkan label untuk setiap data sel */
+        .table td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #6c757d;
+            text-align: left;
+            margin-right: 1rem;
+        }
+
+        /* Atur posisi thumbnail di tengah atas */
+        .td-thumbnail {
+            display: block;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem !important;
+            border-bottom: 1px solid #e9ecef !important;
+        }
+
+        /* Pastikan gambar thumbnail tidak gepeng */
+        .td-thumbnail img, .td-thumbnail .bg-light {
+            width: 100% !important;
+            height: auto !important; /* Menjaga rasio aspek gambar */
+            max-width: 350px;
+            margin: 0 auto;
+            object-fit: cover;
+        }
+
+        /* Hilangkan label untuk thumbnail */
+        .td-thumbnail::before {
+            content: none;
+        }
+
+        /* Atur posisi tombol aksi */
+        .td-actions .d-flex {
+            justify-content: flex-end;
+            width: 100%;
+        }
     }
 </style>
 
@@ -101,7 +186,7 @@
                     <tbody>
                         @forelse($sketches as $sketch)
                             <tr style="border-bottom: 1px solid #f0f0f0;">
-                                <td class="py-3">
+                                <td class="py-3 td-thumbnail">
                                     @if($sketch->thumbnail)
                                         <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="rounded-3 object-fit-cover shadow-sm" style="width: 150px; height: 100px; border: 1px solid #eee;">
                                     @else
@@ -110,15 +195,15 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td class="py-3 fw-semibold text-break" style="color: var(--theme-primary);">{{ $sketch->title }}</td>
-                                <td class="py-3">{{ $sketch->author }}</td>
-                                <td class="py-3">
+                                <td class="py-3 fw-semibold text-break" style="color: var(--theme-primary);" data-label="Judul Sketsa">{{ $sketch->title }}</td>
+                                <td class="py-3" data-label="Penulis">{{ $sketch->author }}</td>
+                                <td class="py-3" data-label="Status">
                                     @php
                                         $statusClass = $sketch->status == 'Published' ? 'badge-status-published' : 'badge-status-draft';
                                     @endphp
                                     <span class="badge {{ $statusClass }}">{{ $sketch->status }}</span>
                                 </td>
-                                <td class="py-3">
+                                <td class="py-3 td-actions" data-label="Aksi">
                                     <div class="d-flex gap-2">
                                         <a href="{{ route('admin.sketches.show', $sketch->slug) }}" class="btn btn-sm btn-outline-info rounded-pill px-3" style="border-color: var(--theme-primary); color: var(--theme-primary);" title="Lihat Detail">
                                             <i class="fas fa-eye"></i>

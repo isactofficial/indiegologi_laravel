@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @push('styles')
-{{-- [WARNA DIUBAH] Menyesuaikan seluruh palet warna dengan tema utama --}}
+{{-- Menyesuaikan seluruh palet warna dengan tema utama --}}
 <style>
     .form-control:focus, .form-select:focus {
         border-color: #0C2C5A;
@@ -15,6 +15,38 @@
         background-color: #081f3f;
         border-color: #081f3f;
     }
+
+    /* Penyesuaian Tampilan Mobile */
+    @media (max-width: 767px) {
+        /* Mengecilkan header */
+        .header-card {
+            padding: 1rem !important;
+        }
+        .header-icon-container {
+            width: 50px !important;
+            height: 50px !important;
+        }
+        .header-icon-container .fs-2 {
+            font-size: 1.5rem !important;
+        }
+        .header-title {
+            font-size: 1.5rem !important;
+        }
+
+        /* Mengurangi padding pada form */
+        .form-card-body {
+            padding: 1.5rem !important;
+        }
+
+        /* Membuat tombol menjadi full-width dan tersusun vertikal */
+        .form-buttons {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .form-buttons .btn {
+            width: 100%;
+        }
+    }
 </style>
 @endpush
 
@@ -24,15 +56,15 @@
     {{-- Header --}}
     <div class="row mb-4">
         <div class="col-12">
-            {{-- [WARNA DIUBAH] Header disesuaikan dengan tema utama --}}
-            <div class="bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid #0C2C5A;">
+            {{-- Header disesuaikan dengan tema utama --}}
+            <div class="bg-white rounded-4 shadow-sm p-4 header-card" style="border-left: 8px solid #0C2C5A;">
                 <div class="d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
+                    <div class="d-flex justify-content-center align-items-center rounded-circle me-4 header-icon-container"
                          style="width: 70px; height: 70px; background-color: rgba(12, 44, 90, 0.1);">
                         <i class="fas fa-plus fs-2" style="color: #0C2C5A;"></i>
                     </div>
                     <div>
-                        <h2 class="fs-3 fw-bold mb-1" style="color: #0C2C5A;">Tambah Sketsa Baru</h2>
+                        <h2 class="fs-3 fw-bold mb-1 header-title" style="color: #0C2C5A;">Tambah Sketsa Baru</h2>
                         <p class="text-muted mb-0">Isi detail untuk sketsa baru Anda.</p>
                     </div>
                 </div>
@@ -42,7 +74,7 @@
 
     {{-- Form --}}
     <div class="card shadow-sm border-0 mb-4 rounded-4">
-        <div class="card-body p-4">
+        <div class="card-body p-4 form-card-body">
             <form action="{{ route('admin.sketches.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row mb-4">
@@ -87,9 +119,9 @@
                         @enderror
                     </div>
                 </div>
-                <div class="d-flex justify-content-start">
+                <div class="d-flex justify-content-start form-buttons">
                     <button type="submit" class="btn btn-success px-4 py-2">Save Sketsa</button>
-                    <a href="{{ route('admin.sketches.index') }}" class="btn btn-outline-secondary ms-2 px-4 py-2">Cancel</a>
+                    <a href="{{ route('admin.sketches.index') }}" class="btn btn-outline-secondary ms-0 ms-md-2 px-4 py-2">Cancel</a>
                 </div>
             </form>
         </div>
