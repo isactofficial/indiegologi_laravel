@@ -1,18 +1,56 @@
 @extends('layouts.admin')
 
 @section('content')
+<style>
+    :root {
+        --theme-primary: #00617a;
+        --theme-accent: #f4b704;
+        --theme-danger: #cb2786;
+    }
+    /* Menambahkan beberapa styling untuk konsistensi */
+    .btn-primary {
+        background-color: var(--theme-primary);
+        border-color: var(--theme-primary);
+    }
+    .btn-primary:hover {
+        background-color: #004a5f;
+        border-color: #004a5f;
+    }
+
+    /* Penyesuaian Responsif */
+    @media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: center !important;
+            text-align: center;
+        }
+        .page-header .rounded-circle {
+            margin-right: 0 !important;
+            margin-bottom: 1rem;
+        }
+        .form-actions {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .form-actions .btn {
+            width: 100%;
+            margin-left: 0 !important;
+        }
+    }
+</style>
+
 <div class="container-fluid px-4">
     {{-- Header --}}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid #00617a;">
+            <div class="page-header bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid var(--theme-primary);">
                 <div class="d-flex align-items-center">
                     <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
                          style="width: 70px; height: 70px; background-color: rgba(0, 97, 122, 0.1);">
-                        <i class="fas fa-calendar-check fs-2" style="color: #00617a;"></i>
+                        <i class="fas fa-calendar-check fs-2" style="color: var(--theme-primary);"></i>
                     </div>
                     <div>
-                        <h2 class="fs-3 fw-bold mb-1" style="color: #00617a;">Buat Booking Baru</h2>
+                        <h2 class="fs-3 fw-bold mb-1" style="color: var(--theme-primary);">Buat Booking Baru</h2>
                         <p class="text-muted mb-0">Isi detail booking konsultasi di bawah ini.</p>
                     </div>
                 </div>
@@ -148,7 +186,7 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-start mt-4">
+                <div class="d-flex justify-content-start mt-4 form-actions">
                     <button type="submit" class="btn btn-success px-4 py-2">Buat Booking</button>
                     <a href="{{ route('admin.consultation-bookings.index') }}" class="btn btn-outline-secondary ms-2 px-4 py-2">Batal</a>
                 </div>
@@ -159,6 +197,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // Script JavaScript tetap sama
     document.addEventListener('DOMContentLoaded', function () {
         let serviceIndex = 0;
         const servicesData = @json($services->keyBy('id'));
@@ -170,17 +209,13 @@
                 const block = $(this);
                 const serviceId = block.find('.service-select').val();
                 const hours = parseInt(block.find('.hours-input').val()) || 0;
-
-                // Ambil data diskon dari data attribute, bukan dari input
                 const discountPercentage = parseFloat(block.data('discount-percentage')) || 0;
 
                 if (serviceId) {
                     const service = servicesData[serviceId];
                     const basePrice = parseFloat(service.price);
                     const hourlyPrice = parseFloat(service.hourly_price);
-
                     let initialPrice = basePrice + (hourlyPrice * hours);
-
                     let discountAmount = (initialPrice * discountPercentage) / 100;
                     let finalPrice = initialPrice - discountAmount;
 
@@ -196,24 +231,15 @@
             });
 
             $('#final-total-amount').text('Rp ' + totalFinalPrice.toLocaleString('id-ID'));
-
             const paymentType = $('#payment_type').val();
-            let paidAmount = 0;
-            if (paymentType === 'dp') {
-                paidAmount = totalFinalPrice * 0.5;
-            } else {
-                paidAmount = totalFinalPrice;
-            }
+            let paidAmount = (paymentType === 'dp') ? totalFinalPrice * 0.5 : totalFinalPrice;
             $('#paid-amount').text('Rp ' + paidAmount.toLocaleString('id-ID'));
         }
 
-        // Fungsi untuk meng-apply kode referral
         $('#service-container').on('click', '.apply-referral-btn', function() {
             const block = $(this).closest('.service-block');
             const serviceId = block.find('.service-select').val();
             const referralCodeInput = block.find('.referral-code-input').val().toUpperCase();
-
-            block.data('referral-code-applied', null);
             block.data('discount-percentage', 0);
 
             if (serviceId && referralCodeInput && referralCodesData[referralCodeInput]) {
@@ -222,96 +248,56 @@
                 const hasUses = !code.max_uses || code.current_uses < code.max_uses;
 
                 if (isValid && hasUses) {
-                    block.data('referral-code-applied', referralCodeInput);
                     block.data('discount-percentage', parseFloat(code.discount_percentage));
                     Swal.fire('Berhasil!', 'Kode referral berhasil diterapkan.', 'success');
                 } else {
                     Swal.fire('Gagal!', 'Kode referral tidak valid atau sudah habis.', 'error');
                 }
             } else {
-                if (referralCodeInput) {
-                    Swal.fire('Gagal!', 'Kode referral tidak ditemukan.', 'error');
-                } else {
-                    Swal.fire('Perhatian!', 'Masukkan kode referral terlebih dahulu.', 'info');
-                }
+                Swal.fire('Gagal!', referralCodeInput ? 'Kode referral tidak ditemukan.' : 'Masukkan kode referral terlebih dahulu.', 'error');
             }
             calculatePrices();
         });
 
-
-        // Fungsi untuk menambah block layanan
         function addServiceBlock() {
             serviceIndex++;
             const newBlock = `
                 <div class="service-block border rounded-3 p-3 mb-3">
-                    <div class="d-flex justify-content-end mb-2">
-                        <button type="button" class="btn btn-danger btn-sm remove-service">Hapus</button>
-                    </div>
+                    <div class="d-flex justify-content-end mb-2"><button type="button" class="btn btn-danger btn-sm remove-service">Hapus</button></div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="services-${serviceIndex}-id" class="form-label text-secondary fw-medium">Layanan</label>
                             <select id="services-${serviceIndex}-id" name="services[${serviceIndex}][id]" class="form-select service-select" required>
                                 <option value="">Pilih Layanan</option>
                                 @foreach($services as $service)
-                                    <option value="{{ $service->id }}"
-                                            data-price="{{ $service->price }}"
-                                            data-hourly-price="{{ $service->hourly_price }}">
+                                    <option value="{{ $service->id }}" data-price="{{ $service->price }}" data-hourly-price="{{ $service->hourly_price }}">
                                         {{ $service->title }} (Rp {{ number_format($service->price, 0, ',', '.') }})
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="services-${serviceIndex}-hours" class="form-label text-secondary fw-medium">Jumlah Jam</label>
-                            <input type="number" id="services-${serviceIndex}-hours" name="services[${serviceIndex}][hours]" class="form-control hours-input" value="0" min="0" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="services-${serviceIndex}-booked_date" class="form-label text-secondary fw-medium">Tanggal Booking</label>
-                            <input type="date" id="services-${serviceIndex}-booked_date" name="services[${serviceIndex}][booked_date]" class="form-control" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="services-${serviceIndex}-booked_time" class="form-label text-secondary fw-medium">Waktu Booking</label>
-                            <input type="time" id="services-${serviceIndex}-booked_time" name="services[${serviceIndex}][booked_time]" class="form-control" required>
-                        </div>
+                        <div class="col-md-6 mb-3"><label for="services-${serviceIndex}-hours" class="form-label text-secondary fw-medium">Jumlah Jam</label><input type="number" id="services-${serviceIndex}-hours" name="services[${serviceIndex}][hours]" class="form-control hours-input" value="0" min="0" required></div>
+                        <div class="col-md-6 mb-3"><label for="services-${serviceIndex}-booked_date" class="form-label text-secondary fw-medium">Tanggal Booking</label><input type="date" id="services-${serviceIndex}-booked_date" name="services[${serviceIndex}][booked_date]" class="form-control" required></div>
+                        <div class="col-md-6 mb-3"><label for="services-${serviceIndex}-booked_time" class="form-label text-secondary fw-medium">Waktu Booking</label><input type="time" id="services-${serviceIndex}-booked_time" name="services[${serviceIndex}][booked_time]" class="form-control" required></div>
                         <div class="col-md-6 mb-3">
                             <label for="services-${serviceIndex}-session_type" class="form-label text-secondary fw-medium">Tipe Sesi</label>
-                            <select id="services-${serviceIndex}-session_type" name="services[${serviceIndex}][session_type]" class="form-select session-type-select" required>
-                                <option value="Online">Online</option>
-                                <option value="Offline">Offline</option>
-                            </select>
+                            <select id="services-${serviceIndex}-session_type" name="services[${serviceIndex}][session_type]" class="form-select session-type-select" required><option value="Online">Online</option><option value="Offline">Offline</option></select>
                         </div>
-                        <div class="col-md-6 mb-3 offline-address-container" style="display:none;">
-                            <label for="services-${serviceIndex}-offline_address" class="form-label text-secondary fw-medium">Alamat Offline</label>
-                            <textarea id="services-${serviceIndex}-offline_address" name="services[${serviceIndex}][offline_address]" class="form-control"></textarea>
-                        </div>
+                        <div class="col-md-6 mb-3 offline-address-container" style="display:none;"><label for="services-${serviceIndex}-offline_address" class="form-label text-secondary fw-medium">Alamat Offline</label><textarea id="services-${serviceIndex}-offline_address" name="services[${serviceIndex}][offline_address]" class="form-control"></textarea></div>
                         <div class="col-md-6 mb-3">
-                            <label for="services-${serviceIndex}-referral_code" class="form-label text-secondary fw-medium">Kode Referral (Opsional)</label>
-                            <div class="input-group">
-                                <input type="text" id="services-${serviceIndex}-referral_code" name="services[${serviceIndex}][referral_code]" class="form-control referral-code-input">
-                                <button class="btn btn-secondary apply-referral-btn" type="button">Apply</button>
-                            </div>
+                            <label for="services-${serviceIndex}-referral_code" class="form-label text-secondary fw-medium">Kode Referral</label>
+                            <div class="input-group"><input type="text" id="services-${serviceIndex}-referral_code" name="services[${serviceIndex}][referral_code]" class="form-control referral-code-input"><button class="btn btn-secondary apply-referral-btn" type="button">Apply</button></div>
                         </div>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-12 text-end">
-                            <span class="fw-semibold">Harga Awal:</span> <span class="initial-price">Rp 0</span><br>
-                            <span class="text-success fw-semibold">Diskon:</span> <span class="discount-amount text-success">Rp 0</span><br>
-                            <span class="fw-bold">Harga Setelah Diskon:</span> <span class="final-price">Rp 0</span>
-                        </div>
-                    </div>
-                </div>
-            `;
+                    <div class="row mt-2"><div class="col-12 text-end"><span class="fw-semibold">Harga Awal:</span> <span class="initial-price">Rp 0</span><br><span class="text-success fw-semibold">Diskon:</span> <span class="discount-amount text-success">Rp 0</span><br><span class="fw-bold">Harga Setelah Diskon:</span> <span class="final-price">Rp 0</span></div></div>
+                </div>`;
             $('#service-container').append(newBlock);
-            if ($('.service-block').length > 1) {
-                $('.remove-service').show();
-            }
+            $('.remove-service').show();
             calculatePrices();
         }
 
-        // Event listener untuk menambah block layanan
         $('#add-service-btn').on('click', addServiceBlock);
 
-        // Event listener untuk menghapus block layanan
         $('#service-container').on('click', '.remove-service', function() {
             $(this).closest('.service-block').remove();
             if ($('.service-block').length <= 1) {
@@ -320,20 +306,8 @@
             calculatePrices();
         });
 
-        // Event listener untuk perubahan input
-        $('#service-container').on('change', '.service-select, .hours-input, .referral-code-input', function() {
-            calculatePrices();
-        });
-        $('#service-container').on('input', '.hours-input, .referral-code-input', function() {
-            calculatePrices();
-        });
+        $('#service-container, #payment_type').on('change input', '.service-select, .hours-input, .referral-code-input', calculatePrices);
 
-        // Event listener untuk perubahan tipe pembayaran
-        $('#payment_type').on('change', function() {
-            calculatePrices();
-        });
-
-        // Event listener untuk perubahan tipe sesi (online/offline)
         $('#service-container').on('change', '.session-type-select', function() {
             const container = $(this).closest('.service-block').find('.offline-address-container');
             if ($(this).val() === 'Offline') {
@@ -343,7 +317,6 @@
             }
         });
 
-        // Inisialisasi
         calculatePrices();
         if ($('.service-block').length <= 1) {
             $('.remove-service').hide();

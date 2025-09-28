@@ -1,10 +1,25 @@
 @extends('layouts.admin')
 
 @section('content')
+<style>
+    @media (max-width: 768px) {
+        /* Aksi tombol di mobile */
+        .form-actions {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+        .form-actions .btn {
+            width: 100%;
+            margin-left: 0 !important;
+        }
+    }
+</style>
 <div class="container-fluid px-4" style="min-height: 100vh;">
-    {{-- ... Header ... --}}
+    {{-- Header --}}
     <div class="row mb-4">
         <div class="col-12">
+            {{-- [DIKEMBALIKAN] Warna header dikembalikan seperti semula --}}
             <div class="bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid #f4b704;">
                 <div class="d-flex align-items-center">
                     <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
@@ -19,6 +34,7 @@
             </div>
         </div>
     </div>
+
     {{-- Form --}}
     <div class="card shadow-sm border-0 mb-4 rounded-4">
         <div class="card-body p-4">
@@ -34,23 +50,29 @@
                         @enderror
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="price" class="form-label text-secondary fw-medium">Harga Dasar (Rp)</label>
-                        <input type="number" id="price" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $consultationService->price) }}" required min="0">
+                        <label for="slug" class="form-label text-secondary fw-medium">Slug</label>
+                        <input type="text" id="slug" name="slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $consultationService->slug) }}" required>
+                        @error('slug')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="price" class="form-label text-secondary fw-medium">Harga Dasar</label>
+                        <input type="number" id="price" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $consultationService->price) }}" required>
                         @error('price')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="hourly_price" class="form-label text-secondary fw-medium">Harga Per Jam (Rp) - Opsional</label>
-                        <input type="number" id="hourly_price" name="hourly_price" class="form-control @error('hourly_price') is-invalid @enderror" value="{{ old('hourly_price', $consultationService->hourly_price) }}" min="0">
+                        <label for="hourly_price" class="form-label text-secondary fw-medium">Harga Per Jam (Tambahan)</label>
+                        <input type="number" id="hourly_price" name="hourly_price" class="form-control @error('hourly_price') is-invalid @enderror" value="{{ old('hourly_price', $consultationService->hourly_price) }}" required>
                         @error('hourly_price')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="status" class="form-label text-secondary fw-medium">Status Layanan</label>
-                        <select id="status" name="status" class="form-control @error('status') is-invalid @enderror" required>
-                            <option value="draft" {{ old('status', $consultationService->status) == 'draft' ? 'selected' : '' }}>Draft</option>
+                        <label for="status" class="form-label text-secondary fw-medium">Status</label>
+                        <select id="status" name="status" class="form-select @error('status') is-invalid @enderror" required>
                             <option value="published" {{ old('status', $consultationService->status) == 'published' ? 'selected' : '' }}>Published</option>
                             <option value="special" {{ old('status', $consultationService->status) == 'special' ? 'selected' : '' }}>Special</option>
                         </select>
@@ -58,18 +80,18 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-12 mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="short_description" class="form-label text-secondary fw-medium">Deskripsi Singkat</label>
-                        <textarea id="short_description" name="short_description" class="form-control @error('short_description') is-invalid @enderror" rows="2">{{ old('short_description', $consultationService->short_description) }}</textarea>
+                        <input type="text" id="short_description" name="short_description" class="form-control @error('short_description') is-invalid @enderror" value="{{ old('short_description', $consultationService->short_description) }}">
                         @error('short_description')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="thumbnail" class="form-label text-secondary fw-medium">Gambar Thumbnail</label>
-                        <div class="mb-3">
-                            @if($consultationService->thumbnail)
-                                <img src="{{ asset('storage/' . $consultationService->thumbnail) }}" alt="{{ $consultationService->title }}" class="img-fluid rounded-3" style="max-height: 100px;">
+                    <div class="col-12 mb-3">
+                        <label for="thumbnail" class="form-label text-secondary fw-medium">Gambar Thumbnail (Opsional)</label>
+                        <div class="mb-2">
+                            @if ($consultationService->thumbnail)
+                                <img src="{{ asset('storage/' . $consultationService->thumbnail) }}" alt="Current Thumbnail" class="rounded-3" style="max-width: 200px; height: auto;">
                             @else
                                 <div class="text-muted">Tidak ada gambar yang diunggah.</div>
                             @endif
@@ -87,7 +109,7 @@
                         @enderror
                     </div>
                 </div>
-                <div class="d-flex justify-content-start mt-4">
+                <div class="d-flex justify-content-start mt-4 form-actions">
                     <button type="submit" class="btn btn-success px-4 py-2">Update Layanan</button>
                     <a href="{{ route('admin.consultation-services.index') }}" class="btn btn-outline-secondary ms-2 px-4 py-2">Batal</a>
                 </div>

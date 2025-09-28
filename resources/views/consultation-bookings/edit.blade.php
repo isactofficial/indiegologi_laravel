@@ -1,18 +1,55 @@
 @extends('layouts.admin')
 
 @section('content')
+<style>
+    :root {
+        --theme-primary: #00617a;
+        --theme-accent: #f4b704;
+        --theme-danger: #cb2786;
+    }
+    .btn-primary {
+        background-color: var(--theme-primary);
+        border-color: var(--theme-primary);
+    }
+    .btn-primary:hover {
+        background-color: #004a5f;
+        border-color: #004a5f;
+    }
+
+    /* Penyesuaian Responsif */
+    @media (max-width: 768px) {
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: center !important;
+            text-align: center;
+        }
+        .page-header .rounded-circle {
+            margin-right: 0 !important;
+            margin-bottom: 1rem;
+        }
+        .form-actions {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .form-actions .btn {
+            width: 100%;
+            margin-left: 0 !important;
+        }
+    }
+</style>
+
 <div class="container-fluid px-4">
     {{-- Header --}}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid #00617a;">
+            <div class="page-header bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid var(--theme-primary);">
                 <div class="d-flex align-items-center">
                     <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
                          style="width: 70px; height: 70px; background-color: rgba(0, 97, 122, 0.1);">
-                        <i class="fas fa-edit fs-2" style="color: #00617a;"></i>
+                        <i class="fas fa-edit fs-2" style="color: var(--theme-primary);"></i>
                     </div>
                     <div>
-                        <h2 class="fs-3 fw-bold mb-1" style="color: #00617a;">Edit Booking Konsultasi</h2>
+                        <h2 class="fs-3 fw-bold mb-1" style="color: var(--theme-primary);">Edit Booking Konsultasi</h2>
                         <p class="text-muted mb-0">Ubah detail booking konsultasi #{{ $consultationBooking->id }}.</p>
                     </div>
                 </div>
@@ -27,19 +64,14 @@
                 @csrf
                 @method('PUT')
 
-                {{-- Tampilkan pesan error validasi di satu tempat --}}
                 @if ($errors->any())
                     <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                        <ul>@foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach</ul>
                     </div>
                 @endif
 
                 <div class="row">
-                    {{-- User and Receiver --}}
+                    {{-- Form fields... --}}
                     <div class="col-md-6 mb-3">
                         <label for="user_id" class="form-label text-secondary fw-medium">Pemesan</label>
                         <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required>
@@ -50,28 +82,20 @@
                                 </option>
                             @endforeach
                         </select>
-                        @error('user_id')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        @error('user_id') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="receiver_name" class="form-label text-secondary fw-medium">Nama Penerima</label>
                         <input type="text" id="receiver_name" name="receiver_name" class="form-control @error('receiver_name') is-invalid @enderror" value="{{ old('receiver_name', $consultationBooking->receiver_name) }}">
-                        @error('receiver_name')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        @error('receiver_name') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
-
-                    {{-- Payment Type and Contact Preference --}}
                     <div class="col-md-6 mb-3">
                         <label for="payment_type" class="form-label text-secondary fw-medium">Tipe Pembayaran</label>
                         <select id="payment_type" name="payment_type" class="form-select @error('payment_type') is-invalid @enderror" required>
                             <option value="full_payment" {{ old('payment_type', $consultationBooking->payment_type) == 'full_payment' ? 'selected' : '' }}>Full Payment</option>
                             <option value="dp" {{ old('payment_type', $consultationBooking->payment_type) == 'dp' ? 'selected' : '' }}>DP (50%)</option>
                         </select>
-                        @error('payment_type')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        @error('payment_type') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="contact_preference" class="form-label text-secondary fw-medium">Preferensi Kontak</label>
@@ -79,12 +103,8 @@
                             <option value="chat_only" {{ old('contact_preference', $consultationBooking->contact_preference) == 'chat_only' ? 'selected' : '' }}>Chat Only</option>
                             <option value="chat_and_call" {{ old('contact_preference', $consultationBooking->contact_preference) == 'chat_and_call' ? 'selected' : '' }}>Chat & Call</option>
                         </select>
-                        @error('contact_preference')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        @error('contact_preference') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
-
-                    {{-- Status --}}
                     <div class="col-md-6 mb-3">
                         <label for="session_status" class="form-label text-secondary fw-medium">Status Sesi</label>
                         <select id="session_status" name="session_status" class="form-select @error('session_status') is-invalid @enderror" required>
@@ -94,9 +114,7 @@
                             <option value="selesai" {{ old('session_status', $consultationBooking->session_status) == 'selesai' ? 'selected' : '' }}>Selesai</option>
                             <option value="dibatalkan" {{ old('session_status', $consultationBooking->session_status) == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                         </select>
-                        @error('session_status')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        @error('session_status') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="payment_status" class="form-label text-secondary fw-medium">Status Pembayaran</label>
@@ -105,15 +123,12 @@
                             <option value="Paid" {{ old('payment_status', optional($consultationBooking->invoice)->payment_status) == 'Paid' ? 'selected' : '' }}>Paid</option>
                             <option value="UnPaid" {{ old('payment_status', optional($consultationBooking->invoice)->payment_status) == 'UnPaid' ? 'selected' : '' }}>UnPaid</option>
                         </select>
-                        @error('payment_status')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        @error('payment_status') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
                 </div>
 
                 <hr class="my-4">
 
-                {{-- Dynamic Service Blocks --}}
                 <h5 class="fw-bold mb-3">Detail Layanan yang Dipesan</h5>
                 <div id="service-container">
                     @foreach ($consultationBooking->services as $index => $service)
@@ -146,7 +161,6 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="services-{{ $index }}-booked_time" class="form-label text-secondary fw-medium">Waktu Booking</label>
-                                {{-- PERBAIKAN DI SINI: Memastikan format waktu sesuai dengan H:i --}}
                                 <input type="time" id="services-{{ $index }}-booked_time" name="services[{{ $index }}][booked_time]" class="form-control" value="{{ old("services.{$index}.booked_time", date('H:i', strtotime($service->pivot->booked_time))) }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -192,7 +206,7 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-start mt-4">
+                <div class="d-flex justify-content-start mt-4 form-actions">
                     <button type="submit" class="btn btn-success px-4 py-2">Update Booking</button>
                     <a href="{{ route('admin.consultation-bookings.index') }}" class="btn btn-outline-secondary ms-2 px-4 py-2">Batal</a>
                 </div>
@@ -204,6 +218,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Script JavaScript tetap sama
     document.addEventListener('DOMContentLoaded', function () {
         let serviceIndex = {{ $consultationBooking->services->count() - 1 }};
         const servicesData = @json($services->keyBy('id'));
@@ -215,16 +230,13 @@
                 const block = $(this);
                 const serviceId = block.find('.service-select').val();
                 const hours = parseInt(block.find('.hours-input').val()) || 0;
-
                 const discountPercentage = parseFloat(block.data('discount-percentage')) || 0;
 
                 if (serviceId) {
                     const service = servicesData[serviceId];
                     const basePrice = parseFloat(service.price);
                     const hourlyPrice = parseFloat(service.hourly_price);
-
                     let initialPrice = basePrice + (hourlyPrice * hours);
-
                     let discountAmount = (initialPrice * discountPercentage) / 100;
                     let finalPrice = initialPrice - discountAmount;
 
@@ -240,14 +252,8 @@
             });
 
             $('#final-total-amount').text('Rp ' + totalFinalPrice.toLocaleString('id-ID'));
-
             const paymentType = $('#payment_type').val();
-            let paidAmount = 0;
-            if (paymentType === 'dp') {
-                paidAmount = totalFinalPrice * 0.5;
-            } else {
-                paidAmount = totalFinalPrice;
-            }
+            let paidAmount = (paymentType === 'dp') ? totalFinalPrice * 0.5 : totalFinalPrice;
             $('#paid-amount').text('Rp ' + paidAmount.toLocaleString('id-ID'));
         }
 
@@ -255,29 +261,20 @@
             const block = $(this).closest('.service-block');
             const serviceId = block.find('.service-select').val();
             const referralCodeInput = block.find('.referral-code-input').val().toUpperCase();
-
-            block.data('referral-code-applied', null);
             block.data('discount-percentage', 0);
 
-            if (serviceId && referralCodeInput) {
+            if (serviceId && referralCodeInput && referralCodesData[referralCodeInput]) {
                 const code = referralCodesData[referralCodeInput];
+                const isValid = !code.valid_until || new Date(code.valid_until) > new Date();
 
-                if (code) {
-                    const isValid = !code.valid_until || new Date(code.valid_until) > new Date();
-                    if (isValid) {
-                        block.data('referral-code-applied', referralCodeInput);
-                        block.data('discount-percentage', parseFloat(code.discount_percentage));
-                        Swal.fire('Berhasil!', 'Kode referral berhasil diterapkan.', 'success');
-                    } else {
-                        Swal.fire('Gagal!', 'Kode referral tidak valid atau sudah kadaluarsa.', 'error');
-                    }
+                if (isValid) {
+                    block.data('discount-percentage', parseFloat(code.discount_percentage));
+                    Swal.fire('Berhasil!', 'Kode referral berhasil diterapkan.', 'success');
                 } else {
-                     Swal.fire('Gagal!', 'Kode referral tidak ditemukan.', 'error');
+                    Swal.fire('Gagal!', 'Kode referral tidak valid atau sudah kadaluarsa.', 'error');
                 }
             } else {
-                if (!referralCodeInput) {
-                    Swal.fire('Perhatian!', 'Masukkan kode referral terlebih dahulu.', 'info');
-                }
+                Swal.fire('Gagal!', referralCodeInput ? 'Kode referral tidak ditemukan.' : 'Masukkan kode referral terlebih dahulu.', 'error');
             }
             calculatePrices();
         });
@@ -286,67 +283,36 @@
             serviceIndex++;
             const newBlock = `
                 <div class="service-block border rounded-3 p-3 mb-3">
-                    <div class="d-flex justify-content-end mb-2">
-                        <button type="button" class="btn btn-danger btn-sm remove-service">Hapus</button>
-                    </div>
+                    <div class="d-flex justify-content-end mb-2"><button type="button" class="btn btn-danger btn-sm remove-service">Hapus</button></div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="services-${serviceIndex}-id" class="form-label text-secondary fw-medium">Layanan</label>
                             <select id="services-${serviceIndex}-id" name="services[${serviceIndex}][id]" class="form-select service-select" required>
                                 <option value="">Pilih Layanan</option>
                                 @foreach($services as $s)
-                                    <option value="{{ $s->id }}"
-                                            data-price="{{ $s->price }}"
-                                            data-hourly-price="{{ $s->hourly_price }}">
+                                    <option value="{{ $s->id }}" data-price="{{ $s->price }}" data-hourly-price="{{ $s->hourly_price }}">
                                         {{ $s->title }} (Rp {{ number_format($s->price, 0, ',', '.') }})
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="services-${serviceIndex}-hours" class="form-label text-secondary fw-medium">Jumlah Jam</label>
-                            <input type="number" id="services-${serviceIndex}-hours" name="services[${serviceIndex}][hours]" class="form-control hours-input" value="0" min="0" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="services-${serviceIndex}-booked_date" class="form-label text-secondary fw-medium">Tanggal Booking</label>
-                            <input type="date" id="services-${serviceIndex}-booked_date" name="services[${serviceIndex}][booked_date]" class="form-control" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="services-${serviceIndex}-booked_time" class="form-label text-secondary fw-medium">Waktu Booking</label>
-                            <input type="time" id="services-${serviceIndex}-booked_time" name="services[${serviceIndex}][booked_time]" class="form-control" required>
-                        </div>
+                        <div class="col-md-6 mb-3"><label for="services-${serviceIndex}-hours" class="form-label text-secondary fw-medium">Jumlah Jam</label><input type="number" id="services-${serviceIndex}-hours" name="services[${serviceIndex}][hours]" class="form-control hours-input" value="0" min="0" required></div>
+                        <div class="col-md-6 mb-3"><label for="services-${serviceIndex}-booked_date" class="form-label text-secondary fw-medium">Tanggal Booking</label><input type="date" id="services-${serviceIndex}-booked_date" name="services[${serviceIndex}][booked_date]" class="form-control" required></div>
+                        <div class="col-md-6 mb-3"><label for="services-${serviceIndex}-booked_time" class="form-label text-secondary fw-medium">Waktu Booking</label><input type="time" id="services-${serviceIndex}-booked_time" name="services[${serviceIndex}][booked_time]" class="form-control" required></div>
                         <div class="col-md-6 mb-3">
                             <label for="services-${serviceIndex}-session_type" class="form-label text-secondary fw-medium">Tipe Sesi</label>
-                            <select id="services-${serviceIndex}-session_type" name="services[${serviceIndex}][session_type]" class="form-select session-type-select" required>
-                                <option value="Online">Online</option>
-                                <option value="Offline">Offline</option>
-                            </select>
+                            <select id="services-${serviceIndex}-session_type" name="services[${serviceIndex}][session_type]" class="form-select session-type-select" required><option value="Online">Online</option><option value="Offline">Offline</option></select>
                         </div>
-                        <div class="col-md-6 mb-3 offline-address-container" style="display:none;">
-                            <label for="services-${serviceIndex}-offline_address" class="form-label text-secondary fw-medium">Alamat Offline</label>
-                            <textarea id="services-${serviceIndex}-offline_address" name="services[${serviceIndex}][offline_address]" class="form-control"></textarea>
-                        </div>
+                        <div class="col-md-6 mb-3 offline-address-container" style="display:none;"><label for="services-${serviceIndex}-offline_address" class="form-label text-secondary fw-medium">Alamat Offline</label><textarea id="services-${serviceIndex}-offline_address" name="services[${serviceIndex}][offline_address]" class="form-control"></textarea></div>
                         <div class="col-md-6 mb-3">
-                            <label for="services-${serviceIndex}-referral_code" class="form-label text-secondary fw-medium">Kode Referral (Opsional)</label>
-                            <div class="input-group">
-                                <input type="text" id="services-${serviceIndex}-referral_code" name="services[${serviceIndex}][referral_code]" class="form-control referral-code-input">
-                                <button class="btn btn-secondary apply-referral-btn" type="button">Apply</button>
-                            </div>
+                            <label for="services-${serviceIndex}-referral_code" class="form-label text-secondary fw-medium">Kode Referral</label>
+                            <div class="input-group"><input type="text" id="services-${serviceIndex}-referral_code" name="services[${serviceIndex}][referral_code]" class="form-control referral-code-input"><button class="btn btn-secondary apply-referral-btn" type="button">Apply</button></div>
                         </div>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-12 text-end">
-                            <span class="fw-semibold">Harga Awal:</span> <span class="initial-price">Rp 0</span><br>
-                            <span class="text-success fw-semibold">Diskon:</span> <span class="discount-amount text-success">Rp 0</span><br>
-                            <span class="fw-bold">Harga Setelah Diskon:</span> <span class="final-price">Rp 0</span>
-                        </div>
-                    </div>
-                </div>
-            `;
+                    <div class="row mt-2"><div class="col-12 text-end"><span class="fw-semibold">Harga Awal:</span> <span class="initial-price">Rp 0</span><br><span class="text-success fw-semibold">Diskon:</span> <span class="discount-amount text-success">Rp 0</span><br><span class="fw-bold">Harga Setelah Diskon:</span> <span class="final-price">Rp 0</span></div></div>
+                </div>`;
             $('#service-container').append(newBlock);
-            if ($('.service-block').length > 1) {
-                $('.remove-service').show();
-            }
+            $('.remove-service').show();
             calculatePrices();
         }
 
@@ -360,12 +326,7 @@
             calculatePrices();
         });
 
-        $('#service-container').on('change', '.service-select, .hours-input, #payment_type', function() {
-            calculatePrices();
-        });
-        $('#service-container').on('input', '.hours-input, .referral-code-input', function() {
-             calculatePrices();
-        });
+        $('#service-container, #payment_type').on('change input', '.service-select, .hours-input, .referral-code-input', calculatePrices);
 
         $('#service-container').on('change', '.session-type-select', function() {
             const container = $(this).closest('.service-block').find('.offline-address-container');

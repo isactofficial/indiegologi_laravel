@@ -2,13 +2,8 @@
 
 @section('content')
 <style>
-    /* Styling khusus untuk tampilan web */
-    .invoice-container {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        background-color: #f5f7fa;
-    }
-    .invoice-wrapper {
+    /* Styling dasar invoice */
+    .invoice-card {
         background-color: #fff;
         padding: 40px;
         border-radius: 8px;
@@ -46,11 +41,6 @@
         border-radius: 10px;
         width: 100%;
     }
-    .invoice-client-info p:first-child {
-        font-weight: bold;
-        font-size: 1.1rem;
-        color: #001f3f;
-    }
     .invoice-details-info h5 {
         color: #001f3f;
         font-weight: bold;
@@ -70,17 +60,9 @@
         background-color: #001f3f;
         color: white;
     }
-    .discount-row td {
-        background-color: #ffc107;
-        font-weight: bold;
-        color: #000;
-    }
     .summary-box {
         margin-top: 30px;
         text-align: right;
-    }
-    .summary-box p, .summary-box div {
-        margin: 4px 0;
     }
     .final-total {
         margin-top: 10px;
@@ -90,27 +72,95 @@
         font-weight: bold;
         border-radius: 6px;
     }
-    .invoice-signature {
-        margin-top: 50px;
-        font-size: 14px;
-    }
     .payment-info {
         margin-top: 50px;
         background-color: #ffc107;
         padding: 20px;
         border-radius: 8px;
     }
-    .payment-info h4 {
-        font-weight: bold;
-        color: #001f3f;
-        margin-bottom: 10px;
+
+    /* Penyesuaian Responsif */
+    @media (max-width: 768px) {
+        /* Atur padding container & hilangkan batasan lebar card */
+        .container-fluid {
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+        }
+        .invoice-card {
+            padding: 1.5rem 1rem;
+            max-width: none;
+            margin: 0;
+        }
+
+        .invoice-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .invoice-header .invoice-contact, .summary-box {
+            text-align: left;
+        }
+
+        /* Atur agar info client & invoice tetap berdampingan */
+        .invoice-top-section {
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 0.75rem;
+        }
+
+        /* PERBAIKAN: Gunakan flex: 1 agar lebar terbagi otomatis */
+        .invoice-client-info, .invoice-details-info {
+            flex: 1; /* <-- KUNCI PERBAIKAN: Biarkan flexbox yang mengatur lebar */
+            padding: 1rem;
+            font-size: 0.85rem;
+            overflow-wrap: break-word; /* Memastikan teks panjang tidak overflow */
+            min-width: 0; /* Mencegah konten mendorong container */
+        }
+
+        .invoice-details-info h5 {
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: stretch !important;
+        }
+        .action-buttons .btn {
+            width: 100%;
+            margin-left: 0 !important;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Atur tabel agar responsif */
+        .service-description-table thead {
+            display: none;
+        }
+        .service-description-table, .service-description-table tbody, .service-description-table tr, .service-description-table td {
+            display: block;
+            width: 100%;
+        }
+        .service-description-table tr {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+        }
+        .service-description-table td {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+            border: none;
+            border-bottom: 1px solid #eee;
+        }
+        .service-description-table td:before {
+            content: attr(data-label);
+            position: absolute;
+            left: 10px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
     }
-    .payment-info p {
-        font-size: 14px;
-        margin: 5px 0;
-        color: #000;
-    }
-    /* Hide specific elements for printing */
+
     @media print {
         .no-print {
             display: none;
@@ -118,13 +168,13 @@
     }
 </style>
 
-<div class="container-fluid px-4 py-5" style="background-color: #f5f7fa; min-height: 100vh;">
-    <div class="d-flex justify-content-start mb-4 no-print">
+<div class="container-fluid py-5" style="background-color: #f5f7fa; min-height: 100vh;">
+    <div class="d-flex justify-content-start mb-4 no-print action-buttons">
         <a href="{{ route('admin.consultation-bookings.index') }}" class="btn px-4 py-2"
            style="background-color: #F0F5FF; color: #5B93FF; border-radius: 8px;">
-            <i class="fas fa-arrow-left me-2"></i> Kembali ke Daftar Booking
+            <i class="fas fa-arrow-left me-2"></i> Kembali
         </a>
-        <a href="{{ route('admin.consultation-bookings.download-pdf', $consultationBooking->id) }}" class="btn btn-primary px-4 py-2 ms-3">
+        <a href="{{ route('admin.consultation-bookings.download-pdf', $consultationBooking->id) }}" class="btn btn-primary px-4 py-2 ms-md-3">
             <i class="fas fa-download me-2"></i> Unduh PDF
         </a>
     </div>
@@ -135,33 +185,32 @@
             <div class="invoice-logo">Indiegologi</div>
             <div class="invoice-contact">
                 Email: ceriadiego@gmail.com<br>
-                Phone Number: +62 822-2095-5595
+                Phone: +62 822-2095-5595
             </div>
         </div>
 
         {{-- Info Section --}}
         <div class="invoice-top-section">
             <div class="invoice-client-info">
-                <p>Dear</p>
-                <p>Nama : {{ $consultationBooking->receiver_name ?? 'N/A' }}</p>
-                {{-- Menampilkan info layanan dan tanggal booking --}}
+                <p class="fw-bold fs-5 text-dark">Dear</p>
+                <p><strong>Nama:</strong> {{ $consultationBooking->receiver_name ?? 'N/A' }}</p>
                 @foreach($consultationBooking->services as $service)
                     @if($service->pivot->session_type == 'Offline')
-                        <p>Alamat Offline: {{ $service->pivot->offline_address }}</p>
+                        <p><strong>Alamat Offline:</strong> {{ $service->pivot->offline_address }}</p>
                     @endif
-                    <p>Waktu Konseling: {{ \Carbon\Carbon::parse($service->pivot->booked_date)->format('d F Y') }}</p>
-                    <p>Paket Konseling: {{ $service->title }}</p>
+                    <p><strong>Waktu Konseling:</strong> {{ \Carbon\Carbon::parse($service->pivot->booked_date)->format('d F Y') }}</p>
+                    <p><strong>Paket Konseling:</strong> {{ $service->title }}</p>
                 @endforeach
-                <p>No Hp : {{ optional($consultationBooking->user)->phone_number ?? 'N/A' }}</p>
+                <p><strong>No Hp:</strong> {{ optional($consultationBooking->user)->phone_number ?? 'N/A' }}</p>
             </div>
             <div class="invoice-details-info">
                 <h5>Invoice Details</h5>
-                <p>Invoice No : {{ optional($consultationBooking->invoice)->invoice_no ?? 'N/A' }}</p>
-                <p>Invoice Date : {{ optional($consultationBooking->invoice)?->invoice_date?->format('d/F/Y') ?? 'N/A' }}</p>
-                <p>Due Date : {{ optional($consultationBooking->invoice)?->due_date?->format('d/F/Y') ?? 'N/A' }}</p>
-                <p>Status : {{ ucfirst(optional($consultationBooking->invoice)?->payment_status ?? 'N/A') }}</p>
-                <p>Session : {{ ucfirst($consultationBooking->session_status ?? 'N/A') }}</p>
-                <p>Payment Type : {{ $consultationBooking->payment_type ?? 'N/A' }}</p>
+                <p><strong>Invoice No:</strong> {{ optional($consultationBooking->invoice)->invoice_no ?? 'N/A' }}</p>
+                <p><strong>Invoice Date:</strong> {{ optional($consultationBooking->invoice)?->invoice_date?->format('d/F/Y') ?? 'N/A' }}</p>
+                <p><strong>Due Date:</strong> {{ optional($consultationBooking->invoice)?->due_date?->format('d/F/Y') ?? 'N/A' }}</p>
+                <p><strong>Status:</strong> {{ ucfirst(optional($consultationBooking->invoice)?->payment_status ?? 'N/A') }}</p>
+                <p><strong>Session:</strong> {{ ucfirst($consultationBooking->session_status ?? 'N/A') }}</p>
+                <p><strong>Payment Type:</strong> {{ $consultationBooking->payment_type ?? 'N/A' }}</p>
             </div>
         </div>
 
@@ -172,8 +221,7 @@
                     <th>Service Description</th>
                     <th>Quantity</th>
                     <th>Unit Price</th>
-                    <th>Amount</th>
-                    <th>Total </th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -188,40 +236,21 @@
                         $hoursBooked = $service->pivot->hours_booked;
                         $totalPrice = $basePrice + ($hourlyPrice * $hoursBooked);
                         $discountAmount = $service->pivot->discount_amount_at_booking;
+                        $finalServicePrice = $totalPrice - $discountAmount;
                         $subtotal += $totalPrice;
                         $totalDiscount += $discountAmount;
                     @endphp
                     <tr>
-                        <td>
-                            {{ $service->title }}<br>
+                        <td data-label="Service">
+                            {{ $service->title }}
                             @if($hoursBooked > 0)
-                                <small class="text-muted">{{ $hoursBooked }} Hours - add</small>
+                                <small class="d-block text-muted">{{ $hoursBooked }} jam tambahan</small>
                             @endif
                         </td>
-                        <td>1</td>
-                        <td>
-                            Rp {{ number_format($basePrice, 0, ',', '.') }}
-                            @if($hoursBooked > 0)
-                                <br>Rp {{ number_format($hourlyPrice, 0, ',', '.') }}
-                            @endif
-                        </td>
-                        <td>-</td>
-                        <td>
-                            Rp {{ number_format($basePrice, 0, ',', '.') }}
-                            @if($hoursBooked > 0)
-                                <br>Rp {{ number_format($hourlyPrice * $hoursBooked, 0, ',', '.') }}
-                            @endif
-                        </td>
+                        <td data-label="Quantity">1</td>
+                        <td data-label="Unit Price">Rp {{ number_format($totalPrice, 0, ',', '.') }}</td>
+                        <td data-label="Total">Rp {{ number_format($finalServicePrice, 0, ',', '.') }}</td>
                     </tr>
-                    @if($discountAmount > 0)
-                        <tr class="discount-row">
-                            <td>Discount</td>
-                            <td>1</td>
-                            <td>-</td>
-                            <td>Rp {{ number_format($discountAmount, 0, ',', '.') }}</td>
-                            <td>-Rp {{ number_format($discountAmount, 0, ',', '.') }}</td>
-                        </tr>
-                    @endif
                 @endforeach
             </tbody>
         </table>
@@ -229,26 +258,25 @@
         {{-- Summary --}}
         <div class="summary-box">
             <p>Sub-Total: Rp {{ number_format($subtotal, 0, ',', '.') }}</p>
-            <p class="total-discount">Total Discount Item: -Rp {{ number_format($totalDiscount, 0, ',', '.') }}</p>
+            <p class="text-success">Total Diskon: -Rp {{ number_format($totalDiscount, 0, ',', '.') }}</p>
             <div class="final-total">
                 Total Invoice Rp {{ number_format($consultationBooking->final_price, 0, ',', '.') }}
             </div>
         </div>
 
-        {{-- Signature --}}
-        <div class="invoice-signature">
-            <p>Regards,</p>
-            <h5>Muhammad Ikhsan Haekal</h5>
-            <p>Indiegologi Team</p>
-        </div>
-
-        {{-- Payment Info --}}
-        <div class="payment-info">
-            <h4>Payment Information</h4>
-            <p>Bank SMBC Indonesia - 90110023186</p>
-            <p>Name: Artwira Mahatavirya Satyagasty</p>
-            <p>Please Transfer Payment to the Account above before the due date,</p>
-            <p>And Please Confirm to the following number: 0822 2095 5595</p>
+        {{-- Signature & Payment Info --}}
+        <div class="mt-5">
+            <div class="invoice-signature mb-4">
+                <p class="mb-0">Regards,</p>
+                <h5 class="mb-0">Muhammad Ikhsan Haekal</h5>
+                <p>Indiegologi Team</p>
+            </div>
+            <div class="payment-info">
+                <h4 class="fw-bold text-dark mb-3">Payment Information</h4>
+                <p><strong>Bank SMBC Indonesia:</strong> 90110023186</p>
+                <p><strong>Atas Nama:</strong> Artwira Mahatavirya Satyagasty</p>
+                <p class="mt-3">Mohon transfer sebelum jatuh tempo dan konfirmasi ke nomor: 0822 2095 5595</p>
+            </div>
         </div>
     </div>
 </div>

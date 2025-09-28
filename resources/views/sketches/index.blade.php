@@ -8,6 +8,7 @@
         --theme-danger: #cb2786;
     }
 
+    /* General button styling */
     .btn-sporty-primary {
         background-color: var(--theme-primary);
         border-color: var(--theme-primary);
@@ -23,16 +24,16 @@
         background-color: #081f3f;
         border-color: #081f3f;
         transform: translateY(-2px);
-        color: gray;
+        color: white;
     }
 
+    /* Alert and Badge styling */
     .alert-custom-success {
         background-color: rgba(12, 44, 90, 0.1);
         color: var(--theme-primary);
         border: 1px solid rgba(12, 44, 90, 0.3);
     }
 
-    /* Menyesuaikan warna status seperti file manage.blade.php */
     .badge-status-published {
         background-color: rgba(0, 97, 122, 0.15);
         color: #00617a;
@@ -49,98 +50,135 @@
         border-radius: 0.5rem;
     }
 
-    /* Penyesuaian Tampilan Mobile */
-    @media (max-width: 767px) {
-        /* Sembunyikan header tabel di mobile */
-        .table thead {
+    /* --- Responsive Styles --- */
+    @media (max-width: 768px) {
+        /* PERBAIKAN: Menyesuaikan padding container agar kartu lebih lebar */
+        .container-fluid {
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+        }
+        .card-body {
+            padding: 1rem !important;
+        }
+
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: center !important;
+            text-align: center;
+        }
+        .page-header .rounded-circle {
+            margin-right: 0 !important;
+            margin-bottom: 1rem;
+        }
+        .add-button-container .btn-sporty-primary {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .table-responsive {
             display: none;
         }
 
-        /* Ubah perilaku tabel menjadi block-level elements */
-        .table, .table tbody, .table tr, .table td {
+        .mobile-sketch-cards {
             display: block;
-            width: 100%;
         }
 
-        /* Jadikan setiap baris sebagai card */
-        .table tr {
-            margin-bottom: 1.5rem;
-            border: 1px solid #e9ecef;
-            border-radius: 0.75rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        .sketch-card {
+            background: white;
+            border-radius: 1rem;
             padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f0f0f0;
         }
 
-        .table tr:last-child {
-            margin-bottom: 0;
+        .sketch-thumbnail {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
         }
 
-        /* Hapus border bawaan tabel */
-        .table tr[style] {
-            border-bottom: none !important;
+        .sketch-thumbnail-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            border: 2px dashed #dee2e6;
         }
 
-        /* Atur ulang padding dan border sel */
-        .table td {
-            padding: 0.5rem 0.25rem;
-            border: none;
+        .sketch-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--theme-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .sketch-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            text-align: right;
-            border-bottom: 1px solid #f8f9fa;
-        }
-
-        .table td:last-child {
-            border-bottom: none;
-        }
-
-        /* Tambahkan label untuk setiap data sel */
-        .table td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: #6c757d;
-            text-align: left;
-            margin-right: 1rem;
-        }
-
-        /* Atur posisi thumbnail di tengah atas */
-        .td-thumbnail {
-            display: block;
-            text-align: center;
             margin-bottom: 1rem;
-            padding-bottom: 1rem !important;
-            border-bottom: 1px solid #e9ecef !important;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
-        /* Pastikan gambar thumbnail tidak gepeng */
-        .td-thumbnail img, .td-thumbnail .bg-light {
-            width: 100% !important;
-            height: auto !important; /* Menjaga rasio aspek gambar */
-            max-width: 350px;
-            margin: 0 auto;
-            object-fit: cover;
+        .sketch-author {
+            font-size: 0.9rem;
+            color: #6c757d;
         }
 
-        /* Hilangkan label untuk thumbnail */
-        .td-thumbnail::before {
-            content: none;
+        .sketch-actions {
+            display: flex;
+            gap: 0.5rem;
         }
 
-        /* Atur posisi tombol aksi */
-        .td-actions .d-flex {
-            justify-content: flex-end;
+        .sketch-actions .btn, .sketch-actions form {
+            flex: 1;
+        }
+        .sketch-actions .btn {
             width: 100%;
+            border-radius: 0.5rem;
+        }
+    }
+
+    /* PERBAIKAN: Penyesuaian untuk layar sangat kecil (extra small) */
+    @media (max-width: 576px) {
+        .container-fluid {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+        .card-body {
+            padding: 0.75rem !important;
+        }
+        .sketch-card {
+            padding: 0.75rem;
+        }
+        .sketch-title {
+            font-size: 1rem;
+        }
+    }
+
+    @media (min-width: 769px) {
+        .mobile-sketch-cards {
+            display: none;
         }
     }
 </style>
 
-<div class="container-fluid px-4" style="min-height: 100vh;">
+{{-- PERBAIKAN: Menghapus class padding bawaan agar dikontrol penuh oleh CSS --}}
+<div class="container-fluid" style="min-height: 100vh;">
 
     {{-- Header --}}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid var(--theme-primary);">
+            <div class="page-header bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid var(--theme-primary);">
                 <div class="d-flex align-items-center">
                     <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
                          style="width: 70px; height: 70px; background-color: rgba(12, 44, 90, 0.1);">
@@ -157,7 +195,7 @@
 
     {{-- Add Button --}}
     <div class="row mb-4">
-        <div class="col-md-12 d-flex justify-content-end">
+        <div class="col-md-12 add-button-container d-flex justify-content-end">
             <a href="{{ route('admin.sketches.create') }}" class="btn btn-sporty-primary d-flex align-items-center px-4 py-2">
                 <i class="fas fa-plus me-2"></i>
                 <span class="fw-semibold">Tambah Sketsa Baru</span>
@@ -165,13 +203,15 @@
         </div>
     </div>
 
-    {{-- Table --}}
+    {{-- Table Container --}}
     <div class="card border-0 rounded-4 shadow-sm">
-        <div class="card-body p-4">
+        {{-- PERBAIKAN: Menghapus class padding bawaan --}}
+        <div class="card-body">
             @if(session('success'))
                 <div class="alert alert-success rounded-3 alert-custom-success mb-4"><i class="fas fa-check-circle me-2"></i>{{ session('success') }}</div>
             @endif
 
+            {{-- Desktop Table View --}}
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
@@ -186,7 +226,7 @@
                     <tbody>
                         @forelse($sketches as $sketch)
                             <tr style="border-bottom: 1px solid #f0f0f0;">
-                                <td class="py-3 td-thumbnail">
+                                <td class="py-3">
                                     @if($sketch->thumbnail)
                                         <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="rounded-3 object-fit-cover shadow-sm" style="width: 150px; height: 100px; border: 1px solid #eee;">
                                     @else
@@ -195,15 +235,15 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td class="py-3 fw-semibold text-break" style="color: var(--theme-primary);" data-label="Judul Sketsa">{{ $sketch->title }}</td>
-                                <td class="py-3" data-label="Penulis">{{ $sketch->author }}</td>
-                                <td class="py-3" data-label="Status">
+                                <td class="py-3 fw-semibold text-break" style="color: var(--theme-primary);">{{ $sketch->title }}</td>
+                                <td class="py-3">{{ $sketch->author }}</td>
+                                <td class="py-3">
                                     @php
                                         $statusClass = $sketch->status == 'Published' ? 'badge-status-published' : 'badge-status-draft';
                                     @endphp
                                     <span class="badge {{ $statusClass }}">{{ $sketch->status }}</span>
                                 </td>
-                                <td class="py-3 td-actions" data-label="Aksi">
+                                <td class="py-3">
                                     <div class="d-flex gap-2">
                                         <a href="{{ route('admin.sketches.show', $sketch->slug) }}" class="btn btn-sm btn-outline-info rounded-pill px-3" style="border-color: var(--theme-primary); color: var(--theme-primary);" title="Lihat Detail">
                                             <i class="fas fa-eye"></i>
@@ -232,9 +272,94 @@
                 </table>
             </div>
 
-            <div class="d-flex justify-content-center mt-4">
-                {{ $sketches->links() }}
+            {{-- Mobile Cards View --}}
+            <div class="mobile-sketch-cards">
+                @forelse($sketches as $sketch)
+                    <div class="sketch-card">
+                        @if($sketch->thumbnail)
+                            <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="sketch-thumbnail">
+                        @else
+                            <div class="sketch-thumbnail-placeholder">
+                                <span class="text-muted">Tanpa Gambar</span>
+                            </div>
+                        @endif
+
+                        <div class="sketch-title">{{ $sketch->title }}</div>
+
+                        <div class="sketch-meta">
+                            <div class="sketch-author">
+                                <i class="fas fa-user-edit me-1"></i>{{ $sketch->author }}
+                            </div>
+                            <div>
+                                @php
+                                    $statusClass = $sketch->status == 'Published' ? 'badge-status-published' : 'badge-status-draft';
+                                @endphp
+                                <span class="badge {{ $statusClass }}">{{ $sketch->status }}</span>
+                            </div>
+                        </div>
+
+                        <div class="sketch-actions">
+                            <a href="{{ route('admin.sketches.show', $sketch->slug) }}" class="btn btn-sm btn-outline-info" style="border-color: var(--theme-primary); color: var(--theme-primary);" title="Lihat Detail">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ route('admin.sketches.edit', $sketch->slug) }}" class="btn btn-sm btn-outline-secondary" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Sketsa">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('admin.sketches.destroy', $sketch->slug) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger w-100" style="border-color: var(--theme-danger); color: var(--theme-danger);" title="Hapus Sketsa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-box-open me-2"></i>Tidak ada sketsa yang ditemukan.
+                    </div>
+                @endforelse
             </div>
+
+            {{-- Custom Pagination --}}
+            @if($sketches->hasPages())
+                <div class="mt-4 d-flex justify-content-center">
+                    <nav aria-label="Sketch pagination">
+                        <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                            {{-- Previous Page Link --}}
+                            <li class="page-item {{ $sketches->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link rounded-pill border-0" href="{{ $sketches->previousPageUrl() }}" rel="prev" style="color: var(--theme-primary); background-color: #e6eef7;">&laquo;</a>
+                            </li>
+
+                            {{-- Pagination Elements --}}
+                            @foreach ($elements as $element)
+                                @if (is_string($element))
+                                    <li class="page-item disabled"><span class="page-link rounded-pill border-0">{{ $element }}</span></li>
+                                @endif
+                                @if (is_array($element))
+                                    @foreach ($element as $page => $url)
+                                        @if ($page == $sketches->currentPage())
+                                            <li class="page-item active" aria-current="page">
+                                                <span class="page-link rounded-pill border-0" style="background-color: var(--theme-primary); border-color: var(--theme-primary);">{{ $page }}</span>
+                                            </li>
+                                        @else
+                                            <li class="page-item">
+                                                <a class="page-link rounded-pill border-0" href="{{ $url }}" style="color: var(--theme-primary); background-color: #e6eef7;">{{ $page }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            @endforeach
+
+                            {{-- Next Page Link --}}
+                            <li class="page-item {{ $sketches->hasMorePages() ? '' : 'disabled' }}">
+                                <a class="page-link rounded-pill border-0" href="{{ $sketches->nextPageUrl() }}" rel="next" style="color: var(--theme-primary); background-color: #e6eef7;">&raquo;</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            @endif
+
         </div>
     </div>
 </div>
