@@ -158,7 +158,6 @@
         }
 
         .testimonial-flipper {
-            /* [PERBAIKAN] Mempercepat animasi flip dari 0.6s menjadi 0.4s */
             transition: transform 0.4s, box-shadow 0.3s;
             transform-style: preserve-3d;
             position: relative;
@@ -453,14 +452,12 @@
             object-fit: cover;
         }
 
-        /* [PERBAIKAN] Mempercepat efek hover dari 0.4s menjadi 0.3s */
         .card-hover-zoom {
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
 
         .card-hover-zoom:hover {
             transform: translateY(-5px) scale(1.02);
-            /* Sedikit mengurangi scale agar tidak terlalu besar */
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
         }
 
@@ -486,7 +483,7 @@
         }
 
         /* =================================================================== */
-        /* ===== CSS SKETCH TELLING CAROUSEL - PENYEMPURNAAN JARAK AKHIR ===== */
+        /* ===== CSS SKETCH TELLING CAROUSEL ===== */
         /* =================================================================== */
         #sketch-gallery-wrapper .carousel-container {
             max-width: 1200px;
@@ -517,7 +514,6 @@
             perspective: 1500px;
             transform-style: preserve-3d;
             overflow: hidden;
-            /* TAMBAHKAN INI untuk menyembunyikan bagian kartu yang keluar */
         }
 
         #sketch-gallery-wrapper .gallery-carousel-images {
@@ -534,7 +530,6 @@
             width: 320px;
             height: 480px;
             left: calc(50% - 160px);
-            /* [PERBAIKAN] Mempercepat transisi dari 0.5s menjadi 0.4s */
             transition: all 0.4s ease;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -542,11 +537,9 @@
             text-decoration: none;
             background-color: #ffffff;
             border: 1px solid #e0e0e0;
-            /* STRUKTUR BARU: Distribusi ruang yang merata */
             display: flex;
             flex-direction: column;
             padding: 25px;
-            /* Padding seragam di semua sisi */
             box-sizing: border-box;
         }
 
@@ -568,21 +561,15 @@
 
         #sketch-gallery-wrapper .sketch-card-brand {
             margin-top: auto;
-            /* Memastikan logo didorong ke bawah */
             padding-bottom: 10px;
-            /* Tambahkan sedikit padding di bawah logo jika perlu */
             text-align: center;
         }
 
         #sketch-gallery-wrapper .sketch-card-brand img {
             max-height: 47px;
-            /* Maksimal tinggi logo */
             width: auto;
-            /* Lebar akan menyesuaikan secara proporsional */
             object-fit: contain;
-            /* Memastikan gambar sepenuhnya terlihat dalam batasnya */
             filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.4));
-            /* Pertahankan shadow */
         }
 
 
@@ -601,7 +588,6 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 20px;
-            /* Jarak ke subtitle ditambah */
         }
 
         #sketch-gallery-wrapper .sketch-card-subtitle {
@@ -625,10 +611,8 @@
             width: 90%;
             margin-top: 15px;
             margin-bottom: 5px;
-            /* Tidak ada lagi pemotongan teks */
         }
 
-        /* Positioning (VERSI LEBIH SEMPIT AGAR HANYA SETENGAH TERLIHAT) */
         #sketch-gallery-wrapper .gallery-image-item.active {
             z-index: 10;
             opacity: 1;
@@ -665,7 +649,6 @@
             z-index: 1;
         }
 
-        /* Navigation buttons (Dipojokkan) */
         #sketch-gallery-wrapper .gallery-nav-button {
             position: absolute;
             top: 50%;
@@ -699,135 +682,100 @@
             right: 1%;
         }
 
-        /* Responsive (disederhanakan) */
+        /* ===== [PERBAIKAN FINAL 5 KARTU] KODE UNTUK SKETCH TELLING VERSI MOBILE ===== */
         @media (max-width: 768px) {
+            #sketch-gallery-wrapper .carousel-title { font-size: 2rem; }
+            #sketch-gallery-wrapper .carousel-subtitle { font-size: 1rem; margin-bottom: 20px; }
+            
             #sketch-gallery-wrapper .gallery-carousel {
-                height: 450px;
+                height: 440px;
                 overflow: visible;
             }
 
             #sketch-gallery-wrapper .gallery-image-item {
-                width: 280px;
-                min-height: 420px;
-                left: calc(50% - 140px);
-                padding: 25px 20px 35px 20px;
-                box-sizing: border-box;
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: flex-start !important;
+                width: 240px;
+                height: 390px;
+                left: calc(50% - 120px);
+                padding: 12px 15px;
+            }
+            
+            #sketch-gallery-wrapper .sketch-card-header {
+                font-size: 1.0rem;
+                margin-bottom: 8px;
             }
 
             #sketch-gallery-wrapper .sketch-circular-image {
-                width: 120px;
-                height: 120px;
+                width: 80px;
+                height: 80px;
+                margin-bottom: 8px;
             }
-
-            #sketch-gallery-wrapper .sketch-card-title {
-                font-size: 1.3rem;
-            }
-
-            #sketch-gallery-wrapper .gallery-image-item.prev,
-            #sketch-gallery-wrapper .gallery-image-item.next,
-            #sketch-gallery-wrapper .gallery-image-item.prev-hidden,
-            #sketch-gallery-wrapper .gallery-image-item.next-hidden {
-                display: none !important;
-            }
-
+            
             #sketch-gallery-wrapper .sketch-card-subtitle {
-                font-size: 0.9rem;
-                white-space: normal;
-                overflow: visible;
-                text-overflow: clip;
-                max-width: 100%;
-                line-height: 1.3;
+                font-size: 0.75rem;
+                margin-top: 8px;
+                margin-bottom: 5px;
             }
+
+            #sketch-gallery-wrapper .sketch-card-description {
+                font-size: 0.7rem;
+                line-height: 1.4;
+                margin-top: 0;
+                margin-bottom: 8px;
+            }
+            
+            #sketch-gallery-wrapper .sketch-card-brand {
+                padding-bottom: 0; 
+            }
+            #sketch-gallery-wrapper .sketch-card-brand img {
+                max-height: 35px;
+            }
+            
+            /* Atur ulang posisi agar 5 kartu terlihat */
+            #sketch-gallery-wrapper .gallery-image-item.active { transform: translateZ(0) scale(1); opacity: 1; z-index: 10; }
+            #sketch-gallery-wrapper .gallery-image-item.prev { transform: translateX(-105px) translateZ(-80px) scale(0.85); opacity: 0.8; z-index: 8; }
+            #sketch-gallery-wrapper .gallery-image-item.next { transform: translateX(105px) translateZ(-80px) scale(0.85); opacity: 0.8; z-index: 8; }
+            
+            /* [FIX] Kurangi nilai translateX agar kartu tidak terdorong keluar layar */
+            #sketch-gallery-wrapper .gallery-image-item.prev-hidden { 
+                transform: translateX(-180px) translateZ(-150px) scale(0.7); /* Dari -190px */
+                opacity: 0.5; z-index: 6; display: block !important; 
+            } 
+            #sketch-gallery-wrapper .gallery-image-item.next-hidden { 
+                transform: translateX(180px) translateZ(-150px) scale(0.7); /* Dari 190px */
+                opacity: 0.5; z-index: 6; display: block !important; 
+            }
+            
+            /* Navigasi */
+            #sketch-gallery-wrapper .gallery-nav-button { width: 35px; height: 35px; font-size: 1rem; }
+            #sketch-gallery-wrapper .gallery-nav-left { left: -10px; }
+            #sketch-gallery-wrapper .gallery-nav-right { right: -10px; }
         }
-
-        @media (max-width: 768px) {
-            #sketch-gallery-wrapper .carousel-title {
-                font-size: 2rem;
-            }
-
-            #sketch-gallery-wrapper .carousel-subtitle {
-                font-size: 1rem;
-                margin-bottom: 20px;
-            }
-
-            #sketch-gallery-wrapper .gallery-carousel {
-                height: 420px;
-                padding-top: 20px;
-            }
-
-
-            #sketch-gallery-wrapper .sketch-circular-image {
-                width: 140px;
-                height: 140px;
-                margin-bottom: 20px;
-            }
-
-            #sketch-gallery-wrapper .sketch-main-title {
-                font-size: 1.5rem;
-            }
-
-            #sketch-gallery-wrapper .sketch-description {
-                font-size: 0.9rem;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-left {
-                left: 5%;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-right {
-                right: 5%;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-button {
-                width: 35px;
-                height: 35px;
-                font-size: 1rem;
-            }
-        }
-
+        /* ===== AKHIR DARI KODE PERBAIKAN FINAL 5 KARTU ===== */
 
         @media (max-width: 575.98px) {
-            #sketch-gallery-wrapper .gallery-carousel {
-                height: 380px;
-            }
-
+            #sketch-gallery-wrapper .gallery-carousel { height: 380px; }
+            
             #sketch-gallery-wrapper .gallery-image-item {
-                height: 380px;
-                width: 75%;
-                left: 12.5%;
-                padding-top: 25px;
+                width: 220px;
+                height: 340px;
+                left: calc(50% - 110px);
+                padding: 12px;
             }
+             #sketch-gallery-wrapper .sketch-card-header { font-size: 1rem; }
+             #sketch-gallery-wrapper .sketch-circular-image { width: 80px; height: 80px; }
+             #sketch-gallery-wrapper .sketch-card-subtitle { font-size: 0.75rem; }
+             #sketch-gallery-wrapper .sketch-card-description { font-size: 0.7rem; }
+             #sketch-gallery-wrapper .sketch-card-brand img { max-height: 35px; }
+            
+             /* Sesuaikan kembali posisi untuk layar sangat sempit */
+             #sketch-gallery-wrapper .gallery-image-item.prev { transform: translateX(-95px) translateZ(-80px) scale(0.8); }
+            #sketch-gallery-wrapper .gallery-image-item.next { transform: translateX(95px) translateZ(-80px) scale(0.8); }
+            #sketch-gallery-wrapper .gallery-image-item.prev-hidden { transform: translateX(-170px) translateZ(-150px) scale(0.65); }
+            #sketch-gallery-wrapper .gallery-image-item.next-hidden { transform: translateX(170px) translateZ(-150px) scale(0.65); }
 
-            #sketch-gallery-wrapper .sketch-circular-image {
-                width: 120px;
-                height: 120px;
-                margin-bottom: 15px;
-            }
-
-            #sketch-gallery-wrapper .sketch-main-title {
-                font-size: 1.3rem;
-            }
-
-            #sketch-gallery-wrapper .sketch-description {
-                font-size: 0.85rem;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-left {
-                left: 2%;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-right {
-                right: 2%;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-button {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
-            }
+            #sketch-gallery-wrapper .gallery-nav-left { left: 0; }
+            #sketch-gallery-wrapper .gallery-nav-right { right: 0; }
+            #sketch-gallery-wrapper .gallery-nav-button { width: 30px; height: 30px; font-size: 0.9rem; }
         }
 
         /* ===== KONSULTASI GRATIS SECTION ===== */
@@ -958,21 +906,16 @@
 
         @media (max-width: 767.98px) {
 
-            /* ===== UNTUK MOBILE ===== */
             .hero-section {
                 height: auto;
-                /* 1. Hapus tinggi layar penuh */
                 min-height: 0;
-                /* Hapus min-height agar tidak mengganggu */
                 padding-top: 125%;
-                /* 2. Ciptakan 'aspect ratio' box (misal: 4:5). Angka ini bisa disesuaikan */
                 position: relative;
             }
 
             .hero-section .carousel,
             .hero-section .carousel-inner,
             .hero-section .carousel-item {
-                /* 3. Buat carousel mengisi area padding tersebut */
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -982,11 +925,7 @@
 
             .hero-section .carousel-item {
                 background-position: center;
-                /* Fokuskan gambar ke tengah */
             }
-
-            /* ========== */
-
 
             .hero-title {
                 font-size: clamp(1.8rem, 8vw, 2.8rem);
@@ -1051,52 +990,6 @@
                 font-size: 0.95rem !important;
             }
 
-            /* Sketch Gallery Mobile */
-            #sketch-gallery-wrapper .carousel-title {
-                font-size: 2rem;
-            }
-
-            #sketch-gallery-wrapper .carousel-subtitle {
-                font-size: 1rem;
-                margin-bottom: 20px;
-            }
-
-            #sketch-gallery-wrapper .gallery-carousel {
-                height: 320px;
-                padding-top: 20px;
-            }
-
-            #sketch-gallery-wrapper .gallery-image-item {
-                height: 320px;
-                width: 70%;
-                left: 15%;
-                padding: 8px;
-            }
-
-            #sketch-gallery-wrapper .gallery-image-item img {
-                height: calc(100% - 40px);
-            }
-
-            #sketch-gallery-wrapper .gallery-image-item h1 {
-                font-size: 16px;
-                padding: 8px;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-left {
-                left: 5%;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-right {
-                right: 5%;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-button {
-                width: 35px;
-                height: 35px;
-                font-size: 1rem;
-            }
-
-            /* Consultation Section Mobile */
             .consultation-section {
                 padding: 80px 0;
                 margin-top: 60px;
@@ -1112,7 +1005,6 @@
                 font-size: 1rem;
             }
 
-            /* Testimonial Poker Card Mobile */
             .testimonial-flip-container {
                 max-width: 260px;
                 height: 380px;
@@ -1141,69 +1033,24 @@
                 font-size: 0.75rem;
             }
 
-            /* ===== [KODE BARU] FIX FOOTER MOBILE AGAR TERSUSUN KE BAWAH ===== */
-            @media (max-width: 767.98px) {
-
-                /* Menargetkan semua kolom di dalam baris footer */
-                .footer-section .row>[class*="col-"] {
-                    width: 100%;
-                    /* Paksa lebar jadi 100% */
-                    flex: 0 0 100%;
-                    /* Pastikan flexbox juga mengikuti */
-                    max-width: 100%;
-                    /* Pastikan max-width juga 100% */
-                    margin-bottom: 30px;
-                    /* Beri jarak bawah antar kolom */
-                    text-align: center;
-                    /* (Opsional) Buat teks rata tengah */
-                }
-
-                /* Menghilangkan jarak bawah pada kolom terakhir */
-                .footer-section .row>[class*="col-"]:last-child {
-                    margin-bottom: 0;
-                }
+            .footer-section .row>[class*="col-"] {
+                width: 100%;
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 30px;
+                text-align: center;
             }
 
-
+            .footer-section .row>[class*="col-"]:last-child {
+                margin-bottom: 0;
+            }
         }
 
-        /* Extra small screens (phones in portrait) */
         @media (max-width: 575.98px) {
             .hero-section {
                 padding-top: 150%;
-                /* Sedikit lebih tinggi untuk layar yang sangat sempit */
             }
 
-            #sketch-gallery-wrapper .gallery-carousel {
-                height: 280px;
-            }
-
-            #sketch-gallery-wrapper .gallery-image-item {
-                height: 280px;
-                width: 75%;
-                left: 12.5%;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-left {
-                left: 2%;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-right {
-                right: 2%;
-            }
-
-            #sketch-gallery-wrapper .gallery-nav-button {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
-            }
-
-            #sketch-gallery-wrapper .gallery-image-item h1 {
-                font-size: 14px;
-                padding: 6px;
-            }
-
-            /* Testimonial Poker Card Extra Small */
             .testimonial-flip-container {
                 max-width: 240px;
                 height: 360px;
@@ -1307,7 +1154,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- Slide 6: Seni Menghargai Proses Hidup --}}
                 <div class="carousel-item"
                     style="background-image: url('{{ asset('assets/carousel/SMPH.png') }}'); background-position: center;">
                     <div class="overlay"></div>
@@ -1324,7 +1170,6 @@
                     </div>
                 </div>
 
-                {{-- Slide 7: Jurnal Reflektif --}}
                 <div class="carousel-item"
                     style="background-image: url('{{ asset('assets/carousel/reflective-journaling-moment.jpg') }}');">
                     <div class="overlay"></div>
@@ -1341,7 +1186,6 @@
                     </div>
                 </div>
 
-                {{-- Slide 8: Meditasi Sebagai Sarana Healing --}}
                 <div class="carousel-item"
                     style="background-image: url('{{ asset('assets/carousel/meditation-healing-dawn.jpg') }}');">
                     <div class="overlay"></div>
@@ -1359,7 +1203,6 @@
                 </div>
             </div>
 
-            {{-- Carousel Indicators Updated --}}
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"
                     aria-current="true" aria-label="Slide 1"></button>
@@ -1561,7 +1404,6 @@
                             data-details="{{ $testimonial->age }} Tahun, {{ $testimonial->occupation }}"
                             data-quote="{{ $testimonial->quote }}" data-image="{{ $testimonial->image_url }}">
                             <div class="testimonial-flipper">
-                                {{-- SISI DEPAN KARTU --}}
                                 <div class="testimonial-card-front">
                                     <div class="testimonial-square-card">
                                         <img src="{{ $testimonial->image_url }}" alt="Foto {{ $testimonial->name }}"
@@ -1576,7 +1418,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                {{-- SISI BELAKANG KARTU --}}
                                 <div class="testimonial-card-back">
                                     <i class="bi bi-chat-quote-fill fs-1"></i>
                                 </div>
@@ -1599,7 +1440,7 @@
             <div class="swiper-button-prev testimonials-prev"></div>
         </div>
     </section>
-    {{-- 6. SKETCH TELLING (CAROUSEL DENGAN TAMPILAN KARTU BARU - PERBAIKAN FINAL) --}}
+    {{-- 6. SKETCH TELLING --}}
     <section id="sketch-gallery-wrapper" class="container py-5 my-5">
         <div class="carousel-container">
             <h2 class="carousel-title" data-aos="fade-down">Sketch Telling</h2>
@@ -1629,7 +1470,7 @@
                             </div>
                         </a>
                     @empty
-                        {{-- Konten Fallback jika tidak ada sketsa --}}
+                        {{-- Fallback --}}
                         <div class="gallery-image-item">
                             <p class="sketch-card-header">Sketch Telling</p>
                             <div class="sketch-card-middle-content">
@@ -1743,18 +1584,9 @@
                     prevEl: '.latest-articles-prev',
                 },
                 breakpoints: {
-                    640: {
-                        slidesPerView: 1,
-                        spaceBetween: 20
-                    },
-                    768: {
-                        slidesPerView: 2,
-                        spaceBetween: 30
-                    },
-                    1024: {
-                        slidesPerView: 3,
-                        spaceBetween: 40
-                    },
+                    640: { slidesPerView: 1, spaceBetween: 20 },
+                    768: { slidesPerView: 2, spaceBetween: 30 },
+                    1024: { slidesPerView: 3, spaceBetween: 40 },
                 }
             });
 
@@ -1765,18 +1597,9 @@
                     prevEl: '.popular-articles-prev',
                 },
                 breakpoints: {
-                    640: {
-                        slidesPerView: 1,
-                        spaceBetween: 20
-                    },
-                    768: {
-                        slidesPerView: 2,
-                        spaceBetween: 30
-                    },
-                    1024: {
-                        slidesPerView: 3,
-                        spaceBetween: 40
-                    },
+                    640: { slidesPerView: 1, spaceBetween: 20 },
+                    768: { slidesPerView: 2, spaceBetween: 30 },
+                    1024: { slidesPerView: 3, spaceBetween: 40 },
                 }
             });
 
@@ -1789,14 +1612,8 @@
                 slidesPerView: 1,
                 spaceBetween: 20,
                 breakpoints: {
-                    768: {
-                        slidesPerView: 2,
-                        spaceBetween: 30
-                    },
-                    1024: {
-                        slidesPerView: 3,
-                        spaceBetween: 40
-                    },
+                    768: { slidesPerView: 2, spaceBetween: 30 },
+                    1024: { slidesPerView: 3, spaceBetween: 40 },
                 }
             });
         });
@@ -1805,7 +1622,7 @@
     {{-- AOS Animation --}}
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
-    {{-- Sketch Gallery JavaScript (Style Kersa) --}}
+    {{-- Sketch Gallery JavaScript --}}
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const galleryWrapper = document.getElementById("sketch-gallery-wrapper");
@@ -1824,8 +1641,7 @@
 
                 function updateClasses() {
                     images.forEach((image, index) => {
-                        image.classList.remove("active", "prev", "next", "prev-hidden", "next-hidden",
-                            "hidden");
+                        image.classList.remove("active", "prev", "next", "prev-hidden", "next-hidden", "hidden");
 
                         if (index === currentIndex) {
                             image.classList.add("active");
@@ -1870,7 +1686,6 @@
                     carousel.addEventListener("mouseleave", () => resetAutoSlide());
                 }
 
-                // Initialize
                 updateClasses();
                 resetAutoSlide();
             }
@@ -1879,7 +1694,6 @@
 
     {{-- Custom Scripts --}}
     <script>
-        // App height untuk mobile
         const setAppHeight = () => {
             const doc = document.documentElement;
             doc.style.setProperty('--app-height', `${window.innerHeight}px`);
@@ -1887,9 +1701,7 @@
         window.addEventListener('resize', setAppHeight);
         setAppHeight();
 
-        // Modal testimoni dengan flip animation
         const testimonialModal = document.getElementById('testimonialModal');
-
         if (testimonialModal) {
             const modalInstance = new bootstrap.Modal(testimonialModal);
             const testimonialCards = document.querySelectorAll('.testimonial-flip-container');
@@ -1898,19 +1710,13 @@
                 card.addEventListener('click', function(event) {
                     event.preventDefault();
                     event.stopPropagation();
-
-                    // 1. Tambahkan kelas 'is-flipped' untuk memicu animasi CSS
                     this.classList.add('is-flipped');
-
-                    // 2. Ambil data dari atribut data-* kartu yang diklik
                     const name = this.getAttribute('data-name');
                     const details = this.getAttribute('data-details');
                     const quote = this.getAttribute('data-quote');
                     const image = this.getAttribute('data-image');
 
-                    // 3. [PERBAIKAN] Tunggu animasi flip selesai (400ms), baru tampilkan modal
                     setTimeout(() => {
-                            // Update konten di dalam modal dengan data yang baru diambil
                             const modalImage = testimonialModal.querySelector('#modal-image');
                             const modalName = testimonialModal.querySelector('#modal-name');
                             const modalDetails = testimonialModal.querySelector('#modal-details');
@@ -1921,17 +1727,14 @@
                             if (modalDetails) modalDetails.textContent = details;
                             if (modalQuote) modalQuote.textContent = `"${quote}"`;
 
-                            // Tampilkan modal
                             modalInstance.show();
                         },
                         400
-                    ); // [PERBAIKAN] Durasi disamakan dengan transisi pada .testimonial-flipper di CSS
+                    );
                 });
             });
 
-            // 4. Tambahkan event listener untuk membalikkan kartu saat modal ditutup
             testimonialModal.addEventListener('hidden.bs.modal', () => {
-                // Cari kartu yang sedang dalam keadaan 'flipped' dan kembalikan
                 const flippedCard = document.querySelector('.testimonial-flip-container.is-flipped');
                 if (flippedCard) {
                     flippedCard.classList.remove('is-flipped');
@@ -1939,16 +1742,13 @@
             });
         }
 
-        // AOS initialization
         AOS.init({
-            // [PERBAIKAN] Mempercepat durasi animasi dari 900ms menjadi 600ms
             duration: 600,
             easing: 'ease-in-out-sine',
             once: false,
             offset: 120,
         });
 
-        // AOS scroll behavior
         let lastScrollTop = 0;
         const allAosElements = document.querySelectorAll('[data-aos]');
         window.addEventListener('scroll', function() {
