@@ -72,12 +72,12 @@ class ChatbotController extends Controller
             $botman->hears('.*(layanan|services|service).*', function (BotMan $bot) {
                 $url = route('front.layanan');
                 $response = "Tentu, kami menyediakan berbagai layanan dan konsultasi.\n\n";
-                $response .= "**Berikut adalah *cara memesan layanan* kami:**\n";
+                $response .= "**Berikut adalah cara memesan layanan kami:**\n";
                 $response .= "1. Pilih layanan dari daftar yang tersedia.\n";
-                $response .= "2. Isi formulir jadwal dan masukkan **Kode Referral** jika ada.\n";
+                $response .= "2. Isi formulir jadwal dan masukkan `*Kode Referral*` jika ada.\n";
                 $response .= "3. Klik tombol `Pilih Layanan` untuk menambahkannya ke keranjang.\n";
-                $response .= "4. Cek kembali pesanan Anda di halaman **Keranjang**.\n";
-                $response .= "5. Pilih **Tipe Pembayaran** yang diinginkan.\n";
+                $response .= "4. Cek kembali pesanan Anda di halaman `*Keranjang*`.\n";
+                $response .= "5. Pilih `*Tipe Pembayaran*` yang diinginkan.\n";
                 $response .= "6. Klik `Checkout` untuk melakukan pembayaran (Pastikan Anda sudah *Login* terlebih dahulu).\n\n";
                 $response .= "Untuk memulai, silakan klik tombol di bawah ini untuk melihat semua layanan kami:\n";
                 $response .= '<a href="' . $url . '" target="_blank" class="chatbot-button">Buka Halaman Layanan</a>';
