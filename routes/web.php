@@ -172,7 +172,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Testimonials management
     Route::resource('testimonials', TestimonialController::class);
-    Route::put('/testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
+    Route::patch('/testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status'); // ✅ UBAH PUT JADI PATCH
 
     // NEW: Free Consultation Management
     Route::prefix('free-consultation')->name('free-consultation.')->group(function () {

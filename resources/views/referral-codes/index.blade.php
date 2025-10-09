@@ -43,6 +43,66 @@
         padding: 0.4em 0.8em;
         border-radius: 0.5rem;
     }
+
+    /* [BARU] Mobile Responsive Styles */
+    .mobile-referral-cards {
+        display: none; /* Sembunyikan di desktop */
+    }
+
+    @media (max-width: 768px) {
+        .table-responsive {
+            display: none; /* Sembunyikan tabel di mobile */
+        }
+        .mobile-referral-cards {
+            display: block; /* Tampilkan kartu di mobile */
+        }
+        .referral-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f0f0f0;
+        }
+        .referral-code-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--theme-primary);
+            margin-bottom: 1rem;
+            word-break: break-all;
+            text-align: center;
+            background-color: #f0f4f8;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+        .referral-meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .referral-meta-item {
+            color: #6c757d;
+        }
+        .referral-meta-item strong {
+            color: #343a40;
+            display: block;
+            margin-top: 0.25rem;
+        }
+        .referral-actions {
+            display: flex;
+            gap: 0.5rem;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        .referral-actions .btn {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+    }
 </style>
 
 <div class="container-fluid px-4" style="min-height: 100vh;">
@@ -74,13 +134,14 @@
         </div>
     </div>
 
-    {{-- Table --}}
+    {{-- Table & Cards Container --}}
     <div class="card border-0 rounded-4 shadow-sm">
         <div class="card-body p-4">
             @if(session('success'))
                 <div class="alert alert-success rounded-3 alert-custom-success mb-4"><i class="fas fa-check-circle me-2"></i>{{ session('success') }}</div>
             @endif
 
+            {{-- [DESKTOP] Tampilan Tabel --}}
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
@@ -140,7 +201,59 @@
                     </tbody>
                 </table>
             </div>
+            
+            {{-- [MOBILE] Tampilan Kartu --}}
+            <div class="mobile-referral-cards">
+                @forelse($referralCodes as $code)
+                    <div class="referral-card">
+                        <div class="referral-code-title">{{ $code->code }}</div>
+                        
+                        <div class="referral-meta-grid">
+                            <div class="referral-meta-item">Diskon <strong>{{ $code->discount_percentage }}%</strong></div>
+                            <div class="referral-meta-item">Digunakan <strong>{{ $code->current_uses }}</strong></div>
+                            <div class="referral-meta-item">Maks. Pakai <strong>{{ $code->max_uses ?? 'Tidak Terbatas' }}</strong></div>
+                            <div class="referral-meta-item">
+                                Status 
+                                <strong>
+                                     @php
+                                        $status = 'Aktif';
+                                        $statusClass = 'badge-status-published';
+                                        $now = now();
+                                        if ($code->valid_until && $now->isAfter($code->valid_until)) {
+                                            $status = 'Kedaluwarsa';
+                                            $statusClass = 'badge-status-draft';
+                                        } elseif ($code->max_uses && $code->current_uses >= $code->max_uses) {
+                                            $status = 'Habis';
+                                            $statusClass = 'badge-status-draft';
+                                        }
+                                    @endphp
+                                    <span class="badge {{ $statusClass }}">{{ $status }}</span>
+                                </strong>
+                            </div>
+                        </div>
 
+                        <div class="referral-actions">
+                            <a href="{{ route('admin.referral-codes.edit', $code->id) }}" class="btn btn-sm btn-outline-secondary" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Kode">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('admin.referral-codes.destroy', $code->id) }}" method="POST" class="d-inline" style="flex: 1;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger w-100" style="border-color: var(--theme-danger); color: var(--theme-danger);" title="Hapus Kode">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-box-open me-2"></i>Tidak ada kode referral yang ditemukan.
+                    </div>
+                @endforelse
+            </div>
+
+
+            {{-- Paginasi --}}
             <div class="d-flex justify-content-center mt-4">
                 {{ $referralCodes->links() }}
             </div>

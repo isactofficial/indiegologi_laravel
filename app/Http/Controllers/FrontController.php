@@ -26,7 +26,7 @@ class FrontController extends Controller
     {
         $latest_articles = Article::where('status', 'published')->latest()->take(6)->get();
         $popular_articles = Article::where('status', 'published')->orderBy('views', 'desc')->take(6)->get();
-        $latest_sketches = Sketch::where('status', 'published')->latest()->take(6)->get();
+        $latest_sketches = Sketch::where('status', 'published')->latest()->get();
         $services = ConsultationService::take(3)->get();
         
         // Tambahkan data testimoni dari database

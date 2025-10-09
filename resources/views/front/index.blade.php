@@ -684,9 +684,15 @@
 
         /* ===== [PERBAIKAN FINAL 5 KARTU] KODE UNTUK SKETCH TELLING VERSI MOBILE ===== */
         @media (max-width: 768px) {
-            #sketch-gallery-wrapper .carousel-title { font-size: 2rem; }
-            #sketch-gallery-wrapper .carousel-subtitle { font-size: 1rem; margin-bottom: 20px; }
-            
+            #sketch-gallery-wrapper .carousel-title {
+                font-size: 2rem;
+            }
+
+            #sketch-gallery-wrapper .carousel-subtitle {
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+
             #sketch-gallery-wrapper .gallery-carousel {
                 height: 440px;
                 overflow: visible;
@@ -698,7 +704,7 @@
                 left: calc(50% - 120px);
                 padding: 12px 15px;
             }
-            
+
             #sketch-gallery-wrapper .sketch-card-header {
                 font-size: 1.0rem;
                 margin-bottom: 8px;
@@ -709,7 +715,7 @@
                 height: 80px;
                 margin-bottom: 8px;
             }
-            
+
             #sketch-gallery-wrapper .sketch-card-subtitle {
                 font-size: 0.75rem;
                 margin-top: 8px;
@@ -722,60 +728,132 @@
                 margin-top: 0;
                 margin-bottom: 8px;
             }
-            
+
             #sketch-gallery-wrapper .sketch-card-brand {
-                padding-bottom: 0; 
+                padding-bottom: 0;
             }
+
             #sketch-gallery-wrapper .sketch-card-brand img {
                 max-height: 35px;
             }
-            
+
             /* Atur ulang posisi agar 5 kartu terlihat */
-            #sketch-gallery-wrapper .gallery-image-item.active { transform: translateZ(0) scale(1); opacity: 1; z-index: 10; }
-            #sketch-gallery-wrapper .gallery-image-item.prev { transform: translateX(-105px) translateZ(-80px) scale(0.85); opacity: 0.8; z-index: 8; }
-            #sketch-gallery-wrapper .gallery-image-item.next { transform: translateX(105px) translateZ(-80px) scale(0.85); opacity: 0.8; z-index: 8; }
-            
-            /* [FIX] Kurangi nilai translateX agar kartu tidak terdorong keluar layar */
-            #sketch-gallery-wrapper .gallery-image-item.prev-hidden { 
-                transform: translateX(-180px) translateZ(-150px) scale(0.7); /* Dari -190px */
-                opacity: 0.5; z-index: 6; display: block !important; 
-            } 
-            #sketch-gallery-wrapper .gallery-image-item.next-hidden { 
-                transform: translateX(180px) translateZ(-150px) scale(0.7); /* Dari 190px */
-                opacity: 0.5; z-index: 6; display: block !important; 
+            #sketch-gallery-wrapper .gallery-image-item.active {
+                transform: translateZ(0) scale(1);
+                opacity: 1;
+                z-index: 10;
             }
-            
+
+            #sketch-gallery-wrapper .gallery-image-item.prev {
+                transform: translateX(-105px) translateZ(-80px) scale(0.85);
+                opacity: 0.8;
+                z-index: 8;
+            }
+
+            #sketch-gallery-wrapper .gallery-image-item.next {
+                transform: translateX(105px) translateZ(-80px) scale(0.85);
+                opacity: 0.8;
+                z-index: 8;
+            }
+
+            /* [FIX] Kurangi nilai translateX agar kartu tidak terdorong keluar layar */
+            #sketch-gallery-wrapper .gallery-image-item.prev-hidden {
+                transform: translateX(-180px) translateZ(-150px) scale(0.7);
+                /* Dari -190px */
+                opacity: 0.5;
+                z-index: 6;
+                display: block !important;
+            }
+
+            #sketch-gallery-wrapper .gallery-image-item.next-hidden {
+                transform: translateX(180px) translateZ(-150px) scale(0.7);
+                /* Dari 190px */
+                opacity: 0.5;
+                z-index: 6;
+                display: block !important;
+            }
+
             /* Navigasi */
-            #sketch-gallery-wrapper .gallery-nav-button { width: 35px; height: 35px; font-size: 1rem; }
-            #sketch-gallery-wrapper .gallery-nav-left { left: -10px; }
-            #sketch-gallery-wrapper .gallery-nav-right { right: -10px; }
+            #sketch-gallery-wrapper .gallery-nav-button {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            #sketch-gallery-wrapper .gallery-nav-left {
+                left: -10px;
+            }
+
+            #sketch-gallery-wrapper .gallery-nav-right {
+                right: -10px;
+            }
         }
+
         /* ===== AKHIR DARI KODE PERBAIKAN FINAL 5 KARTU ===== */
 
         @media (max-width: 575.98px) {
-            #sketch-gallery-wrapper .gallery-carousel { height: 380px; }
-            
+            #sketch-gallery-wrapper .gallery-carousel {
+                height: 380px;
+            }
+
             #sketch-gallery-wrapper .gallery-image-item {
                 width: 220px;
                 height: 340px;
                 left: calc(50% - 110px);
                 padding: 12px;
             }
-             #sketch-gallery-wrapper .sketch-card-header { font-size: 1rem; }
-             #sketch-gallery-wrapper .sketch-circular-image { width: 80px; height: 80px; }
-             #sketch-gallery-wrapper .sketch-card-subtitle { font-size: 0.75rem; }
-             #sketch-gallery-wrapper .sketch-card-description { font-size: 0.7rem; }
-             #sketch-gallery-wrapper .sketch-card-brand img { max-height: 35px; }
-            
-             /* Sesuaikan kembali posisi untuk layar sangat sempit */
-             #sketch-gallery-wrapper .gallery-image-item.prev { transform: translateX(-95px) translateZ(-80px) scale(0.8); }
-            #sketch-gallery-wrapper .gallery-image-item.next { transform: translateX(95px) translateZ(-80px) scale(0.8); }
-            #sketch-gallery-wrapper .gallery-image-item.prev-hidden { transform: translateX(-170px) translateZ(-150px) scale(0.65); }
-            #sketch-gallery-wrapper .gallery-image-item.next-hidden { transform: translateX(170px) translateZ(-150px) scale(0.65); }
 
-            #sketch-gallery-wrapper .gallery-nav-left { left: 0; }
-            #sketch-gallery-wrapper .gallery-nav-right { right: 0; }
-            #sketch-gallery-wrapper .gallery-nav-button { width: 30px; height: 30px; font-size: 0.9rem; }
+            #sketch-gallery-wrapper .sketch-card-header {
+                font-size: 1rem;
+            }
+
+            #sketch-gallery-wrapper .sketch-circular-image {
+                width: 80px;
+                height: 80px;
+            }
+
+            #sketch-gallery-wrapper .sketch-card-subtitle {
+                font-size: 0.75rem;
+            }
+
+            #sketch-gallery-wrapper .sketch-card-description {
+                font-size: 0.7rem;
+            }
+
+            #sketch-gallery-wrapper .sketch-card-brand img {
+                max-height: 35px;
+            }
+
+            /* Sesuaikan kembali posisi untuk layar sangat sempit */
+            #sketch-gallery-wrapper .gallery-image-item.prev {
+                transform: translateX(-95px) translateZ(-80px) scale(0.8);
+            }
+
+            #sketch-gallery-wrapper .gallery-image-item.next {
+                transform: translateX(95px) translateZ(-80px) scale(0.8);
+            }
+
+            #sketch-gallery-wrapper .gallery-image-item.prev-hidden {
+                transform: translateX(-170px) translateZ(-150px) scale(0.65);
+            }
+
+            #sketch-gallery-wrapper .gallery-image-item.next-hidden {
+                transform: translateX(170px) translateZ(-150px) scale(0.65);
+            }
+
+            #sketch-gallery-wrapper .gallery-nav-left {
+                left: 0;
+            }
+
+            #sketch-gallery-wrapper .gallery-nav-right {
+                right: 0;
+            }
+
+            #sketch-gallery-wrapper .gallery-nav-button {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
         }
 
         /* ===== KONSULTASI GRATIS SECTION ===== */
@@ -1062,6 +1140,69 @@
             }
 
         }
+
+        /* ===== [START] CSS IKLAN POPUP SISI KANAN (REVISI) ===== */
+        .floating-ad-container {
+            position: fixed;
+            right: 0;
+            /* Menempel di kanan */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 155px;
+            /* Sesuaikan lebar iklan */
+            z-index: 1050;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .floating-ad-container.hidden {
+            transform: translateY(-50%) translateX(100%);
+            /* Geser ke kanan saat ditutup */
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .floating-ad-container .close-ad-btn {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            color: #333;
+            margin-bottom: -1px;
+        }
+
+        .floating-ad-container .ad-link {
+            display: block;
+            line-height: 0;
+            /* Menghilangkan spasi di bawah gambar */
+        }
+
+        .floating-ad-container .ad-image {
+            width: 100%;
+            height: auto;
+            border-radius: 0;
+            /* Sudut tajam */
+            box-shadow: -2px 0 15px rgba(0, 0, 0, 0.15);
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+
+        /* Sembunyikan iklan di layar kecil */
+        @media (max-width: 991.98px) {
+            .floating-ad-container {
+                display: none;
+            }
+        }
+
+        /* ===== [END] CSS IKLAN POPUP SISI KANAN (REVISI) ===== */
     </style>
 @endpush
 
@@ -1241,8 +1382,8 @@
             <p class="text-center mb-5" style="color:#6c757d; font-family: 'Playfair Display', sans-serif;">Jelajahi
                 kisah-kisah penuh inspirasi dan temukan wawasan yang paling menyentuh hati komunitas kami.</p>
         </div>
-        <div class="featured-popular-wrapper" style="position: relative;" data-aos="zoom-in-up" data-aos-duration="1000"
-            data-aos-delay="200">
+        <div class="featured-popular-wrapper" style="position: relative;" data-aos="zoom-in-up"
+            data-aos-duration="1000" data-aos-delay="200">
             <div class="swiper featured-popular-article-swiper">
                 <div class="swiper-wrapper">
                     @forelse ($popular_articles as $article)
@@ -1254,10 +1395,12 @@
                                         alt="Thumbnail Artikel Populer" class="img-fluid featured-popular-img">
                                 </div>
                                 <div class="flex-grow-1 text-lg-start text-center featured-popular-content">
-                                    <h3 class="fw-bold mb-3 featured-popular-title line-clamp-2" style="color: #0C2C5A;">
+                                    <h3 class="fw-bold mb-3 featured-popular-title line-clamp-2"
+                                        style="color: #0C2C5A;">
                                         {{ $article->title }}</h3>
                                     <p class="mb-3 featured-popular-desc line-clamp-3"
-                                        style="color:#4a5a6a; font-size:1.15rem;">{{ strip_tags($article->description) }}
+                                        style="color:#4a5a6a; font-size:1.15rem;">
+                                        {{ strip_tags($article->description) }}
                                     </p>
                                     <p class="text-secondary mb-4 featured-popular-date"
                                         style="font-family: 'Playfair Display', sans-serif; font-size: 0.9rem;">
@@ -1293,15 +1436,17 @@
         <div class="swiper latest-articles-swiper">
             <div class="swiper-wrapper">
                 @forelse ($latest_articles as $article)
-                    <div class="swiper-slide pb-3" data-aos="fade-up" data-aos-delay="{{ $loop->index * 150 }}">
+                    <div class="swiper-slide pb-3" data-aos="fade-up"
+                        data-aos-delay="{{ $loop->index * 150 }}">
                         <div class="card border-0 shadow-sm h-100 card-hover-zoom">
                             <div class="article-img-container">
-                                <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}"
-                                    class="card-img-top">
+                                <img src="{{ asset('storage/' . $article->thumbnail) }}"
+                                    alt="{{ $article->title }}" class="card-img-top">
                             </div>
                             <div class="card-body d-flex flex-column">
                                 <h5 class="fw-bold line-clamp-2" style="color: #0C2C5A;">{{ $article->title }}</h5>
-                                <p class="text-secondary small mb-2" style="font-family: 'Playfair Display', sans-serif;">
+                                <p class="text-secondary small mb-2"
+                                    style="font-family: 'Playfair Display', sans-serif;">
                                     {{ optional($article->created_at)->format('d F Y') }}</p>
                                 <p class="card-text mb-3 line-clamp-2"
                                     style="color:#4a5a6a; font-family: 'Playfair Display', sans-serif;">
@@ -1336,15 +1481,17 @@
         <div class="swiper popular-articles-swiper">
             <div class="swiper-wrapper">
                 @forelse ($popular_articles as $article)
-                    <div class="swiper-slide pb-3" data-aos="fade-up" data-aos-delay="{{ $loop->index * 150 }}">
+                    <div class="swiper-slide pb-3" data-aos="fade-up"
+                        data-aos-delay="{{ $loop->index * 150 }}">
                         <div class="card border-0 shadow-sm h-100 card-hover-zoom">
                             <div class="article-img-container" style="padding-top: 56.25%;">
-                                <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}"
-                                    class="card-img-top">
+                                <img src="{{ asset('storage/' . $article->thumbnail) }}"
+                                    alt="{{ $article->title }}" class="card-img-top">
                             </div>
                             <div class="card-body d-flex flex-column">
                                 <h5 class="fw-bold line-clamp-2" style="color: #0C2C5A;">{{ $article->title }}</h5>
-                                <p class="text-secondary small mb-2" style="font-family: 'Playfair Display', sans-serif;">
+                                <p class="text-secondary small mb-2"
+                                    style="font-family: 'Playfair Display', sans-serif;">
                                     {{ optional($article->created_at)->format('d F Y') }}</p>
                                 <p class="card-text mb-3 line-clamp-2"
                                     style="color:#4a5a6a; font-family: 'Playfair Display', sans-serif;">
@@ -1393,29 +1540,33 @@
         <div class="text-center" data-aos="fade-up">
             <h2 class="fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Kisah Testimoni dari Keluarga Indiegologi
             </h2>
-            <p style="font-size:1.15rem; color:#6c757d; font-family: 'Playfair Display', serif;">Kumpulan cerita tulus dari
+            <p style="font-size:1.15rem; color:#6c757d; font-family: 'Playfair Display', serif;">Kumpulan cerita tulus
+                dari
                 mereka yang telah berproses dengan indiegologi untuk menemukan kedamaian, kebahagiaan dan cinta diri</p>
         </div>
         <div class="swiper testimonials-swiper mt-5">
             <div class="swiper-wrapper py-4">
                 @forelse ($testimonials as $testimonial)
-                    <div class="swiper-slide" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                    <div class="swiper-slide" data-aos="fade-up"
+                        data-aos-delay="{{ $loop->index * 100 }}">
                         <div class="testimonial-flip-container" data-name="{{ $testimonial->name }}"
                             data-details="{{ $testimonial->age }} Tahun, {{ $testimonial->occupation }}"
                             data-quote="{{ $testimonial->quote }}" data-image="{{ $testimonial->image_url }}">
                             <div class="testimonial-flipper">
                                 <div class="testimonial-card-front">
                                     <div class="testimonial-square-card">
-                                        <img src="{{ $testimonial->image_url }}" alt="Foto {{ $testimonial->name }}"
-                                            class="testimonial-bg-img">
-                                        <div class="testimonial-content">
-                                            <p class="testimonial-quote">"{{ $testimonial->quote }}"</p>
-                                            <div class="testimonial-author">
-                                                <h5 class="testimonial-name">{{ $testimonial->name }}</h5>
-                                                <p class="testimonial-details">{{ $testimonial->age }} Tahun,
-                                                    {{ $testimonial->occupation }}</p>
-                                            </div>
-                                        </div>
+                                        <img src="{{ $testimonial->image_url }}"
+                                            alt="Foto {{ $testimonial->name }}" class="testimonial-bg-img">
+                                            <div class="testimonial-content">
+    <p class="testimonial-quote">"{{ \Illuminate\Support\Str::limit($testimonial->quote, 150) }}"</p>
+    <div class="testimonial-author">
+        <h5 class="testimonial-name">{{ $testimonial->name }}</h5>
+        {{-- BARIS YANG DIPERBARUI --}}
+        <p class="testimonial-details">
+            {{ $testimonial->age }} tahun, {{ $testimonial->occupation }} - {{ $testimonial->location }}
+        </p>
+    </div>
+</div>
                                     </div>
                                 </div>
                                 <div class="testimonial-card-back">
@@ -1477,7 +1628,8 @@
                                 <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop&crop=face"
                                     alt="Default" class="sketch-circular-image">
                                 <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
-                                <p class="sketch-card-description">Mulai hari dengan ketenangan dan fokus yang jernih untuk
+                                <p class="sketch-card-description">Mulai hari dengan ketenangan dan fokus yang jernih
+                                    untuk
                                     perjalanan hidup yang lebih baik.</p>
                             </div>
 
@@ -1509,7 +1661,8 @@
         <div class="container mt-5">
             <div class="row g-4 justify-content-center">
                 @forelse ($services as $service)
-                    <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 150 }}">
+                    <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up"
+                        data-aos-delay="{{ $loop->index * 150 }}">
                         <div class="card border-0 shadow-sm h-100 text-center card-hover-zoom">
                             <div class="card-body p-4 d-flex flex-column">
                                 <div class="mb-3">
@@ -1559,7 +1712,14 @@
         </div>
     </div>
 
-@endsection
+    <div id="popupAdContainer" class="floating-ad-container">
+        <button id="closePopupAd" class="close-ad-btn">TUTUP IKLAN</button>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="ad-link">
+            {{-- Ganti 'iklan-kanan-panjang.jpg' dengan nama file gambar iklan Anda di folder public/assets/img/ --}}
+            <img src="{{ asset('assets/img/iklan-kanan-panjang.jpg') }}" alt="Iklan promosi" class="ad-image">
+        </a>
+    </div>
+    @endsection
 
 @push('scripts')
     {{-- Swiper.js Configurations --}}
@@ -1584,9 +1744,18 @@
                     prevEl: '.latest-articles-prev',
                 },
                 breakpoints: {
-                    640: { slidesPerView: 1, spaceBetween: 20 },
-                    768: { slidesPerView: 2, spaceBetween: 30 },
-                    1024: { slidesPerView: 3, spaceBetween: 40 },
+                    640: {
+                        slidesPerView: 1,
+                        spaceBetween: 20
+                    },
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 30
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 40
+                    },
                 }
             });
 
@@ -1597,9 +1766,18 @@
                     prevEl: '.popular-articles-prev',
                 },
                 breakpoints: {
-                    640: { slidesPerView: 1, spaceBetween: 20 },
-                    768: { slidesPerView: 2, spaceBetween: 30 },
-                    1024: { slidesPerView: 3, spaceBetween: 40 },
+                    640: {
+                        slidesPerView: 1,
+                        spaceBetween: 20
+                    },
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 30
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 40
+                    },
                 }
             });
 
@@ -1612,8 +1790,14 @@
                 slidesPerView: 1,
                 spaceBetween: 20,
                 breakpoints: {
-                    768: { slidesPerView: 2, spaceBetween: 30 },
-                    1024: { slidesPerView: 3, spaceBetween: 40 },
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 30
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 40
+                    },
                 }
             });
         });
@@ -1641,7 +1825,8 @@
 
                 function updateClasses() {
                     images.forEach((image, index) => {
-                        image.classList.remove("active", "prev", "next", "prev-hidden", "next-hidden", "hidden");
+                        image.classList.remove("active", "prev", "next", "prev-hidden",
+                            "next-hidden", "hidden");
 
                         if (index === currentIndex) {
                             image.classList.add("active");
@@ -1762,5 +1947,17 @@
             }
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         }, false);
+
+        // Script untuk Iklan Pop-up
+        document.addEventListener('DOMContentLoaded', function() {
+            const adContainer = document.getElementById('popupAdContainer');
+            const closeButton = document.getElementById('closePopupAd');
+
+            if (adContainer && closeButton) {
+                closeButton.addEventListener('click', function() {
+                    adContainer.classList.add('hidden');
+                });
+            }
+        });
     </script>
 @endpush
