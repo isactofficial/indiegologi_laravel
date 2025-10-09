@@ -43,14 +43,14 @@
             width: var(--sidebar-width);
             height: 100vh;
             background-color: var(--bg-sidebar);
-            box-shadow: var(--shadow-sm);
-            padding-top: 30px;
+            box-shadow: var(--shadow-md); /* Sedikit pertebal shadow */
+            padding-top: 20px;
             overflow-y: auto;
             flex-shrink: 0;
             position: fixed;
             left: 0;
             top: 0;
-            z-index: 1030;
+            z-index: 1045; /* Naikkan z-index */
             transition: all 0.3s ease;
         }
         .sidebar-content { height: 100%; display: flex; flex-direction: column; position: relative; padding-bottom: 80px; }
@@ -71,12 +71,12 @@
         .main-content-wrapper {
             margin-left: var(--sidebar-width);
             flex-grow: 1;
-            padding: 20px; /* Padding utama untuk jarak dari tepi layar */
+            padding: 20px;
             background-color: var(--bg-light);
             transition: margin-left 0.3s ease;
         }
         .content {
-            padding: 30px; /* Padding internal untuk konten di dalam kartu putih */
+            padding: 30px;
             background-color: #FFFFFF;
             border-radius: 15px;
             box-shadow: var(--shadow-sm);
@@ -89,17 +89,15 @@
             box-shadow: 0 2px 8px rgba(12, 44, 90, 0.2);
         }
         .btn-logout i { margin-right: 8px; }
-        .logo-container { text-align: center; margin-bottom: 20px; }
+        .logo-container { text-align: center; margin-bottom: 20px; padding: 0 20px; }
         .logo-container .logo {
             width: 60px; height: 60px; background-color: var(--active-bg); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;
             border: 1px solid rgba(12, 44, 90, 0.2);
         }
         .logo-container .logo i { font-size: 30px; color: var(--primary-color); }
         .nav-links { flex-grow: 1; }
-
-        /* [BARU] Top Header untuk tombol mobile */
         .mobile-header {
-            display: none; /* Sembunyi di desktop */
+            display: none;
             background-color: #fff;
             padding: 10px 20px;
             box-shadow: var(--shadow-sm);
@@ -113,32 +111,75 @@
             color: var(--primary-color);
         }
 
-        /* [DIUBAH] Media Query untuk Mobile */
+        /* --- PERUBAHAN CSS DIMULAI DI SINI --- */
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+        .sidebar-header .logo {
+            width: 50px; height: 50px; background-color: var(--active-bg); border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(12, 44, 90, 0.2);
+        }
+        .sidebar-header .logo i { font-size: 24px; color: var(--primary-color); }
+        .sidebar-header h4 {
+            font-size: 1.2rem;
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+        .btn-close-sidebar {
+            background: none; border: none; font-size: 24px; color: var(--text-muted);
+            display: none; /* Sembunyi di desktop */
+        }
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none; /* Sembunyi secara default */
+        }
+        .sidebar-overlay.active {
+            display: block; /* Tampil saat sidebar aktif */
+        }
+        /* --- AKHIR PERUBAHAN CSS --- */
+
         @media (max-width: 992px) {
-            .sidebar {
-                left: calc(-1 * var(--sidebar-width)); /* Sembunyikan sidebar ke kiri */
-            }
-            .sidebar.active {
-                left: 0; /* Tampilkan sidebar saat class 'active' ditambahkan */
-            }
-            .main-content-wrapper {
-                margin-left: 0; /* Konten utama jadi full-width */
-                width: 100%;
-            }
-            .mobile-header {
-                display: flex; /* Tampilkan header di mobile */
+            .sidebar { left: calc(-1 * var(--sidebar-width)); }
+            .sidebar.active { left: 0; }
+            .main-content-wrapper { margin-left: 0; width: 100%; }
+            .mobile-header { display: flex; }
+            .sidebar-header { display: none; } /* Sembunyikan header desktop di mobile */
+            .logo-container { position: relative; } /* Tambahkan ini */
+            .btn-close-sidebar { /* Tampilkan tombol close di mobile */
+                display: block;
+                position: absolute;
+                top: 5px;
+                right: 15px;
             }
         }
     </style>
 </head>
 <body>
 
+{{-- [BARU] Tambahkan div untuk overlay --}}
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
 <div class="wrapper" id="wrapper">
     <div class="sidebar" id="sidebar">
         <div class="sidebar-content">
-            <div class="logo-container">
+            {{-- [DIUBAH] Struktur header dan logo --}}
+            <div class="sidebar-header d-none d-lg-flex">
                 <div class="logo"><i class="fas fa-layer-group"></i></div>
                 <h4>Indiegologi</h4>
+            </div>
+
+            <div class="logo-container d-lg-none">
+                <div class="logo"><i class="fas fa-layer-group"></i></div>
+                <h4>Indiegologi</h4>
+                {{-- [BARU] Tombol close untuk mobile --}}
+                <button class="btn-close-sidebar" id="close-sidebar"><i class="fas fa-times"></i></button>
             </div>
 
             <div class="nav-links">
@@ -189,11 +230,37 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{{-- [DIUBAH] Skrip JavaScript --}}
 <script>
-    document.getElementById('menu-toggle').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('active');
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const openBtn = document.getElementById('menu-toggle');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        function openSidebar() {
+            if (sidebar) sidebar.classList.add('active');
+            if (overlay) overlay.classList.add('active');
+        }
+
+        function closeSidebar() {
+            if (sidebar) sidebar.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        if (openBtn) {
+            openBtn.addEventListener('click', openSidebar);
+        }
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeSidebar);
+        }
+        if (overlay) {
+            overlay.addEventListener('click', closeSidebar);
+        }
     });
 </script>
+
 @stack('scripts')
 
 </body>

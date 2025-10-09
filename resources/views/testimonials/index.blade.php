@@ -64,6 +64,80 @@
     .btn-sm {
         padding: 0.375rem 0.75rem;
     }
+
+    /* [BARU] Mobile Responsive Styles */
+    .mobile-testimonial-cards {
+        display: none; /* Sembunyikan di desktop */
+    }
+
+    @media (max-width: 768px) {
+        .table-responsive {
+            display: none; /* Sembunyikan tabel di mobile */
+        }
+        .mobile-testimonial-cards {
+            display: block; /* Tampilkan kartu di mobile */
+        }
+        .testimonial-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f0f0f0;
+        }
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .testimonial-header img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--theme-primary);
+        }
+        .testimonial-header-info h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--theme-primary);
+            margin-bottom: 0.25rem;
+        }
+        .testimonial-header-info p {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        .testimonial-quote {
+            font-style: italic;
+            color: #343a40;
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            border-left: 3px solid #f0f4f8;
+        }
+        .testimonial-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+        }
+        .testimonial-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .testimonial-actions .btn, .testimonial-actions form {
+            flex: 1;
+        }
+        .testimonial-actions .btn {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+    }
 </style>
 
 <div class="container-fluid px-4" style="min-height: 100vh;">
@@ -96,7 +170,7 @@
         </div>
     </div>
 
-    {{-- Table --}}
+    {{-- Table & Cards Container --}}
     <div class="card border-0 rounded-4 shadow-sm">
         <div class="card-body p-4">
             @if(session('success'))
@@ -105,6 +179,7 @@
                 </div>
             @endif
 
+            {{-- [DESKTOP] Tampilan Tabel --}}
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
@@ -123,20 +198,13 @@
                         @forelse($testimonials as $testimonial)
                             <tr style="border-bottom: 1px solid #f0f0f0;">
                                 <td class="py-3">
-                                    <img src="{{ $testimonial->image_url }}" 
-                                         alt="{{ $testimonial->name }}" 
-                                         class="rounded-circle shadow-sm"
-                                         style="width: 50px; height: 50px; object-fit: cover; border: 1px solid #eee;">
+                                    <img src="{{ $testimonial->image_url }}" alt="{{ $testimonial->name }}" class="rounded-circle shadow-sm" style="width: 50px; height: 50px; object-fit: cover; border: 1px solid #eee;">
                                 </td>
-                                <td class="py-3 fw-semibold text-break" style="color: var(--theme-primary);">
-                                    {{ $testimonial->name }}
-                                </td>
+                                <td class="py-3 fw-semibold text-break" style="color: var(--theme-primary);">{{ $testimonial->name }}</td>
                                 <td class="py-3">{{ $testimonial->age }} tahun</td>
                                 <td class="py-3">{{ $testimonial->occupation }}</td>
                                 <td class="py-3">
-                                    <div class="text-muted small" style="line-height: 1.4; max-width: 300px;">
-                                        {{ $testimonial->short_quote }}
-                                    </div>
+                                    <div class="text-muted small" style="line-height: 1.4; max-width: 300px;">{{ $testimonial->short_quote }}</div>
                                 </td>
                                 <td class="py-3">
                                     @php
@@ -144,64 +212,76 @@
                                         $statusText = $testimonial->is_active ? 'Aktif' : 'Nonaktif';
                                         $statusIcon = $testimonial->is_active ? 'fa-check' : 'fa-times';
                                     @endphp
-                                    <span class="badge {{ $statusClass }}">
-                                        <i class="fas {{ $statusIcon }} me-1"></i>{{ $statusText }}
-                                    </span>
+                                    <span class="badge {{ $statusClass }}"><i class="fas {{ $statusIcon }} me-1"></i>{{ $statusText }}</span>
                                 </td>
                                 <td class="py-3">
                                     <span class="badge badge-order">{{ $testimonial->sort_order }}</span>
                                 </td>
                                 <td class="py-3">
                                     <div class="d-flex gap-2">
-                                        <a href="{{ route('admin.testimonials.show', $testimonial) }}" 
-                                           class="btn btn-sm btn-outline-info rounded-pill px-3" 
-                                           style="border-color: var(--theme-primary); color: var(--theme-primary);" 
-                                           title="Lihat Detail">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('admin.testimonials.edit', $testimonial) }}" 
-                                           class="btn btn-sm btn-outline-secondary rounded-pill px-3" 
-                                           style="border-color: var(--theme-accent); color: var(--theme-accent);" 
-                                           title="Edit Testimoni">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('admin.testimonials.toggle-status', $testimonial) }}" 
-                                              method="POST" 
-                                              class="d-inline">
+                                        <a href="{{ route('admin.testimonials.show', $testimonial) }}" class="btn btn-sm btn-outline-info rounded-pill px-3" style="border-color: var(--theme-primary); color: var(--theme-primary);" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                                        <a href="{{ route('admin.testimonials.edit', $testimonial) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Testimoni"><i class="fas fa-edit"></i></a>
+                                        <form action="{{ route('admin.testimonials.toggle-status', $testimonial) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" 
-                                                    class="btn btn-sm btn-outline-{{ $testimonial->is_active ? 'danger' : 'success' }} rounded-pill px-3" 
-                                                    style="border-color: var(--theme-{{ $testimonial->is_active ? 'danger' : 'primary' }}); color: var(--theme-{{ $testimonial->is_active ? 'danger' : 'primary' }});"
-                                                    title="{{ $testimonial->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                                <i class="fas fa-{{ $testimonial->is_active ? 'times' : 'check' }}"></i>
-                                            </button>
+                                            <button type="submit" class="btn btn-sm btn-outline-{{ $testimonial->is_active ? 'danger' : 'success' }} rounded-pill px-3" style="border-color: var(--theme-{{ $testimonial->is_active ? 'danger' : 'primary' }}); color: var(--theme-{{ $testimonial->is_active ? 'danger' : 'primary' }});" title="{{ $testimonial->is_active ? 'Nonaktifkan' : 'Aktifkan' }}"><i class="fas fa-{{ $testimonial->is_active ? 'times' : 'check' }}"></i></button>
                                         </form>
-                                        <form action="{{ route('admin.testimonials.destroy', $testimonial) }}" 
-                                              method="POST" 
-                                              class="d-inline">
+                                        <form action="{{ route('admin.testimonials.destroy', $testimonial) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" 
-                                                    onclick="confirmDelete(event, this.parentElement)" 
-                                                    class="btn btn-sm btn-outline-danger rounded-pill px-3" 
-                                                    style="border-color: var(--theme-danger); color: var(--theme-danger);" 
-                                                    title="Hapus Testimoni">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger rounded-pill px-3" style="border-color: var(--theme-danger); color: var(--theme-danger);" title="Hapus Testimoni"><i class="fas fa-trash"></i></button>
                                         </form>
                                     </div>
                                 </td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="8" class="text-center py-4 text-muted">
-                                    <i class="fas fa-comment-dots me-2"></i>Tidak ada testimoni yang ditemukan.
-                                </td>
-                            </tr>
+                            <tr><td colspan="8" class="text-center py-4 text-muted"><i class="fas fa-comment-dots me-2"></i>Tidak ada testimoni yang ditemukan.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- [MOBILE] Tampilan Kartu --}}
+            <div class="mobile-testimonial-cards">
+                @forelse($testimonials as $testimonial)
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <img src="{{ $testimonial->image_url }}" alt="{{ $testimonial->name }}">
+                            <div class="testimonial-header-info">
+                                <h5>{{ $testimonial->name }}</h5>
+                                <p>{{ $testimonial->occupation }}, {{ $testimonial->age }} tahun</p>
+                            </div>
+                        </div>
+
+                        <p class="testimonial-quote">"{{ $testimonial->short_quote }}"</p>
+
+                        <div class="testimonial-meta">
+                            <div>
+                                @php
+                                    $statusClass = $testimonial->is_active ? 'badge-status-active' : 'badge-status-inactive';
+                                    $statusText = $testimonial->is_active ? 'Aktif' : 'Nonaktif';
+                                    $statusIcon = $testimonial->is_active ? 'fa-check' : 'fa-times';
+                                @endphp
+                                <span class="badge {{ $statusClass }}"><i class="fas {{ $statusIcon }} me-1"></i>{{ $statusText }}</span>
+                            </div>
+                            <div>
+                                <span class="badge badge-order">Urutan: {{ $testimonial->sort_order }}</span>
+                            </div>
+                        </div>
+
+                        <div class="testimonial-actions">
+                            <a href="{{ route('admin.testimonials.show', $testimonial) }}" class="btn btn-sm btn-outline-info" style="border-color: var(--theme-primary); color: var(--theme-primary);" title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                            <a href="{{ route('admin.testimonials.edit', $testimonial) }}" class="btn btn-sm btn-outline-secondary" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Testimoni"><i class="fas fa-edit"></i></a>
+                            <form action="{{ route('admin.testimonials.destroy', $testimonial) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger" style="border-color: var(--theme-danger); color: var(--theme-danger);" title="Hapus Testimoni"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-4 text-muted"><i class="fas fa-comment-dots me-2"></i>Tidak ada testimoni yang ditemukan.</div>
+                @endforelse
             </div>
 
             @if($testimonials->hasPages())

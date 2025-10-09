@@ -10,22 +10,38 @@ class Testimonial extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'age',
         'occupation',
+        'location', // <-- DITAMBAHKAN
         'quote',
         'image',
         'is_active',
         'sort_order'
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'is_active' => 'boolean',
         'age' => 'integer',
         'sort_order' => 'integer'
     ];
 
+    /**
+     * Interact with the user's age.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
     protected function age(): Attribute
     {
         return Attribute::make(
@@ -41,7 +57,10 @@ class Testimonial extends Model
     }
     
     /**
-     * Scope untuk mendapatkan testimoni yang aktif
+     * Scope a query to only include active testimonials.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeActive($query)
     {
@@ -49,7 +68,10 @@ class Testimonial extends Model
     }
 
     /**
-     * Scope untuk mengurutkan berdasarkan sort_order
+     * Scope a query to order testimonials by sort_order.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOrdered($query)
     {
@@ -57,7 +79,9 @@ class Testimonial extends Model
     }
 
     /**
-     * Accessor untuk mendapatkan URL gambar lengkap
+     * Get the full URL for the testimonial's image.
+     *
+     * @return string
      */
     public function getImageUrlAttribute()
     {
@@ -71,7 +95,10 @@ class Testimonial extends Model
     }
 
     /**
-     * Accessor untuk membatasi quote
+     * Get the shortened version of the quote.
+     *
+     * @param  int  $length
+     * @return string
      */
     public function getShortQuoteAttribute($length = 150)
     {

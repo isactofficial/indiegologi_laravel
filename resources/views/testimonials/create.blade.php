@@ -5,26 +5,23 @@
     .cursor-pointer {
         cursor: pointer;
     }
-
     .preview-container {
         position: relative;
         width: 100%;
-        height: 240px; /* Sesuaikan dengan tinggi yang Anda inginkan */
+        height: 240px;
         border: 2px dashed #ddd;
         border-radius: .375rem;
         display: flex;
         align-items: center;
         justify-content: center;
         background-color: #f8f9fa;
-        overflow: hidden; /* Pastikan gambar tidak keluar dari container */
+        overflow: hidden;
     }
-
     .preview-image {
         max-width: 100%;
         max-height: 100%;
-        object-fit: cover; /* atau 'contain' jika Anda tidak ingin memotong gambar */
+        object-fit: cover;
     }
-
     .upload-text {
         color: #6c757d;
     }
@@ -58,7 +55,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- PERBAIKAN: Menampilkan error untuk gambar --}}
                         @error('image')
                             <div class="text-danger mt-2 small">{{ $message }}</div>
                         @enderror
@@ -68,7 +64,6 @@
                         <div class="mb-3">
                             <label for="name" class="form-label text-secondary fw-medium">Nama Lengkap</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="Contoh: Budi Santoso">
-                            {{-- PERBAIKAN: Menampilkan error untuk nama --}}
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -78,7 +73,6 @@
                             <div class="col-md-6 mb-3">
                                 <label for="age" class="form-label text-secondary fw-medium">Usia</label>
                                 <input type="number" class="form-control @error('age') is-invalid @enderror" id="age" name="age" value="{{ old('age') }}" placeholder="Contoh: 35">
-                                {{-- PERBAIKAN: Menampilkan error untuk usia --}}
                                 @error('age')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -86,11 +80,19 @@
                             <div class="col-md-6 mb-3">
                                 <label for="occupation" class="form-label text-secondary fw-medium">Pekerjaan</label>
                                 <input type="text" class="form-control @error('occupation') is-invalid @enderror" id="occupation" name="occupation" value="{{ old('occupation') }}" placeholder="Contoh: Pengusaha">
-                                {{-- PERBAIKAN: Menampilkan error untuk pekerjaan --}}
                                 @error('occupation')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                        </div>
+
+                        {{-- INPUT KOTA / NEGARA DITAMBAHKAN DI SINI --}}
+                        <div class="mb-3">
+                            <label for="location" class="form-label text-secondary fw-medium">Kota / Negara</label>
+                            <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location') }}" placeholder="Contoh: Jakarta, Indonesia">
+                            @error('location')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-check form-switch mb-3">
@@ -103,7 +105,6 @@
                 <div class="mb-3">
                     <label for="quote" class="form-label text-secondary fw-medium">Testimoni</label>
                     <textarea class="form-control @error('quote') is-invalid @enderror" id="quote" name="quote" rows="4" placeholder="Tuliskan testimoni klien di sini...">{{ old('quote') }}</textarea>
-                    {{-- PERBAIKAN: Menampilkan error untuk testimoni/quote --}}
                     @error('quote')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -137,9 +138,8 @@
                         preview.style.borderRadius = '0.375rem';
                         parent.appendChild(preview);
                     }
-
                     preview.src = e.target.result;
-                    overlay.style.display = 'none';
+                    if(overlay) overlay.style.display = 'none';
                 }
                 reader.readAsDataURL(e.target.files[0]);
             }
@@ -155,14 +155,8 @@
             function updateCounter() {
                 const length = quoteTextarea.value.length;
                 counterDiv.textContent = `${length} karakter`;
-                
-                if (length < 10) {
-                    counterDiv.className = 'form-text mt-1 text-danger';
-                } else {
-                    counterDiv.className = 'form-text mt-1 text-success';
-                }
+                counterDiv.className = length < 10 ? 'form-text mt-1 text-danger' : 'form-text mt-1 text-success';
             }
-
             quoteTextarea.addEventListener('input', updateCounter);
             updateCounter();
         }
