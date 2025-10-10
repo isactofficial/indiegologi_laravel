@@ -65,12 +65,17 @@
         padding: 0.375rem 0.75rem;
     }
 
-    /* [BARU] Mobile Responsive Styles */
+    /* Mobile Responsive Styles - MENIRU manage.blade.php */
     .mobile-testimonial-cards {
         display: none; /* Sembunyikan di desktop */
     }
 
     @media (max-width: 768px) {
+        /* DIUBAH: Mengurangi padding container luar agar kartu di dalam lebih lebar */
+        .card-body {
+            padding: 1rem !important;
+        }
+
         .table-responsive {
             display: none; /* Sembunyikan tabel di mobile */
         }
@@ -80,11 +85,16 @@
         .testimonial-card {
             background: white;
             border-radius: 1rem;
-            padding: 1.25rem;
+            padding: 1rem;      /* DIUBAH: Menyamakan padding dalam dengan artikel */
             margin-bottom: 1rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid #f0f0f0;
         }
+        
+        .mobile-testimonial-cards .testimonial-card:last-child {
+            margin-bottom: 0;
+        }
+
         .testimonial-header {
             display: flex;
             align-items: center;
@@ -92,29 +102,30 @@
             margin-bottom: 1rem;
         }
         .testimonial-header img {
-            width: 60px;
-            height: 60px;
+            width: 50px; /* Disesuaikan agar proporsional */
+            height: 50px;
             object-fit: cover;
             border-radius: 50%;
             border: 2px solid var(--theme-primary);
         }
         .testimonial-header-info h5 {
-            font-size: 1.1rem;
+            font-size: 1.1rem; /* Disesuaikan agar proporsional */
             font-weight: 700;
             color: var(--theme-primary);
             margin-bottom: 0.25rem;
         }
         .testimonial-header-info p {
-            font-size: 0.9rem;
+            font-size: 0.9rem; /* Disesuaikan agar proporsional */
             color: #6c757d;
             margin-bottom: 0;
         }
         .testimonial-quote {
             font-style: italic;
             color: #343a40;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             padding-left: 1rem;
             border-left: 3px solid #f0f4f8;
+            font-size: 1rem;
         }
         .testimonial-meta {
             display: flex;
@@ -136,6 +147,25 @@
             width: 100%;
             padding: 0.5rem;
             border-radius: 0.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        /* DIUBAH: Menyesuaikan padding di layar lebih kecil, sama seperti artikel */
+        .card-body {
+            padding: 0.75rem !important;
+        }
+        .testimonial-card {
+            padding: 0.75rem;
+        }
+        .testimonial-header-info h5 {
+            font-size: 1rem;
+        }
+        .testimonial-header-info p {
+             font-size: 0.85rem;
+        }
+        .testimonial-quote {
+            font-size: 0.95rem;
         }
     }
 </style>
@@ -188,6 +218,7 @@
                             <th class="py-3">Nama</th>
                             <th class="py-3">Usia</th>
                             <th class="py-3">Pekerjaan</th>
+                            <th class="py-3">Lokasi</th>
                             <th class="py-3">Testimoni</th>
                             <th class="py-3">Status</th>
                             <th class="py-3">Urutan</th>
@@ -203,6 +234,7 @@
                                 <td class="py-3 fw-semibold text-break" style="color: var(--theme-primary);">{{ $testimonial->name }}</td>
                                 <td class="py-3">{{ $testimonial->age }} tahun</td>
                                 <td class="py-3">{{ $testimonial->occupation }}</td>
+                                <td class="py-3">{{ $testimonial->location ?? '-' }}</td>
                                 <td class="py-3">
                                     <div class="text-muted small" style="line-height: 1.4; max-width: 300px;">{{ $testimonial->short_quote }}</div>
                                 </td>
@@ -235,7 +267,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="8" class="text-center py-4 text-muted"><i class="fas fa-comment-dots me-2"></i>Tidak ada testimoni yang ditemukan.</td></tr>
+                            <tr><td colspan="9" class="text-center py-4 text-muted"><i class="fas fa-comment-dots me-2"></i>Tidak ada testimoni yang ditemukan.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -249,7 +281,7 @@
                             <img src="{{ $testimonial->image_url }}" alt="{{ $testimonial->name }}">
                             <div class="testimonial-header-info">
                                 <h5>{{ $testimonial->name }}</h5>
-                                <p>{{ $testimonial->occupation }}, {{ $testimonial->age }} tahun</p>
+                                <p>{{ $testimonial->occupation }} @if($testimonial->location) &bull; {{ $testimonial->location }} @endif &bull; {{ $testimonial->age }} tahun</p>
                             </div>
                         </div>
 

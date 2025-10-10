@@ -36,71 +36,95 @@
         padding: 0.4em 0.8em;
         border-radius: 0.5rem;
     }
-    .badge-status-draft { /* MEREPRESENTASIKAN STATUS TIDAK AKTIF/HABIS */
+
+    .badge-status-draft { /* MEREPRESENTASIKAN STATUS NONAKTIF */
         background-color: rgba(203, 39, 134, 0.15);
         color: #cb2786;
         font-weight: 600;
         padding: 0.4em 0.8em;
         border-radius: 0.5rem;
     }
-
-    /* [BARU] Mobile Responsive Styles */
+    .table td {
+        vertical-align: middle;
+    }
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+    }
     .mobile-referral-cards {
-        display: none; /* Sembunyikan di desktop */
+        display: none;
+    }
+    .referral-code-highlight {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        background-color: #e9ecef;
+        padding: 3px 8px;
+        border-radius: 5px;
+        color: var(--theme-primary);
+        border: 1px solid #dee2e6;
     }
 
+    /* [DIUBAH TOTAL] Menyamakan gaya mobile dengan halaman lain */
     @media (max-width: 768px) {
         .table-responsive {
-            display: none; /* Sembunyikan tabel di mobile */
+            display: none;
         }
         .mobile-referral-cards {
-            display: block; /* Tampilkan kartu di mobile */
+            display: block;
+        }
+        .card-body {
+            padding: 1rem !important;
         }
         .referral-card {
             background: white;
             border-radius: 1rem;
-            padding: 1.25rem;
+            padding: 1rem;
             margin-bottom: 1rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             border: 1px solid #f0f0f0;
         }
-        .referral-code-title {
-            font-size: 1.25rem;
+        .referral-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        .referral-card-header h5 {
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--theme-primary);
-            margin-bottom: 1rem;
-            word-break: break-all;
-            text-align: center;
-            background-color: #f0f4f8;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
         }
-        .referral-meta-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+        .referral-card-body {
+            font-size: 0.95rem;
+            color: #495057;
         }
-        .referral-meta-item {
-            color: #6c757d;
+        .referral-card-body p {
+            margin-bottom: 0.5rem;
         }
-        .referral-meta-item strong {
-            color: #343a40;
-            display: block;
-            margin-top: 0.25rem;
+        .referral-card-footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
         }
-        .referral-actions {
+        .referral-card-actions {
             display: flex;
             gap: 0.5rem;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 1rem;
-            margin-top: 1rem;
         }
-        .referral-actions .btn {
+        .referral-card-actions .btn {
             flex: 1;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 0.75rem !important;
+        }
+        .referral-card {
+            padding: 0.75rem;
+        }
+        .referral-card-header h5 {
+            font-size: 1rem;
+        }
+        .referral-card-body {
+            font-size: 0.9rem;
         }
     }
 </style>
@@ -111,138 +135,131 @@
         <div class="col-12">
             <div class="bg-white rounded-4 shadow-sm p-4" style="border-left: 8px solid var(--theme-primary);">
                 <div class="d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
-                         style="width: 70px; height: 70px; background-color: rgba(12, 44, 90, 0.1);">
-                        <i class="fas fa-tags fs-2" style="color: var(--theme-primary);"></i>
+                    <div class="d-flex justify-content-center align-items-center rounded-circle me-4" style="width: 70px; height: 70px; background-color: rgba(12, 44, 90, 0.1);">
+                        <i class="fas fa-gift fs-2" style="color: var(--theme-primary);"></i>
                     </div>
                     <div>
-                        <h2 class="fs-3 fw-bold mb-1" style="color: var(--theme-primary);">Manajemen Referral</h2>
-                        <p class="text-muted mb-0">Kelola kode referral untuk promosi.</p>
+                        <h2 class="fs-3 fw-bold mb-1" style="color: var(--theme-primary);">Manajemen Kode Referral</h2>
+                        <p class="text-muted mb-0">Kelola kode referral untuk para member.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Add Button --}}
+    {{-- Tombol Tambah --}}
     <div class="row mb-4">
         <div class="col-md-12 d-flex justify-content-end">
             <a href="{{ route('admin.referral-codes.create') }}" class="btn btn-sporty-primary d-flex align-items-center px-4 py-2">
                 <i class="fas fa-plus me-2"></i>
-                <span class="fw-semibold">Tambah Kode Referral</span>
+                <span class="fw-semibold">Buat Kode Baru</span>
             </a>
         </div>
     </div>
 
-    {{-- Table & Cards Container --}}
+    {{-- Kontainer Utama --}}
     <div class="card border-0 rounded-4 shadow-sm">
         <div class="card-body p-4">
             @if(session('success'))
-                <div class="alert alert-success rounded-3 alert-custom-success mb-4"><i class="fas fa-check-circle me-2"></i>{{ session('success') }}</div>
+            <div class="alert alert-success rounded-3 alert-custom-success mb-4">
+                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+            </div>
             @endif
 
-            {{-- [DESKTOP] Tampilan Tabel --}}
+            {{-- Tampilan Tabel Desktop --}}
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th class="py-3">Kode</th>
-                            <th class="py-3">Diskon</th>
-                            <th class="py-3">Maks Penggunaan</th>
-                            <th class="py-3">Digunakan</th>
+                            <th class="py-3">Kode Referral</th>
+                            <th class="py-3">Pemilik</th>
+                            <th class="py-3">Email Pemilik</th>
+                            <th class="py-3">Diskon (%)</th>
                             <th class="py-3">Status</th>
                             <th class="py-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($referralCodes as $code)
-                            <tr style="border-bottom: 1px solid #f0f0f0;">
-                                <td class="py-3 fw-semibold text-break" style="color: var(--theme-primary);">{{ $code->code }}</td>
-                                <td class="py-3">{{ $code->discount_percentage }}%</td>
-                                <td class="py-3">{{ $code->max_uses ?? 'Tidak Terbatas' }}</td>
-                                <td class="py-3">{{ $code->current_uses }}</td>
-                                <td class="py-3">
-                                    @php
-                                        $status = 'Aktif';
-                                        $statusClass = 'badge-status-published';
-                                        $now = now();
-                                        if ($code->valid_until && $now->isAfter($code->valid_until)) {
-                                            $status = 'Kedaluwarsa';
-                                            $statusClass = 'badge-status-draft';
-                                        } elseif ($code->max_uses && $code->current_uses >= $code->max_uses) {
-                                            $status = 'Habis';
-                                            $statusClass = 'badge-status-draft';
-                                        }
-                                    @endphp
-                                    <span class="badge {{ $statusClass }}">{{ $status }}</span>
-                                </td>
-                                <td class="py-3">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ route('admin.referral-codes.edit', $code->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Kode">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('admin.referral-codes.destroy', $code->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger rounded-pill px-3" style="border-color: var(--theme-danger); color: var(--theme-danger);" title="Hapus Kode">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <td class="py-3">
+                                <span class="referral-code-highlight">{{ $code->code }}</span>
+                            </td>
+                            <td class="py-3 fw-semibold text-break" style="color: var(--theme-primary);">
+                                {{ $code->user->name ?? 'N/A' }}
+                            </td>
+                            <td class="py-3 text-muted">{{ $code->user->email ?? 'N/A' }}</td>
+                            <td class="py-3 fw-bold">{{ $code->discount_percentage }}%</td>
+                            <td class="py-3">
+                                @php
+                                $statusClass = $code->is_active ? 'badge-status-published' : 'badge-status-draft';
+                                $statusText = $code->is_active ? 'Aktif' : 'Nonaktif';
+                                $statusIcon = $code->is_active ? 'fa-check' : 'fa-times';
+                                @endphp
+                                <span class="badge {{ $statusClass }}"><i class="fas {{ $statusIcon }} me-1"></i>{{ $statusText }}</span>
+                            </td>
+                            <td class="py-3">
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('admin.referral-codes.edit', $code) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Kode"><i class="fas fa-edit"></i></a>
+                                    <form action="{{ route('admin.referral-codes.destroy', $code) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger rounded-pill px-3" style="border-color: var(--theme-danger); color: var(--theme-danger);" title="Hapus Kode">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
                         @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">
-                                    <i class="fas fa-box-open me-2"></i>Tidak ada kode referral yang ditemukan.
-                                </td>
-                            </tr>
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="fas fa-box-open me-2"></i>Tidak ada kode referral yang ditemukan.
+                            </td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            
-            {{-- [MOBILE] Tampilan Kartu --}}
+
+            {{-- Tampilan Kartu Mobile --}}
             <div class="mobile-referral-cards">
                 @forelse($referralCodes as $code)
                     <div class="referral-card">
-                        <div class="referral-code-title">{{ $code->code }}</div>
-                        
-                        <div class="referral-meta-grid">
-                            <div class="referral-meta-item">Diskon <strong>{{ $code->discount_percentage }}%</strong></div>
-                            <div class="referral-meta-item">Digunakan <strong>{{ $code->current_uses }}</strong></div>
-                            <div class="referral-meta-item">Maks. Pakai <strong>{{ $code->max_uses ?? 'Tidak Terbatas' }}</strong></div>
-                            <div class="referral-meta-item">
-                                Status 
-                                <strong>
-                                     @php
-                                        $status = 'Aktif';
-                                        $statusClass = 'badge-status-published';
-                                        $now = now();
-                                        if ($code->valid_until && $now->isAfter($code->valid_until)) {
-                                            $status = 'Kedaluwarsa';
-                                            $statusClass = 'badge-status-draft';
-                                        } elseif ($code->max_uses && $code->current_uses >= $code->max_uses) {
-                                            $status = 'Habis';
-                                            $statusClass = 'badge-status-draft';
-                                        }
-                                    @endphp
-                                    <span class="badge {{ $statusClass }}">{{ $status }}</span>
-                                </strong>
-                            </div>
+                        <div class="referral-card-header">
+                            <h5 class="referral-code-highlight">{{ $code->code }}</h5>
+                            @php
+                                $statusClass = $code->is_active ? 'badge-status-published' : 'badge-status-draft';
+                                $statusText = $code->is_active ? 'Aktif' : 'Nonaktif';
+                                $statusIcon = $code->is_active ? 'fa-check' : 'fa-times';
+                            @endphp
+                            <span class="badge {{ $statusClass }}"><i class="fas {{ $statusIcon }} me-1"></i>{{ $statusText }}</span>
                         </div>
-
-                        <div class="referral-actions">
-                            <a href="{{ route('admin.referral-codes.edit', $code->id) }}" class="btn btn-sm btn-outline-secondary" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Kode">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form action="{{ route('admin.referral-codes.destroy', $code->id) }}" method="POST" class="d-inline" style="flex: 1;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger w-100" style="border-color: var(--theme-danger); color: var(--theme-danger);" title="Hapus Kode">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                        <div class="referral-card-body">
+                             <p class="mb-1">
+                                <strong>Pemilik:</strong> 
+                                <span style="color: var(--theme-primary);">{{ $code->user->name ?? 'N/A' }}</span>
+                            </p>
+                            <p class="mb-1">
+                                <strong>Email:</strong>
+                                <span class="text-muted">{{ $code->user->email ?? 'N/A' }}</span>
+                            </p>
+                            <p class="mb-0">
+                                <strong>Diskon:</strong>
+                                <span class="fw-bold">{{ $code->discount_percentage }}%</span>
+                            </p>
+                        </div>
+                        <div class="referral-card-footer">
+                            <div class="referral-card-actions">
+                               <a href="{{ route('admin.referral-codes.edit', $code) }}" class="btn btn-sm btn-outline-secondary" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Kode"><i class="fas fa-edit me-1"></i> Edit</a>
+                               <form action="{{ route('admin.referral-codes.destroy', $code) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" onclick="confirmDelete(event, this.parentElement)" class="btn btn-sm btn-outline-danger" style="border-color: var(--theme-danger); color: var(--theme-danger);" title="Hapus Kode">
+                                        <i class="fas fa-trash me-1"></i> Hapus
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 @empty
