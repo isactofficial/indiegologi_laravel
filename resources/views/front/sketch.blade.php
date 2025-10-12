@@ -1,31 +1,35 @@
 @extends('layouts.app')
 
-@section('title', 'Sketch Telling')
+@section('title', 'Painting Telling')
 
 @section('content')
 <div class="sketch-telling-section">
     <div class="container">
         {{-- Title and description with fade-down animations --}}
-        <h1 class="section-title" data-aos="fade-down">Sketch Telling</h1>
+        <h1 class="section-title" data-aos="fade-down">Painting Telling</h1>
         <p class="section-description" data-aos="fade-down" data-aos-delay="150">Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang
             lebih dalam tentang berbagai perjalanan hidup</p>
 
-        @if($sketches->isEmpty())
-        {{-- Message for no sketches with a zoom-in animation --}}
+    @if($sketches->isEmpty())
+    {{-- Message for no paintings with a zoom-in animation --}}
         <div class="text-center" data-aos="zoom-in">
-            <p class="lead text-muted">Belum ada sketsa yang tersedia saat ini.</p>
+              <p class="lead text-muted">Belum ada painting yang tersedia saat ini.</p>
         </div>
         @else
         <div class="cards-grid">
             @foreach ($sketches as $sketch)
             {{-- Each card has a fade-up animation with a staggered delay --}}
             <div class="card" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 3) * 150 }}">
+                {{-- Indiegologi logo on top of card --}}
+                <div class="card-top d-flex justify-content-center">
+                    <img src="{{ asset('assets/img/login.png') }}" alt="Indiegologi" class="card-logo">
+                </div>
                 <a href="{{ route('front.sketches.detail', ['sketch' => $sketch->slug]) }}">
                     <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="card-image"
                          alt="{{ $sketch->title }}">
                 </a>
                 <div class="card-content">
-                    <h3 class="card-title">{{ Str::limit($sketch->title, 50) }}</h3>
+                        <h3 class="card-title">{{ Str::limit($sketch->title, 50) }}</h3>
                     <a href="{{ route('front.sketches.detail', ['sketch' => $sketch->slug]) }}" class="read-more">
                         Lihat Detail <span class="arrow">›</span>
                     </a>
@@ -96,6 +100,16 @@
     display: block;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+}
+.card-top {
+    padding-top: 12px;
+    padding-bottom: 6px;
+    background: transparent;
+}
+.card-logo {
+    height: 34px;
+    width: auto;
+    display: block;
 }
 .card-content {
     padding: 20px;

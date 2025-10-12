@@ -96,7 +96,14 @@
                                 <div class="text-muted">Tidak ada gambar yang diunggah.</div>
                             @endif
                         </div>
-                        <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="form-control @error('thumbnail') is-invalid @enderror">
+                        <div class="position-relative border rounded-3 d-flex align-items-center justify-content-center" style="height: 240px;">
+                            <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer; z-index: 3;">
+                            <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center border border-secondary bg-white rounded-3" style="pointer-events: none; z-index: 1;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#6c757d" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14"/>
+                                </svg>
+                            </div>
+                        </div>
                         @error('thumbnail')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -118,3 +125,38 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const thumbInput = document.getElementById('thumbnail');
+    if (thumbInput) {
+        thumbInput.addEventListener('change', function (e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    const parent = thumbInput.parentElement;
+                    // if there is an existing current image, remove it
+                    const current = parent.querySelector('img.current-image');
+                    if (current) current.remove();
+                    let preview = parent.querySelector('img.preview-image');
+                    if (!preview) {
+                        preview = document.createElement('img');
+                        preview.classList.add('position-absolute', 'w-100', 'h-100', 'preview-image');
+                        preview.style.objectFit = 'cover';
+                        preview.style.borderRadius = '0.375rem';
+                        preview.style.pointerEvents = 'none';
+                        preview.style.zIndex = '2';
+                        parent.appendChild(preview);
+                    }
+                    preview.src = ev.target.result;
+                    const defaultOverlay = parent.querySelector('.border');
+                    if (defaultOverlay) defaultOverlay.style.display = 'none';
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+});
+</script>
+@endpush

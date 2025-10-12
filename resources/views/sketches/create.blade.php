@@ -64,8 +64,8 @@
                         <i class="fas fa-plus fs-2" style="color: #0C2C5A;"></i>
                     </div>
                     <div>
-                        <h2 class="fs-3 fw-bold mb-1 header-title" style="color: #0C2C5A;">Tambah Sketsa Baru</h2>
-                        <p class="text-muted mb-0">Isi detail untuk sketsa baru Anda.</p>
+                        <h2 class="fs-3 fw-bold mb-1 header-title" style="color: #0C2C5A;">Tambah Painting Baru</h2>
+                        <p class="text-muted mb-0">Isi detail untuk painting baru Anda.</p>
                     </div>
                 </div>
             </div>
@@ -80,14 +80,21 @@
                 <div class="row mb-4">
                     <div class="col-md-6 mb-3">
                         <label for="thumbnail" class="form-label text-secondary fw-medium">Gambar Thumbnail</label>
-                        <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="form-control @error('thumbnail') is-invalid @enderror">
+                        <div class="position-relative border rounded-3 d-flex align-items-center justify-content-center" style="height: 240px;">
+                            <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer; z-index: 3;">
+                            <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center border border-success bg-white rounded-3" style="pointer-events: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#36b37e" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14"/>
+                                </svg>
+                            </div>
+                        </div>
                         @error('thumbnail')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="mb-3">
-                            <label for="title" class="form-label text-secondary fw-medium">Judul Sketsa</label>
+                            <label for="title" class="form-label text-secondary fw-medium">Judul Painting</label>
                             <input type="text" id="title" name="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}" required>
                             @error('title')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -112,7 +119,7 @@
                         @enderror
                     </div>
                     <div class="col-12 mb-4">
-                        <label for="content" class="form-label text-secondary fw-medium">Konten Sketsa (Deskripsi)</label>
+                        <label for="content" class="form-label text-secondary fw-medium">Konten Painting (Deskripsi)</label>
                         <textarea id="content" name="content" class="form-control @error('content') is-invalid @enderror" rows="5" required>{{ old('content') }}</textarea>
                         @error('content')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -120,7 +127,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-start form-buttons">
-                    <button type="submit" class="btn btn-success px-4 py-2">Save Sketsa</button>
+                    <button type="submit" class="btn btn-success px-4 py-2">Save Painting</button>
                     <a href="{{ route('admin.sketches.index') }}" class="btn btn-outline-secondary ms-0 ms-md-2 px-4 py-2">Cancel</a>
                 </div>
             </form>
@@ -128,3 +135,32 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const thumbInput = document.getElementById('thumbnail');
+    if (thumbInput) {
+        thumbInput.addEventListener('change', function (e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    const parent = thumbInput.parentElement;
+                    const overlay = parent.querySelector('div');
+                    let preview = parent.querySelector('img');
+                    if (!preview) {
+                        preview = document.createElement('img');
+                        preview.classList.add('position-absolute', 'w-100', 'h-100');
+                        preview.style.objectFit = 'cover';
+                        parent.appendChild(preview);
+                    }
+                    preview.src = ev.target.result;
+                    if (overlay) overlay.style.display = 'none';
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+});
+</script>
+@endpush

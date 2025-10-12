@@ -253,7 +253,8 @@
             width: 100%;
             height: 100%;
             z-index: 2;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 70%);
+            /* Indiegologi dark-blue gradient (replaces previous black) */
+            background: linear-gradient(to top, rgba(12, 44, 90, 0.85) 0%, rgba(12, 44, 90, 0.35) 50%, transparent 70%);
             border-radius: 13px;
         }
 
@@ -425,6 +426,19 @@
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
             color: #18305b !important;
             transition: opacity 0.2s;
+        }
+
+        /* MOBILE: align popular article arrows with title area */
+        @media (max-width: 768px) {
+            .popular-articles-swiper .swiper-button-prev,
+            .popular-articles-swiper .swiper-button-next,
+            .featured-popular-wrapper .swiper-button-prev,
+            .featured-popular-wrapper .swiper-button-next {
+                top: 22%; /* move arrows higher so they line up with title on mobile */
+                transform: translateY(-22%);
+                width: 40px;
+                height: 40px;
+            }
         }
 
         .swiper-button-disabled {
@@ -1591,10 +1605,10 @@
             <div class="swiper-button-prev testimonials-prev"></div>
         </div>
     </section>
-    {{-- 6. SKETCH TELLING --}}
+    {{-- 6. PAINTING TELLING --}}
     <section id="sketch-gallery-wrapper" class="container py-5 my-5">
         <div class="carousel-container">
-            <h2 class="carousel-title" data-aos="fade-down">Sketch Telling</h2>
+            <h2 class="carousel-title" data-aos="fade-down">Painting Telling</h2>
             <p class="carousel-subtitle" data-aos="fade-up" data-aos-delay="100">
                 Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang lebih dalam tentang
                 berbagai perjalanan hidup
@@ -1604,7 +1618,7 @@
                 <div class="gallery-carousel-images" data-aos="zoom-in" data-aos-duration="1000">
                     @forelse ($latest_sketches as $sketch)
                         <a href="{{ route('front.sketch.show', $sketch->slug) }}" class="gallery-image-item">
-                            <p class="sketch-card-header">Sketch Telling</p>
+                            <p class="sketch-card-header">Painting Telling</p>
 
                             <div class="sketch-card-middle-content">
                                 <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}"
@@ -1644,9 +1658,9 @@
             </div>
         </div>
         <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="300">
-            <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2"
+                <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2"
                 style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">
-                Lihat Semua Sketsa
+                Lihat Semua Painting
             </a>
         </div>
     </section>

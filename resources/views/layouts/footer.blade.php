@@ -34,7 +34,7 @@
                 <p style="margin-bottom: 0.3rem;">
                     <a href="{{ route('front.sketch') }}" style="color: white; text-decoration: none; transition: color 0.3s ease;" 
                        onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='white'">
-                        Sketsa
+                        Painting
                     </a>
                 </p>
                 <p style="margin-bottom: 0.3rem;">

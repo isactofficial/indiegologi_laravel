@@ -124,7 +124,7 @@
                     <small class="text-muted mb-3 d-block">Begini tampilan testimoni di halaman depan:</small>
                     
                     <div class="border rounded-3 p-3 bg-light">
-                        <div class="testimonial-preview" style="background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 40%, transparent 60%); 
+                        <div class="testimonial-preview" style="background: linear-gradient(to top, rgba(12,44,90,0.85) 0%, rgba(12,44,90,0.35) 40%, transparent 60%); 
                                                              background-image: url('{{ $testimonial->image_url }}'); 
                                                              background-size: cover; 
                                                              background-position: center; 
@@ -134,7 +134,7 @@
                                                              align-items: flex-end; 
                                                              position: relative;">
                             <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
-                                       background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 40%, transparent 60%); 
+                                       background: linear-gradient(to top, rgba(12,44,90,0.9) 0%, rgba(12,44,90,0.35) 40%, transparent 60%); 
                                        border-radius: 8px;"></div>
                             <div class="text-white p-3" style="position: relative; z-index: 2;">
                                 <p class="mb-2 small fst-italic" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">

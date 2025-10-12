@@ -190,7 +190,7 @@
                     <i class="fas fa-file-alt"></i> Manajemen Artikel
                 </a>
                 <a href="{{ route('admin.sketches.index') }}" class="{{ request()->routeIs('admin.sketches.*') ? 'active' : '' }}">
-                    <i class="fas fa-palette"></i> Manajemen Sketsa
+                    <i class="fas fa-palette"></i> Manajemen Painting
                 </a>
                  <a href="{{ route('admin.referral-codes.index') }}" class="{{ request()->routeIs('admin.referral-codes.*') ? 'active' : '' }}">
                     <i class="fas fa-tags"></i> Manajemen Referral

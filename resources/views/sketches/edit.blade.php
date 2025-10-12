@@ -64,8 +64,8 @@
                         <i class="fas fa-palette fs-2" style="color: #0C2C5A;"></i>
                     </div>
                     <div>
-                        <h2 class="fs-3 fw-bold mb-1 header-title" style="color: #0C2C5A;">Edit Sketsa: {{ $sketch->title }}</h2>
-                        <p class="text-muted mb-0">Perbarui detail sketsa ini.</p>
+                        <h2 class="fs-3 fw-bold mb-1 header-title" style="color: #0C2C5A;">Edit Painting: {{ $sketch->title }}</h2>
+                        <p class="text-muted mb-0">Perbarui detail painting ini.</p>
                     </div>
                 </div>
             </div>
@@ -82,21 +82,26 @@
                 <div class="row mb-4">
                     <div class="col-md-6 mb-3">
                         <label for="thumbnail" class="form-label text-secondary fw-medium">Gambar Thumbnail</label>
-                        <div class="mb-3">
-                            @if($sketch->thumbnail)
-                                <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="img-fluid rounded-3" style="max-height: 200px;">
-                            @else
-                                <div class="text-muted">Tidak ada gambar yang diunggah.</div>
-                            @endif
+                        {{-- Upload area (matches article edit) --}}
+                        <div class="position-relative border rounded-3 d-flex align-items-center justify-content-center" style="height: 240px;">
+                            <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="z-index: 3; cursor: pointer;">
+                            <div id="thumbnail-preview" class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center bg-white rounded-3" style="pointer-events: none;">
+                                @if($sketch->thumbnail)
+                                    <img src="{{ asset('storage/' . $sketch->thumbnail) }}" class="position-absolute w-100 h-100" style="object-fit: cover; border-radius: 0.375rem;">
+                                @else
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#0C2C5A" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14"/>
+                                    </svg>
+                                @endif
+                            </div>
                         </div>
-                        <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="form-control @error('thumbnail') is-invalid @enderror">
                         @error('thumbnail')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="title" class="form-label text-secondary fw-medium">Judul Sketsa</label>
+                            <label for="title" class="form-label text-secondary fw-medium">Judul Painting</label>
                             <input type="text" id="title" name="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title', $sketch->title) }}" required>
                             @error('title')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -124,7 +129,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="content" class="form-label text-secondary fw-medium">Konten Sketsa (Deskripsi)</label>
+                    <label for="content" class="form-label text-secondary fw-medium">Konten Painting (Deskripsi)</label>
                     <textarea id="content" name="content" class="form-control @error('content') is-invalid @enderror" rows="5" required>{{ old('content', $sketch->content) }}</textarea>
                     @error('content')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -132,7 +137,7 @@
                 </div>
 
                 <div class="d-flex justify-content-start form-buttons">
-                    <button type="submit" class="btn btn-success px-4 py-2">Update Sketsa</button>
+                    <button type="submit" class="btn btn-success px-4 py-2">Update Painting</button>
                     <a href="{{ route('admin.sketches.index') }}" class="btn btn-outline-secondary ms-0 ms-md-2 px-4 py-2">Cancel</a>
                 </div>
             </form>
@@ -140,3 +145,32 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const thumbInput = document.getElementById('thumbnail');
+    if (thumbInput) {
+        thumbInput.addEventListener('change', function (e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    const previewContainer = document.getElementById('thumbnail-preview');
+                    let img = previewContainer.querySelector('img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        img.className = 'position-absolute w-100 h-100';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '0.375rem';
+                        previewContainer.innerHTML = '';
+                        previewContainer.appendChild(img);
+                    }
+                    img.src = ev.target.result;
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+});
+</script>
+@endpush

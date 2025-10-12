@@ -187,10 +187,10 @@
                     </div>
                 @endunless
 
-                {{-- Hasil dari Sketsa (Sketches) --}}
+                {{-- Hasil dari Painting (Paintings) --}}
                 @unless ($sketches->isEmpty())
                     <div class="mb-5">
-                        <h2 class="result-category-title">Sketsa yang Ditemukan ({{ $sketches->count() }})</h2>
+                        <h2 class="result-category-title">Painting yang Ditemukan ({{ $sketches->count() }})</h2>
                         <div class="results-list">
                             @foreach ($sketches as $sketch)
                                 <div class="result-card">

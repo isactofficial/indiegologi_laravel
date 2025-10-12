@@ -93,7 +93,9 @@
                             @else
                                 <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center border border-secondary bg-white rounded-3" style="pointer-events: none; z-index: 1;">
                                     <div class="text-center text-muted">
-                                        <i class="fas fa-cloud-upload-alt fa-3x mb-2"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#6c757d" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14"/>
+                                        </svg>
                                         <p class="mb-0">Klik untuk memilih gambar baru</p>
                                         <small>PNG, JPG, WEBP (Maks. 2MB)</small>
                                     </div>

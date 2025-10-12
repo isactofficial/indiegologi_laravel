@@ -88,7 +88,14 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="thumbnail" class="form-label text-secondary fw-medium">Gambar Thumbnail</label>
-                        <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="form-control @error('thumbnail') is-invalid @enderror">
+                        <div class="position-relative border rounded-3 d-flex align-items-center justify-content-center" style="height: 240px;">
+                            <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer; z-index: 3;">
+                            <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center border border-success bg-white rounded-3" style="pointer-events: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#36b37e" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14"/>
+                                </svg>
+                            </div>
+                        </div>
                         @error('thumbnail')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -110,3 +117,33 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const thumbInput = document.getElementById('thumbnail');
+    if (thumbInput) {
+        thumbInput.addEventListener('change', function (e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    const parent = thumbInput.parentElement;
+                    const overlay = parent.querySelector('.border');
+                    let preview = parent.querySelector('img');
+                    if (!preview) {
+                        preview = document.createElement('img');
+                        preview.classList.add('position-absolute', 'w-100', 'h-100');
+                        preview.style.objectFit = 'cover';
+                        preview.style.borderRadius = '0.375rem';
+                        parent.appendChild(preview);
+                    }
+                    preview.src = ev.target.result;
+                    if (overlay) overlay.style.display = 'none';
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+});
+</script>
+@endpush

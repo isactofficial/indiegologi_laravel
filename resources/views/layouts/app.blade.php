@@ -419,14 +419,14 @@
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.articles*') || request()->routeIs('front.sketch*')) ? 'active' : '' }}" href="#" id="navbarBeritaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-newspaper me-2"></i>Berita
+                            <img src="{{ asset('assets/img/news.png') }}" alt="Berita" style="height:1em; width:auto; vertical-align:middle;" class="me-2">Berita
                         </a>
                         <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarBeritaDropdown">
                             {{-- MODIFIED --}}
                             <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-journal-text me-2"></i>Artikel</a></li>
                             <li><hr class="dropdown-divider"></li>
                             {{-- MODIFIED --}}
-                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-palette me-2"></i>Sketsa</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-palette me-2"></i>Painting</a></li>
                         </ul>
                     </li>
 
@@ -518,7 +518,7 @@
 
                 <li class="nav-item">
                     <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.articles*') || request()->routeIs('front.sketch*')) ? 'active' : '' }}" href="#collapseBerita" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseBerita">
-                        <i class="bi bi-newspaper"></i><span>Berita</span>
+                        <img src="{{ asset('assets/img/news.png') }}" alt="Berita" style="height:1.4rem; width:auto; vertical-align:middle;" class="me-2"><span>Berita</span>
                     </a>
                     <div class="collapse" id="collapseBerita">
                         <ul class="navbar-nav dropdown-menu">
@@ -526,7 +526,7 @@
                             <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-journal-text me-2"></i>Artikel</a></li>
                             <li><hr class="dropdown-divider"></li>
                             {{-- MODIFIED --}}
-                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-palette me-2"></i>Sketsa</a></li>
+                            <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-palette me-2"></i>Painting</a></li>
                         </ul>
                     </div>
                 </li>

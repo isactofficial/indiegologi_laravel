@@ -49,7 +49,9 @@
                             <input type="file" id="image" name="image" accept="image/*" class="position-absolute w-100 h-100 opacity-0 cursor-pointer" style="z-index: 3;">
                             <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center border @error('image') border-danger @else border-success @enderror bg-white rounded-3" style="pointer-events: none;">
                                 <div class="text-center text-muted">
-                                    <i class="fas fa-cloud-upload-alt fa-3x mb-2"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#36b37e" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14"/>
+                                    </svg>
                                     <p class="mb-0">Klik untuk memilih gambar</p>
                                     <small>PNG, JPG (Maks. 2MB)</small>
                                 </div>

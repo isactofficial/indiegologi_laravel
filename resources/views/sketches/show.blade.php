@@ -61,8 +61,8 @@
                         <i class="fas fa-palette fs-2" style="color: #0C2C5A;"></i>
                     </div>
                     <div>
-                        <h2 class="fs-3 fw-bold mb-1 header-title" style="color: #0C2C5A;">Detail Sketsa: {{ $sketch->title }}</h2>
-                        <p class="text-muted mb-0">Informasi lengkap tentang sketsa ini.</p>
+                        <h2 class="fs-3 fw-bold mb-1 header-title" style="color: #0C2C5A;">Detail Painting: {{ $sketch->title }}</h2>
+                        <p class="text-muted mb-0">Informasi lengkap tentang painting ini.</p>
                     </div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                         <li class="list-group-item">
                             <strong>Penulis:</strong> {{ $sketch->author }}
                         </li>
-                        {{-- Menambahkan status sketsa --}}
+                        {{-- Menambahkan status painting --}}
                         <li class="list-group-item">
                             <strong>Status:</strong>
                             <span class="badge {{ $sketch->status == 'Published' ? 'badge-status-published' : 'badge-status-draft' }}">
@@ -121,7 +121,7 @@
                 </div>
             </div>
             <hr class="my-4">
-            <h5 class="text-secondary fw-semibold">Konten Sketsa</h5>
+            <h5 class="text-secondary fw-semibold">Konten Painting</h5>
             <p>{{ $sketch->content }}</p>
         </div>
     </div>
