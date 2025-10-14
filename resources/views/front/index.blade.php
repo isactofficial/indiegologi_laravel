@@ -253,8 +253,15 @@
             width: 100%;
             height: 100%;
             z-index: 2;
-            /* Indiegologi dark-blue gradient (replaces previous black) */
-            background: linear-gradient(to top, rgba(12, 44, 90, 0.85) 0%, rgba(12, 44, 90, 0.35) 50%, transparent 70%);
+            /* Gradasi putih → biru tua dengan rasio biru lebih besar (lebih gelap) */
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.96) 0%,  /* putih pekat di bagian atas */
+                rgba(255, 255, 255, 0.85) 18%, /* cepat turun supaya area biru lebih dominan */
+                rgba(12, 44, 90, 0.40) 45%,
+                rgba(12, 44, 90, 0.75) 75%,
+                rgba(12, 44, 90, 0.92) 100%   /* biru tua solid di bagian bawah */
+            );
             border-radius: 13px;
         }
 
