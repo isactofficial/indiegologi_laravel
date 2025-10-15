@@ -41,7 +41,8 @@ class AuthController extends Controller
             } elseif ($user->isAuthor()) {
                 return redirect()->intended(route('author.dashboard'));
             } else {
-                return redirect()->intended(route('reader.dashboard'));
+                // return redirect()->intended(route('reader.dashboard'));
+                return redirect()->intended('/');
             }
         }
 
@@ -267,7 +268,8 @@ class AuthController extends Controller
             } elseif ($user->isAuthor()) {
                 return redirect()->route('author.dashboard');
             } elseif ($user->isReader()) {
-                return redirect()->route('reader.dashboard');
+                // return redirect()->route('reader.dashboard');
+                return redirect('/');
             }
         }
         return redirect('/');
