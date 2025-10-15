@@ -14,15 +14,11 @@
     {{-- Judul (Konten Dinamis - Tidak Diterjemahkan) --}}
     <h1 style="color: #0C2C5A;" class="fw-bold mb-2">{{ $sketch->title }}</h1>
 
-    {{-- Informasi Author dan Tanggal --}}
+    {{-- Informasi Tanggal --}}
     <div class="text-muted mb-4 d-flex align-items-center gap-2">
         <span>Published</span>
         {{-- Tanggal akan otomatis diterjemahkan oleh Carbon/Laravel --}}
         <span>{{ $sketch->created_at->format('d F Y') }}</span>
-    </div>
-    <div>
-        {{-- Author (Konten Dinamis - Tidak Diterjemahkan) --}}
-        <span>{{ $sketch->author ?? 'Unknown' }}</span><br>
     </div>
 
     {{-- Gambar Sketsa --}}

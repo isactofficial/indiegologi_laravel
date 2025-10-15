@@ -587,10 +587,10 @@
         }
 
         #sketch-gallery-wrapper .sketch-card-brand img {
-            max-height: 47px;
+            max-height: 85px; /* logo agak besar */
             width: auto;
             object-fit: contain;
-            filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.4));
+            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.35));
         }
 
 
@@ -604,11 +604,15 @@
         }
 
         #sketch-gallery-wrapper .sketch-circular-image {
-            width: 150px;
-            height: 150px;
+            width: 190px;  /* lebih besar */
+            height: 190px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 20px;
+            display: block;
+            margin: 12px auto 18px auto; /* center */
+            -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 70%, rgba(0,0,0,0.6) 80%, rgba(0,0,0,0) 88%);
+            mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 70%, rgba(0,0,0,0.6) 80%, rgba(0,0,0,0) 88%);
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.12));
         }
 
         #sketch-gallery-wrapper .sketch-card-subtitle {
@@ -1630,15 +1634,14 @@
                             <div class="sketch-card-middle-content">
                                 <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}"
                                     class="sketch-circular-image" />
-                                <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
+                                {{-- Subtitle dihilangkan sesuai permintaan --}}
                                 <p class="sketch-card-description">
                                     {{ Str::limit(strip_tags($sketch->content), 120) }}
                                 </p>
                             </div>
 
                             <div class="sketch-card-brand">
-                                <img src="{{ asset('assets/img/login.png') }}" alt="Indiegologi Logo"
-                                    style="height: 70px; width: auto; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));">
+                                <img src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo">
                             </div>
                         </a>
                     @empty
@@ -1648,15 +1651,14 @@
                             <div class="sketch-card-middle-content">
                                 <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop&crop=face"
                                     alt="Default" class="sketch-circular-image">
-                                <h6 class="sketch-card-subtitle">LANGKAH PERTAMA MENUJU KETENANGAN</h6>
+                                {{-- Subtitle dihilangkan pada fallback juga --}}
                                 <p class="sketch-card-description">Mulai hari dengan ketenangan dan fokus yang jernih
                                     untuk
                                     perjalanan hidup yang lebih baik.</p>
                             </div>
 
                             <div class="sketch-card-brand">
-                                <img src="{{ asset('assets/img/login.png') }}" alt="Indiegologi Logo"
-                                    style="height: 70px; width: auto; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));">
+                                <img src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo">
                             </div>
                         </div>
                     @endforelse
@@ -1728,6 +1730,9 @@
                     <h5 class="modal-title" id="modal-name">Nama Klien</h5>
                     <p id="modal-details" class="text-muted mb-3">Detail Klien</p>
                     <p id="modal-quote" class="quote-full">Isi testimoni lengkap akan muncul di sini.</p>
+                    <div class="mt-3">
+                        <img src="{{ asset('assets/img/logo_revisi_1.png') }}" alt="Indiegologi Logo" style="height: 52px; width: auto; opacity: 0.9;">
+                    </div>
                 </div>
             </div>
         </div>

@@ -386,7 +386,7 @@
         {{-- Brand/Logo --}}
         {{-- Kode Baru --}}
 <a class="navbar-brand" href="{{ route('front.index') }}" style="padding-top: 0; padding-bottom: 0; margin-right: 2rem;">
-    <img src="{{ asset('assets/img/login.png') }}" alt="Indiegologi Logo" style="height: 60px; width: auto; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));">
+    <img src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo" style="height: 68px; width: auto; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));">
 </a>
             <div class="d-flex align-items-center d-lg-none">
                 <div class="search-container">

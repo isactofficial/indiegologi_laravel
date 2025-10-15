@@ -24,11 +24,11 @@
         color: #0C2C5A;
         line-height: 1.3;
     }
-    .painting-meta-info {
+    .painting-meta-info, .sketch-meta-info {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 20px;
+        gap: 12px; /* jarak kecil antara item (tanggal dan status) */
         padding: 15px 0;
         margin: 20px 0;
         border-top: 1px solid #e0e0e0;
@@ -87,12 +87,8 @@
         {{-- Judul Painting --}}
         <h1 class="painting-title mt-4" data-aos="fade-up">{{ $sketch->title }}</h1>
 
-        {{-- Meta Info (Penulis, Tanggal, Status) --}}
+        {{-- Meta Info (Tanggal, Status) --}}
         <div class="sketch-meta-info" data-aos="fade-up" data-aos-delay="100">
-            <div class="meta-item">
-                <i class="fas fa-user-edit"></i>
-                <span>Oleh: <strong>{{ $sketch->author ?? 'Unknown' }}</strong></span>
-            </div>
             <div class="meta-item">
                 <i class="fas fa-calendar-alt"></i>
                 <span>{{ $sketch->created_at->format('d F Y') }}</span>
