@@ -1177,13 +1177,15 @@
         /* Menempel di kanan */
         top: 50%;
         transform: translateY(-50%);
-        width: 155px;
+        width: 465px;
         /* Sesuaikan lebar iklan */
+        height: 700px;
         z-index: 1050;
         transition: transform 0.4s ease, opacity 0.4s ease;
         display: flex;
         flex-direction: column;
         align-items: center;
+        overflow: hidden;
     }
 
     .floating-ad-container.hidden {
@@ -1206,22 +1208,28 @@
         text-align: center;
         color: #333;
         margin-bottom: -1px;
+        flex-shrink: 0;
     }
 
     .floating-ad-container .ad-link {
         display: block;
         line-height: 0;
+        width: 100%;
+        height: auto;
         /* Menghilangkan spasi di bawah gambar */
+        flex-grow: 1;
     }
 
     .floating-ad-container .ad-image {
         width: 100%;
-        height: auto;
+        height: 100%;
         border-radius: 0;
         /* Sudut tajam */
         box-shadow: -2px 0 15px rgba(0, 0, 0, 0.15);
         border: 1px solid #ddd;
         border-top: none;
+        object-fit: cover; /* <-- Mengisi wadah sambil mempertahankan rasio aspek (menghasilkan "zoom") */
+        object-position: center;
     }
 
     /* Sembunyikan iklan di layar kecil */
@@ -1757,8 +1765,8 @@
 <div id="popupAdContainer" class="floating-ad-container">
     <button id="closePopupAd" class="close-ad-btn">TUTUP IKLAN</button>
     <a href="#" target="_blank" rel="noopener noreferrer" class="ad-link">
-        {{-- Ganti 'iklan-kanan-panjang.jpg' dengan nama file gambar iklan Anda di folder public/assets/img/ --}}
-        <img src="{{ asset('assets/img/iklan-kanan-panjang.jpg') }}" alt="Iklan promosi" class="ad-image">
+        {{-- Ganti 'iklan-kanan-panjang.png' dengan nama file gambar iklan Anda di folder public/assets/img/ --}}
+        <img src="{{ asset('assets/img/iklan-kanan-panjang.png') }}" alt="Iklan promosi" class="ad-image">
     </a>
 </div>
 @endsection
