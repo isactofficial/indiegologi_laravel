@@ -157,7 +157,7 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="services-{{ $index }}-booked_date" class="form-label text-secondary fw-medium">Tanggal Booking</label>
-                                <input type="date" id="services-{{ $index }}-booked_date" name="services[{{ $index }}][booked_date]" class="form-control" value="{{ old("services.{$index}.booked_date", $service->pivot->booked_date) }}" required>
+                                <input type="date" id="services-{{ $index }}-booked_date" name="services[{{ $index }}][booked_date]" class="form-control" value="{{ old("services.{$index}.booked_date", optional($service->pivot->booked_date)->format('Y-m-d')) }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="services-{{ $index }}-booked_time" class="form-label text-secondary fw-medium">Waktu Booking</label>

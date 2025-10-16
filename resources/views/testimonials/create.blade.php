@@ -90,8 +90,8 @@
 
                         {{-- INPUT KOTA / NEGARA DITAMBAHKAN DI SINI --}}
                         <div class="mb-3">
-                            <label for="location" class="form-label text-secondary fw-medium">Kota / Negara</label>
-                            <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location') }}" placeholder="Contoh: Jakarta, Indonesia">
+                            <label for="location" class="form-label text-secondary fw-medium">Kota / Negara <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location') }}" placeholder="Contoh: Jakarta, Indonesia" required>
                             @error('location')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

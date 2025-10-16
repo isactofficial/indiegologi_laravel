@@ -37,8 +37,8 @@ class ArticleController extends Controller
                 break;
         }
 
-        // Paginate results with 6 items per page, preserving query string
-        $articles = $articles->paginate(6)->withQueryString();
+    // Paginate results with 10 items per page (admin standard), preserving query string
+    $articles = $articles->paginate(10)->withQueryString();
 
         // Ensure this view path matches your actual file structure (e.g., resources/views/articles/manage.blade.php)
         return view('articles.manage', compact('articles'));

@@ -321,44 +321,10 @@
                 @endforelse
             </div>
 
-            {{-- Custom Pagination --}}
-            @if($sketches->hasPages())
-                <div class="mt-4 d-flex justify-content-center">
-                    <nav aria-label="Sketch pagination">
-                        <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                            {{-- Previous Page Link --}}
-                            <li class="page-item {{ $sketches->onFirstPage() ? 'disabled' : '' }}">
-                                <a class="page-link rounded-pill border-0" href="{{ $sketches->previousPageUrl() }}" rel="prev" style="color: var(--theme-primary); background-color: #e6eef7;">&laquo;</a>
-                            </li>
-
-                            {{-- Pagination Elements --}}
-                            @foreach ($sketches->onEachSide(1)->linkCollection()->toArray() as $element)
-                                @if (is_string($element))
-                                    <li class="page-item disabled"><span class="page-link rounded-pill border-0">{{ $element }}</span></li>
-                                @endif
-                                @if (is_array($element))
-                                    @foreach ($element as $page => $url)
-                                        @if ($page == $sketches->currentPage())
-                                            <li class="page-item active" aria-current="page">
-                                                <span class="page-link rounded-pill border-0" style="background-color: var(--theme-primary); border-color: var(--theme-primary);">{{ $page }}</span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link rounded-pill border-0" href="{{ $url }}" style="color: var(--theme-primary); background-color: #e6eef7;">{{ $page }}</a>
-                                            </li>
-                                        @endif
-                                    @endforeach
-                                @endif
-                            @endforeach
-
-                            {{-- Next Page Link --}}
-                            <li class="page-item {{ $sketches->hasMorePages() ? '' : 'disabled' }}">
-                                <a class="page-link rounded-pill border-0" href="{{ $sketches->nextPageUrl() }}" rel="next" style="color: var(--theme-primary); background-color: #e6eef7;">&raquo;</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            @endif
+            {{-- Pagination --}}
+            <div class="mt-4 d-flex justify-content-center">
+                {{ $sketches->links() }}
+            </div>
 
         </div>
     </div>

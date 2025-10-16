@@ -58,7 +58,7 @@ class TestimonialController extends Controller
             'name' => 'required|string|max:255',
             'age' => 'required|integer|min:1|max:150',
             'occupation' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
+            'location' => 'required|string|max:255',
             'quote' => 'required|string|min:10|max:1000',
             'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ], [
@@ -67,6 +67,7 @@ class TestimonialController extends Controller
             'age.min' => 'Usia minimal 1 tahun.',
             'age.max' => 'Usia maksimal 150 tahun.',
             'occupation.required' => 'Pekerjaan wajib diisi.',
+            'location.required' => 'Kota / Negara wajib diisi.',
             'quote.required' => 'Testimoni wajib diisi.',
             'quote.min' => 'Testimoni minimal 10 karakter.',
             'quote.max' => 'Testimoni maksimal 1000 karakter.',
@@ -188,7 +189,7 @@ class TestimonialController extends Controller
             'name' => 'required|string|max:255',
             'age' => 'required|integer|min:1|max:150',
             'occupation' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
+            'location' => 'required|string|max:255',
             'quote' => 'required|string|min:10|max:1000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ], [
@@ -197,6 +198,7 @@ class TestimonialController extends Controller
             'age.min' => 'Usia minimal 1 tahun.',
             'age.max' => 'Usia maksimal 150 tahun.',
             'occupation.required' => 'Pekerjaan wajib diisi.',
+            'location.required' => 'Kota / Negara wajib diisi.',
             'quote.required' => 'Testimoni wajib diisi.',
             'quote.min' => 'Testimoni minimal 10 karakter.',
             'quote.max' => 'Testimoni maksimal 1000 karakter.',

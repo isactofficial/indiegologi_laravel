@@ -175,14 +175,15 @@
                         {{-- Location Field --}}
                         <div class="mb-3">
                             <label for="location" class="form-label text-secondary fw-medium">
-                                Kota / Negara
+                                Kota / Negara <span class="text-danger">*</span>
                             </label>
                             <input type="text" 
                                    class="form-control @error('location') is-invalid @enderror" 
                                    id="location" 
                                    name="location" 
                                    value="{{ old('location', $testimonial->location) }}" 
-                                   placeholder="Contoh: Jakarta, Indonesia">
+                                   placeholder="Contoh: Jakarta, Indonesia" 
+                                   required>
                             @error('location')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

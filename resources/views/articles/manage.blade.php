@@ -503,55 +503,10 @@
                 @endforelse
             </div>
 
-            {{-- Custom Pagination --}}
-            @if($articles->hasPages())
-                <div class="mt-4 d-flex justify-content-center">
-                    <nav aria-label="Article pagination">
-                        <ul class="pagination pagination-sm mb-0">
-                            {{-- Previous Page Link --}}
-                            @if ($articles->onFirstPage())
-                                <li class="page-item disabled"><span class="page-link rounded-pill border-0" style="color: #ccc;">&laquo;</span></li>
-                            @else
-                                <li class="page-item">
-                                    <a class="page-link rounded-pill border-0" href="{{ $articles->previousPageUrl() }}" rel="prev" style="color: var(--theme-primary); background-color: #e6eef7;">&laquo;</a>
-                                </li>
-                            @endif
-
-                            {{-- Page Number Links --}}
-                            @php
-                                $currentPage = $articles->currentPage();
-                                $lastPage = $articles->lastPage();
-                                $pageRange = 5;
-                                $startPage = max(1, $currentPage - floor($pageRange / 2));
-                                $endPage = min($lastPage, $currentPage + floor($pageRange / 2));
-                                if ($currentPage < floor($pageRange / 2)) { $endPage = min($lastPage, $pageRange); }
-                                if ($currentPage > $lastPage - floor($pageRange / 2)) { $startPage = max(1, $lastPage - $pageRange + 1); }
-                            @endphp
-
-                            @for ($i = $startPage; $i <= $endPage; $i++)
-                                @if ($i == $currentPage)
-                                    <li class="page-item active">
-                                        <span class="page-link rounded-pill border-0" style="background-color: var(--theme-primary); border-color: var(--theme-primary); color: white; font-weight: bold;">{{ $i }}</span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link rounded-pill border-0" href="{{ $articles->url($i) }}" style="color: var(--theme-primary); background-color: #e6eef7;">{{ $i }}</a>
-                                    </li>
-                                @endif
-                            @endfor
-
-                            {{-- Next Page Link --}}
-                            @if ($articles->hasMorePages())
-                                <li class="page-item">
-                                    <a class="page-link rounded-pill border-0" href="{{ $articles->nextPageUrl() }}" rel="next" style="color: var(--theme-primary); background-color: #e6eef7;">&raquo;</a>
-                                </li>
-                            @else
-                                <li class="page-item disabled"><span class="page-link rounded-pill border-0" style="color: #ccc;">&raquo;</span></li>
-                            @endif
-                        </ul>
-                    </nav>
-                </div>
-            @endif
+            {{-- Pagination --}}
+            <div class="mt-4 d-flex justify-content-center">
+                {{ $articles->links() }}
+            </div>
         </div>
     </div>
 </div>
