@@ -96,7 +96,8 @@
         background-color: #0C2C5A;
         color: #ffffff;
         border: 1px solid #0C2C5A;
-        transition: all 0.3s ease-out;
+        transition: all 0.2s ease-out;
+        /* Faster transition */
     }
 
     .hero-button:hover {
@@ -130,7 +131,8 @@
         border: 1px solid rgba(255, 255, 255, 0.7);
         opacity: 1;
         margin: 0 5px;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
+        /* Faster transition */
     }
 
     .hero-section .carousel-indicators .active {
@@ -139,9 +141,34 @@
         transform: scale(1.2);
     }
 
+    /* ===== PANAH CAROUSEL HERO SECTION ===== */
     .hero-section .carousel-control-prev,
     .hero-section .carousel-control-next {
-        display: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        background-color: rgba(0, 0, 0, 0.25);
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.8;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .hero-section .carousel-control-prev:hover,
+    .hero-section .carousel-control-next:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 1;
+    }
+
+    .hero-section .carousel-control-prev {
+        left: 2rem;
+    }
+
+    .hero-section .carousel-control-next {
+        right: 2rem;
     }
 
     /* ======================================================= */
@@ -158,7 +185,8 @@
     }
 
     .testimonial-flipper {
-        transition: transform 0.4s, box-shadow 0.3s;
+        transition: transform 0.25s, box-shadow 0.2s;
+        /* Faster transition */
         transform-style: preserve-3d;
         position: relative;
         width: 100%;
@@ -202,7 +230,8 @@
         display: block;
         color: inherit;
         text-decoration: none;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        /* Faster transition */
         border-radius: 15px;
     }
 
@@ -237,7 +266,8 @@
         object-position: center 20%;
         z-index: 1;
         filter: brightness(0.75);
-        transition: transform 0.4s ease;
+        transition: transform 0.25s ease;
+        /* Faster transition */
         border-radius: 13px;
     }
 
@@ -409,7 +439,8 @@
         top: 50%;
         transform: translateY(-50%);
         opacity: 1;
-        transition: opacity 0.2s, box-shadow 0.2s, left 0.3s, right 0.3s;
+        transition: opacity 0.15s, box-shadow 0.15s, left 0.2s, right 0.2s;
+        /* Faster transition */
         z-index: 2;
     }
 
@@ -431,7 +462,8 @@
         border-radius: 8px;
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         color: #18305b !important;
-        transition: opacity 0.2s;
+        transition: opacity 0.15s;
+        /* Faster transition */
     }
 
     /* MOBILE: align popular article arrows with title area */
@@ -475,7 +507,8 @@
     }
 
     .card-hover-zoom {
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        /* Faster transition */
     }
 
     .card-hover-zoom:hover {
@@ -552,7 +585,8 @@
         width: 320px;
         height: 480px;
         left: calc(50% - 160px);
-        transition: all 0.4s ease;
+        transition: all 0.25s ease;
+        /* Faster transition */
         cursor: pointer;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         border-radius: 15px;
@@ -689,7 +723,8 @@
         border-radius: 50%;
         cursor: pointer;
         z-index: 20;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
+        /* Faster transition */
         color: #0C2C5A;
         font-size: 1.2rem;
         display: flex;
@@ -891,7 +926,7 @@
         padding: 100px 0;
         margin-top: 80px;
         margin-bottom: 80px;
-        background-image: url('{{ asset(' assets/carousel/kobu-agency-7okkFhxrxNw-unsplash.jpg') }}');
+        background-image: url('{{ asset('assets/carousel/kobu-agency-7okkFhxrxNw-unsplash.jpg') }}');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -957,7 +992,8 @@
         font-weight: 700;
         font-family: 'Gotham', sans-serif;
         border-radius: 5px;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
+        /* Faster transition */
     }
 
     .consultation-button:hover {
@@ -1054,6 +1090,21 @@
 
         .hero-section .carousel-indicators {
             bottom: 2.5rem;
+        }
+
+        /* ===== PANAH CAROUSEL HERO SECTION (MOBILE) ===== */
+        .hero-section .carousel-control-prev {
+            left: 1rem;
+        }
+
+        .hero-section .carousel-control-next {
+            right: 1rem;
+        }
+
+        .hero-section .carousel-control-prev,
+        .hero-section .carousel-control-next {
+            width: 40px;
+            height: 40px;
         }
 
         .featured-popular-card {
@@ -1181,7 +1232,8 @@
         /* Sesuaikan lebar iklan */
         height: 700px;
         z-index: 1050;
-        transition: transform 0.4s ease, opacity 0.4s ease;
+        transition: transform 0.25s ease, opacity 0.25s ease;
+        /* Faster transition */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -1247,7 +1299,8 @@
 
 {{-- 1. Hero Section --}}
 <section class="hero-section">
-    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+    {{-- Atribut data-bs-touch="true" adalah default, tapi ditambahkan untuk kejelasan --}}
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-touch="true">
 
         <div class="carousel-inner">
             <div class="carousel-item active"
@@ -1255,14 +1308,14 @@
                 <div class="overlay"></div>
                 <div class="carousel-caption">
                     <div class="container">
-                        <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">Apa itu Indiegologi?</h1>
-                        <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+                        <h1 class="hero-title" data-aos="fade-up" data-aos-delay="50">Apa itu Indiegologi?</h1>
+                        <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="100">
                             Ruang untuk dapat lebih mengerti tentang gambaran diri, <br>
                             yang sering tidak kita sadari dikarenakan banyaknya distraksi <br>
                             serta ambisi diri yang membuat kita kurang memahami kebutuhan diri
                         </p>
                         <a href="{{ route('front.layanan') }}" class="btn hero-button" data-aos="fade-up"
-                            data-aos-delay="300">Mulai Perjalanan Anda</a>
+                            data-aos-delay="150">Mulai Perjalanan Anda</a>
                     </div>
                 </div>
             </div>
@@ -1413,14 +1466,14 @@
 
 {{-- 2. Artikel Pilihan --}}
 <section class="container py-5 my-5" style="margin-top: 80px;"><br><br><br>
-    <div data-aos="fade-down" data-aos-duration="1000">
+    <div data-aos="fade-down" data-aos-duration="500">
         <h2 class="text-center fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Artikel Pilihan Kami untuk Anda
         </h2>
         <p class="text-center mb-5" style="color:#6c757d; font-family: 'Playfair Display', sans-serif;">Jelajahi
             kisah-kisah penuh inspirasi dan temukan wawasan yang paling menyentuh hati komunitas kami.</p>
     </div>
     <div class="featured-popular-wrapper" style="position: relative;" data-aos="zoom-in-up"
-        data-aos-duration="1000" data-aos-delay="200">
+        data-aos-duration="500" data-aos-delay="100">
         <div class="swiper featured-popular-article-swiper">
             <div class="swiper-wrapper">
                 @forelse ($popular_articles as $article)
@@ -1466,17 +1519,17 @@
 {{-- 3. Artikel Terbaru --}}
 <section class="container py-5 my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0" style="color: #0C2C5A;" data-aos="fade-right" data-aos-duration="800">Wawasan
+        <h2 class="fw-bold mb-0" style="color: #0C2C5A;" data-aos="fade-right" data-aos-duration="400">Wawasan
             Terbaru untuk Anda</h2>
         <a href="{{ route('front.articles') }}" class="btn btn-link text-decoration-none fw-semibold p-0"
             style="color: #0C2C5A; font-family: 'Playfair Display', sans-serif;" data-aos="fade-left"
-            data-aos-duration="800">Lihat Semua Artikel<i class="bi bi-arrow-right ms-1"></i></a>
+            data-aos-duration="400">Lihat Semua Artikel<i class="bi bi-arrow-right ms-1"></i></a>
     </div>
     <div class="swiper latest-articles-swiper">
         <div class="swiper-wrapper">
             @forelse ($latest_articles as $article)
             <div class="swiper-slide pb-3" data-aos="fade-up"
-                data-aos-delay="{{ $loop->index * 150 }}">
+                data-aos-delay="{{ $loop->index * 75 }}">
                 <div class="card border-0 shadow-sm h-100 card-hover-zoom">
                     <div class="article-img-container">
                         <img src="{{ asset('storage/' . $article->thumbnail) }}"
@@ -1513,17 +1566,17 @@
 {{-- 4. Artikel Populer --}}
 <section class="container py-5 my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0" style="color: #0C2C5A;" data-aos="fade-right" data-aos-duration="800">Artikel
+        <h2 class="fw-bold mb-0" style="color: #0C2C5A;" data-aos="fade-right" data-aos-duration="400">Artikel
             Pilihan untuk Anda</h2>
         <a href="{{ route('front.articles') }}" class="btn btn-link text-decoration-none fw-semibold p-0"
             style="color: #0C2C5A; font-family: 'Playfair Display', sans-serif;" data-aos="fade-left"
-            data-aos-duration="800">Jelajahi Semua<i class="bi bi-arrow-right ms-1"></i></a>
+            data-aos-duration="400">Jelajahi Semua<i class="bi bi-arrow-right ms-1"></i></a>
     </div>
     <div class="swiper popular-articles-swiper">
         <div class="swiper-wrapper">
             @forelse ($popular_articles as $article)
             <div class="swiper-slide pb-3" data-aos="fade-up"
-                data-aos-delay="{{ $loop->index * 150 }}">
+                data-aos-delay="{{ $loop->index * 75 }}">
                 <div class="card border-0 shadow-sm h-100 card-hover-zoom">
                     <div class="article-img-container" style="padding-top: 56.25%;">
                         <img src="{{ asset('storage/' . $article->thumbnail) }}"
@@ -1555,7 +1608,7 @@
         <div class="swiper-button-next popular-articles-next"></div>
         <div class="swiper-button-prev popular-articles-prev"></div>
     </div>
-    <div class="text-center mt-4" data-aos="zoom-in" data-aos-delay="300">
+    <div class="text-center mt-4" data-aos="zoom-in" data-aos-delay="150">
         <a href="{{ route('front.articles') }}" class="btn btn-primary px-4 py-2"
             style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat
             Semua Artikel</a>
@@ -1591,7 +1644,7 @@
         <div class="swiper-wrapper py-4">
             @forelse ($testimonials as $testimonial)
             <div class="swiper-slide" data-aos="fade-up"
-                data-aos-delay="{{ $loop->index * 100 }}">
+                data-aos-delay="{{ $loop->index * 50 }}">
                 @php
                     // Sanitize testimonial quote by removing straight and curly quotes
                     $displayQuote = preg_replace('/["\'\x{201C}\x{201D}\x{2018}\x{2019}]+/u', '', $testimonial->quote);
@@ -1642,13 +1695,13 @@
 <section id="sketch-gallery-wrapper" class="container py-5 my-5">
     <div class="carousel-container">
         <h2 class="carousel-title" data-aos="fade-down">Painting Telling</h2>
-        <p class="carousel-subtitle" data-aos="fade-up" data-aos-delay="100">
+        <p class="carousel-subtitle" data-aos="fade-up" data-aos-delay="50">
             Lihatlah kisah-kisah yang kami visualisasikan untuk inspirasi dan pemahaman yang lebih dalam tentang
             berbagai perjalanan hidup
         </p>
         <div class="gallery-carousel" data-aos="fade-up">
             <button class="gallery-nav-button gallery-nav-left">&#10094;</button>
-            <div class="gallery-carousel-images" data-aos="zoom-in" data-aos-duration="1000">
+            <div class="gallery-carousel-images" data-aos="zoom-in" data-aos-duration="500">
                 @forelse ($latest_sketches as $sketch)
                 <a href="{{ route('front.sketch.show', $sketch->slug) }}" class="gallery-image-item">
                     <p class="sketch-card-header">Painting Telling</p>
@@ -1688,7 +1741,7 @@
             <button class="gallery-nav-button gallery-nav-right">&#10095;</button>
         </div>
     </div>
-    <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="300">
+    <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="150">
         <a href="{{ route('front.sketch') }}" class="btn btn-primary px-4 py-2"
             style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">
             Lihat Semua Painting
@@ -1707,7 +1760,7 @@
         <div class="row g-4 justify-content-center">
             @forelse ($services as $service)
             <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up"
-                data-aos-delay="{{ $loop->index * 150 }}">
+                data-aos-delay="{{ $loop->index * 75 }}">
                 <div class="card border-0 shadow-sm h-100 text-center card-hover-zoom">
                     <div class="card-body p-4 d-flex flex-column">
                         <div class="mb-3">
@@ -1733,7 +1786,7 @@
             </div>
             @endforelse
         </div>
-        <div class="text-center mt-5" data-aos="zoom-in" data-aos-delay="300">
+        <div class="text-center mt-5" data-aos="zoom-in" data-aos-delay="150">
             <a href="{{ route('front.layanan') }}" class="btn btn-primary px-4 py-2"
                 style="background-color: #0C2C5A; border-color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat
                 Semua Layanan</a>
@@ -1968,7 +2021,7 @@
 
                         modalInstance.show();
                     },
-                    400
+                    250
                 );
             });
         });
@@ -1982,7 +2035,7 @@
     }
 
     AOS.init({
-        duration: 600,
+        duration: 300,
         easing: 'ease-in-out-sine',
         once: false,
         offset: 120,
