@@ -1578,16 +1578,20 @@
             @forelse ($testimonials as $testimonial)
             <div class="swiper-slide" data-aos="fade-up"
                 data-aos-delay="{{ $loop->index * 100 }}">
+                @php
+                    // Sanitize testimonial quote by removing straight and curly quotes
+                    $displayQuote = preg_replace('/["\'\x{201C}\x{201D}\x{2018}\x{2019}]+/u', '', $testimonial->quote);
+                @endphp
                 <div class="testimonial-flip-container" data-name="{{ $testimonial->name }}"
                     data-details="{{ $testimonial->age }} Tahun, {{ $testimonial->occupation }}"
-                    data-quote="{{ $testimonial->quote }}" data-image="{{ $testimonial->image_url }}">
+                    data-quote="{{ $displayQuote }}" data-image="{{ $testimonial->image_url }}">
                     <div class="testimonial-flipper">
                         <div class="testimonial-card-front">
                             <div class="testimonial-square-card">
                                 <img src="{{ $testimonial->image_url }}"
                                     alt="Foto {{ $testimonial->name }}" class="testimonial-bg-img">
                                 <div class="testimonial-content">
-                                    <p class="testimonial-quote">"{{ \Illuminate\Support\Str::limit($testimonial->quote, 150) }}"</p>
+                                    <p class="testimonial-quote">{{ \Illuminate\Support\Str::limit($displayQuote, 150) }}</p>
                                     <div class="testimonial-author">
                                         <h5 class="testimonial-name">{{ $testimonial->name }}</h5>
                                         {{-- BARIS YANG DIPERBARUI --}}
@@ -1930,7 +1934,11 @@
                 this.classList.add('is-flipped');
                 const name = this.getAttribute('data-name');
                 const details = this.getAttribute('data-details');
-                const quote = this.getAttribute('data-quote');
+                let quote = this.getAttribute('data-quote');
+                // Extra safety: strip any straight or curly quotes that might remain
+                if (quote) {
+                    quote = quote.replace(/["'\u201C\u201D\u2018\u2019]+/g, '');
+                }
                 const image = this.getAttribute('data-image');
 
                 setTimeout(() => {
@@ -1942,7 +1950,7 @@
                         if (modalImage) modalImage.src = image;
                         if (modalName) modalName.textContent = name;
                         if (modalDetails) modalDetails.textContent = details;
-                        if (modalQuote) modalQuote.textContent = `"${quote}"`;
+                        if (modalQuote) modalQuote.textContent = quote;
 
                         modalInstance.show();
                     },
