@@ -280,6 +280,9 @@
         text-overflow: ellipsis;
         min-height: 120px;
     }
+    /* Decorative curly quotes for testimonial text (UI only) */
+    .testimonial-quote::before { content: '“'; margin-right: 2px; }
+    .testimonial-quote::after { content: '”'; margin-left: 2px; }
 
     .testimonial-author {
         border-top: 1px solid rgba(255, 255, 255, 0.3);
@@ -339,6 +342,9 @@
         line-height: 1.7;
         white-space: pre-wrap;
     }
+    /* Add curly quotes in modal as well (UI only) */
+    #testimonialModal .quote-full::before { content: '“'; margin-right: 2px; }
+    #testimonialModal .quote-full::after { content: '”'; margin-left: 2px; }
 
     /* ARTIKEL STYLES */
     .featured-popular-article-swiper {
@@ -1950,7 +1956,7 @@
                         if (modalImage) modalImage.src = image;
                         if (modalName) modalName.textContent = name;
                         if (modalDetails) modalDetails.textContent = details;
-                        if (modalQuote) modalQuote.textContent = quote;
+                        if (modalQuote) modalQuote.textContent = quote; // quotes are added via CSS ::before/::after
 
                         modalInstance.show();
                     },
