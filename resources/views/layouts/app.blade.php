@@ -86,9 +86,20 @@
             font-weight: 500;
             position: relative;
             padding: 0.6rem 1rem;
+            /* Normalize vertical alignment so items don't look like they drop */
+            display: inline-flex;
+            align-items: center;
+            line-height: 1; /* avoid baseline differences across items */
             border-radius: 8px;
             transition: color 0.3s ease, transform 0.3s ease;
             font-family: 'Playfair Display';
+        }
+
+        /* Ensure icons/images inside links sit on the middle line */
+        .navbar .nav-link i,
+        .navbar .nav-link img {
+            vertical-align: middle;
+            line-height: 1;
         }
 
         .navbar .nav-link:hover {
@@ -293,10 +304,20 @@
 
 
         @media (max-width: 991.98px) {
+            .navbar { flex-wrap: nowrap; }
             .navbar .container-fluid {
                 padding-left: 1rem;
                 padding-right: 1rem;
+                display: flex; /* ensure flex on some browsers */
+                align-items: center;
+                justify-content: flex-start;
+                flex-wrap: nowrap; /* keep items in one line */
+                gap: 0; /* avoid accidental gaps causing wrap */
             }
+
+            /* keep logo from forcing wrap and keep tools to the right */
+            .navbar-brand { flex-shrink: 0; margin-right: .75rem !important; }
+            .navbar .container-fluid > .d-flex.d-lg-none { margin-left: auto; flex-shrink: 0; }
 
             .search-dropdown {
                 position: fixed;
