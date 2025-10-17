@@ -4,7 +4,7 @@
 
             <div class="col-md-4" style="flex: 1; min-width: 250px;">
             {{-- Mengganti H4 dengan tag IMG --}}
-            <img src="{{ asset('assets/img/logo_revisi_1.png') }}" alt="Indiegologi Logo" style="height: 70px; width: auto; margin-bottom: 1rem; background-color: #ffffff; padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 3px 10px rgba(0,0,0,0.18);">
+            <img src="{{ asset('assets/img/logo_revisi_1.png') }}" alt="Indiegologi Logo" style="height: 90px; width: auto; margin-bottom: 1rem;">
                 <p style="font-size: 14px;">
                     Ruang aman untuk eksplorasi diri dengan pendekatan holistik yang menggabungkan psikologi, logika,
                     dan intuisi.

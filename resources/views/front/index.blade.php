@@ -347,7 +347,8 @@
         padding: 1.5rem;
     }
 
-    #testimonialModal img {
+    /* Only the testimonial photo should be circular */
+    #testimonialModal #modal-image {
         width: 100px;
         height: 100px;
         object-fit: cover;
@@ -355,6 +356,18 @@
         margin-bottom: 1rem;
         border: 3px solid #fff;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Brand logo at the bottom: bigger and no ring */
+    #testimonialModal #modal-logo {
+        height: 120px; /* bigger per request */
+        width: auto;
+        opacity: 0.9;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        display: block;
+        margin: 0.75rem auto 0;
     }
 
     #testimonialModal h5 {
@@ -473,9 +486,9 @@
         .popular-articles-swiper .swiper-button-next,
         .featured-popular-wrapper .swiper-button-prev,
         .featured-popular-wrapper .swiper-button-next {
-            top: 22%;
-            /* move arrows higher so they line up with title on mobile */
-            transform: translateY(-22%);
+            top: 50%;
+            /* center arrows vertically on mobile */
+            transform: translateY(-50%);
             width: 40px;
             height: 40px;
         }
@@ -1014,11 +1027,13 @@
             padding: 2.5rem;
         }
 
-        #testimonialModal img {
+        #testimonialModal #modal-image {
             width: 140px;
             height: 140px;
             margin-bottom: 1.5rem;
         }
+
+    #testimonialModal #modal-logo { height: 150px; }
     }
 
     @media (max-width: 1200px) {
@@ -1808,7 +1823,7 @@
                 <p id="modal-details" class="text-muted mb-3">Detail Klien</p>
                 <p id="modal-quote" class="quote-full">Isi testimoni lengkap akan muncul di sini.</p>
                 <div class="mt-3">
-                    <img src="{{ asset('assets/img/logo_revisi_1.png') }}" alt="Indiegologi Logo" style="height: 52px; width: auto; opacity: 0.9;">
+                    <img id="modal-logo" src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo">
                 </div>
             </div>
         </div>

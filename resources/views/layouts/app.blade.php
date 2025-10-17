@@ -30,7 +30,7 @@
             --indiegologi-secondary: #6c757d;
             --indiegologi-light: #f8f9fa;
             --indiegologi-dark: #212529;
-            --navbar-height: 80px;
+            --navbar-height: 100px;
         }
 
         body {
@@ -63,6 +63,22 @@
             color: var(--indiegologi-primary) !important;
             transition: color 0.3s ease;
             font-family: 'Playfair Display';
+        }
+
+        /* Brand logo sizing */
+        .navbar-brand img {
+            height: 96px; /* larger for stronger branding */
+            width: auto;
+            filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));
+            transition: height 0.25s ease;
+        }
+
+        /* Shrink a bit when page is scrolled */
+        .navbar.scrolled .navbar-brand img { height: 72px; }
+
+        /* Mobile/tablet: keep logo balanced */
+        @media (max-width: 991.98px) {
+            .navbar-brand img { height: 72px; }
         }
 
         .navbar .nav-link {
@@ -386,7 +402,7 @@
         {{-- Brand/Logo --}}
         {{-- Kode Baru --}}
 <a class="navbar-brand" href="{{ route('front.index') }}" style="padding-top: 0; padding-bottom: 0; margin-right: 2rem;">
-    <img src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo" style="height: 68px; width: auto; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));">
+    <img src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo">
 </a>
             <div class="d-flex align-items-center d-lg-none">
                 <div class="search-container">
