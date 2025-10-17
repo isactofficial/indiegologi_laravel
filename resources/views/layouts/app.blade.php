@@ -30,7 +30,7 @@
             --indiegologi-secondary: #6c757d;
             --indiegologi-light: #f8f9fa;
             --indiegologi-dark: #212529;
-            --navbar-height: 100px;
+            --navbar-height: 120px;
         }
 
         body {
@@ -67,18 +67,18 @@
 
         /* Brand logo sizing */
         .navbar-brand img {
-            height: 96px; /* larger for stronger branding */
+            height: 118px; /* bigger as requested */
             width: auto;
             filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));
             transition: height 0.25s ease;
         }
 
         /* Shrink a bit when page is scrolled */
-        .navbar.scrolled .navbar-brand img { height: 72px; }
+    .navbar.scrolled .navbar-brand img { height: 90px; }
 
         /* Mobile/tablet: keep logo balanced */
         @media (max-width: 991.98px) {
-            .navbar-brand img { height: 72px; }
+            .navbar-brand img { height: 90px; }
         }
 
         .navbar .nav-link {
