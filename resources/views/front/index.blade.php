@@ -1230,7 +1230,7 @@
         transform: translateY(-50%);
         width: 465px;
         /* Sesuaikan lebar iklan */
-        height: 700px;
+        height: 600px;
         z-index: 1050;
         transition: transform 0.25s ease, opacity 0.25s ease;
         /* Faster transition */
