@@ -360,7 +360,7 @@
 
     /* Brand logo at the bottom: bigger and no ring */
     #testimonialModal #modal-logo {
-        height: 120px; /* bigger per request */
+        height: 80px; 
         width: auto;
         opacity: 0.9;
         border: none;
@@ -635,7 +635,7 @@
     }
 
     #sketch-gallery-wrapper .sketch-card-brand img {
-        max-height: 85px;
+        max-height: 55px;
         /* logo agak besar */
         width: auto;
         object-fit: contain;
@@ -788,8 +788,8 @@
         }
 
         #sketch-gallery-wrapper .sketch-circular-image {
-            width: 80px;
-            height: 80px;
+            width: 150px;
+            height: 150px;
             margin-bottom: 8px;
         }
 
@@ -885,8 +885,8 @@
         }
 
         #sketch-gallery-wrapper .sketch-circular-image {
-            width: 80px;
-            height: 80px;
+            width: 150px;
+            height: 150px;
         }
 
         #sketch-gallery-wrapper .sketch-card-subtitle {
@@ -1033,7 +1033,7 @@
             margin-bottom: 1.5rem;
         }
 
-    #testimonialModal #modal-logo { height: 150px; }
+        #testimonialModal #modal-logo { height: 80px; }
     }
 
     @media (max-width: 1200px) {
@@ -1262,6 +1262,22 @@
         pointer-events: none;
     }
 
+    .floating-ad-container .ad-slot.top-ad {
+        height: 66.67%;
+        width: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .floating-ad-container .ad-slot.bottom-ad {
+        height: 33.33%;
+        width: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
     .floating-ad-container .close-ad-btn {
         background-color: #f1f1f1;
         border: 1px solid #ddd;
@@ -1276,14 +1292,14 @@
         color: #333;
         margin-bottom: -1px;
         flex-shrink: 0;
+        z-index: 1;
     }
 
     .floating-ad-container .ad-link {
         display: block;
         line-height: 0;
         width: 100%;
-        height: auto;
-        /* Menghilangkan spasi di bawah gambar */
+        height: 100%;
         flex-grow: 1;
     }
 
@@ -1302,7 +1318,7 @@
     /* Sembunyikan iklan di layar kecil */
     @media (max-width: 991.98px) {
         .floating-ad-container {
-            display: none;
+            /* display: none; */
         }
     }
 
@@ -1346,7 +1362,7 @@
                             Mengenali jenis cermin yang mereka gunakan akan<br>
                             dapat mengerti bagaimana wujud bayangan yang dihasilkan.
                         </p>
-                        <a href="{{ route('front.sketch') }}" class="btn hero-button">Kenali Potensi Anak Anda</a>
+                        <a href="{{ route('front.layanan') }}" class="btn hero-button">Kenali Potensi Anak Anda</a>
                     </div>
                 </div>
             </div>
@@ -1365,7 +1381,7 @@
                             Analisis berdasarkan <i>sixsence</i> merupakan keahlian kami<br>
                             dalam rekrutmen maupun pengembangan human resource.
                         </p>
-                        <a href="{{ route('front.articles') }}" class="btn hero-button">Optimalkan Tim Anda</a>
+                        <a href="{{ route('front.layanan') }}" class="btn hero-button">Optimalkan Tim Anda</a>
                     </div>
                 </div>
             </div>
@@ -1381,7 +1397,7 @@
                             akan dapat merubah <i>negative behaviour</i> dalam diri<br>
                             untuk menjadi potensi unik yang juga merupakan <i>value</i> diri.
                         </p>
-                        <a href="{{ route('front.articles') }}" class="btn hero-button">Temukan Potensi Diri Anda</a>
+                        <a href="{{ route('front.layanan') }}" class="btn hero-button">Temukan Potensi Diri Anda</a>
                     </div>
                 </div>
             </div>
@@ -1396,7 +1412,7 @@
                             karena bisa jadi properti yang kita akan miliki berenergi negatif<br>
                             Ubah keberuntungan bisa melalui properti, tertarik?
                         </p>
-                        <a href="{{ route('front.articles') }}" class="btn hero-button">Konsultasi Properti Anda</a>
+                        <a href="{{ route('front.layanan') }}" class="btn hero-button">Konsultasi Properti Anda</a>
                     </div>
                 </div>
             </div>
@@ -1411,7 +1427,7 @@
                             Temukan keindahan dalam setiap momen, baik suka maupun duka,<br>
                             karena di situlah pertumbuhan sejati berawal.
                         </p>
-                        <a href="{{ route('front.articles') }}" class="btn hero-button">Nikmati Perjalananmu</a>
+                        <a href="{{ route('front.layanan') }}" class="btn hero-button">Nikmati Perjalananmu</a>
                     </div>
                 </div>
             </div>
@@ -1427,7 +1443,7 @@
                             Jurnal adalah cermin jiwa dan kompas untuk masa depan,<br>
                             mengubah pengalaman menjadi kebijaksanaan.
                         </p>
-                        <a href="{{ route('front.articles') }}" class="btn hero-button">Mulai Menulis Jurnal</a>
+                        <a href="{{ route('front.layanan') }}" class="btn hero-button">Mulai Menulis Jurnal</a>
                     </div>
                 </div>
             </div>
@@ -1443,7 +1459,7 @@
                             Meditasi adalah jalan kembali ke kedamaian batin,<br>
                             melepas beban dan menemukan kekuatan dari dalam.
                         </p>
-                        <a href="{{ route('front.articles') }}" class="btn hero-button">Temukan Ketenangan</a>
+                        <a href="{{ route('front.layanan') }}" class="btn hero-button">Temukan Ketenangan</a>
                     </div>
                 </div>
             </div>
@@ -1831,11 +1847,19 @@
 </div>
 
 <div id="popupAdContainer" class="floating-ad-container">
-    <button id="closePopupAd" class="close-ad-btn">TUTUP IKLAN</button>
-    <a href="#" target="_blank" rel="noopener noreferrer" class="ad-link">
-        {{-- Ganti 'iklan-kanan-panjang.png' dengan nama file gambar iklan Anda di folder public/assets/img/ --}}
-        <img src="{{ asset('assets/img/iklan-kanan-panjang.png') }}" alt="Iklan promosi" class="ad-image">
-    </a>
+    <div class="ad-slot top-ad">
+        <button id="closePopupAd" class="close-ad-btn">TUTUP IKLAN</button>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="ad-link">
+            <img src="{{ asset('assets/img/iklan-1.png') }}" alt="Iklan promosi 1" class="ad-image">
+        </a>
+    </div>
+    
+    <!-- Bottom Ad -->
+    <div class="ad-slot bottom-ad">
+        <a href="/layanan" target="_blank" rel="noopener noreferrer" class="ad-link">
+            <img src="{{ asset('assets/img/iklan-2.png') }}" alt="Iklan promosi 2" class="ad-image">
+        </a>
+    </div>
 </div>
 @endsection
 

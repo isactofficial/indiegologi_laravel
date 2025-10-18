@@ -6,7 +6,9 @@
     <title>@yield('title', 'Indiegologi')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('favicon/favicon-light.png') }}" media="(prefers-color-scheme: light)"type="image/png">
+    <link rel="icon" href="{{ asset('favicon/favicon-dark.png') }}" media="(prefers-color-scheme: dark)"type="image/png">
+    <!-- <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     {{-- Libraries CSS --}}
@@ -30,7 +32,7 @@
             --indiegologi-secondary: #6c757d;
             --indiegologi-light: #f8f9fa;
             --indiegologi-dark: #212529;
-            --navbar-height: 120px;
+            --navbar-height: 80px;
         }
 
         body {
@@ -67,18 +69,18 @@
 
         /* Brand logo sizing */
         .navbar-brand img {
-            height: 118px; /* bigger as requested */
+            height: 70px;
             width: auto;
             filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));
             transition: height 0.25s ease;
         }
 
         /* Shrink a bit when page is scrolled */
-    .navbar.scrolled .navbar-brand img { height: 90px; }
+    .navbar.scrolled .navbar-brand img { height: 60px; }
 
         /* Mobile/tablet: keep logo balanced */
         @media (max-width: 991.98px) {
-            .navbar-brand img { height: 90px; }
+            .navbar-brand img { height: 60px; }
         }
 
         .navbar .nav-link {

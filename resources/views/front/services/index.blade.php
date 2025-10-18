@@ -190,7 +190,7 @@
                                         </div>
                                     </h2>
                                     <div id="collapse-free-consultation" class="accordion-collapse collapse" data-bs-parent="#freeServiceAccordion">
-                                        <div class="accordion-body p-4">
+                                        <div class="accordion-body p-4 rounded-4">
                                             <div class="service-block" data-service-id="new-free-consultation">
 
                                                 <div class="stagger-item">
@@ -319,7 +319,7 @@
                                     </div>
                                 </h2>
                                 <div id="collapse-{{ $service->id }}" class="accordion-collapse collapse" data-bs-parent="#servicesAccordion">
-                                    <div class="accordion-body p-4">
+                                    <div class="accordion-body p-4 rounded-4">
                                         <div class="service-block" data-service-id="{{ $service->id }}">
                                             <div class="stagger-item">
                                                 <div class="row mb-4">

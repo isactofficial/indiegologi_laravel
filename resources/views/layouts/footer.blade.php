@@ -4,7 +4,7 @@
 
             <div class="col-md-4" style="flex: 1; min-width: 250px;">
             {{-- Mengganti H4 dengan tag IMG --}}
-            <img src="{{ asset('assets/img/logo_revisi_1.png') }}" alt="Indiegologi Logo" style="height: 90px; width: auto; margin-bottom: 1rem;">
+            <img src="{{ asset('assets/img/logo_revisi_1_white.png') }}" alt="Indiegologi Logo" style="height: 150px; width: auto; margin-bottom: 1rem;">
                 <p style="font-size: 14px;">
                     Ruang aman untuk eksplorasi diri dengan pendekatan holistik yang menggabungkan psikologi, logika,
                     dan intuisi.
@@ -13,7 +13,7 @@
                     {{-- Ikon ditautkan ke URL yang sesuai --}}
                     <a href="https://www.instagram.com/indiegologi/" target="_blank" style="margin-right: 10px; color: white;"><i class="bi bi-instagram"></i></a>
                     <a href="https://wa.me/6282220955595" target="_blank" style="margin-right: 10px; color: white;"><i class="bi bi-whatsapp"></i></a>
-                    <a href="mailto:indiegologiofficial@gmail.com" style="margin-right: 10px; color: white;"><i class="bi bi-envelope"></i></a>
+                    <a href="mailto:temancerita@indiegologi.com" style="margin-right: 10px; color: white;"><i class="bi bi-envelope"></i></a>
                 </div>
             </div>
 
@@ -60,8 +60,8 @@
                     </a>
                 </p>
                 <p style="margin-bottom: 0.3rem;">
-                    <a href="mailto:indiegologiofficial@gmail.com" style="color: white; text-decoration: none;">
-                        indiegologiofficial@gmail.com
+                    <a href="mailto:temancerita@indiegologi.com" style="color: white; text-decoration: none;">
+                        temancerita@indiegologi.com
                     </a>
                 </p>
                 <p style="margin-bottom: 0.3rem;">Yogyakarta, Indonesia</p>
