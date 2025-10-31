@@ -21,49 +21,55 @@
         --brand-danger: #dc3545;
         --font-main: 'Playfair Display', sans-serif;
     }
+
     body {
         font-family: var(--font-main);
         background-color: var(--brand-background);
     }
+
     .cart-page {
         color: var(--brand-text);
     }
+
     .cart-header .section-title {
         font-weight: 700;
         color: var(--brand-primary);
     }
-    .cart-item-card, .summary-card {
+
+    .cart-item-card,
+    .summary-card {
         background-color: var(--brand-surface);
         border: 1px solid var(--brand-border);
         border-radius: 8px;
         transition: all 0.3s ease-in-out;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
+
     .cart-item-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(12, 44, 90, 0.1);
     }
-    
+
     /* Ensure equal height for cart items */
     .cart-item-card .card-body {
         min-height: 320px;
         display: flex;
         flex-direction: column;
     }
-    
+
     .cart-item-card .row {
         flex: 1;
         display: flex;
         align-items: stretch;
     }
-    
+
     /* Make the pricing column fill available space */
     .cart-item-card .col-md-5 {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
     }
-    
+
     /* Pricing section styling */
     .pricing-section {
         flex: 1;
@@ -72,23 +78,33 @@
         justify-content: space-between;
         min-height: 240px;
     }
-    
+
     /* Action buttons stay at bottom */
     .cart-item-actions {
         margin-top: auto;
         padding-top: 1rem;
     }
-    
+
     .item-details-list {
-        list-style: none; padding: 0; margin: 0; font-size: 0.9rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9rem;
     }
+
     .item-details-list li {
-        display: flex; align-items: center; margin-bottom: 0.6rem; color: var(--brand-text-muted);
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.6rem;
+        color: var(--brand-text-muted);
     }
+
     .item-details-list i {
         color: var(--brand-primary);
-        margin-right: 0.75rem; width: 16px;
+        margin-right: 0.75rem;
+        width: 16px;
     }
+
     .btn-brand-outline {
         background-color: transparent;
         color: var(--brand-primary);
@@ -99,18 +115,31 @@
         font-size: 0.875rem;
         transition: all 0.2s ease-in-out;
     }
+
     .btn-brand-outline:hover {
         background-color: var(--brand-primary);
         color: var(--brand-surface);
         transform: translateY(-2px);
         box-shadow: 0 4px 10px rgba(12, 44, 90, 0.2);
     }
+
     .remove-btn {
-        color: var(--brand-text-muted); transition: color 0.2s ease;
+        color: var(--brand-text-muted);
+        transition: color 0.2s ease;
     }
-    .remove-btn:hover { color: var(--brand-danger); }
-    .remove-btn i { transition: transform 0.2s ease-in-out; }
-    .remove-btn:hover i { transform: scale(1.15); }
+
+    .remove-btn:hover {
+        color: var(--brand-danger);
+    }
+
+    .remove-btn i {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .remove-btn:hover i {
+        transform: scale(1.15);
+    }
+
     .free-consultation-badge {
         background: linear-gradient(45deg, var(--brand-gold), #FFC533);
         color: white;
@@ -120,31 +149,35 @@
         font-weight: bold;
         margin-left: 0.5rem;
     }
-    
+
     /* Free consultation spacing to match height */
     .free-consultation-spacer {
         height: 80px;
     }
-    
+
     /* Override warna hijau default Bootstrap menjadi biru Indiegologi */
     .text-success {
         color: var(--brand-primary) !important;
     }
+
     /* Style untuk checkbox yang di-check */
     .form-check-input:checked {
         background-color: var(--brand-primary);
         border-color: var(--brand-primary);
     }
+
     .form-check-input:focus {
         border-color: var(--brand-primary);
         box-shadow: 0 0 0 0.25rem rgba(12, 44, 90, 0.25);
     }
+
     @media (min-width: 992px) {
         .sticky-summary {
             position: sticky;
             top: 120px;
         }
     }
+
     .btn-checkout {
         background-color: var(--brand-primary);
         color: var(--brand-surface);
@@ -155,43 +188,53 @@
         transition: all 0.25s ease;
         box-shadow: 0 4px 15px rgba(12, 44, 90, 0.2);
     }
+
     .btn-checkout:hover {
         background-color: #082142;
         color: var(--brand-surface);
         transform: translateY(-3px);
         box-shadow: 0 7px 20px rgba(12, 44, 90, 0.3);
     }
+
     .price-details-list .list-group-item {
-        padding: 0.5rem 0; border: 0; background-color: transparent;
+        padding: 0.5rem 0;
+        border: 0;
+        background-color: transparent;
     }
+
     /* Style untuk thumbnail konsultasi gratis */
     .cart-item-card img[alt*="Konsultasi Gratis"] {
         background-color: #0C2C5A !important;
         background-image: url('https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS') !important;
     }
-    
+
     /* Override untuk placeholder image konsultasi gratis di guest cart */
     .cart-item-card img[src*="placehold.co"][src*="D4AF37"],
     .cart-item-card img[src*="placehold.co"][src*="FFB700"] {
         content: url('https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS') !important;
     }
-    
+
     @media (max-width: 767.98px) {
         .cart-header .section-title {
             font-size: 2rem;
         }
+
         .summary-card h4 {
             font-size: 1.25rem;
         }
+
         .summary-card .fs-5 {
             font-size: 1.1rem !important;
         }
+
         .summary-card .fs-4 {
             font-size: 1.2rem !important;
         }
+
         .cart-item-card .card-body {
             min-height: auto;
         }
+
         .pricing-section {
             min-height: auto;
         }
@@ -204,233 +247,256 @@
     <div class="container" style="padding-top: 6rem; padding-bottom: 6rem;">
 
         @auth
-            @if ($cartItems->isEmpty())
-                {{-- Empty cart message --}}
-                <div class="text-center py-5" data-aos="zoom-in">
-                    <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
-                    <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
-                    <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
-                    <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
-                </div>
-            @else
-                {{-- Cart header --}}
-                <div class="text-center mb-5 cart-header" data-aos="fade-down">
-                    <h1 class="section-title">Keranjang Belanja Anda</h1>
-                    <p class="lead text-muted">Satu langkah lagi untuk menjadi versi terbaik Anda.</p>
-                </div>
-                
-                <form action="{{ route('checkout.process') }}" method="POST" id="cart-form-logged-in">
-                    @csrf
-                    <div class="row g-4 g-lg-5">
-                        <div class="col-lg-7">
-                            {{-- Select All card --}}
-                            <div class="card mb-3 shadow-sm border-0" data-aos="fade-right">
-                                <div class="card-body p-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="select-all" checked>
-                                        <label class="form-check-label fw-bold" for="select-all" style="color: var(--brand-text);">
-                                            Pilih Semua Layanan
-                                        </label>
-                                    </div>
-                                </div>
+        @if ($cartItems->isEmpty())
+        {{-- Empty cart message --}}
+        <div class="text-center py-5" data-aos="zoom-in">
+            <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
+            <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
+            <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
+            <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
+        </div>
+        @else
+        {{-- Cart header --}}
+        <div class="text-center mb-5 cart-header" data-aos="fade-down">
+            <h1 class="section-title">Keranjang Belanja Anda</h1>
+            <p class="lead text-muted">Satu langkah lagi untuk menjadi versi terbaik Anda.</p>
+        </div>
+
+        <form action="{{ route('checkout.process') }}" method="POST" id="cart-form-logged-in">
+            @csrf
+            <div class="row g-4 g-lg-5">
+                <div class="col-lg-7">
+                    {{-- Select All card --}}
+                    <div class="card mb-3 shadow-sm border-0" data-aos="fade-right">
+                        <div class="card-body p-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="select-all" checked>
+                                <label class="form-check-label fw-bold" for="select-all" style="color: var(--brand-text);">
+                                    Pilih Semua Layanan
+                                </label>
                             </div>
-                            
-                            {{-- Cart Items Loop --}}
-                            @foreach ($cartItems as $item)
-                                <div class="card mb-3 cart-item-card" data-service-id="{{ $item->service_id }}" data-aos="fade-right" data-aos-delay="{{ $loop->index * 100 }}">
-                                    <div class="card-body p-4">
-                                        <div class="row">
-                                            {{-- Item Details Column --}}
-                                            <div class="col-12 col-md-7 mb-4 mb-md-0">
-                                                <div class="d-flex align-items-start">
-                                                    <div class="form-check me-3 pt-1">
-                                                        <input class="form-check-input item-checkbox" type="checkbox" 
-                                                               name="selected_items[]" value="{{ $item->id }}" 
-                                                               id="item-{{ $item->id }}" checked>
-                                                    </div>
-                                                    
-                                                    <div class="position-relative me-3">
-                                                        <img src="{{ $item->service_thumbnail }}" 
-                                                             alt="{{ $item->service_title }}" 
-                                                             class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
-                                                    </div>
-                                                    
-                                                    <div class="flex-grow-1">
-                                                        <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">
-                                                            {{ $item->service_title }}
-                                                            @if($item->isFreeConsultation())
-                                                                <span class="free-consultation-badge">GRATIS</span>
-                                                            @endif
-                                                        </h5>
-                                                        
-                                                        <ul class="item-details-list">
-                                                            <li>
-                                                                <i class="bi bi-calendar-check"></i>
-                                                                {{ \Carbon\Carbon::parse($item->booked_date)->translatedFormat('d M Y') }}, 
-                                                                {{ $item->booked_time }}
-                                                                @if($item->isFreeConsultation())
-                                                                    (1 jam)
-                                                                @else
-                                                                    ({{ $item->hours }} jam)
-                                                                @endif
-                                                            </li>
-                                                            <li>
-                                                                <i class="bi bi-camera-video"></i>
-                                                                {{ $item->session_type }} & 
-                                                                {{ $item->contact_preference == 'chat_only' ? 'Chat' : 'Chat & Call' }}
-                                                            </li>
-                                                            @if($item->offline_address)
-                                                                <li><i class="bi bi-geo-alt"></i>{{ $item->offline_address }}</li>
-                                                            @endif
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            {{-- Pricing Column --}}
-                                            <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
-                                                <div class="pricing-section">
-                                                    @if($item->isFreeConsultation())
-                                                        {{-- Free consultation pricing --}}
-                                                        <div>
-                                                            <ul class="list-group list-group-flush price-details-list small">
-                                                                <li class="list-group-item d-flex justify-content-between">
-                                                                    <span class="text-muted">Harga Dasar:</span>
-                                                                    <span class="fw-bold" style="color: var(--brand-primary);">GRATIS</span>
-                                                                </li>
-                                                                <li class="list-group-item d-flex justify-content-between">
-                                                                    <span class="text-muted">Durasi:</span>
-                                                                    <span class="text-muted">1 Jam</span>
-                                                                </li>
-                                                                <li class="list-group-item d-flex justify-content-between">
-                                                                    <span class="text-muted">Sesi:</span>
-                                                                    <span class="text-muted">{{ $item->session_type }}</span>
-                                                                </li>
-                                                                <li class="list-group-item d-flex justify-content-between">
-                                                                    <span class="text-muted">Subtotal:</span>
-                                                                    <span style="color: var(--brand-primary);">Rp 0</span>
-                                                                </li>
-                                                            </ul>
-                                                            
-                                                            {{-- Spacer to match regular service height --}}
-                                                            <div class="free-consultation-spacer"></div>
-                                                            
-                                                            <hr class="my-2" style="border-color: var(--brand-border);">
-                                                            <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                                <span>Total Item:</span>
-                                                                <span>Rp 0</span>
-                                                            </p>
-                                                        </div>
-                                                    @else
-                                                        {{-- Regular service pricing --}}
-                                                        <div>
-                                                            <ul class="list-group list-group-flush price-details-list small">
-                                                                <li class="list-group-item d-flex justify-content-between">
-                                                                    <span class="text-muted">Harga Dasar:</span>
-                                                                    <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
-                                                                </li>
-                                                                @if ($item->hours > 0)
-                                                                <li class="list-group-item d-flex justify-content-between">
-                                                                    <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
-                                                                    <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
-                                                                </li>
-                                                                @endif
-                                                                <li class="list-group-item d-flex justify-content-between">
-                                                                    <span class="text-muted">Subtotal:</span>
-                                                                    <span class="text-muted">Rp {{ number_format($item->item_subtotal, 0, ',', '.') }}</span>
-                                                                </li>
-                                                                @php $itemDiscount = $item->item_subtotal - $item->final_item_price; @endphp
-                                                                @if ($itemDiscount > 0)
-                                                                <li class="list-group-item d-flex justify-content-between">
-                                                                    <span style="color: var(--brand-danger);">Diskon:</span>
-                                                                    <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
-                                                                </li>
-                                                                @endif
-                                                            </ul>
-                                                            <hr class="my-2" style="border-color: var(--brand-border);">
-                                                            <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                                <span>Total Item:</span>
-                                                                <span>Rp {{ number_format($item->final_item_price, 0, ',', '.') }}</span>
-                                                            </p>
-                                                        </div>
-                                                    @endif
-                                                    
-                                                    {{-- Action Buttons --}}
-                                                    <div class="cart-item-actions">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            @if(!$item->isFreeConsultation())
-                                                                <a href="{{ route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
-                                                            @else
-                                                                <span class="text-muted small">Konsultasi Gratis</span>
-                                                            @endif
-                                                            <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="Hapus item">
-                                                                <i class="bi bi-trash3-fill fs-5"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Cart Items Loop --}}
+                    @foreach ($cartItems as $item)
+                    <div class="card mb-3 cart-item-card" data-service-id="{{ $item->service_id }}" data-aos="fade-right" data-aos-delay="{{ $loop->index * 100 }}">
+                        <div class="card-body p-4">
+                            <div class="row">
+                                {{-- Item Details Column --}}
+                                <div class="col-12 col-md-7 mb-4 mb-md-0">
+                                    <div class="d-flex align-items-start">
+                                        <div class="form-check me-3 pt-1">
+                                            <input class="form-check-input item-checkbox" type="checkbox"
+                                                name="selected_items[]" value="{{ $item->id }}"
+                                                id="item-{{ $item->id }}" checked>
+                                        </div>
+
+                                        <div class="position-relative me-3">
+                                            <img src="{{ $item->getServiceThumbnail() }}"
+                                                alt="{{ $item->getServiceTitle() }}"
+                                                class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                        </div>
+
+                                        <div class="flex-grow-1">
+                                            <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">
+                                                {{ $item->getServiceTitle() }}
+                                                @if($item->isFreeConsultation())
+                                                <span class="free-consultation-badge">GRATIS</span>
+                                                @endif
+                                                @if($item->isEvent())
+                                                <span class="badge bg-primary ms-2">EVENT</span>
+                                                @endif
+                                            </h5>
+
+                                            <ul class="item-details-list">
+                                                <li><i class="bi bi-calendar-check"></i>{{ $item->booked_date->format('d M Y') }}, {{ $item->booked_time }}</li>
+                                                <li><i class="bi bi-camera-video"></i>{{ $item->session_type }} & {{ $item->contact_preference === 'chat_only' ? 'Chat' : 'Chat & Call' }}</li>
+                                                @if($item->offline_address)
+                                                <li><i class="bi bi-geo-alt"></i>{{ $item->offline_address }}</li>
+                                                @endif
+                                                @if($item->isEvent())
+                                                <li><i class="bi bi-people"></i>{{ $item->participant_count }} Peserta</li>
+                                                @endif
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
-                        
-                        {{-- Summary Section --}}
-                        <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
-                            <div class="summary-card sticky-summary">
-                                <div class="card-body p-4">
-                                    <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">Ringkasan Pesanan</h4>
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">Subtotal Semua Item</span>
-                                        <span class="text-muted" id="summary-subtotal">Rp {{ $subtotal }}</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <span class="text-muted">Total Diskon</span>
-                                        <span class="text-danger" id="summary-discount">- Rp {{ $totalDiscount }}</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between fw-bold fs-5 mb-3" style="color: var(--brand-text);">
-                                        <span>Grand Total Akhir</span>
-                                        <span id="summary-grandtotal">Rp {{ $grandTotal }}</span>
-                                    </div>
-                                    <hr style="border-color: var(--brand-border);">
-                                    <div class="mb-3">
-                                        <label for="payment-type-select" class="form-label fw-bold" style="color: var(--brand-text);">Pilih Tipe Pembayaran</label>
-                                        <select class="form-select" id="payment-type-select" name="global_payment_type">
-                                            <option value="full_payment" selected>Pembayaran Penuh</option>
-                                            <option value="dp">DP (50%)</option>
-                                        </select>
-                                    </div>
-                                    <hr style="border-color: var(--brand-border);">
-                                    <div class="d-flex justify-content-between fw-bolder fs-4 mt-3" style="color: var(--brand-primary);">
-                                        <span style="white-space: nowrap; margin-right: 1rem;">Total Bayar Sekarang</span>
-                                        <span id="summary-totalpay">Rp {{ $totalToPayNow }}</span>
-                                    </div>
-                                    <div class="d-grid mt-4">
-                                        <button type="submit" class="btn btn-checkout">Lanjutkan ke Pembayaran</button>
+
+                                {{-- Pricing Column - SINGLE UNIFIED SECTION --}}
+                                <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
+                                    <div class="pricing-section">
+                                        @if($item->isFreeConsultation())
+                                        {{-- Free consultation pricing --}}
+                                        <div>
+                                            <ul class="list-group list-group-flush price-details-list small">
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Harga Dasar:</span>
+                                                    <span class="fw-bold" style="color: var(--brand-primary);">GRATIS</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Durasi:</span>
+                                                    <span class="text-muted">1 Jam</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Sesi:</span>
+                                                    <span class="text-muted">{{ $item->session_type }}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Subtotal:</span>
+                                                    <span style="color: var(--brand-primary);">Rp 0</span>
+                                                </li>
+                                            </ul>
+
+                                            <div class="free-consultation-spacer"></div>
+
+                                            <hr class="my-2" style="border-color: var(--brand-border);">
+                                            <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                                <span>Total Item:</span>
+                                                <span>Rp 0</span>
+                                            </p>
+                                        </div>
+
+                                        @elseif($item->isEvent())
+                                        {{-- Event pricing --}}
+                                        <div>
+                                            <ul class="list-group list-group-flush price-details-list small">
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Harga per peserta:</span>
+                                                    <span class="text-muted">Rp {{ number_format($item->original_price, 0, ',', '.') }}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Jumlah peserta:</span>
+                                                    <span class="text-muted">{{ $item->participant_count }}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Subtotal:</span>
+                                                    <span class="text-muted">Rp {{ number_format($item->calculateOriginalSubtotal(), 0, ',', '.') }}</span>
+                                                </li>
+                                                @if ($item->getDiscountAmount() > 0)
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span style="color: var(--brand-danger);">Diskon @if($item->referralCode)({{ $item->referralCode->discount_percentage }}%)@endif:</span>
+                                                    <span style="color: var(--brand-danger);">- Rp {{ number_format($item->getDiscountAmount(), 0, ',', '.') }}</span>
+                                                </li>
+                                                @endif
+                                            </ul>
+                                            <hr class="my-2" style="border-color: var(--brand-border);">
+                                            <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                                <span>Total Item:</span>
+                                                <span>Rp {{ number_format($item->calculateFinalPrice(), 0, ',', '.') }}</span>
+                                            </p>
+                                        </div>
+
+                                        @else
+                                        {{-- Regular service pricing --}}
+                                        <div>
+                                            <ul class="list-group list-group-flush price-details-list small">
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Harga Dasar:</span>
+                                                    <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                                                </li>
+                                                @if ($item->hours > 0)
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
+                                                    <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
+                                                </li>
+                                                @endif
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span class="text-muted">Subtotal:</span>
+                                                    <span class="text-muted">Rp {{ number_format($item->calculateOriginalSubtotal(), 0, ',', '.') }}</span>
+                                                </li>
+                                                @php $itemDiscount = $item->calculateOriginalSubtotal() - $item->calculateFinalPrice(); @endphp
+                                                @if ($itemDiscount > 0)
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <span style="color: var(--brand-danger);">Diskon:</span>
+                                                    <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
+                                                </li>
+                                                @endif
+                                            </ul>
+                                            <hr class="my-2" style="border-color: var(--brand-border);">
+                                            <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
+                                                <span>Total Item:</span>
+                                                <span>Rp {{ number_format($item->calculateFinalPrice(), 0, ',', '.') }}</span>
+                                            </p>
+                                        </div>
+                                        @endif
+
+                                        {{-- Action Buttons --}}
+                                        <div class="cart-item-actions">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                @if(!$item->isFreeConsultation())
+                                                <a href="{{ $item->isEvent() ? route('front.events.index') : route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
+                                                @else
+                                                <span class="text-muted small">Konsultasi Gratis</span>
+                                                @endif
+                                                <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="Hapus item">
+                                                    <i class="bi bi-trash3-fill fs-5"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
-                
-                {{-- Hidden form for removing items --}}
-                <form id="remove-item-form" action="{{ route('front.cart.remove') }}" method="POST" style="display: none;">
-                    @csrf
-                    <input type="hidden" name="id" id="remove-item-id">
-                </form>
-            @endif
-        @else
-            {{-- Guest Cart Display --}}
-            <div id="temp-cart-display">
-                <div class="text-center py-5" data-aos="zoom-in">
-                    <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
-                    <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
-                    <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
-                    <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
+                    @endforeach
+                </div>
+
+                {{-- Summary Section --}}
+                <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
+                    <div class="summary-card sticky-summary">
+                        <div class="card-body p-4">
+                            <h4 class="fw-bold mb-4" style="color: var(--brand-primary);">Ringkasan Pesanan</h4>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal Semua Item</span>
+                                <span class="text-muted" id="summary-subtotal">Rp {{ $subtotal }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted">Total Diskon</span>
+                                <span class="text-danger" id="summary-discount">- Rp {{ $totalDiscount }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between fw-bold fs-5 mb-3" style="color: var(--brand-text);">
+                                <span>Grand Total Akhir</span>
+                                <span id="summary-grandtotal">Rp {{ $grandTotal }}</span>
+                            </div>
+                            <hr style="border-color: var(--brand-border);">
+                            <div class="mb-3">
+                                <label for="payment-type-select" class="form-label fw-bold" style="color: var(--brand-text);">Pilih Tipe Pembayaran</label>
+                                <select class="form-select" id="payment-type-select" name="global_payment_type">
+                                    <option value="full_payment" selected>Pembayaran Penuh</option>
+                                    <option value="dp">DP (50%)</option>
+                                </select>
+                            </div>
+                            <hr style="border-color: var(--brand-border);">
+                            <div class="d-flex justify-content-between fw-bolder fs-4 mt-3" style="color: var(--brand-primary);">
+                                <span style="white-space: nowrap; margin-right: 1rem;">Total Bayar Sekarang</span>
+                                <span id="summary-totalpay">Rp {{ $totalToPayNow }}</span>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-checkout">Lanjutkan ke Pembayaran</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </form>
+
+        {{-- Hidden form for removing items --}}
+        <form id="remove-item-form" action="{{ route('front.cart.remove') }}" method="POST" style="display: none;">
+            @csrf
+            <input type="hidden" name="id" id="remove-item-id">
+        </form>
+        @endif
+        @else
+        {{-- Guest Cart Display --}}
+        <div id="temp-cart-display">
+            <div class="text-center py-5" data-aos="zoom-in">
+                <i class="bi bi-bag" style="font-size: 5rem; color: #ccc;"></i>
+                <h2 class="fw-bold mt-4" style="color: var(--brand-text);">Keranjang Anda Kosong</h2>
+                <p class="fs-5 text-muted">Mari ciptakan momen berkesan dengan layanan kami.</p>
+                <a href="{{ route('front.layanan') }}" class="btn btn-checkout mt-3">Jelajahi Layanan</a>
+            </div>
+        </div>
         @endauth
 
     </div>
@@ -453,13 +519,40 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-$(document).ready(function() {
-    // ===========================================
-    // FUNGSI UNTUK USER YANG SUDAH LOGIN
-    // ===========================================
-    @auth
+    $(document).ready(function() {
+        // ===========================================
+        // FUNGSI UNTUK USER YANG SUDAH LOGIN
+        // ===========================================
+        @auth
         // Hapus temp cart untuk user yang sudah login
         localStorage.removeItem('tempCart');
+
+        // ===========================================
+        // ADD THIS FORM SUBMISSION HANDLER HERE
+        // ===========================================
+        $('#cart-form-logged-in').on('submit', function(e) {
+            // e.preventDefault(); // PREVENT FORM SUBMISSION TEMPORARILY
+
+            console.log('=== FORM SUBMISSION STARTED ===');
+            console.log('Form submitted');
+            console.log('Selected items:', $('.item-checkbox:checked').length);
+            console.log('Form data:', $(this).serialize());
+            console.log('Form action:', $(this).attr('action'));
+            console.log('Form method:', $(this).attr('method'));
+
+            // Show what would be submitted
+            const selectedItems = [];
+            $('.item-checkbox:checked').each(function() {
+                selectedItems.push($(this).val());
+            });
+            console.log('Selected item IDs:', selectedItems);
+
+            // Test if the route exists by making an AJAX call first
+            console.log('Testing route existence...');
+
+            // Remove e.preventDefault() after testing to allow normal submission
+            // $(this).unbind('submit').submit(); // Uncomment this to submit after testing
+        });
 
         // Update ringkasan keranjang
         function updateSummary() {
@@ -468,7 +561,7 @@ $(document).ready(function() {
                 selectedIds.push($(this).val());
             });
             let selectedPaymentType = $('#payment-type-select').val();
-            
+
             $.ajax({
                 url: '{{ route("front.cart.updateSummary") }}',
                 type: 'POST',
@@ -522,32 +615,32 @@ $(document).ready(function() {
 
         // Update awal saat halaman dimuat
         updateSummary();
-        
+
         // Fix thumbnail konsultasi gratis menjadi biru
         function fixFreeConsultationThumbnails() {
             $('.cart-item-card img').each(function() {
                 const $img = $(this);
                 const alt = $img.attr('alt');
                 const src = $img.attr('src');
-                
+
                 if (alt && alt.toLowerCase().includes('konsultasi gratis')) {
                     $img.attr('src', 'https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS');
                 }
-                
+
                 if (src && src.includes('placehold.co') && (src.includes('D4AF37') || src.includes('FFB700') || src.includes('text=FREE'))) {
                     $img.attr('src', 'https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS');
                 }
             });
         }
-        
+
         fixFreeConsultationThumbnails();
         setTimeout(fixFreeConsultationThumbnails, 500);
 
-    @else
+        @else
         // ===========================================
         // FUNGSI UNTUK GUEST USER (TEMP CART)
         // ===========================================
-        
+
         function getTempCart() {
             try {
                 const cart = localStorage.getItem('tempCart');
@@ -566,7 +659,7 @@ $(document).ready(function() {
                 console.error("Error saving temp cart:", e);
             }
         }
-        
+
         function isFreeConsultation(serviceId, item) {
             return serviceId === 'free-consultation' || (item && item.consultation_type === 'free-consultation-new');
         }
@@ -606,15 +699,15 @@ $(document).ready(function() {
 
             for (const [id, item] of Object.entries(cartItems)) {
                 if (isFreeConsultation(id, item)) continue;
-                
+
                 let basePrice = 0;
                 let hourlyPrice = 0;
-                
+
                 if (pricingData[id]) {
                     basePrice = parseFloat(pricingData[id].price) || 0;
                     hourlyPrice = parseFloat(pricingData[id].hourly_price) || 0;
                 }
-                
+
                 const hours = parseInt(item.hours) || 1;
                 const itemSubtotal = basePrice + (hourlyPrice * hours);
                 const discountAmount = 0;
@@ -677,7 +770,8 @@ $(document).ready(function() {
             Object.entries(cartItems).forEach(([serviceId, item], index) => {
                 const isFree = isFreeConsultation(serviceId, item);
                 let serviceTitle, serviceThumbnail;
-                let basePrice = 0, hourlyPrice = 0;
+                let basePrice = 0,
+                    hourlyPrice = 0;
 
                 if (isFree) {
                     serviceTitle = "Konsultasi Gratis";
@@ -692,12 +786,16 @@ $(document).ready(function() {
                     serviceTitle = "Layanan Tidak Tersedia";
                     serviceThumbnail = 'https://placehold.co/60x60/dc3545/ffffff?text=Error';
                 }
-                
+
                 const hours = parseInt(item.hours) || 1;
                 const itemSubtotal = isFree ? 0 : basePrice + (hourlyPrice * hours);
                 const finalItemPrice = itemSubtotal;
-                
-                const displayDate = item.booked_date ? new Date(item.booked_date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : 'Jadwal belum dipilih';
+
+                const displayDate = item.booked_date ? new Date(item.booked_date).toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                }) : 'Jadwal belum dipilih';
 
                 const itemHtml = `
                     <div class="card mb-3 cart-item-card" data-service-id="${serviceId}" data-aos="fade-right" data-aos-delay="${index * 100}">
@@ -814,9 +912,14 @@ $(document).ready(function() {
             container.on('click', '.remove-btn-temp', function() {
                 const serviceId = $(this).data('id');
                 Swal.fire({
-                    title: 'Hapus Item?', text: "Item ini akan dihapus dari keranjang sementara Anda.", icon: 'warning',
-                    showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Hapus!', cancelButtonText: 'Batal'
+                    title: 'Hapus Item?',
+                    text: "Item ini akan dihapus dari keranjang sementara Anda.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         const tempCart = getTempCart();
@@ -831,7 +934,7 @@ $(document).ready(function() {
 
         const tempCart = getTempCart();
         renderTempCart(tempCart);
-    @endauth
-});
+        @endauth
+    });
 </script>
 @endpush

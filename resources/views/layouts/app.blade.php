@@ -6,8 +6,8 @@
     <title>@yield('title', 'Indiegologi')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="{{ asset('favicon/favicon-light.png') }}" media="(prefers-color-scheme: light)"type="image/png">
-    <link rel="icon" href="{{ asset('favicon/favicon-dark.png') }}" media="(prefers-color-scheme: dark)"type="image/png">
+    <link rel="icon" href="{{ asset('favicon/favicon-light.png') }}" media="(prefers-color-scheme: light)" type="image/png">
+    <link rel="icon" href="{{ asset('favicon/favicon-dark.png') }}" media="(prefers-color-scheme: dark)" type="image/png">
     <!-- <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -52,7 +52,7 @@
         .navbar.scrolled {
             background-color: rgba(255, 255, 255, 0.9);
             border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .navbar-hidden {
@@ -69,18 +69,22 @@
 
         /* Brand logo sizing */
         .navbar-brand img {
-            height: 70px;
+            height: 50px;
             width: auto;
-            filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.4));
+            filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.4));
             transition: height 0.25s ease;
         }
 
         /* Shrink a bit when page is scrolled */
-    .navbar.scrolled .navbar-brand img { height: 60px; }
+        .navbar.scrolled .navbar-brand img {
+            height: 40px;
+        }
 
         /* Mobile/tablet: keep logo balanced */
         @media (max-width: 991.98px) {
-            .navbar-brand img { height: 60px; }
+            .navbar-brand img {
+                height: 30px;
+            }
         }
 
         .navbar .nav-link {
@@ -91,7 +95,8 @@
             /* Normalize vertical alignment so items don't look like they drop */
             display: inline-flex;
             align-items: center;
-            line-height: 1; /* avoid baseline differences across items */
+            line-height: 1;
+            /* avoid baseline differences across items */
             border-radius: 8px;
             transition: color 0.3s ease, transform 0.3s ease;
             font-family: 'Playfair Display';
@@ -116,25 +121,30 @@
 
         .navbar .dropdown-menu {
             border-radius: 5px;
-            border: 1px solid rgba(0,0,0,0.07);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0, 0, 0, 0.07);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             margin-top: 0.5rem;
         }
+
         .navbar .dropdown-item {
             font-family: 'Playfair Display', serif;
             font-weight: 500;
             padding: 0.5rem 1.25rem;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* Animasi hover */
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+            /* Animasi hover */
         }
 
         /* Menghilangkan panah & styling item dropdown */
         .navbar .nav-link.dropdown-toggle::after {
             display: none;
         }
+
         .navbar .dropdown-item:hover {
-            background-color: rgba(12, 44, 90, 0.05); /* Warna hover lembut */
+            background-color: rgba(12, 44, 90, 0.05);
+            /* Warna hover lembut */
             color: var(--indiegologi-primary);
         }
+
         .navbar .dropdown-item.active,
         .navbar .dropdown-item:active {
             background-color: var(--indiegologi-primary) !important;
@@ -147,21 +157,24 @@
                 display: block;
                 margin-top: 0;
             }
+
             .navbar .dropdown-menu.align-text-dropdown {
                 min-width: 100%;
             }
+
             .navbar .dropdown-menu.align-text-dropdown .dropdown-item {
                 padding-left: 1rem;
                 padding-right: 1rem;
                 text-align: center;
             }
+
             /* Membuat menu utama tidak bisa diklik di desktop */
-            #navbarContent .nav-item.dropdown > .nav-link.dropdown-toggle {
+            #navbarContent .nav-item.dropdown>.nav-link.dropdown-toggle {
                 pointer-events: none;
                 cursor: default;
             }
 
-            #navbarContent .navbar-nav > .nav-item:nth-child(-n+3) {
+            #navbarContent .navbar-nav>.nav-item:nth-child(-n+3) {
                 margin-left: 0.2rem;
                 margin-right: 0.1rem;
             }
@@ -198,9 +211,11 @@
         .navbar-toggler {
             border: none;
         }
+
         .navbar-toggler:focus {
             box-shadow: none;
         }
+
         .offcanvas-header {
             border-bottom: 1px solid #dee2e6;
         }
@@ -212,16 +227,19 @@
             align-items: center;
             gap: 1rem;
         }
+
         .offcanvas-body .nav-link i {
             font-size: 1.4rem;
             width: 25px;
             text-align: center;
             color: var(--indiegologi-secondary);
         }
+
         .offcanvas-body .nav-link.active i,
         .offcanvas-body .nav-link.active {
             color: var(--indiegologi-primary);
         }
+
         .offcanvas-body .logout-btn {
             width: 100%;
             margin-top: 1rem;
@@ -235,6 +253,7 @@
             padding-left: 2.5rem;
             background-color: transparent;
         }
+
         .offcanvas-body .dropdown-item {
             padding: 0.5rem 0;
         }
@@ -253,7 +272,7 @@
             width: 320px;
             background-color: #fff;
             border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             padding: 1rem;
             z-index: 1050;
             opacity: 0;
@@ -306,20 +325,33 @@
 
 
         @media (max-width: 991.98px) {
-            .navbar { flex-wrap: nowrap; }
+            .navbar {
+                flex-wrap: nowrap;
+            }
+
             .navbar .container-fluid {
                 padding-left: 1rem;
                 padding-right: 1rem;
-                display: flex; /* ensure flex on some browsers */
+                display: flex;
+                /* ensure flex on some browsers */
                 align-items: center;
                 justify-content: flex-start;
-                flex-wrap: nowrap; /* keep items in one line */
-                gap: 0; /* avoid accidental gaps causing wrap */
+                flex-wrap: nowrap;
+                /* keep items in one line */
+                gap: 0;
+                /* avoid accidental gaps causing wrap */
             }
 
             /* keep logo from forcing wrap and keep tools to the right */
-            .navbar-brand { flex-shrink: 0; margin-right: .75rem !important; }
-            .navbar .container-fluid > .d-flex.d-lg-none { margin-left: auto; flex-shrink: 0; }
+            .navbar-brand {
+                flex-shrink: 0;
+                margin-right: .75rem !important;
+            }
+
+            .navbar .container-fluid>.d-flex.d-lg-none {
+                margin-left: auto;
+                flex-shrink: 0;
+            }
 
             .search-dropdown {
                 position: fixed;
@@ -365,6 +397,11 @@
             .mobile-language-link {
                 display: none !important;
             }
+
+
+            .navbar.scrolled .navbar-brand img {
+                height: 30px;
+            }
         }
 
         .goog-te-gadget {
@@ -372,6 +409,7 @@
             color: #343a40 !important;
             font-size: 1rem !important;
         }
+
         .goog-te-combo {
             border: 1px solid #ccc !important;
             border-radius: 4px !important;
@@ -379,23 +417,28 @@
             background-color: #f8f8f8 !important;
             box-shadow: none !important;
         }
+
         .goog-te-gadget-simple {
             background-color: transparent !important;
             border: none !important;
             padding: 0 !important;
         }
+
         .goog-te-gadget-simple .goog-te-menu-value {
             text-decoration: none !important;
             color: #343a40 !important;
             font-weight: 500;
             padding: 0 !important;
         }
+
         .goog-te-gadget-simple .goog-te-menu-value:hover {
             color: var(--indiegologi-primary) !important;
         }
+
         .goog-te-gadget-simple .goog-te-menu-value span:last-child {
             display: none;
         }
+
         .goog-te-gadget-simple .goog-te-menu-value::after {
             content: '\F282';
             font-family: 'bootstrap-icons';
@@ -404,13 +447,15 @@
             vertical-align: middle;
             font-size: 0.8rem;
         }
-        .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight {
+
+        .goog-tooltip,
+        .goog-tooltip:hover,
+        .goog-text-highlight {
             display: none !important;
             background-color: transparent !important;
             border: none !important;
             box-shadow: none !important;
         }
-
     </style>
 
     @stack('styles')
@@ -422,11 +467,11 @@
 
     <nav class="navbar navbar-expand-lg fixed-top py-3">
         <div class="container-fluid">
-        {{-- Brand/Logo --}}
-        {{-- Kode Baru --}}
-<a class="navbar-brand" href="{{ route('front.index') }}" style="padding-top: 0; padding-bottom: 0; margin-right: 2rem;">
-    <img src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo">
-</a>
+            {{-- Brand/Logo --}}
+            {{-- Kode Baru --}}
+            <a class="navbar-brand" href="{{ route('front.index') }}" style="padding-top: 0; padding-bottom: 0; margin-right: 2rem;">
+                <img src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo">
+            </a>
             <div class="d-flex align-items-center d-lg-none">
                 <div class="search-container">
                     <a class="nav-link position-relative fs-4 me-2 search-toggle" href="#" title="Cari">
@@ -463,27 +508,40 @@
                         <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarBeritaDropdown">
                             {{-- MODIFIED --}}
                             <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-journal-text me-2"></i>Artikel</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             {{-- MODIFIED --}}
                             <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-palette me-2"></i>Painting</a></li>
                         </ul>
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.layanan*') || request()->routeIs('front.contact')) ? 'active' : '' }}" href="#" id="navbarTentangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.layanan*') || request()->routeIs('front.contact') || request()->routeIs('front.events*')) ? 'active' : '' }}" href="#" id="navbarTentangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-info-circle me-2"></i>Tentang Kami
                         </a>
                         <ul class="dropdown-menu align-text-dropdown" aria-labelledby="navbarTentangDropdown">
-                            {{-- MODIFIED --}}
+                            {{-- Layanan --}}
                             <li><a class="dropdown-item {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}"><i class="bi bi-briefcase me-2"></i>Layanan</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            {{-- MODIFIED --}}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            {{-- NEW: Events --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.events*') ? 'active' : '' }}" href="{{ route('front.events.index') }}"><i class="bi bi-calendar-event me-2"></i>Events</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            {{-- Kontak Kami --}}
                             <li><a class="dropdown-item {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-person-lines-fill me-2"></i>Kontak Kami</a></li>
                         </ul>
                     </li>
 
                     {{-- Separator --}}
-                    <li class="nav-item d-none d-lg-block"><div class="nav-separator"></div></li>
+                    <li class="nav-item d-none d-lg-block">
+                        <div class="nav-separator"></div>
+                    </li>
 
                     {{-- Actions (Cart, Profile, Login) for Desktop --}}
                     <li class="nav-item">
@@ -505,21 +563,23 @@
                                 <span class="badge rounded-pill bg-danger cart-badge d-none" id="cart-count-badge-desktop">0</span>
                             </a>
                             @auth
-                                <div class="dropdown">
-                                    <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil"><i class="bi bi-person-circle"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDropdown">
-                                        <li><a class="dropdown-item" href="{{ route('profile.index') }}">Profil Saya</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <form method="POST" action="{{ route('logout') }}">
-                                                @csrf
-                                                <button type="submit" class="dropdown-item">Logout</button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil"><i class="bi bi-person-circle"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDropdown">
+                                    <li><a class="dropdown-item" href="{{ route('profile.index') }}">Profil Saya</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                             @else
-                                <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">Login</a>
+                            <a class="btn px-4" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">Login</a>
                             @endauth
 
                             {{-- [MODIFIED] Target untuk Google Translate Desktop --}}
@@ -537,15 +597,15 @@
     <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="mobileNavbar" aria-labelledby="mobileNavbarLabel">
         <div class="offcanvas-header">
             @auth
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-person-circle fs-2 me-2"></i>
-                    <div>
-                        <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel" style="line-height: 1.2;">{{ Auth::user()->name }}</h5>
-                        <small class="text-muted">{{ Auth::user()->email }}</small>
-                    </div>
+            <div class="d-flex align-items-center">
+                <i class="bi bi-person-circle fs-2 me-2"></i>
+                <div>
+                    <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel" style="line-height: 1.2;">{{ Auth::user()->name }}</h5>
+                    <small class="text-muted">{{ Auth::user()->email }}</small>
                 </div>
+            </div>
             @else
-                <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel">Menu</h5>
+            <h5 class="offcanvas-title fw-bold" id="mobileNavbarLabel">Menu</h5>
             @endauth
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
@@ -563,7 +623,9 @@
                         <ul class="navbar-nav dropdown-menu">
                             {{-- MODIFIED --}}
                             <li><a class="dropdown-item {{ request()->routeIs('front.articles*') ? 'active' : '' }}" href="{{ route('front.articles') }}"><i class="bi bi-journal-text me-2"></i>Artikel</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             {{-- MODIFIED --}}
                             <li><a class="dropdown-item {{ request()->routeIs('front.sketch*') ? 'active' : '' }}" href="{{ route('front.sketch') }}"><i class="bi bi-palette me-2"></i>Painting</a></li>
                         </ul>
@@ -571,15 +633,24 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.layanan*') || request()->routeIs('front.contact')) ? 'active' : '' }}" href="#collapseTentang" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseTentang">
+                    <a class="nav-link dropdown-toggle {{ (request()->routeIs('front.layanan*') || request()->routeIs('front.contact') || request()->routeIs('front.events*')) ? 'active' : '' }}" href="#collapseTentang" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseTentang">
                         <i class="bi bi-info-circle"></i><span>Tentang Kami</span>
                     </a>
                     <div class="collapse" id="collapseTentang">
                         <ul class="navbar-nav dropdown-menu">
-                            {{-- MODIFIED --}}
+                            {{-- Layanan --}}
                             <li><a class="dropdown-item {{ request()->routeIs('front.layanan*') ? 'active' : '' }}" href="{{ route('front.layanan') }}"><i class="bi bi-briefcase me-2"></i>Layanan</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            {{-- MODIFIED --}}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            {{-- NEW: Events --}}
+                            <li><a class="dropdown-item {{ request()->routeIs('front.events*') ? 'active' : '' }}" href="{{ route('front.events.index') }}"><i class="bi bi-calendar-event me-2"></i>Events</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            {{-- Kontak Kami --}}
                             <li><a class="dropdown-item {{ request()->routeIs('front.contact') ? 'active' : '' }}" href="{{ route('front.contact') }}"><i class="bi bi-person-lines-fill me-2"></i>Kontak Kami</a></li>
                         </ul>
                     </div>
@@ -605,21 +676,21 @@
                 </li>
             </ul>
             @auth
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('profile.index') }}"><i class="bi bi-person"></i><span>Profil Saya</span></a></li>
-                </ul>
-                <hr>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="{{ route('profile.index') }}"><i class="bi bi-person"></i><span>Profil Saya</span></a></li>
+            </ul>
+            <hr>
             @endauth
 
             {{-- Footer Actions (Login/Logout) --}}
             <div class="mt-auto">
                 @auth
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-danger logout-btn"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
-                    </form>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-danger logout-btn"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                </form>
                 @else
-                    <a class="btn btn-primary logout-btn" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">Login</a>
+                <a class="btn btn-primary logout-btn" href="{{ route('login') }}" style="background-color: #0C2C5A; color: #fff; border: none;">Login</a>
                 @endauth
             </div>
         </div>
@@ -715,11 +786,17 @@
                 let lastScrollTop = 0;
                 window.addEventListener('scroll', function() {
                     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    if (scrollTop > 10) { navbar.classList.add('scrolled'); }
-                    else { navbar.classList.remove('scrolled'); }
+                    if (scrollTop > 10) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
                     if (window.innerWidth >= 992) {
-                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) { navbar.classList.add('navbar-hidden'); }
-                        else { navbar.classList.remove('navbar-hidden'); }
+                        if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) {
+                            navbar.classList.add('navbar-hidden');
+                        } else {
+                            navbar.classList.remove('navbar-hidden');
+                        }
                     }
                     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
                 });
@@ -757,6 +834,7 @@
     </script>
     @stack('scripts')
 
-    <x-chatbot-widget/>
+    <x-chatbot-widget />
 </body>
+
 </html>

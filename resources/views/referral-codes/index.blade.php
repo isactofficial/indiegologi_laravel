@@ -174,7 +174,8 @@
                             <th class="py-3">Kode Referral</th>
                             <th class="py-3">Pemilik</th>
                             <th class="py-3">Email Pemilik</th>
-                            <th class="py-3">Diskon (%)</th>
+                            <th class="py-3">Tipe Diskon</th>
+                            <th class="py-3">Nilai Diskon</th>
                             <th class="py-3">Status</th>
                             <th class="py-3">Aksi</th>
                         </tr>
@@ -189,7 +190,20 @@
                                 {{ $code->user->name ?? 'N/A' }}
                             </td>
                             <td class="py-3 text-muted">{{ $code->user->email ?? 'N/A' }}</td>
-                            <td class="py-3 fw-bold">{{ $code->discount_percentage }}%</td>
+                            <td class="py-3">
+                                @if($code->discount_type === 'percentage')
+                                    <span class="badge bg-info">Persentase</span>
+                                @else
+                                    <span class="badge bg-warning text-dark">Nominal</span>
+                                @endif
+                            </td>
+                            <td class="py-3 fw-bold">
+                                @if($code->discount_type === 'percentage')
+                                    {{ $code->discount_percentage }}%
+                                @else
+                                    Rp {{ number_format($code->discount_amount, 0, ',', '.') }}
+                                @endif
+                            </td>
                             <td class="py-3">
                                 @php
                                 $statusClass = $code->is_active ? 'badge-status-published' : 'badge-status-draft';
@@ -200,6 +214,16 @@
                             </td>
                             <td class="py-3">
                                 <div class="d-flex gap-2">
+                                    {{-- Tombol Toggle Status --}}
+                                    <form action="{{ route('admin.referral-codes.toggle-status', $code) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm {{ $code->is_active ? 'btn-warning' : 'btn-success' }} rounded-pill px-3" 
+                                                title="{{ $code->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                            <i class="fas {{ $code->is_active ? 'fa-pause' : 'fa-play' }}"></i>
+                                        </button>
+                                    </form>
+                                    
                                     <a href="{{ route('admin.referral-codes.edit', $code) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Kode"><i class="fas fa-edit"></i></a>
                                     <form action="{{ route('admin.referral-codes.destroy', $code) }}" method="POST" class="d-inline">
                                         @csrf
@@ -213,7 +237,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
+                            <td colspan="7" class="text-center py-4 text-muted">
                                 <i class="fas fa-box-open me-2"></i>Tidak ada kode referral yang ditemukan.
                             </td>
                         </tr>
@@ -228,12 +252,19 @@
                     <div class="referral-card">
                         <div class="referral-card-header">
                             <h5 class="referral-code-highlight">{{ $code->code }}</h5>
-                            @php
-                                $statusClass = $code->is_active ? 'badge-status-published' : 'badge-status-draft';
-                                $statusText = $code->is_active ? 'Aktif' : 'Nonaktif';
-                                $statusIcon = $code->is_active ? 'fa-check' : 'fa-times';
-                            @endphp
-                            <span class="badge {{ $statusClass }}"><i class="fas {{ $statusIcon }} me-1"></i>{{ $statusText }}</span>
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                @if($code->discount_type === 'percentage')
+                                    <span class="badge bg-info">Persentase</span>
+                                @else
+                                    <span class="badge bg-warning text-dark">Nominal</span>
+                                @endif
+                                @php
+                                    $statusClass = $code->is_active ? 'badge-status-published' : 'badge-status-draft';
+                                    $statusText = $code->is_active ? 'Aktif' : 'Nonaktif';
+                                    $statusIcon = $code->is_active ? 'fa-check' : 'fa-times';
+                                @endphp
+                                <span class="badge {{ $statusClass }}"><i class="fas {{ $statusIcon }} me-1"></i>{{ $statusText }}</span>
+                            </div>
                         </div>
                         <div class="referral-card-body">
                              <p class="mb-1">
@@ -246,11 +277,27 @@
                             </p>
                             <p class="mb-0">
                                 <strong>Diskon:</strong>
-                                <span class="fw-bold">{{ $code->discount_percentage }}%</span>
+                                <span class="fw-bold">
+                                    @if($code->discount_type === 'percentage')
+                                        {{ $code->discount_percentage }}%
+                                    @else
+                                        Rp {{ number_format($code->discount_amount, 0, ',', '.') }}
+                                    @endif
+                                </span>
                             </p>
                         </div>
                         <div class="referral-card-footer">
                             <div class="referral-card-actions">
+                                {{-- Tombol Toggle Status Mobile --}}
+                                <form action="{{ route('admin.referral-codes.toggle-status', $code) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-sm {{ $code->is_active ? 'btn-warning' : 'btn-success' }}" 
+                                            title="{{ $code->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                        <i class="fas {{ $code->is_active ? 'fa-pause' : 'fa-play' }} me-1"></i> {{ $code->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                    </button>
+                                </form>
+                               
                                <a href="{{ route('admin.referral-codes.edit', $code) }}" class="btn btn-sm btn-outline-secondary" style="border-color: var(--theme-accent); color: var(--theme-accent);" title="Edit Kode"><i class="fas fa-edit me-1"></i> Edit</a>
                                <form action="{{ route('admin.referral-codes.destroy', $code) }}" method="POST" class="d-inline">
                                     @csrf
@@ -268,7 +315,6 @@
                     </div>
                 @endforelse
             </div>
-
 
             {{-- Paginasi --}}
             <div class="d-flex justify-content-center mt-4">

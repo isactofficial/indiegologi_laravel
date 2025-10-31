@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class CartItem extends Model
 {
@@ -15,9 +14,9 @@ class CartItem extends Model
         'service_id',
         'free_consultation_type_id',
         'free_consultation_schedule_id',
+        'event_id',
         'quantity',
-        'price',
-        'hourly_price',
+        'participant_count',
         'hours',
         'booked_date',
         'booked_time',
@@ -26,19 +25,21 @@ class CartItem extends Model
         'contact_preference',
         'payment_type',
         'referral_code',
-    ];
-
-    protected $appends = [
-        'item_subtotal',
+        'price',
+        'original_price',  // ✅ HARGA ASLI SEBELUM DISKON
+        'hourly_price',
         'discount_amount',
-        'final_item_price',
-        'total_to_pay',
-        'service_title',
-        'service_description',
-        'service_thumbnail',
+        'item_type'
     ];
 
-    // Existing relationships
+    protected $casts = [
+        'price' => 'decimal:2',
+        'original_price' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'booked_date' => 'date',
+    ];
+
+    // Relationships
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -49,12 +50,11 @@ class CartItem extends Model
         return $this->belongsTo(ConsultationService::class, 'service_id');
     }
 
-    public function referralCode()
+    public function event()
     {
-        return $this->belongsTo(ReferralCode::class, 'referral_code', 'code');
+        return $this->belongsTo(Event::class);
     }
 
-    // New relationships for free consultation
     public function freeConsultationType()
     {
         return $this->belongsTo(FreeConsultationType::class, 'free_consultation_type_id');
@@ -65,150 +65,146 @@ class CartItem extends Model
         return $this->belongsTo(FreeConsultationSchedule::class, 'free_consultation_schedule_id');
     }
 
-    // Updated scopes
-    public function scopeForUser($query, $userId)
+    public function referralCode()
     {
-        return $query->where('user_id', $userId);
+        return $this->belongsTo(ReferralCode::class, 'referral_code', 'code');
     }
 
-    public function scopeFreeConsultation($query)
+    public function participantData()
     {
-        return $query->where('service_id', 'free-consultation')
-                     ->orWhereNotNull('free_consultation_type_id');
+        return $this->hasMany(CartParticipant::class);
     }
 
-    public function scopeNewFreeConsultation($query)
+    // Helper methods
+    public function isEvent()
     {
-        return $query->whereNotNull('free_consultation_type_id');
-    }
-
-    public function scopeLegacyFreeConsultation($query) 
-    {
-        return $query->where('service_id', 'free-consultation')
-                     ->whereNull('free_consultation_type_id');
-    }
-
-    public function scopeRegularServices($query)
-    {
-        return $query->where('service_id', '!=', 'free-consultation')
-                     ->whereNull('free_consultation_type_id');
-    }
-
-    // Updated helper methods
-    public function isFreeConsultation()
-    {
-        return $this->service_id === 'free-consultation' || $this->free_consultation_type_id !== null;
+        return $this->item_type === 'event' && !is_null($this->event_id);
     }
 
     public function isNewFreeConsultation()
     {
-        return $this->free_consultation_type_id !== null;
+        return !is_null($this->free_consultation_type_id) &&
+            !is_null($this->free_consultation_schedule_id);
     }
 
     public function isLegacyFreeConsultation()
     {
-        return $this->service_id === 'free-consultation' && $this->free_consultation_type_id === null;
+        return $this->service_id === 'free_consultation' ||
+            ($this->price == 0 && is_null($this->free_consultation_type_id));
     }
 
-    // Updated accessors
-    public function getItemSubtotalAttribute(): float
+    public function isFreeConsultation()
     {
+        return $this->isNewFreeConsultation() || $this->isLegacyFreeConsultation();
+    }
+
+    // ✅ METHODS PERHITUNGAN YANG BENAR
+    // In CartItem.php model
+    public function calculateOriginalSubtotal()
+    {
+        if ($this->isEvent()) {
+            // Harga dasar × jumlah peserta
+            return (float) $this->original_price * (int) $this->participant_count;
+        }
+
         if ($this->isFreeConsultation()) {
-            return 0.0;
+            return 0;
         }
 
-        return (float)$this->price + ((float)$this->hourly_price * (int)$this->hours);
+        return (float) $this->original_price + ((float) $this->hourly_price * (int) $this->hours);
     }
 
-    public function getDiscountAmountAttribute(): float
+    public function calculateFinalPrice()
     {
+        $subtotal = $this->calculateOriginalSubtotal();
+        return $subtotal - $this->getDiscountAmount();
+    }
+
+    public function getDiscountAmount()
+    {
+        return (float) $this->discount_amount;
+    }
+
+    public function calculateFinalSubtotal()
+    {
+        if ($this->isEvent()) {
+            return (float) $this->price * (int) $this->participant_count;
+        }
+
         if ($this->isFreeConsultation()) {
-            return 0.0;
+            return 0;
         }
 
-        $itemDiscount = 0.0;
+        return (float) $this->price + ((float) $this->hourly_price * (int) $this->hours);
+    }
 
-        if ($this->referral_code && $this->referralCode) {
-            $referral = $this->referralCode;
-            $isExpired = $referral->valid_until && Carbon::now()->gt($referral->valid_until);
-            $isUsedUp = $referral->max_uses && $referral->current_uses >= $referral->max_uses;
-
-            if (!$isExpired && !$isUsedUp) {
-                $itemSubtotal = $this->item_subtotal;
-                $itemDiscount = ($itemSubtotal * $referral->discount_percentage) / 100;
-            }
+    public function getServiceThumbnail()
+    {
+        if ($this->isEvent() && $this->event) {
+            return $this->event->thumbnail ? asset('storage/' . $this->event->thumbnail) : 'https://placehold.co/400x300/4CAF50/ffffff?text=Event';
         }
 
-        return (float)$itemDiscount;
+        if ($this->service && $this->service->thumbnail) {
+            return asset('storage/' . $this->service->thumbnail);
+        }
+
+        return 'https://placehold.co/400x300/4CAF50/ffffff?text=Service';
     }
 
-    public function getFinalItemPriceAttribute(): float
+    public function getServiceTitle()
     {
-        return $this->item_subtotal - $this->discount_amount;
-    }
+        if ($this->isEvent() && $this->event) {
+            return $this->event->title;
+        }
 
-    public function getTotalToPayAttribute(): float
-    {
-        return $this->final_item_price;
-    }
-
-    public function getServiceTitleAttribute()
-    {
-        if ($this->isNewFreeConsultation()) {
-            return $this->freeConsultationType ? 
-                'Konsultasi Gratis - ' . $this->freeConsultationType->name : 
-                'Konsultasi Gratis';
+        if ($this->isNewFreeConsultation() && $this->freeConsultationType) {
+            return 'Konsultasi Gratis - ' . $this->freeConsultationType->name;
         }
 
         if ($this->isLegacyFreeConsultation()) {
             return 'Konsultasi Gratis';
         }
 
-        return $this->service ? $this->service->title : 'Layanan Tidak Ditemukan';
+        if ($this->service) {
+            return $this->service->title;
+        }
+
+        return 'Unknown Service';
     }
 
-    public function getServiceDescriptionAttribute()
+    // Add these accessor methods to your CartItem.php model
+    // Place them after the existing methods
+
+    /**
+     * Accessor for item_subtotal attribute
+     * Allows using $item->item_subtotal in code
+     */
+    public function getItemSubtotalAttribute()
     {
-        if ($this->isNewFreeConsultation()) {
-            if ($this->freeConsultationType && $this->freeConsultationSchedule) {
-                return $this->freeConsultationType->description . ' - ' . 
-                       $this->freeConsultationSchedule->formatted_date_time;
-            }
-            return $this->freeConsultationType ? 
-                $this->freeConsultationType->description : 
-                'Sesi konsultasi gratis';
-        }
-
-        if ($this->isLegacyFreeConsultation()) {
-            return 'Sesi konsultasi gratis 1 jam untuk pengguna baru';
-        }
-
-        return $this->service ? $this->service->short_description : '';
+        return $this->calculateOriginalSubtotal();
     }
 
+    /**
+     * Accessor for service_thumbnail attribute
+     */
     public function getServiceThumbnailAttribute()
     {
-        if ($this->isFreeConsultation()) {
-            return 'https://placehold.co/100x100/D4AF37/ffffff?text=Gratis';
-        }
-
-        return $this->service && $this->service->thumbnail 
-            ? asset('storage/' . $this->service->thumbnail)
-            : 'https://placehold.co/100x100/cccccc/ffffff?text=No+Image';
+        return $this->getServiceThumbnail();
     }
 
-    // Get formatted schedule info for new free consultation
-    public function getFormattedScheduleAttribute()
+    /**
+     * Accessor for service_title attribute
+     */
+    public function getServiceTitleAttribute()
     {
-        if ($this->isNewFreeConsultation() && $this->freeConsultationSchedule) {
-            return $this->freeConsultationSchedule->formatted_date_time;
-        }
+        return $this->getServiceTitle();
+    }
 
-        if ($this->booked_date && $this->booked_time) {
-            return Carbon::parse($this->booked_date)->format('d M Y') . ' ' . 
-                   Carbon::parse($this->booked_time)->format('H:i');
-        }
-
-        return '';
+    /**
+     * Accessor for final_price attribute
+     */
+    public function getFinalPriceAttribute()
+    {
+        return $this->calculateFinalPrice();
     }
 }

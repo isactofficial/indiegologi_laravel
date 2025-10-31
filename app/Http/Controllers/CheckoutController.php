@@ -4,10 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\CartItem;
+use App\Models\CartParticipant; // ADD THIS
 use App\Models\ConsultationBooking;
+use App\Models\ConsultationService;
 use App\Models\Invoice;
 use App\Models\ReferralCode;
 use App\Models\FreeConsultationSchedule;
+use App\Models\Event;
+use App\Models\EventBooking; // ADD THIS
+use App\Models\EventParticipant; // ADD THIS
+use App\Models\BookingService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -34,10 +40,12 @@ class CheckoutController extends Controller
         }
 
         $cartItems = CartItem::with([
-            'service', 
-            'referralCode', 
-            'freeConsultationType', 
-            'freeConsultationSchedule'
+            'service',
+            'referralCode',
+            'freeConsultationType',
+            'freeConsultationSchedule',
+            'event',
+            'participantData' // ADD THIS to load participant data
         ])
             ->where('user_id', $user->id)
             ->whereIn('id', $selectedItemIds)
@@ -56,23 +64,110 @@ class CheckoutController extends Controller
             $servicesToAttach = [];
             $freeConsultationSchedulesToUpdate = [];
 
+            // NEW: Proper structure for event data
+            $eventsToUpdate = [];
+            $eventParticipantsData = [];
+
             foreach ($cartItems as $item) {
                 $itemPrice = 0;
                 $itemDiscount = 0;
                 $referralIdToSave = null;
 
+                // In CheckoutController.php - Replace the event handling section in the process() method:
+
+                // Inside the foreach ($cartItems as $item) loop, replace the event handling with:
+
+                if ($item->isEvent()) {
+                    if (!$item->event) {
+                        Log::warning("Event not found for cart item: {$item->id}");
+                        continue;
+                    }
+
+                    // ✅ Use stored values from cart_item (already calculated correctly)
+                    $originalPricePerPerson = $item->original_price; // Original price per person
+                    $participantCount = $item->participant_count;
+                    $itemSubtotal = $originalPricePerPerson * $participantCount; // Total before discount
+                    $itemDiscount = $item->discount_amount; // Already calculated and stored
+                    $itemFinalPrice = $itemSubtotal - $itemDiscount;
+
+                    // Add to totals
+                    $subtotal += $itemSubtotal;
+                    $totalDiscount += $itemDiscount;
+
+                    // Track referral code if used
+                    $referralIdToSave = null;
+                    if ($item->referralCode) {
+                        $code = $item->referralCode;
+                        $isValid = !$code->valid_until || (new \DateTime($code->valid_until)) > (new \DateTime());
+                        $hasUses = !$code->max_uses || $code->current_uses < $code->max_uses;
+
+                        if ($isValid && $hasUses) {
+                            $referralIdToSave = $code->id;
+                            if (!in_array($referralIdToSave, $usedReferralCodeIds)) {
+                                $usedReferralCodeIds[] = $referralIdToSave;
+                            }
+                        }
+                    }
+
+                    $serviceKey = 'event-' . $item->event_id;
+
+                    $servicesToAttach[$serviceKey] = [
+                        'booking_id' => null,
+                        'event_id' => $item->event_id,
+                        'total_price_at_booking'     => $itemSubtotal,      // ✅ Subtotal before discount
+                        'discount_amount_at_booking' => $itemDiscount,      // ✅ Discount amount
+                        'final_price_at_booking'     => $itemFinalPrice,    // ✅ After discount
+                        'booked_date'                => $item->event->event_date,
+                        'booked_time'                => $item->event->event_time,
+                        'hours_booked'               => 0,
+                        'participant_count'          => $participantCount,
+                        'session_type'               => $item->event->session_type,
+                        'offline_address'            => $item->event->session_type == 'offline' ? $item->event->place : null,
+                        'referral_code_id'           => $referralIdToSave,
+                        'invoice_id'                 => null,
+                        'free_consultation_type_id'  => null,
+                        'free_consultation_schedule_id' => null,
+                        'contact_preference'         => $item->contact_preference,
+                        'user_id'                    => $user->id,
+                    ];
+
+                    // Track event for participant count update and booking creation
+                    $eventsToUpdate[$item->event_id] = [
+                        'event' => $item->event,
+                        'participant_count' => $participantCount,
+                        'cart_item_id' => $item->id,
+                        'subtotal' => $itemSubtotal,
+                        'discount' => $itemDiscount,
+                        'final_price' => $itemFinalPrice,
+                        'referral_id' => $referralIdToSave
+                    ];
+
+                    // Save participant data for later
+                    $eventParticipantsData[$item->event_id] = $item->participantData;
+
+                    Log::info('Event processed in checkout', [
+                        'cart_item_id' => $item->id,
+                        'event_id' => $item->event_id,
+                        'original_price_per_person' => $originalPricePerPerson,
+                        'participant_count' => $participantCount,
+                        'subtotal' => $itemSubtotal,
+                        'discount' => $itemDiscount,
+                        'final_price' => $itemFinalPrice
+                    ]);
+
+                    continue; // Skip to next item
+                }
+
                 // Handle new free consultation system
                 if ($item->isNewFreeConsultation()) {
                     $itemPrice = 0; // Free consultation has no cost
                     $itemDiscount = 0;
-                    
-                    // Use a consistent key format
+
                     $serviceKey = 'new-free-consultation-' . $item->id;
-                    
-                    // Prepare data for booking_service pivot table
+
                     $servicesToAttach[$serviceKey] = [
-                        'booking_id' => null, // Will be set later
-                        'service_id' => null, // For free consultation
+                        'booking_id' => null,
+                        'service_id' => null,
                         'total_price_at_booking'     => 0,
                         'discount_amount_at_booking' => 0,
                         'final_price_at_booking'     => 0,
@@ -82,11 +177,11 @@ class CheckoutController extends Controller
                         'session_type'               => $item->session_type,
                         'offline_address'            => $item->session_type == 'Offline' ? $item->offline_address : null,
                         'referral_code_id'           => null,
-                        'invoice_id'                 => null, // Will be set later
+                        'invoice_id'                 => null,
                         'free_consultation_type_id'  => $item->free_consultation_type_id,
                         'free_consultation_schedule_id' => $item->free_consultation_schedule_id,
                         'contact_preference'         => $item->contact_preference,
-                        'consultation_type'          => 'new', // Add marker
+                        'user_id'                    => $user->id,
                     ];
 
                     // Track schedule to confirm booking
@@ -94,19 +189,19 @@ class CheckoutController extends Controller
                         $freeConsultationSchedulesToUpdate[] = $item->freeConsultationSchedule;
                     }
 
-                    continue; // Skip to next item
+                    continue;
                 }
 
                 // Handle legacy free consultation
                 if ($item->isLegacyFreeConsultation()) {
                     $itemPrice = 0;
                     $itemDiscount = 0;
-                    
+
                     $serviceKey = 'legacy-free-consultation-' . $item->id;
-                    
+
                     $servicesToAttach[$serviceKey] = [
-                        'booking_id' => null, // Will be set later
-                        'service_id' => null, // For free consultation
+                        'booking_id' => null,
+                        'service_id' => null,
                         'total_price_at_booking'     => 0,
                         'discount_amount_at_booking' => 0,
                         'final_price_at_booking'     => 0,
@@ -116,14 +211,14 @@ class CheckoutController extends Controller
                         'session_type'               => $item->session_type,
                         'offline_address'            => $item->session_type == 'Offline' ? $item->offline_address : null,
                         'referral_code_id'           => null,
-                        'invoice_id'                 => null, // Will be set later
+                        'invoice_id'                 => null,
                         'free_consultation_type_id'  => null,
                         'free_consultation_schedule_id' => null,
                         'contact_preference'         => $item->contact_preference,
-                        'consultation_type'          => 'legacy', // Add marker
+                        'user_id'                    => $user->id,
                     ];
 
-                    continue; // Skip to next item
+                    continue;
                 }
 
                 // Handle regular services
@@ -150,7 +245,7 @@ class CheckoutController extends Controller
                 }
 
                 $servicesToAttach[$item->service_id] = [
-                    'booking_id' => null, // Will be set later
+                    'booking_id' => null,
                     'service_id' => $item->service_id,
                     'total_price_at_booking'     => $itemPrice,
                     'discount_amount_at_booking' => $itemDiscount,
@@ -161,28 +256,37 @@ class CheckoutController extends Controller
                     'session_type'               => $item->session_type,
                     'offline_address'            => $item->session_type == 'Offline' ? $item->offline_address : null,
                     'referral_code_id'           => $referralIdToSave,
-                    'invoice_id'                 => null, // Will be set later
+                    'invoice_id'                 => null,
                     'free_consultation_type_id'  => null,
                     'free_consultation_schedule_id' => null,
                     'contact_preference'         => $item->contact_preference,
-                    'consultation_type'          => 'regular', // Add marker
+                    'user_id'                    => $user->id,
                 ];
             }
 
             $grandTotal = $subtotal - $totalDiscount;
 
             // Create invoice
+            // Create invoice
             $invoice = Invoice::create([
-                'user_id'         => $user->id,
-                'invoice_no'      => 'INV-' . strtoupper(Str::random(8)),
-                'invoice_date'    => now(),
-                'due_date'        => now()->addDay(),
-                'total_amount'    => $grandTotal,
-                'discount_amount' => $totalDiscount,
-                'paid_amount'     => 0.00,
-                'payment_type'    => $selectedPaymentType,
-                'payment_status'  => 'pending',
-                'session_type'    => $firstItem->session_type,
+                'user_id'               => $user->id,
+                'invoice_no'            => 'INV-' . strtoupper(Str::random(8)),
+                'invoice_type'          => 'auto',
+                'source_type'           => 'mixed', // or 'event' if only events
+                'invoice_date'          => now(),
+                'due_date'              => now()->addDay(),
+                'subtotal_amount'       => $subtotal,
+                'total_amount'          => $grandTotal,
+                'paid_amount'           => 0.00,
+                'auto_discount_amount'  => $totalDiscount, // ✅ CORRECT COLUMN NAME
+                'manual_discount_amount' => 0.00,
+                'total_discount_amount' => $totalDiscount,
+                'final_amount'          => $grandTotal,
+                'remaining_amount'      => $grandTotal,
+                'payment_type'          => $selectedPaymentType,
+                'payment_status'        => 'unpaid', // Changed from 'pending' to 'unpaid'
+                'session_type'          => $firstItem->session_type,
+                'is_active'             => true,
             ]);
 
             // Create booking
@@ -197,51 +301,97 @@ class CheckoutController extends Controller
                 'payment_type'    => $selectedPaymentType,
             ]);
 
-            // Handle service attachments - IMPROVED VERSION
+            // Handle service attachments to booking_service table
             foreach ($servicesToAttach as $serviceKey => $pivotData) {
                 // Set the booking_id and invoice_id
                 $pivotData['booking_id'] = $booking->id;
                 $pivotData['invoice_id'] = $invoice->id;
-                
-                // Remove consultation_type before inserting to database
-                $consultationType = $pivotData['consultation_type'] ?? 'regular';
-                unset($pivotData['consultation_type']);
 
-                if (strpos($serviceKey, 'free-consultation-') === 0 || $consultationType !== 'regular') {
-                    // Handle free consultation - direct insert to booking_service table
+                // Remove unnecessary fields
+                if (isset($pivotData['consultation_type'])) {
+                    unset($pivotData['consultation_type']);
+                }
+
+                // Insert to booking_service table
+                try {
+                    DB::table('booking_service')->insert(array_merge($pivotData, [
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]));
+
+                    Log::info('Booking service inserted', [
+                        'service_key' => $serviceKey,
+                        'booking_id' => $booking->id,
+                        'type' => isset($pivotData['event_id']) ? 'event' : (isset($pivotData['free_consultation_type_id']) ? 'free_consultation' : 'service')
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Failed to insert booking service: ' . $e->getMessage(), [
+                        'service_key' => $serviceKey,
+                        'pivot_data' => $pivotData
+                    ]);
+                    throw $e;
+                }
+            }
+
+            // NEW: Create event bookings and participants (AFTER invoice and booking are created)
+            if (!empty($eventsToUpdate)) {
+                foreach ($eventsToUpdate as $eventId => $data) {
                     try {
-                        DB::table('booking_service')->insert(array_merge($pivotData, [
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]));
-                        
-                        Log::info('Free consultation booking service inserted', [
-                            'service_key' => $serviceKey,
-                            'consultation_type' => $consultationType,
-                            'booking_id' => $booking->id
+                        $event = $data['event'];
+                        $participantCount = $data['participant_count'];
+                        $cartItemId = $data['cart_item_id'];
+
+                        $itemSubtotal = $data['subtotal'];    // Original subtotal
+                        $itemDiscount = $data['discount'];    // Discount amount
+                        $itemFinalPrice = $data['final_price']; // Final price after discount
+                        $referralId = $data['referral_id'];
+
+                        // Create event booking record
+                        $eventBooking = EventBooking::create([
+                            'user_id' => $user->id,
+                            'event_id' => $eventId,
+                            'booker_name' => $user->name,
+                            'booker_phone' => $user->userProfile->phone_number ?? '',
+                            'booker_email' => $user->email,
+                            'participant_count' => $participantCount,
+                            'total_price' => $itemSubtotal,        // ✅ Subtotal before discount
+                            'discount_amount' => $itemDiscount,    // ✅ Discount amount
+                            'final_price' => $itemFinalPrice,      // ✅ After discount
+                            'payment_type' => $selectedPaymentType,
+                            'booking_status' => 'menunggu pembayaran',
+                            'referral_code_id' => $referralId,
+                            'invoice_id' => $invoice->id
+                        ]);
+
+                        // Save individual participants to event_participants table
+                        if (isset($eventParticipantsData[$eventId])) {
+                            foreach ($eventParticipantsData[$eventId] as $participant) {
+                                EventParticipant::create([
+                                    'event_booking_id' => $eventBooking->id,
+                                    'full_name' => $participant->full_name,
+                                    'phone_number' => $participant->phone_number,
+                                    'email' => $participant->email,
+                                    'attendance_status' => 'pending'
+                                ]);
+                            }
+                        }
+
+                        Log::info('Event booking created successfully', [
+                            'event_id' => $eventId,
+                            'booking_id' => $eventBooking->id,
+                            'participant_count' => $participantCount,
+                            'total_price' => $itemSubtotal,
+                            'discount' => $itemDiscount,
+                            'final_price' => $itemFinalPrice
                         ]);
                     } catch (\Exception $e) {
-                        Log::error('Failed to insert free consultation booking service: ' . $e->getMessage(), [
-                            'service_key' => $serviceKey,
-                            'pivot_data' => $pivotData
+                        Log::error('Failed to create event booking: ' . $e->getMessage(), [
+                            'event_id' => $eventId,
+                            'user_id' => $user->id,
+                            'cart_item_id' => $cartItemId,
+                            'trace' => $e->getTraceAsString()
                         ]);
-                        throw $e;
-                    }
-                } else {
-                    // Handle regular services using the relationship
-                    try {
-                        $booking->services()->attach($pivotData['service_id'], $pivotData);
-                        
-                        Log::info('Regular service attached', [
-                            'service_id' => $pivotData['service_id'],
-                            'booking_id' => $booking->id
-                        ]);
-                    } catch (\Exception $e) {
-                        Log::error('Failed to attach regular service: ' . $e->getMessage(), [
-                            'service_id' => $pivotData['service_id'],
-                            'pivot_data' => $pivotData
-                        ]);
-                        throw $e;
+                        // Don't throw - allow other items to process
                     }
                 }
             }
@@ -253,7 +403,6 @@ class CheckoutController extends Controller
 
             // Confirm free consultation schedule bookings
             foreach ($freeConsultationSchedulesToUpdate as $schedule) {
-                // Schedule slot was already incremented when added to cart
                 Log::info('Free consultation schedule confirmed for booking', [
                     'schedule_id' => $schedule->id,
                     'booking_id' => $booking->id,
@@ -267,14 +416,15 @@ class CheckoutController extends Controller
             DB::commit();
 
             Log::info('Checkout completed successfully', [
-                'booking_id' => $booking->id,
                 'invoice_id' => $invoice->id,
                 'user_id' => $user->id,
-                'total_amount' => $grandTotal
+                'total_amount' => $grandTotal,
+                'item_count' => count($servicesToAttach),
+                'event_count' => count($eventsToUpdate)
             ]);
 
-            return redirect()->route('invoice.show', $booking)->with('success', 'Pesanan berhasil dibuat!');
-
+            // Redirect ke invoice page, bukan consultation booking
+            return redirect()->route('invoice.show', $invoice->id)->with('success', 'Pesanan berhasil dibuat!');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Checkout failed: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine(), [
@@ -282,7 +432,88 @@ class CheckoutController extends Controller
                 'selected_items' => $selectedItemIds,
                 'trace' => $e->getTraceAsString()
             ]);
-            return back()->with('error', 'Terjadi kesalahan saat memproses pesanan Anda. Detail: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat memproses pesanan Anda. Silakan coba lagi.');
         }
+    }
+
+    /**
+     * Get service pricing for guest cart
+     */
+    public function getServicePricing(Request $request)
+    {
+        $serviceIds = $request->input('service_ids', []);
+
+        $pricing = ConsultationService::whereIn('id', $serviceIds)
+            ->get()
+            ->keyBy('id')
+            ->map(function ($service) {
+                return [
+                    'title' => $service->title,
+                    'price' => $service->price,
+                    'hourly_price' => $service->hourly_price,
+                    'thumbnail' => $service->thumbnail ? asset('storage/' . $service->thumbnail) : null
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'pricing' => $pricing
+        ]);
+    }
+
+    // In CheckoutController.php - Replace the updateCartSummary method with this:
+
+    /**
+     * Update cart summary via AJAX
+     */
+    public function updateCartSummary(Request $request)
+    {
+        $selectedIds = $request->input('ids', []);
+        $paymentType = $request->input('payment_type', 'full_payment');
+
+        $cartItems = CartItem::with(['service', 'referralCode', 'event'])
+            ->where('user_id', Auth::id())
+            ->whereIn('id', $selectedIds)
+            ->get();
+
+        $subtotal = 0;
+        $totalDiscount = 0;
+
+        foreach ($cartItems as $item) {
+            // ✅ Calculate subtotal BEFORE discount
+            $itemSubtotal = $item->calculateOriginalSubtotal();
+            $itemDiscount = $item->getDiscountAmount();
+
+            $subtotal += $itemSubtotal;
+            $totalDiscount += $itemDiscount;
+
+            Log::info('Cart summary calculation', [
+                'item_id' => $item->id,
+                'item_type' => $item->item_type,
+                'is_event' => $item->isEvent(),
+                'original_price' => $item->original_price,
+                'participant_count' => $item->participant_count,
+                'item_subtotal' => $itemSubtotal,
+                'item_discount' => $itemDiscount
+            ]);
+        }
+
+        $grandTotal = $subtotal - $totalDiscount;
+        $totalToPayNow = ($paymentType === 'dp') ? $grandTotal * 0.5 : $grandTotal;
+
+        Log::info('Cart summary totals', [
+            'subtotal' => $subtotal,
+            'total_discount' => $totalDiscount,
+            'grand_total' => $grandTotal,
+            'payment_type' => $paymentType,
+            'total_to_pay_now' => $totalToPayNow
+        ]);
+
+        return response()->json([
+            'subtotal' => number_format($subtotal, 0, ',', '.'),
+            'totalDiscount' => number_format($totalDiscount, 0, ',', '.'),
+            'grandTotal' => number_format($grandTotal, 0, ',', '.'),
+            'totalToPayNow' => number_format($totalToPayNow, 0, ',', '.')
+        ]);
     }
 }

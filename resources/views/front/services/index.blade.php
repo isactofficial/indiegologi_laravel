@@ -150,6 +150,13 @@
 @endpush
 
 @section('content')
+    {{-- Iklan --}}
+    <x-floating-ads
+        topAdImage="assets/img/PROMOTION_WEBSITE.jpg"
+        topAdLink="#"
+        bottomAdImage="assets/img/KONSULTASI_GRATIS.jpg"
+        bottomAdLink="/layanan" />
+
     <div class="service-details-page">
         <section class="container container-title mb-5" data-aos="fade-down">
             <div class="row">

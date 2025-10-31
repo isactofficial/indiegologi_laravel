@@ -1,353 +1,476 @@
 @extends('layouts.app')
 
-@section('title', 'Semua Event KAMCUP')
-
-@section('content')
-
-{{-- Hero Section for Events Page --}}
-<section class="gallery-header"> {{-- Menggunakan class gallery-header untuk konsistensi gaya hero --}}
-    <div class="container">
-        <h2 class="display-4 fw-bold mb-3">Jelajahi Semua Event KAMCUP</h2>
-        <p class="lead">Dapatkan informasi lengkap tentang berbagai kompetisi dan acara **inspiratif** yang diselenggarakan oleh KAMCUP.
-            Jadilah bagian dari semangat **olahraga** dan **pertumbuhan** komunitas kami!</p>
-    </div>
-</section>
-
-<div class="container py-5 gallery-page"> {{-- Menggunakan class gallery-page untuk padding dan layout umum --}}
-    <div class="filter-sort-container mb-4 d-flex justify-content-end align-items-center gap-3">
-        {{-- Filter Kategori --}}
-        <div>
-            <label for="category-select" class="form-label mb-0 fw-bold" style="color: var(--secondary-color);">Kategori:</label>
-            <select id="category-select" class="form-select w-auto d-inline-block" onchange="window.location.href = this.value;"
-                    style="border-color: var(--secondary-color); color: var(--secondary-color); border-radius: 8px; padding: 8px 15px;">
-                <option value="{{ request()->fullUrlWithoutQuery(['category', 'page']) }}" {{ $category == 'all' ? 'selected' : '' }}>Semua</option> {{-- Reset page on category change --}}
-                <option value="{{ request()->fullUrlWithQuery(['category' => 'male', 'page' => 1]) }}" {{ $category == 'male' ? 'selected' : '' }}>Pria</option>
-                <option value="{{ request()->fullUrlWithQuery(['category' => 'female', 'page' => 1]) }}" {{ $category == 'female' ? 'selected' : '' }}>Wanita</option>
-                <option value="{{ request()->fullUrlWithQuery(['category' => 'mixed', 'page' => 1]) }}" {{ $category == 'mixed' ? 'selected' : '' }}>Campuran</option>
-            </select>
-        </div>
-
-        {{-- Urutkan Berdasarkan --}}
-        <div>
-            <label for="sort-select" class="form-label mb-0 fw-bold" style="color: var(--secondary-color);">Urutkan:</label>
-            <select id="sort-select" class="form-select w-auto d-inline-block" onchange="window.location.href = this.value;"
-                    style="border-color: var(--secondary-color); color: var(--secondary-color); border-radius: 8px; padding: 8px 15px;">
-                <option value="{{ request()->fullUrlWithoutQuery(['sort', 'page']) }}" {{ $sort == 'latest' ? 'selected' : '' }}>Terbaru</option> {{-- Reset page on sort change --}}
-                <option value="{{ request()->fullUrlWithQuery(['sort' => 'oldest', 'page' => 1]) }}" {{ $sort == 'oldest' ? 'selected' : '' }}>Terlama</option>
-                <option value="{{ request()->fullUrlWithQuery(['sort' => 'upcoming', 'page' => 1]) }}" {{ $sort == 'upcoming' ? 'selected' : '' }}>Mendatang</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"> {{-- Grid untuk event --}}
-        @forelse ($events as $event)
-        <div class="col">
-            <div class="card gallery-item-card h-100"> {{-- Menggunakan class gallery-item-card --}}
-                <img src="{{ asset('storage/' . $event->thumbnail) }}" class="card-img-top gallery-thumbnail" alt="{{ $event->title }}">
-                <div class="card-body gallery-content"> {{-- Menggunakan class gallery-content --}}
-                    <h5 class="card-title gallery-title">{{ $event->title }}</h5>
-                    <div class="gallery-meta"> {{-- Menggunakan class gallery-meta --}}
-                        <p class="card-text mb-1"><strong>Lokasi:</strong> {{ $event->location }}</p>
-                        <p class="card-text mb-1"><strong>Kategori:</strong> {{ ucfirst($event->gender_category) }}</p>
-                        <p class="card-text mb-1"><strong>Tanggal:</strong> {{ \Carbon\Carbon::parse($event->registration_start)->format('d M Y') }}
-                            @if (\Carbon\Carbon::parse($event->registration_start)->format('Y-m-d') != \Carbon\Carbon::parse($event->registration_end)->format('Y-m-d'))
-                                - {{ \Carbon\Carbon::parse($event->registration_end)->format('d M Y') }}
-                            @endif
-                        </p>
-                    </div>
-                    {{-- Deskripsi singkat event --}}
-                    <p class="card-text gallery-description">{{ Str::limit($event->description, 100) }}</p>
-                </div>
-                <div class="gallery-footer"> {{-- Menggunakan class gallery-footer --}}
-                    @php
-                        $statusBgColor = '';
-                        $statusTextColor = '';
-                        switch ($event->status) {
-                            case 'completed':
-                                $statusBgColor = 'var(--primary-color)'; // Pink KAMCUP
-                                $statusTextColor = 'white';
-                                break;
-                            case 'ongoing':
-                                $statusBgColor = 'var(--secondary-color)'; // Blue-Green KAMCUP
-                                $statusTextColor = 'white';
-                                break;
-                            case 'registration':
-                                $statusBgColor = 'var(--accent-color)'; // Yellow KAMCUP
-                                $statusTextColor = 'var(--text-dark)'; // Dark text for yellow
-                                break;
-                            default:
-                                $statusBgColor = '#6c757d'; // Default Bootstrap gray
-                                $statusTextColor = 'white';
-                                break;
-                        }
-                    @endphp
-                    <span class="badge" style="background-color: {{ $statusBgColor }}; color: {{ $statusTextColor }};">{{ ucfirst($event->status) }}</span>
-                    <a href="{{ route('front.events.show', $event->slug) }}" class="btn btn-primary-kersa btn-sm">Lihat Detail</a>
-                </div>
-            </div>
-        </div>
-        @empty
-        <div class="col-12">
-            <p class="text-center text-secondary">Belum ada event untuk ditampilkan saat ini. Segera hadir!</p>
-        </div>
-        @endforelse
-    </div>
-
-    {{-- Pagination --}}
-    @if ($events->hasPages())
-        <div class="mt-5 d-flex justify-content-center">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    {{-- Previous Page Link --}}
-                    @if ($events->onFirstPage())
-                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                    @else
-                        <li class="page-item"><a class="page-link" href="{{ $events->previousPageUrl() }}" rel="prev">&laquo;</a></li>
-                    @endif
-
-                    {{-- Pagination Elements --}}
-                    @php
-                        $currentPage = $events->currentPage();
-                        $lastPage = $events->lastPage();
-                        $pageRange = 5;
-                        $startPage = max(1, $currentPage - floor($pageRange / 2));
-                        $endPage = min($lastPage, $currentPage + floor($pageRange / 2));
-
-                        if ($currentPage <= floor($pageRange / 2) && $lastPage >= $pageRange) {
-                            $endPage = $pageRange;
-                        }
-                        if ($currentPage > ($lastPage - floor($pageRange / 2)) && $lastPage >= $pageRange) {
-                            $startPage = max(1, $lastPage - $pageRange + 1);
-                        }
-                    @endphp
-
-                    @for ($i = $startPage; $i <= $endPage; $i++)
-                        <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
-                            <a class="page-link" href="{{ $events->url($i) }}">{{ $i }}</a>
-                        </li>
-                    @endfor
-
-                    {{-- Next Page Link --}}
-                    @if ($events->hasMorePages())
-                        <li class="page-item"><a class="page-link" href="{{ $events->nextPageUrl() }}" rel="next">&raquo;</a></li>
-                    @else
-                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                    @endif
-                </ul>
-            </nav>
-        </div>
-    @endif
-</div>
-
-@endsection
-
 @push('styles')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('css/service-details.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 <style>
-    /* Main Colors (Jika belum didefinisikan di master_nav.blade.php atau file CSS global lainnya) */
-    :root {
-        --primary-color: #cb2786; /* physique: sportive.inspiration refresh (main color) */
-        --secondary-color: #00617a; /* relationship: interactive care expressive competitive */
-        --accent-color: #f4b704; /* reflection: sporty youthful */
-        --text-dark: #333;
-        --text-light: #f8f9fa;
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 20px, 0)
+        }
 
-        /* Mapping ke variabel KAMCUP yang mungkin sudah ada di master_nav untuk konsistensi */
-        --kamcup-pink: var(--primary-color);
-        --kamcup-blue-green: var(--secondary-color);
-        --kamcup-yellow: var(--accent-color);
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0)
+        }
     }
 
-    /* General Styling for a Sporty, Youthful, and Active Vibe */
-    body {
-        font-family: 'Poppins', sans-serif;
-        color: var(--text-dark);
+    .stagger-item {
+        opacity: 0
     }
 
-    /* Menggunakan class dari referensi Anda */
-    .text-primary-kersa { color: var(--primary-color) !important; }
-    .bg-primary-kersa { background-color: var(--primary-color) !important; }
-    .border-primary-kersa { border-color: var(--primary-color) !important; }
-    .btn-primary-kersa {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
-        transition: all 0.3s ease; /* Tambahkan transisi */
-    }
-    .btn-primary-kersa:hover {
-        background-color: #a6206b; /* Darker pink for hover */
-        border-color: #a6206b;
-    }
-    .btn-outline-primary-kersa {
-        color: var(--primary-color);
-        border-color: var(--primary-color);
-        background-color: transparent;
-        transition: all 0.3s ease; /* Tambahkan transisi */
-    }
-    .btn-outline-primary-kersa:hover {
-        background-color: var(--primary-color);
-        color: white;
+    .accordion-collapse.show .stagger-item {
+        animation: fadeInUp .5s ease-out forwards
     }
 
-    /* Header Section (menggunakan gaya gallery-header) */
-    .gallery-header {
-        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-        color: var(--text-light);
-        padding: 60px 0;
-        margin-top: 5rem; /* Adjust based on navbar height */
-        text-align: center;
-        border-bottom-left-radius: 50px; /* Youthful, dynamic shape */
-        border-bottom-right-radius: 50px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    .hero-title { /* Untuk judul di hero section events */
-        font-size: 3.5rem;
-    }
-    .hero-description { /* Untuk deskripsi di hero section events */
-        font-size: 1.25rem;
+    .accordion-collapse.show .stagger-item:nth-child(1) {
+        animation-delay: .05s
     }
 
-    /* Item Card Styling (menggunakan gaya gallery-item-card) */
-    .gallery-item-card {
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        background-color: #ffffff;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        display: flex;
-        flex-direction: column;
+    .accordion-collapse.show .stagger-item:nth-child(2) {
+        animation-delay: .1s
     }
 
-    .gallery-item-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    .accordion-collapse.show .stagger-item:nth-child(3) {
+        animation-delay: .15s
     }
 
-    .gallery-thumbnail {
-        height: 250px; /* Fixed height for consistent look */
-        width: 100%;
-        object-fit: cover;
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
+    .accordion-collapse.show .stagger-item:nth-child(4) {
+        animation-delay: .2s
     }
 
-    .gallery-content {
-        padding: 20px;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+    .accordion-collapse.show .stagger-item:nth-child(5) {
+        animation-delay: .25s
     }
 
-    .gallery-title {
-        color: var(--primary-color);
-        font-weight: 700;
-        margin-bottom: 10px;
-        font-size: 1.5rem;
+    /* Event card styling - matching services layout */
+    .event-highlight {
+        background: white !important;
+        border: 3px solid var(--indiegologi-primary) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        position: relative;
     }
 
-    .gallery-meta p {
-        margin-bottom: 5px;
-        font-size: 0.9rem;
-        color: #555;
+    .event-highlight .accordion-button {
+        background: white !important;
+        padding: 2rem !important;
     }
 
-    .gallery-meta strong {
-        color: var(--secondary-color);
+    .event-highlight .accordion-button h5 {
+        font-size: 1.5rem !important;
+        color: var(--indiegologi-primary) !important;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 
-    .gallery-description {
-        font-size: 0.95rem;
-        line-height: 1.6;
-        color: #666;
-        margin-top: 15px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3; /* Show 3 lines */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .event-highlight .accordion-button p {
+        font-size: 1.1rem !important;
+        color: #6c757d !important;
     }
 
-    .gallery-footer {
-        padding: 15px 20px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-top: 1px solid #eee;
-        margin-top: 15px;
-    }
-
-    /* Event status badge (custom for events) */
-    .event-status-badge {
-        padding: 0.4em 0.8em;
-        border-radius: 0.35rem;
-        font-size: 0.85em;
-        font-weight: 700;
-        line-height: 1;
-        white-space: nowrap;
-        text-align: center;
-        vertical-align: baseline;
-        text-transform: capitalize;
-    }
-
-    /* Filter/Sort Dropdown */
-    .filter-sort-container .form-select {
-        border-color: var(--secondary-color);
-        color: var(--secondary-color);
-        border-radius: 8px;
-        padding: 8px 15px;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300617a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); /* Custom arrow */
-    }
-
-    .filter-sort-container label {
-        margin-right: 15px;
+    /* Tombol "Daftar Sekarang" matching services */
+    .event-highlight .btn-register-now {
+        background: var(--indiegologi-primary) !important;
+        color: white !important;
         font-weight: 600;
-        color: var(--secondary-color);
-    }
-
-    /* Pagination Styling from your reference */
-    .pagination .page-item .page-link {
-        border-radius: 8px;
-        margin: 0 5px;
-        min-width: 40px;
-        text-align: center;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 25px !important;
+        font-size: 0.9rem !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         transition: all 0.3s ease;
-        border: 1px solid var(--secondary-color);
-        color: var(--secondary-color);
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 40px;
+        white-space: nowrap;
+        border: none;
     }
 
-    .pagination .page-item.active .page-link {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-        color: var(--text-light);
-        font-weight: bold;
-        box-shadow: 0 4px 8px rgba(0, 97, 122, 0.2);
-    }
-
-    .pagination .page-item .page-link:hover:not(.active) {
-        background-color: var(--accent-color);
-        border-color: var(--accent-color);
-        color: var(--text-light);
+    .event-highlight .btn-register-now:hover {
         transform: translateY(-2px);
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
 
-    .pagination .page-item.disabled .page-link {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
+    /* Badge event */
+    .event-badge {
+        position: absolute;
+        top: -10px;
+        right: 15px;
+        background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        z-index: 10;
+    }
+
+    /* Event details styling */
+    .event-details {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .event-details.selected {
+        background: #e3f2fd;
+        border-color: var(--indiegologi-primary);
+    }
+
+    .event-meta {
+        display: none;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    .event-meta.show {
+        display: block;
+    }
+
+    .event-detail-item {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .event-detail-item:hover {
+        border-color: var(--indiegologi-primary);
+        background: #f8f9fa;
+    }
+
+    .event-detail-item.selected {
+        border-color: var(--indiegologi-primary);
+        background: #e3f2fd;
+    }
+
+    /* Responsive untuk mobile */
+    @media (max-width:767.98px) {
+        .event-highlight .accordion-button {
+            padding: 1.5rem !important;
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .event-highlight .accordion-button h5 {
+            font-size: 1.3rem !important;
+        }
+
+        /* Tombol "Daftar Sekarang" versi mobile */
+        .event-highlight .btn-register-now {
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem !important;
+        }
+
+        /* Penyesuaian gambar dan teks di mobile */
+        .event-highlight .event-info-wrapper {
+            width: 100%;
+        }
+
+        .accordion-button .event-header-mobile {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%
+        }
+
+        .accordion-button .event-header-mobile-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%
+        }
+
+        .accordion-button .event-header-mobile .event-thumbnail-mobile {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem
+        }
+
+        .accordion-button h5 {
+            font-size: 1.1rem
+        }
+
+        .accordion-button p {
+            font-size: .85rem
+        }
+
+        .btn-details-toggle {
+            font-size: 0;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+            background-color: #f1f3f5;
+            color: var(--indiegologi-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            flex-shrink: 0
+        }
+
+        .btn-details-toggle::after {
+            content: '\F285';
+            font-family: 'bootstrap-icons';
+            font-size: 1rem;
+            transition: transform .3s ease
+        }
+
+        .accordion-button:not(.collapsed) .btn-details-toggle::after {
+            transform: rotate(90deg)
+        }
+    }
+
+    /* Price display matching services */
+    .final-price-display {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--indiegologi-primary);
+    }
+
+    .final-price.free {
+        color: #28a745;
     }
 </style>
 @endpush
 
+@section('content')
+<div class="service-details-page">
+    {{-- Iklan --}}
+    <x-floating-ads
+        topAdImage="assets/img/PROMOTION_WEBSITE.jpg"
+        topAdLink="#"
+        bottomAdImage="assets/img/KONSULTASI_GRATIS.jpg"
+        bottomAdLink="/layanan" />
+
+    <section class="container container-title mb-5" data-aos="fade-down">
+        <div class="row">
+            <h1 class="section-title">Event & Workshop <span class="ampersand-style">&</span> Komunitas</h1>
+            <p class="section-desc">Temukan event menarik dan workshop eksklusif untuk pengembangan diri dan komunitas.</p>
+        </div>
+    </section>
+
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-11">
+
+                {{-- Daftar Events dari Database --}}
+                <div class="accordion" id="eventsAccordion">
+                    @forelse($events as $event)
+                    <div class="accordion-item mb-3 rounded-4 shadow-sm" data-aos="fade-up" data-aos-duration="800">
+                        <h2 class="accordion-header" id="heading-{{ $event->id }}">
+                            <div class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $event->id }}">
+                                <div class="d-none d-md-flex justify-content-between align-items-center w-100">
+                                    <div class="d-flex align-items-center">
+                                        @if($event->thumbnail)
+                                        <img src="{{ asset('storage/' . $event->thumbnail) }}" alt="{{ $event->title }}" class="rounded-3 me-3" style="width:100px;height:100px;object-fit:cover">
+                                        @else
+                                        <img src="https://placehold.co/100x100/4CAF50/ffffff?text=Event" alt="{{ $event->title }}" class="rounded-3 me-3" style="width:100px;height:100px;object-fit:cover">
+                                        @endif
+                                        <div>
+                                            <h5 class="fw-bold mb-1">{{ $event->title }}</h5>
+                                            <p class="text-muted mb-0">{{ Str::limit($event->description, 70) }}</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn-details-toggle" type="button">Baca Selengkapnya</button>
+                                </div>
+                                <div class="d-flex d-md-none event-header-mobile">
+                                    @if($event->thumbnail)
+                                    <img src="{{ asset('storage/' . $event->thumbnail) }}" alt="{{ $event->title }}" class="event-thumbnail-mobile">
+                                    @else
+                                    <img src="https://placehold.co/400x200/4CAF50/ffffff?text=Event" alt="{{ $event->title }}" class="event-thumbnail-mobile">
+                                    @endif
+                                    <div class="event-header-mobile-top">
+                                        <div>
+                                            <h5 class="fw-bold mb-1">{{ $event->title }}</h5>
+                                            <p class="text-muted mb-0">{{ Str::limit($event->description, 45) }}</p>
+                                        </div>
+                                        <button class="btn-details-toggle" type="button"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </h2>
+                        <div id="collapse-{{ $event->id }}" class="accordion-collapse collapse" data-bs-parent="#eventsAccordion">
+                            <div class="accordion-body p-4 rounded-4">
+                                <div class="event-block" data-event-id="{{ $event->id }}">
+                                    <div class="stagger-item">
+                                        <div class="row mb-4">
+                                            <div class="col-12">
+                                                <h6 class="fw-judul">Deskripsi Event:</h6>
+                                                <p>{{ $event->description }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="stagger-item">
+                                        <div class="form-section mb-4">
+                                            <div class="row">
+                                                <div class="col-12 mb-3">
+                                                    <h6 class="fw-bold">Detail Event:</h6>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Tanggal Event:</label>
+                                                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Waktu:</label>
+                                                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($event->event_time)->format('H:i') }} WIB" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Lokasi:</label>
+                                                        <input type="text" class="form-control" value="{{ $event->session_type === 'online' ? 'Online Event' : $event->place }}" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Tipe Event</label>
+                                                        <input type="text" class="form-control" value="{{ $event->session_type === 'online' ? 'Online' : 'Offline' }}" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="stagger-item">
+                                        <hr class="my-5">
+                                    </div>
+
+                                    <div class="stagger-item">
+                                        <div class="row justify-content-between align-items-start mb-3">
+                                            <div class="col-auto">
+                                                <div class="final-price-display">
+                                                    <span class="final-price {{ $event->price == 0 ? 'free' : '' }}">
+                                                        {{ $event->price == 0 ? 'GRATIS' : 'Rp ' . number_format($event->price, 0, ',', '.') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                @auth
+                                                <a href="{{ route('events.book', $event->slug) }}"
+                                                    class="btn btn-primary px-4 py-2">
+                                                    Daftar Event
+                                                </a>
+                                                @else
+                                                <a href="{{ route('guest.events.book', $event->slug) }}"
+                                                    class="btn btn-primary px-4 py-2">
+                                                    Daftar Event (Tanpa Login)
+                                                </a>
+                                                @endauth
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted">Event kami akan segera tersedia!</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-    // No specific JS needed for filtering since it's handled by native select change
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init();
+
+        const translations = {
+            success: "Berhasil!",
+            failure: "Gagal!",
+            info: "Perhatian!",
+            added_to_cart: "Event berhasil ditambahkan ke keranjang!",
+            login_required: "Anda harus login untuk mendaftar event.",
+            validation_fails: "Validasi gagal. Pastikan semua kolom terisi dengan benar.",
+        };
+
+        // Helper functions for cart management
+        function getTempCart() {
+            try {
+                return JSON.parse(localStorage.getItem('tempCart')) || {};
+            } catch (e) {
+                console.error('Error parsing temp cart:', e);
+                localStorage.removeItem('tempCart');
+                return {};
+            }
+        }
+
+        function saveTempCart(cart) {
+            try {
+                localStorage.setItem('tempCart', JSON.stringify(cart));
+            } catch (e) {
+                console.error('Error saving temp cart:', e);
+            }
+        }
+
+        function updateCartCount() {
+            @guest
+            const tempCart = getTempCart();
+            const cartCount = Object.keys(tempCart).length;
+            const cartBadge = document.querySelector('.cart-count, .badge-cart, [data-cart-count]');
+            if (cartBadge) {
+                cartBadge.textContent = cartCount;
+                cartBadge.style.display = cartCount > 0 ? 'inline' : 'none';
+            }
+            @endguest
+        }
+
+        // Handle referral code application
+        $('.apply-referral-btn').on('click', function() {
+            const eventId = $(this).data('event-id');
+            const block = $(this).closest('.event-block');
+            const referralCode = block.find('.referral-code-input').val().trim();
+
+            if (!referralCode) {
+                return Swal.fire(translations.info, 'Masukkan kode referral terlebih dahulu.', 'info');
+            }
+
+            @guest
+            Swal.fire(translations.info, 'Kode referral akan divalidasi saat checkout. Silakan login untuk melanjutkan.', 'info');
+            return;
+            @endguest
+
+            @auth
+            Swal.fire({
+                title: translations.success,
+                text: `Kode referral "${referralCode}" akan diterapkan saat checkout.`,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+
+            // Change button text to indicate code is applied
+            $(this).text('Diterapkan').addClass('btn-success').removeClass('btn-outline-primary');
+            block.find('.referral-code-input').prop('readonly', true);
+            @endauth
+        });
+
+        // Initialize cart count on page load
+        updateCartCount();
+    });
 </script>
 @endpush
+@endsection

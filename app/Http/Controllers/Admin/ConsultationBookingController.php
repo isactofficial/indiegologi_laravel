@@ -24,8 +24,8 @@ class ConsultationBookingController extends Controller
     public function index()
     {
         $bookings = ConsultationBooking::with(['user', 'services', 'invoice'])
-                                       ->orderBy('created_at', 'desc')
-                                       ->paginate(10);
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('consultation-bookings.index', compact('bookings'));
     }
 
@@ -84,11 +84,11 @@ class ConsultationBookingController extends Controller
             // Terapkan diskon per layanan jika ada kode referral yang valid
             if (!empty($serviceData['referral_code'])) {
                 $referralCode = ReferralCode::where('code', Str::upper($serviceData['referral_code']))
-                                            ->where(function ($query) {
-                                                $query->whereNull('valid_until')
-                                                      ->orWhere('valid_until', '>=', Carbon::now());
-                                            })
-                                            ->first();
+                    ->where(function ($query) {
+                        $query->whereNull('valid_until')
+                            ->orWhere('valid_until', '>=', Carbon::now());
+                    })
+                    ->first();
                 if ($referralCode && ($referralCode->max_uses === null || $referralCode->current_uses < $referralCode->max_uses)) {
                     $discountPercentage = $referralCode->discount_percentage;
                     $discountAmountPerService = ($totalPriceAtBooking * $discountPercentage) / 100;
@@ -147,8 +147,8 @@ class ConsultationBookingController extends Controller
         ]);
 
         // Perbaikan: Menggunakan `attach()` dalam loop untuk mendukung multiple services yang sama
-        foreach($attachedServices as $service) {
-             $booking->services()->attach($service['service_id'], [
+        foreach ($attachedServices as $service) {
+            $booking->services()->attach($service['service_id'], [
                 'hours_booked' => $service['hours_booked'],
                 'booked_date' => $service['booked_date'],
                 'booked_time' => $service['booked_time'],
@@ -173,9 +173,14 @@ class ConsultationBookingController extends Controller
     public function show(ConsultationBooking $consultationBooking)
     {
         // PERBAIKAN: Eager load referralCode dari tabel pivot
-        $consultationBooking->load(['user', 'invoice', 'services' => function ($query) {
-            $query->withPivot('referral_code_id');
-        }]);
+        $consultationBooking->load([
+            'user',
+            'invoice',
+            'services' => function ($query) {
+                $query->withPivot('referral_code_id');
+            },
+            // 'bookingServices.event' // Add this to load events
+        ]);
 
         return view('consultation-bookings.show', compact('consultationBooking'));
     }
@@ -361,5 +366,41 @@ class ConsultationBookingController extends Controller
         $user->load('profile');
 
         return view('admin.users.show', compact('user'));
+    }
+
+    /**
+     * Confirm payment and generate ticket
+     */
+    public function confirmPayment(ConsultationBooking $consultationBooking)
+    {
+        // Update payment status
+        $consultationBooking->update(['session_status' => 'terdaftar']);
+
+        // Update invoice payment status
+        $consultationBooking->invoice()->update(['payment_status' => 'paid']);
+
+        // Increment event participants for event bookings
+        foreach ($consultationBooking->bookingServices as $bookingService) {
+            if ($bookingService->event_id && $bookingService->event) {
+                $bookingService->event->incrementParticipants();
+            }
+        }
+
+        // Generate ticket
+        return $this->generateTicket($consultationBooking);
+    }
+
+    private function generateTicket(ConsultationBooking $booking)
+    {
+        $booking->load(['bookingServices.event', 'user']);
+
+        $ticketData = [
+            'booking' => $booking,
+            'ticket_number' => 'TICKET-' . strtoupper(\Illuminate\Support\Str::random(8)),
+            'issued_at' => now()
+        ];
+
+        // Return ticket view
+        return view('tickets.event-ticket', $ticketData);
     }
 }

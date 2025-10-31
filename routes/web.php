@@ -16,12 +16,13 @@ use App\Http\Controllers\Admin\ReferralCodeController;
 use App\Http\Controllers\Admin\ConsultationServiceController;
 use App\Http\Controllers\Admin\ConsultationBookingController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\GuestEventBookingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
 use Illuminate\Http\Request;
 
-Route::post('/test-simple', function() {
+Route::post('/test-simple', function () {
     return response()->json(['status' => 'OK', 'message' => 'Simple test works']);
 })->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
@@ -67,6 +68,18 @@ Route::get('/sketches/{sketch:slug}', [FrontController::class, 'showDetail'])->n
 
 // Search route
 Route::get('/search', [FrontController::class, 'search'])->name('search.results');
+
+// Events routes
+Route::get('/events', [\App\Http\Controllers\EventController::class, 'index'])->name('front.events.index');
+Route::get('/events/{event:slug}', [\App\Http\Controllers\EventController::class, 'show'])->name('front.events.show');
+Route::get('/events/{event:slug}/book', [\App\Http\Controllers\EventController::class, 'book'])->name('events.book');
+Route::post('/events/{event}/process-booking', [\App\Http\Controllers\EventController::class, 'processBooking'])->name('events.process-booking');
+Route::get('/cart/events/{cartItem}/edit', [\App\Http\Controllers\EventController::class, 'editBooking'])->name('events.edit-booking');
+Route::post('/cart/events/{cartItem}/update', [\App\Http\Controllers\EventController::class, 'updateBooking'])->name('events.update-booking');
+Route::post('/events/{event}/add-to-cart', [\App\Http\Controllers\EventController::class, 'addToCart'])->name('events.add-to-cart');
+
+// Referral validation
+Route::post('/referral/validate', [\App\Http\Controllers\ReferralCodeController::class, 'validateCode'])->name('referral.validate');
 
 // Cart route (public access)
 Route::get('/cart', [FrontController::class, 'viewCart'])->name('front.cart.view');
@@ -127,6 +140,19 @@ Route::middleware(['auth'])->group(function () {
     // Checkout Route
     Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
 
+    // Add this in the authenticated routes section
+    Route::post('/checkout/process', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
+
+    Route::get('/test-checkout-route', function () {
+        return response()->json([
+            'message' => 'Checkout route test',
+            'route_exists' => Route::has('checkout.process'),
+            'route_url' => route('checkout.process')
+        ]);
+    });
+
+    Route::get('/profile/event-bookings', [ProfileController::class, 'eventBookings'])->name('profile.event-bookings');
+
     // Check availability routes
     Route::post('/check-availability', [FrontController::class, 'checkBookingAvailability'])->name('front.check.availability');
 
@@ -136,14 +162,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/start', [OnboardingController::class, 'show'])->name('start'); // Added this route
         Route::post('/', [OnboardingController::class, 'store'])->name('store');
     });
+
+    Route::get('/profile/event-bookings', [ProfileController::class, 'eventBookings'])->name('profile.event-bookings');
 });
 
 // ======================================================================
 // Invoice Routes (Public for PDF downloads)
 // ======================================================================
 
-Route::get('/invoice/{consultationBooking}', [InvoiceController::class, 'show'])->name('invoice.show');
-Route::get('/invoice/{consultationBooking}/download', [InvoiceController::class, 'downloadPdf'])->name('invoice.download');
+// Main invoice routes (support both services and events)
+Route::get('/invoice/{invoice}', [InvoiceController::class, 'show'])->name('invoice.show');
+Route::get('/invoice/{invoice}/download', [InvoiceController::class, 'downloadPdf'])->name('invoice.download');
+
+// Keep old route for backward compatibility
+Route::get('/consultation-booking/{consultationBooking}/invoice', [InvoiceController::class, 'showFromConsultationBooking'])->name('consultation-booking.invoice');
 
 // ======================================================================
 // Rute Admin
@@ -165,6 +197,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Referral Codes management
     Route::resource('referral-codes', ReferralCodeController::class);
+    Route::patch('/referral-codes/{referralCode}/toggle-status', [ReferralCodeController::class, 'toggleStatus'])->name('referral-codes.toggle-status');
 
     // Consultation Booking management
     Route::resource('consultation-bookings', ConsultationBookingController::class);
@@ -174,14 +207,27 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('testimonials', TestimonialController::class);
     Route::patch('/testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status'); // ✅ UBAH PUT JADI PATCH
 
+    // Event management
+    Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
+
+    // ======================================================================
+    // MOVE EVENT BOOKING ROUTES INSIDE HERE
+    // ======================================================================
+
+    // Admin Event Booking Routes
+    Route::resource('event-bookings', \App\Http\Controllers\Admin\EventBookingController::class);
+    Route::post('/event-bookings/{eventBooking}/confirm-payment', [\App\Http\Controllers\Admin\EventBookingController::class, 'confirmPayment'])->name('event-bookings.confirm-payment');
+    Route::patch('/event-bookings/{eventBooking}/cancel', [\App\Http\Controllers\Admin\EventBookingController::class, 'cancel'])->name('event-bookings.cancel');
+    Route::put('/event-bookings/{eventBooking}/attendance', [\App\Http\Controllers\Admin\EventBookingController::class, 'updateAttendance'])->name('event-bookings.update-attendance');
+
     // NEW: Free Consultation Management
     Route::prefix('free-consultation')->name('free-consultation.')->group(function () {
         // Free consultation types management
         Route::resource('types', App\Http\Controllers\Admin\FreeConsultationTypeController::class);
-        
+
         // Free consultation schedules management
         Route::resource('schedules', App\Http\Controllers\Admin\FreeConsultationScheduleController::class);
-        
+
         // Bulk operations for schedules
         Route::post('schedules/bulk-create', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'bulkCreate'])->name('schedules.bulk-create');
         Route::put('schedules/{schedule}/toggle-availability', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'toggleAvailability'])->name('schedules.toggle-availability');
@@ -211,7 +257,7 @@ Route::middleware(['auth', 'role:reader'])->group(function () {
 // Additional Routes
 // ======================================================================
 
-Route::post('/test-chatbot', function(Request $request) {
+Route::post('/test-chatbot', function (Request $request) {
     return response()->json([
         'status' => 'success',
         'message' => 'Test endpoint works',
@@ -234,7 +280,7 @@ Route::get('/users/profile/{user}', [ConsultationBookingController::class, 'show
 // Test Routes (Development Only - Remove in Production)
 // ======================================================================
 
-Route::get('/debug-article/{slug}', function($slug) {
+Route::get('/debug-article/{slug}', function ($slug) {
     $article = \App\Models\Article::where('slug', $slug)->first();
     if (!$article) {
         return response()->json(['error' => 'Article not found', 'slug' => $slug]);
@@ -249,28 +295,55 @@ Route::get('/debug-article/{slug}', function($slug) {
 });
 
 // Test error routes
-Route::get('/tes-403', function () { abort(403, 'Akses Ditolak.'); });
-Route::get('/tes-500', function () { abort(500, 'Terjadi Kesalahan Server.'); });
-Route::get('/test-401', function () { abort(401); });
-Route::get('/test-419', function () { abort(419); });
-Route::get('/test-429', function () { abort(429); });
-Route::get('/test-503', function () { abort(503); });
-Route::get('/test-400', function () { abort(400); });
-Route::get('/test-413', function () { abort(413); });
-Route::get('/test-502', function () { abort(502); });
+Route::get('/tes-403', function () {
+    abort(403, 'Akses Ditolak.');
+});
+Route::get('/tes-500', function () {
+    abort(500, 'Terjadi Kesalahan Server.');
+});
+Route::get('/test-401', function () {
+    abort(401);
+});
+Route::get('/test-419', function () {
+    abort(419);
+});
+Route::get('/test-429', function () {
+    abort(429);
+});
+Route::get('/test-503', function () {
+    abort(503);
+});
+Route::get('/test-400', function () {
+    abort(400);
+});
+Route::get('/test-413', function () {
+    abort(413);
+});
+Route::get('/test-502', function () {
+    abort(502);
+});
 
 // NEW: Test routes for free consultation system (Development only)
 Route::prefix('test-free-consultation')->group(function () {
     Route::get('/types', function () {
         return response()->json(\App\Models\FreeConsultationType::with('availableSchedules')->get());
     });
-    
+
     Route::get('/schedules/{typeId}', function ($typeId) {
         return response()->json(\App\Models\FreeConsultationSchedule::where('type_id', $typeId)->available()->future()->get());
     });
-    
+
     Route::get('/cart-items', function () {
         if (!auth()->check()) return response()->json(['error' => 'Not authenticated']);
         return response()->json(\App\Models\CartItem::where('user_id', auth()->id())->with(['freeConsultationType', 'freeConsultationSchedule'])->get());
     });
 });
+
+// User Profile Event Bookings
+Route::middleware(['auth', 'onboarding'])->group(function () {
+    Route::get('/profile/event-bookings', [\App\Http\Controllers\ProfileController::class, 'eventBookings'])->name('profile.event-bookings');
+});
+
+// Guest event booking routes (no authentication required)
+Route::get('/events/{event:slug}/guest-book', [GuestEventBookingController::class, 'book'])->name('guest.events.book');
+Route::post('/events/{event}/guest-process-booking', [GuestEventBookingController::class, 'processBooking'])->name('guest.events.process-booking');

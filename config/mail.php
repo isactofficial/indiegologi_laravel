@@ -92,6 +92,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Email Address
+    |--------------------------------------------------------------------------
+    |
+    | This is the email address where admin notifications will be sent
+    | for new event bookings and other important system events.
+    |
+    */
+
+    'admin_email' => env('MAIL_ADMIN_EMAIL', 'temancerita@indiegology.com'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Markdown Mail Settings
     |--------------------------------------------------------------------------
     |

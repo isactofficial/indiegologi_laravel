@@ -3,6 +3,13 @@
 @section('title', 'Painting Telling')
 
 @section('content')
+{{-- Iklan --}}
+    <x-floating-ads
+        topAdImage="assets/img/PROMOTION_WEBSITE.jpg"
+        topAdLink="#"
+        bottomAdImage="assets/img/KONSULTASI_GRATIS.jpg"
+        bottomAdLink="/layanan" />
+        
 <div class="sketch-telling-section">
     <div class="container">
         {{-- Title and description with fade-down animations --}}

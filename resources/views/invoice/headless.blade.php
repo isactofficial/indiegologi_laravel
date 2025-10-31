@@ -407,7 +407,7 @@
 </head>
 <body>
     <div class="invoice-wrapper">
-        @include('invoice.partials.invoice-content')
+        @include('invoice.partials.invoice-content-new')
     </div>
 </body>
 </html>

@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- Iklan --}}
+    <x-floating-ads
+        topAdImage="assets/img/PROMOTION_WEBSITE.jpg"
+        topAdLink="https://informa.co.id/"
+        bottomAdImage="assets/img/KONSULTASI_GRATIS.jpg"
+        bottomAdLink="/layanan" />
 
 {{-- The main container now has a fade-in animation --}}
 <div class="container py-5 mt-5 pt-lg-0" data-aos="fade-in">

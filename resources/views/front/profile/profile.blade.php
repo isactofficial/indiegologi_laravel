@@ -1,106 +1,97 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- CSS khusus untuk halaman profil (Tetap sama seperti sebelumnya) ----}}
 {{-- CSS khusus untuk halaman profil --}}
 <style>
     /* Indiegologi Brand Colors */
     :root {
-        --indiegologi-primary: #0C2C5A; /* Biru Tua - Classy, Pointed */
-        --indiegologi-accent: #F4B704; /* Emas - Memorable */
-        --indiegologi-light-bg: #F5F7FA; /* Background yang bersih */
-        --indiegologi-dark-text: #212529; /* Warna teks gelap utama */
-        --indiegologi-light-text: #ffffff; /* Warna teks terang */
-        --indiegologi-muted-text: #6c757d; /* Warna teks abu-abu */
-        --indiegologi-success: #28a745; /* Warna untuk status sukses */
-        --indiegologi-danger: #dc3545; /* Warna untuk status bahaya/error */
-        --indiegologi-info: #17a2b8; /* Warna untuk status info */
+        --indiegologi-primary: #0C2C5A;
+        --indiegologi-accent: #F4B704;
+        --indiegologi-light-bg: #F5F7FA;
+        --indiegologi-dark-text: #212529;
+        --indiegologi-light-text: #ffffff;
+        --indiegologi-muted-text: #6c757d;
+        --indiegologi-success: #28a745;
+        --indiegologi-danger: #dc3545;
+        --indiegologi-info: #17a2b8;
         --indiegologi-primary-rgb: 12, 44, 90;
-        --indiegologi-accent-rgb: 244, 183, 4; /* Added for rgba usage */
+        --indiegologi-accent-rgb: 244, 183, 4;
     }
 
     .container-profile {
         width: 100%;
         max-width: 960px;
         margin: 0 auto;
-        padding: 1rem 0; /* Memberi padding di dalam container */
-        /* Pastikan container-profile cukup tinggi agar tidak ada overflow tersembunyi */
-        min-height: calc(100vh - var(--navbar-height, 0px) - var(--footer-height, 0px)); /* Sesuaikan tinggi */
+        padding: 1rem 0;
+        min-height: calc(100vh - var(--navbar-height, 0px) - var(--footer-height, 0px));
     }
 
-    /* Main title for the entire profile page */
     .profile-page-main-title {
         font-weight: 700;
-        font-size: 2.2rem; /* Make it larger for main title */
+        font-size: 2.2rem;
         color: var(--indiegologi-primary);
         margin-bottom: 2rem;
         text-align: center;
     }
 
-    /* Section subtitle for sections within cards (e.g., Informasi Dasar) */
     .profile-section-subtitle {
-        font-weight: 600; /* Slightly less bold than main title */
-        font-size: 1.4rem; /* Appropriate size for a section header */
+        font-weight: 600;
+        font-size: 1.4rem;
         color: var(--indiegologi-primary);
-        margin-bottom: 1.5rem; /* Consistent spacing */
+        margin-bottom: 1.5rem;
         text-align: center;
     }
 
-    /* Outer wrapper for profile basic info */
     .profile-section-wrapper {
-        position: relative; /* Untuk positioning tombol edit */
-        padding: 2.5rem; /* Padding sesuai info-card default */
-        margin-bottom: 2rem; /* Jarak antar card */
+        position: relative;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
         background: #ffffff;
         border: 1px solid #e9ecef;
     }
 
-    /* Outer wrapper for appointment section */
     .appointment-section-wrapper {
-        padding: 2.5rem; /* Padding sesuai info-card default */
-        margin-bottom: 2rem; /* Jarak antar card */
+        padding: 2.5rem;
+        margin-bottom: 2rem;
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
         background: #ffffff;
         border: 1px solid #e9ecef;
     }
 
-    /* Style for the edit profile icon */
     .edit-profile-icon {
         position: absolute;
-        top: 1.5rem; /* Jarak dari atas */
-        right: 1.5rem; /* Jarak dari kanan */
-        font-size: 1.3rem; /* Ukuran ikon */
-        color: var(--indiegologi-primary); /* Use primary color directly for visibility */
-        background-color: rgba(var(--indiegologi-accent-rgb), 0.2); /* Add a light accent background */
-        border: 1px solid rgba(var(--indiegologi-primary-rgb), 0.1); /* Add a subtle border */
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 1.3rem;
+        color: var(--indiegologi-primary);
+        background-color: rgba(var(--indiegologi-accent-rgb), 0.2);
+        border: 1px solid rgba(var(--indiegologi-primary-rgb), 0.1);
         transition: all 0.3s ease;
-        padding: 0.5rem; /* Area klik yang lebih besar */
-        border-radius: 50%; /* Membuat area klik bulat */
+        padding: 0.5rem;
+        border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        z-index: 10; /* Pastikan ikon di atas elemen lain */
-        box-sizing: border-box; /* Ensure padding/border don't push it out */
+        z-index: 10;
+        box-sizing: border-box;
     }
 
     .edit-profile-icon:hover {
-        color: var(--indiegologi-light-text); /* Text color on hover */
-        background-color: var(--indiegologi-primary); /* Solid primary background on hover */
+        color: var(--indiegologi-light-text);
+        background-color: var(--indiegologi-primary);
         transform: scale(1.1);
-        box-shadow: 0 4px 8px rgba(var(--indiegologi-primary-rgb), 0.2); /* Add shadow on hover */
+        box-shadow: 0 4px 8px rgba(var(--indiegologi-primary-rgb), 0.2);
     }
 
-    /* Adjust profile photo container to align well */
     .profile-photo-container {
-        margin-bottom: 1.5rem; /* Space below photo */
+        margin-bottom: 1.5rem;
     }
 
-    /* Inner wrapper for basic info rows to manage padding if parent has larger padding */
     .info-card-inner {
-        padding: 0 1rem; /* Horizontal padding for the inner content, keeping it aligned with other elements */
+        padding: 0 1rem;
     }
 
     .info-row {
@@ -162,12 +153,11 @@
         text-decoration: none;
     }
 
-    /* Appointment Card Specific Styles */
     .appointment-card {
-        padding: 1.5rem 2rem; /* Lebih ringkas */
-        margin-bottom: 1rem; /* Jarak antar list item */
+        padding: 1.5rem 2rem;
+        margin-bottom: 1rem;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* Lebih ringan untuk item individual */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         background: #ffffff;
         border: 1px solid #f5f5f5;
     }
@@ -176,22 +166,22 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 0.75rem; /* Lebih ringkas */
-        padding-bottom: 0.5rem; /* Lebih ringkas */
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
         border-bottom: 1px dashed #e9ecef;
     }
 
     .appointment-title {
-        font-size: 1.2rem; /* Sedikit lebih kecil */
+        font-size: 1.2rem;
         font-weight: 700;
         color: var(--indiegologi-primary);
     }
 
     .appointment-status {
-        font-size: 0.8rem; /* Lebih kecil */
+        font-size: 0.8rem;
         font-weight: 600;
-        padding: 0.2rem 0.7rem; /* Lebih ringkas */
-        border-radius: 16px; /* Lebih bulat */
+        padding: 0.2rem 0.7rem;
+        border-radius: 16px;
         text-transform: uppercase;
     }
 
@@ -211,44 +201,44 @@
     }
 
     .status-dibatalkan {
-        background-color: rgba(108, 117, 125, 0.1); /* Grayish for cancelled */
+        background-color: rgba(108, 117, 125, 0.1);
         color: var(--indiegologi-muted-text);
     }
 
     .appointment-details {
-        display: grid; /* Menggunakan grid untuk layout detail */
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsif 2 kolom */
-        gap: 0.75rem 1.5rem; /* Jarak antar item */
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 0.75rem 1.5rem;
         margin-bottom: 1.25rem;
     }
 
     .detail-item {
-        margin-bottom: 0; /* Hilangkan margin bawah default */
+        margin-bottom: 0;
     }
 
     .detail-label {
-        font-size: 0.8rem; /* Lebih kecil */
+        font-size: 0.8rem;
         color: var(--indiegologi-muted-text);
-        margin-bottom: 0; /* Hilangkan margin bawah */
+        margin-bottom: 0;
     }
 
     .detail-value {
-        font-size: 0.9rem; /* Lebih kecil */
+        font-size: 0.9rem;
         color: var(--indiegologi-dark-text);
         font-weight: 500;
     }
 
     .appointment-actions {
         display: flex;
-        gap: 0.5rem; /* Jarak antar tombol lebih kecil */
+        gap: 0.5rem;
         justify-content: flex-end;
         flex-wrap: wrap;
     }
 
     .appointment-actions .btn {
-        padding: 0.5rem 1rem; /* Tombol lebih ringkas */
+        padding: 0.5rem 1rem;
         font-size: 0.85rem;
-        min-width: unset; /* Hilangkan lebar minimum */
+        min-width: unset;
     }
 
     .alert {
@@ -261,14 +251,13 @@
         color: var(--indiegologi-success);
     }
 
-    /* Pagination styles */
     .pagination-controls {
         display: flex;
         justify-content: center;
         align-items: center;
         margin-top: 2rem;
         gap: 1rem;
-        padding: 0 2.5rem; /* Match card padding for alignment */
+        padding: 0 2.5rem;
     }
 
     .pagination-button {
@@ -302,67 +291,92 @@
         color: var(--indiegologi-dark-text);
     }
 
-    /* Responsive adjustments */
+    .no-appointment-message {
+        padding: 2rem;
+        text-align: center;
+    }
+
     @media (max-width: 768px) {
-        .profile-section-wrapper, .appointment-section-wrapper {
+
+        .profile-section-wrapper,
+        .appointment-section-wrapper {
             padding: 1.5rem;
         }
+
         .profile-page-main-title {
             font-size: 1.8rem;
         }
+
         .profile-section-subtitle {
             font-size: 1.2rem;
         }
-        .info-value, .appointment-title {
+
+        .info-value,
+        .appointment-title {
             font-size: 1rem;
         }
+
         .appointment-details {
-            grid-template-columns: 1fr; /* Satu kolom di tablet dan mobile */
+            grid-template-columns: 1fr;
         }
+
         .appointment-actions {
             justify-content: center;
         }
+
         .edit-profile-icon {
-            top: 15px; /* Sesuaikan posisi ikon di mobile */
+            top: 15px;
             right: 15px;
             font-size: 1.3rem;
         }
+
         .info-card-inner {
-            padding: 0; /* No horizontal padding on mobile */
+            padding: 0;
         }
+
         .pagination-controls {
-            padding: 0 1.5rem; /* Adjust padding on mobile */
+            padding: 0 1.5rem;
         }
     }
 
     @media (max-width: 576px) {
-        .profile-section-wrapper, .appointment-section-wrapper {
+
+        .profile-section-wrapper,
+        .appointment-section-wrapper {
             padding: 1rem;
         }
+
         .profile-page-main-title {
             font-size: 1.5rem;
             margin-bottom: 1.5rem;
         }
+
         .profile-section-subtitle {
             font-size: 1rem;
         }
-        .info-label, .detail-label {
+
+        .info-label,
+        .detail-label {
             font-size: 0.75rem;
         }
-        .info-value, .detail-value, .appointment-title {
+
+        .info-value,
+        .detail-value,
+        .appointment-title {
             font-size: 0.85rem;
         }
-        .btn-primary, .btn-secondary-outline, .appointment-actions .btn, .pagination-button {
+
+        .btn-primary,
+        .btn-secondary-outline,
+        .appointment-actions .btn,
+        .pagination-button {
             padding: 0.4rem 0.8rem;
             font-size: 0.8rem;
         }
+
         .page-info {
             font-size: 0.9rem;
         }
-    }
-    .no-appointment-message { /* Styling for the empty state message */
-        padding: 2rem;
-        text-align: center;
     }
 </style>
 
@@ -377,7 +391,7 @@
     {{-- Profile Main Title --}}
     <div class="profile-page-main-title">Profile Pengguna</div>
 
-    {{-- Profile Information Section (Wrapped in a card) --}}
+    {{-- Profile Information Section --}}
     <div class="profile-section-wrapper mx-auto">
         {{-- Edit Profile Icon --}}
         <a href="{{ route('profile.edit') }}" class="edit-profile-icon" title="Edit Profile">
@@ -446,136 +460,177 @@
             <div class="info-row">
                 <div>
                     <div class="info-label">Zodiak</div>
-                    {{-- Menampilkan data dari kolom 'zodiac' di database --}}
                     <div class="info-value">{{ optional($user->profile)->zodiac ?? '-' }}</div>
                 </div>
             </div>
             <div class="info-row">
                 <div>
                     <div class="info-label">Shio & Elemen</div>
-                    {{-- Menampilkan data dari kolom 'shio_element' di database --}}
                     <div class="info-value">{{ optional($user->profile)->shio_element ?? '-' }}</div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    {{-- Appointment Section (Wrapped in a new card) --}}
-    <div class="text-center profile-page-main-title mt-5">Jadwal Appointment</div> {{-- Adjusted main title for section --}}
+    {{-- Appointment Section --}}
+    <div class="text-center profile-page-main-title mt-5">Jadwal Appointment</div>
     <div class="appointment-section-wrapper mx-auto">
+
+        {{-- Appointment Summary Card --}}
+        {{-- Appointment Summary Card --}}
+        @php
+        $appointmentStats = $stats;
+        @endphp
+
+        {{-- Detailed Appointments List - GROUPED BY INVOICE --}}
         <div id="appointments-list">
-            {{--sortByDesc('invoice_date') untuk mengurutkan
-            invoice dari yang terbaru ke yang terlama.--}}
-            @forelse($user->invoices->sortByDesc('invoice_date') as $index => $invoice)
+            @forelse($appointmentData as $index => $invoiceGroup)
+            @php
+            $invoice = $invoiceGroup['invoice'];
+            $items = $invoiceGroup['items'];
+            $totalItems = count($items);
+            $status = $invoice ? $invoice->payment_status : 'unknown';
+            @endphp
 
-                @php
-                    $booking = \App\Models\ConsultationBooking::where('invoice_id', $invoice->id)->with('services')->first();
-                @endphp
-            <div class="appointment-card" data-index="{{ $index }}">
+            <div class="appointment-card" data-index="{{ $index }}" style="padding: 2rem; margin-bottom: 2rem;">
                 <div class="appointment-header">
-                    @php
-                        $sessionTypes = collect();
-                        $offlineAddress = null;
-                        $displayText = 'Sesi Konsultasi'; // Fallback default
-
-                        if ($booking && $booking->services->isNotEmpty()) {
-                            // Ambil semua tipe sesi yang unik (e.g., ['Online', 'Offline'])
-                            $sessionTypes = $booking->services->pluck('pivot.session_type')->unique();
-
-                            // Cari alamat jika ada sesi offline
-                            if ($sessionTypes->contains('Offline')) {
-                                $offlineService = $booking->services->first(function ($service) {
-                                    return $service->pivot->session_type == 'Offline' && !empty($service->pivot->offline_address);
-                                });
-                                if ($offlineService) {
-                                    $offlineAddress = $offlineService->pivot->offline_address;
-                                }
-                            }
-
-                            // Tentukan teks yang akan ditampilkan berdasarkan jumlah tipe sesi
-                            if ($sessionTypes->count() > 1) {
-                                $displayText = 'Online & Offline';
-                            } elseif ($sessionTypes->count() == 1) {
-                                $displayText = ucfirst($sessionTypes->first());
-                            }
-
-                            // Tambahkan alamat jika ada
-                            if ($offlineAddress) {
-                                $displayText .= ' (' . $offlineAddress . ')';
-                            }
-                        }
-                    @endphp
                     <h3 class="appointment-title">
-                        {{ $displayText }}
+                        📋 Invoice: {{ $invoice->invoice_no ?? 'No Invoice' }}
                     </h3>
+
+                    {{-- Status payment --}}
                     @php
-                        $displayPaymentStatus = $invoice->payment_status;
-                        switch (Str::lower($invoice->payment_status)) {
-                            case 'paid':
-                                $displayPaymentStatus = 'Dibayar';
-                                break;
-                            case 'unpaid':
-                                $displayPaymentStatus = 'Belum Dibayar';
-                                break;
-                            case 'pending':
-                                $displayPaymentStatus = 'Sedang Diproses';
-                                break;
-                            case 'dibatalkan':
-                                $displayPaymentStatus = 'Dibatalkan';
-                                break;
-                        }
+                    $displayPaymentStatus = $status;
+                    switch (Str::lower($status)) {
+                    case 'paid': $displayPaymentStatus = 'Dibayar'; break;
+                    case 'unpaid': $displayPaymentStatus = 'Belum Dibayar'; break;
+                    case 'pending': $displayPaymentStatus = 'Sedang Diproses'; break;
+                    case 'dibatalkan': $displayPaymentStatus = 'Dibatalkan'; break;
+                    case 'terdaftar': $displayPaymentStatus = 'Terdaftar'; break;
+                    case 'menunggu pembayaran': $displayPaymentStatus = 'Menunggu Pembayaran'; break;
+                    }
                     @endphp
-                    <span class="appointment-status status-{{ Str::slug($invoice->payment_status) }}">
+                    <span class="appointment-status status-{{ Str::slug($status) }}">
                         {{ $displayPaymentStatus }}
                     </span>
                 </div>
-                <div class="appointment-details">
+
+                {{-- Invoice Summary --}}
+                <div class="appointment-details" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
                     <div class="detail-item">
-                        <div class="detail-label">Nomor Invoice</div>
-                        <div class="detail-value">{{ $invoice->invoice_no ?? '-' }}</div>
+                        <div class="detail-label">Total Items</div>
+                        <div class="detail-value" style="font-size: 1.1rem; font-weight: bold;">
+                            {{ $totalItems }} Item{{ $totalItems > 1 ? 's' : '' }}
+                        </div>
                     </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Total Pembayaran</div>
+                        <div class="detail-value" style="font-size: 1.1rem; font-weight: bold; color: var(--indiegologi-primary);">
+                            @if($invoice && $invoice->final_amount)
+                            Rp {{ number_format($invoice->final_amount, 0, ',', '.') }}
+                            @else
+                            Rp 0
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="detail-item">
                         <div class="detail-label">Tanggal Invoice</div>
-                        <div class="detail-value">{{ $invoice->invoice_date ? \Carbon\Carbon::parse($invoice->invoice_date)->translatedFormat('d F Y') : '-' }}</div>
+                        <div class="detail-value">
+                            @if($invoice && $invoice->invoice_date)
+                            {{ \Carbon\Carbon::parse($invoice->invoice_date)->translatedFormat('d F Y') }}
+                            @else
+                            -
+                            @endif
+                        </div>
                     </div>
+
+                    @if($invoice && $invoice->due_date)
                     <div class="detail-item">
-                        <div class="detail-label">Jatuh Tempo</div>
-                        <div class="detail-value">{{ $invoice->due_date ? \Carbon\Carbon::parse($invoice->due_date)->translatedFormat('d F Y') : '-' }}</div>
+                        <div class="detail-label">Batas Pembayaran</div>
+                        <div class="detail-value">
+                            {{ \Carbon\Carbon::parse($invoice->due_date)->translatedFormat('d F Y') }}
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Tipe Pembayaran</div>
-                        @php
-                            $displayPaymentType = $invoice->payment_type;
-                            if ($invoice->payment_type === 'dp') {
-                                $displayPaymentType = 'Pembayaran Muka (DP)';
-                            } elseif ($invoice->payment_type === 'full_payment') {
-                                $displayPaymentType = 'Pembayaran Penuh';
-                            }
-                        @endphp
-                        <div class="detail-value">{{ $displayPaymentType ?? '-' }}</div>
-                    </div>
-                </div>
-                @if ($booking)
-                <div class="appointment-actions">
-                    <a href="{{ route('invoice.download', $booking->id) }}" class="btn btn-secondary-outline">
-                        <i class="fas fa-download me-2"></i>PDF
-                    </a>
-                    @if(Str::lower($invoice->payment_status) !== 'paid' && Str::lower($invoice->payment_status) !== 'dibatalkan')
-                        <a href="{{ route('invoice.show', $booking) }}" class="btn btn-primary">Bayar Sekarang</a>
                     @endif
                 </div>
-                @endif
+
+                {{-- Items List --}}
+                <div style="border-top: 2px solid #f0f2f5; padding-top: 1.5rem;">
+                    <h4 style="font-weight: 600; color: var(--indiegologi-primary); margin-bottom: 1rem;">
+                        📦 Detail Items ({{ $totalItems }})
+                    </h4>
+
+                    <div style="display: grid; gap: 1rem;">
+                        @foreach($items as $itemIndex => $item)
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--indiegologi-primary);">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    @if($item['type'] === 'event')
+                                    <span style="background: #0C2C5A; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">EVENT</span>
+                                    @elseif($item['type'] === 'service')
+                                    <span style="background: #F4B704; color: #0C2C5A; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">SERVICE</span>
+                                    @else
+                                    <span style="background: #28a745; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">KONSULTASI</span>
+                                    @endif
+                                    <strong style="color: var(--indiegologi-dark-text);">{{ $item['title'] }}</strong>
+                                </div>
+
+                                @if($item['type'] === 'event' && $item['participant_count'] > 1)
+                                <div style="font-size: 0.9rem; color: var(--indiegologi-muted-text);">
+                                    👥 {{ $item['participant_count'] }} peserta
+                                </div>
+                                @endif
+                            </div>
+
+                            <div style="text-align: right;">
+                                @if($item['type'] === 'event')
+                                <div style="font-size: 1.5rem;">🎯</div>
+                                @elseif($item['type'] === 'service')
+                                <div style="font-size: 1.5rem;">💼</div>
+                                @else
+                                <div style="font-size: 1.5rem;">🆓</div>
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="appointment-actions" style="margin-top: 1.5rem; border-top: 1px dashed #e9ecef; padding-top: 1.5rem;">
+                    @if($invoice)
+                    <a href="{{ route('invoice.download', $invoice->id) }}" class="btn btn-secondary-outline">
+                        <i class="fas fa-download me-2"></i>Download PDF
+                    </a>
+                    @endif
+
+                    @if($invoice && Str::lower($status) !== 'paid' && Str::lower($status) !== 'dibatalkan')
+                    <a href="{{ route('invoice.show', $invoice->id) }}" class="btn btn-primary">
+                        <i class="fas fa-credit-card me-2"></i>Bayar Sekarang
+                    </a>
+                    @endif
+                </div>
             </div>
             @empty
-            <div class="text-center text-muted no-appointment-message">
-                <p>Anda belum memiliki jadwal appointment.</p>
-                <a href="#" class="btn btn-primary">Pesan Appointment Pertama Anda</a>
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-calendar-times fa-3x text-muted"></i>
+                </div>
+                <h5 class="text-muted mb-3">Belum Ada Appointment</h5>
+                <p class="text-muted mb-4">Anda belum memiliki riwayat appointment.</p>
+                <a href="{{ route('front.layanan') }}" class="btn btn-primary">
+                    <i class="fas fa-calendar-plus me-2"></i>Jelajahi Layanan
+                </a>
+                <a href="{{ route('front.events.index') }}" class="btn btn-secondary-outline ms-2">
+                    <i class="fas fa-calendar-alt me-2"></i>Lihat Events
+                </a>
             </div>
             @endforelse
         </div>
 
-        @if(count($user->invoices) > 0)
+        {{-- Pagination --}}
+        @if(count($appointmentData) > 0)
         <div class="pagination-controls">
             <button id="prevPage" class="pagination-button">&laquo; Sebelumnya</button>
             <span id="pageInfo" class="page-info"></span>
@@ -584,73 +639,71 @@
         @endif
     </div>
 
-</div>
+    {{-- Skrip JavaScript untuk paginasi --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const appointmentsList = document.getElementById('appointments-list');
+            if (appointmentsList) {
+                const appointmentCards = appointmentsList.querySelectorAll('.appointment-card');
+                const prevButton = document.getElementById('prevPage');
+                const nextPageButton = document.getElementById('nextPage');
+                const pageInfoSpan = document.getElementById('pageInfo');
 
-{{-- Skrip JavaScript untuk paginasi --}}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const appointmentsList = document.getElementById('appointments-list');
-        if (appointmentsList) {
-            const appointmentCards = appointmentsList.querySelectorAll('.appointment-card');
-            const prevButton = document.getElementById('prevPage');
-            const nextPageButton = document.getElementById('nextPage');
-            const pageInfoSpan = document.getElementById('pageInfo');
+                const itemsPerPage = 5;
+                let currentPage = 1;
+                const totalPages = Math.ceil(appointmentCards.length / itemsPerPage);
 
-            const itemsPerPage = 5;
-            let currentPage = 1;
-            const totalPages = Math.ceil(appointmentCards.length / itemsPerPage);
+                function showPage(page) {
+                    currentPage = page;
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
 
-            function showPage(page) {
-                currentPage = page;
-                const startIndex = (currentPage - 1) * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
+                    appointmentCards.forEach((card, index) => {
+                        if (index >= startIndex && index < endIndex) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
 
-                appointmentCards.forEach((card, index) => {
-                    if (index >= startIndex && index < endIndex) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
+                    if (pageInfoSpan) {
+                        pageInfoSpan.textContent = `Halaman ${currentPage} dari ${totalPages}`;
                     }
-                });
-
-                if (pageInfoSpan) {
-                    pageInfoSpan.textContent = `Halaman ${currentPage} dari ${totalPages}`;
+                    if (prevButton) {
+                        prevButton.disabled = currentPage === 1;
+                    }
+                    if (nextPageButton) {
+                        nextPageButton.disabled = currentPage === totalPages;
+                    }
                 }
+
                 if (prevButton) {
-                    prevButton.disabled = currentPage === 1;
+                    prevButton.addEventListener('click', () => {
+                        if (currentPage > 1) {
+                            showPage(currentPage - 1);
+                        }
+                    });
                 }
+
                 if (nextPageButton) {
-                    nextPageButton.disabled = currentPage === totalPages;
+                    nextPageButton.addEventListener('click', () => {
+                        if (currentPage < totalPages) {
+                            showPage(currentPage + 1);
+                        }
+                    });
+                }
+
+                // Initial load
+                if (appointmentCards.length > 0) {
+                    showPage(1);
+                } else {
+                    if (prevButton && nextPageButton && pageInfoSpan) {
+                        prevButton.style.display = 'none';
+                        nextPageButton.style.display = 'none';
+                        pageInfoSpan.style.display = 'none';
+                    }
                 }
             }
-
-            if (prevButton) {
-                prevButton.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        showPage(currentPage - 1);
-                    }
-                });
-            }
-
-            if (nextPageButton) {
-                nextPageButton.addEventListener('click', () => {
-                    if (currentPage < totalPages) {
-                        showPage(currentPage + 1);
-                    }
-                });
-            }
-
-            // Initial load
-            if (appointmentCards.length > 0) {
-                showPage(1);
-            } else {
-                if (prevButton && nextPageButton && pageInfoSpan) {
-                    prevButton.style.display = 'none';
-                    nextPageButton.style.display = 'none';
-                    pageInfoSpan.style.display = 'none';
-                }
-            }
-        }
-    });
-</script>
-@endsection
+        });
+    </script>
+    @endsection

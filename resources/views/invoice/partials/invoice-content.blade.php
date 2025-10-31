@@ -1,9 +1,9 @@
 {{-- Mulai dari <div class="invoice-header"> hingga <div class="payment-info"> --}}
 <div class="invoice-header">
     <div class="invoice-header-details">
-        <div class="invoice-logo">Indiegologi</div>
+        <div class="invoice-logo"><img style="width: 300px;" src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo"></div>
         <div class="invoice-contact-info">
-            Email: ceriadiego@gmail.com<br>
+            Email: temancerita@indiegologi.com<br>
             Phone Number: +62 822-2095-5595
         </div>
     </div>

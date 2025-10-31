@@ -310,9 +310,17 @@
         text-overflow: ellipsis;
         min-height: 120px;
     }
+
     /* Decorative curly quotes for testimonial text (UI only) */
-    .testimonial-quote::before { content: '“'; margin-right: 2px; }
-    .testimonial-quote::after { content: '”'; margin-left: 2px; }
+    .testimonial-quote::before {
+        content: '“';
+        margin-right: 2px;
+    }
+
+    .testimonial-quote::after {
+        content: '”';
+        margin-left: 2px;
+    }
 
     .testimonial-author {
         border-top: 1px solid rgba(255, 255, 255, 0.3);
@@ -360,7 +368,7 @@
 
     /* Brand logo at the bottom: bigger and no ring */
     #testimonialModal #modal-logo {
-        height: 80px; 
+        height: 80px;
         width: auto;
         opacity: 0.9;
         border: none;
@@ -385,9 +393,17 @@
         line-height: 1.7;
         white-space: pre-wrap;
     }
+
     /* Add curly quotes in modal as well (UI only) */
-    #testimonialModal .quote-full::before { content: '“'; margin-right: 2px; }
-    #testimonialModal .quote-full::after { content: '”'; margin-left: 2px; }
+    #testimonialModal .quote-full::before {
+        content: '“';
+        margin-right: 2px;
+    }
+
+    #testimonialModal .quote-full::after {
+        content: '”';
+        margin-left: 2px;
+    }
 
     /* ARTIKEL STYLES */
     .featured-popular-article-swiper {
@@ -414,6 +430,7 @@
     .featured-popular-img-wrap {
         width: 100%;
         max-width: 380px;
+        height: 340px; 
     }
 
     .featured-popular-img {
@@ -939,7 +956,7 @@
         padding: 100px 0;
         margin-top: 80px;
         margin-bottom: 80px;
-        background-image: url('{{ asset('assets/carousel/kobu-agency-7okkFhxrxNw-unsplash.jpg') }}');
+        background-image: url('{{ asset(' assets/carousel/kobu-agency-7okkFhxrxNw-unsplash.jpg') }}');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -1033,7 +1050,9 @@
             margin-bottom: 1.5rem;
         }
 
-        #testimonialModal #modal-logo { height: 80px; }
+        #testimonialModal #modal-logo {
+            height: 80px;
+        }
     }
 
     @media (max-width: 1200px) {
@@ -1236,93 +1255,7 @@
 
     }
 
-    /* ===== [START] CSS IKLAN POPUP SISI KANAN (REVISI) ===== */
-    .floating-ad-container {
-        position: fixed;
-        right: 0;
-        /* Menempel di kanan */
-        top: 50%;
-        transform: translateY(-50%);
-        width: 465px;
-        /* Sesuaikan lebar iklan */
-        height: 600px;
-        z-index: 1050;
-        transition: transform 0.25s ease, opacity 0.25s ease;
-        /* Faster transition */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        overflow: hidden;
-    }
 
-    .floating-ad-container.hidden {
-        transform: translateY(-50%) translateX(100%);
-        /* Geser ke kanan saat ditutup */
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .floating-ad-container .ad-slot.top-ad {
-        height: 66.67%;
-        width: 100%;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .floating-ad-container .ad-slot.bottom-ad {
-        height: 33.33%;
-        width: 100%;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .floating-ad-container .close-ad-btn {
-        background-color: #f1f1f1;
-        border: 1px solid #ddd;
-        border-bottom: none;
-        border-radius: 5px 5px 0 0;
-        padding: 5px 10px;
-        font-size: 12px;
-        font-family: Arial, sans-serif;
-        cursor: pointer;
-        width: 100%;
-        text-align: center;
-        color: #333;
-        margin-bottom: -1px;
-        flex-shrink: 0;
-        z-index: 1;
-    }
-
-    .floating-ad-container .ad-link {
-        display: block;
-        line-height: 0;
-        width: 100%;
-        height: 100%;
-        flex-grow: 1;
-    }
-
-    .floating-ad-container .ad-image {
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-        /* Sudut tajam */
-        box-shadow: -2px 0 15px rgba(0, 0, 0, 0.15);
-        border: 1px solid #ddd;
-        border-top: none;
-        object-fit: cover; /* <-- Mengisi wadah sambil mempertahankan rasio aspek (menghasilkan "zoom") */
-        object-position: center;
-    }
-
-    /* Sembunyikan iklan di layar kecil */
-    @media (max-width: 991.98px) {
-        .floating-ad-container {
-            /* display: none; */
-        }
-    }
-
-    /* ===== [END] CSS IKLAN POPUP SISI KANAN (REVISI) ===== */
 </style>
 @endpush
 
@@ -1494,6 +1427,49 @@
         </button>
     </div>
 </section>
+
+{{-- 1.5. Acara Unggulan BARU --}}
+@if(isset($featured_event))
+<section class="container py-5 my-5" style="margin-top: 80px;">
+    <div data-aos="fade-down" data-aos-duration="500">
+        <h2 class="text-center fw-bold mb-3" style="color: #0C2C5A; font-size:2.3rem;">Acara Unggulan</h2>
+        <p class="text-center mb-5" style="color:#6c757d; font-family: 'Playfair Display', sans-serif;">Jangan lewatkan kesempatan untuk berpartisipasi dalam acara kami yang akan datang.</p>
+    </div>
+    {{-- Using the existing style wrappers for consistency and hover effect --}}
+    <div class="featured-popular-wrapper" style="position: relative;" data-aos="zoom-in-up" data-aos-duration="500" data-aos-delay="100">
+        {{-- The card uses the "card-hover-zoom" class for a similar effect to the article cards --}}
+        <a href="{{ route('front.events.index') }}" class="text-decoration-none d-block mx-auto">
+            {{-- Mimics the featured-popular-card style --}}
+            <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center bg-white shadow-sm border border-light featured-popular-card mx-auto" style="max-width: 1050px;">
+                <div class="flex-shrink-0 mb-4 mb-lg-0 me-lg-5 featured-popular-img-wrap">
+                    <img src="{{ asset('storage/' . $featured_event->thumbnail) }}"
+                        alt="Thumbnail Acara Unggulan: {{ $featured_event->title }}" class="img-fluid featured-popular-img">
+                </div>
+                <div class="flex-grow-1 text-lg-start text-center featured-popular-content">
+                    <span class="badge mb-2 p-2" style="background-color: #0C2C5A; color: #ffffff; font-weight: 700;">
+                        {{ \Carbon\Carbon::parse($featured_event->event_date)->isToday() ? 'HARI INI!' : 'ACARA MENDATANG' }}
+                    </span>
+                    <h3 class="fw-bold mb-3 featured-popular-title line-clamp-2"
+                        style="color: #0C2C5A;">
+                        {{ $featured_event->title }}
+                    </h3>
+                    <p class="mb-3 featured-popular-desc line-clamp-3"
+                        style="color:#4a5a6a; font-size:1.15rem;">
+                        {{ Str::limit(strip_tags($featured_event->description), 200) }}
+                    </p>
+                    <p class="text-secondary mb-4 featured-popular-date"
+                        style="font-family: 'Playfair Display', sans-serif; font-size: 0.9rem;">
+                        <i class="bi bi-calendar-event me-1"></i> Tanggal: **{{ \Carbon\Carbon::parse($featured_event->event_date)->format('d F Y') }}**
+                        | <i class="bi bi-clock me-1"></i> Pukul: {{ \Carbon\Carbon::parse($featured_event->event_time)->format('H:i') }} WIB
+                    </p>
+                    <span class="btn btn-link text-decoration-none fw-semibold p-0 featured-popular-link"
+                        style="color: #0C2C5A; font-family: 'Playfair Display', sans-serif;">Lihat Detail Acara <i class="bi bi-arrow-right"></i></span>
+                </div>
+            </div>
+        </a>
+    </div>
+</section>
+@endif
 
 {{-- 2. Artikel Pilihan --}}
 <section class="container py-5 my-5" style="margin-top: 80px;"><br><br><br>
@@ -1677,8 +1653,8 @@
             <div class="swiper-slide" data-aos="fade-up"
                 data-aos-delay="{{ $loop->index * 50 }}">
                 @php
-                    // Sanitize testimonial quote by removing straight and curly quotes
-                    $displayQuote = preg_replace('/["\'\x{201C}\x{201D}\x{2018}\x{2019}]+/u', '', $testimonial->quote);
+                // Sanitize testimonial quote by removing straight and curly quotes
+                $displayQuote = preg_replace('/["\'\x{201C}\x{201D}\x{2018}\x{2019}]+/u', '', $testimonial->quote);
                 @endphp
                 <div class="testimonial-flip-container" data-name="{{ $testimonial->name }}"
                     data-details="{{ $testimonial->age }} Tahun, {{ $testimonial->occupation }}"
@@ -1846,21 +1822,13 @@
     </div>
 </div>
 
-<div id="popupAdContainer" class="floating-ad-container">
-    <div class="ad-slot top-ad">
-        <button id="closePopupAd" class="close-ad-btn">TUTUP IKLAN</button>
-        <a href="#" target="_blank" rel="noopener noreferrer" class="ad-link">
-            <img src="{{ asset('assets/img/iklan-1.png') }}" alt="Iklan promosi 1" class="ad-image">
-        </a>
-    </div>
-    
-    <!-- Bottom Ad -->
-    <div class="ad-slot bottom-ad">
-        <a href="/layanan" target="_blank" rel="noopener noreferrer" class="ad-link">
-            <img src="{{ asset('assets/img/iklan-2.png') }}" alt="Iklan promosi 2" class="ad-image">
-        </a>
-    </div>
-</div>
+<x-floating-ads
+    topAdImage="assets/img/PROMOTION_WEBSITE.jpg"
+    topAdLink="#"
+    bottomAdImage="assets/img/KONSULTASI_GRATIS.jpg"
+    bottomAdLink="/layanan"
+/>
+
 @endsection
 
 @push('scripts')

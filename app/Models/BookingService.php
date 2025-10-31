@@ -26,6 +26,7 @@ class BookingService extends Pivot
         'contact_preference',
         'free_consultation_type_id',
         'free_consultation_schedule_id',
+        'event_id', // ADD THIS
     ];
 
     protected $casts = [
@@ -64,6 +65,12 @@ class BookingService extends Pivot
         return $this->belongsTo(FreeConsultationSchedule::class, 'free_consultation_schedule_id');
     }
 
+    // NEW: Event relationship
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
+
     // Updated scopes
     public function scopeForUser($query, $userId)
     {
@@ -91,6 +98,12 @@ class BookingService extends Pivot
     {
         return $query->where('service_id', '!=', 'free-consultation')
                      ->whereNull('free_consultation_type_id');
+    }
+
+    // NEW: Event scope
+    public function scopeEvents($query)
+    {
+        return $query->whereNotNull('event_id');
     }
 
     public function scopePaidBookings($query)
@@ -124,6 +137,12 @@ class BookingService extends Pivot
         return $this->service_id === 'free-consultation' && $this->free_consultation_type_id === null;
     }
 
+    // NEW: Event helper method
+    public function isEvent()
+    {
+        return !is_null($this->event_id);
+    }
+
     public function isValidBooking()
     {
         if (!$this->invoice) {
@@ -135,9 +154,15 @@ class BookingService extends Pivot
                 $this->invoice->due_date >= now());
     }
 
-    // Get service title for display
+    // UPDATED: Get service title for display - NOW INCLUDES EVENTS
     public function getServiceTitleAttribute()
     {
+        // Handle events first
+        if ($this->isEvent()) {
+            return $this->event ? $this->event->title : 'Event';
+        }
+
+        // Then handle free consultations
         if ($this->isNewFreeConsultation()) {
             return $this->freeConsultationType ? 
                 'Konsultasi Gratis - ' . $this->freeConsultationType->name : 
@@ -148,8 +173,7 @@ class BookingService extends Pivot
             return 'Konsultasi Gratis';
         }
 
-        // For regular services, you would access through the relationship
-        // This assumes you have a service relationship in ConsultationBooking
+        // For regular services
         return 'Layanan Konsultasi';
     }
 
@@ -166,5 +190,17 @@ class BookingService extends Pivot
         }
 
         return '';
+    }
+
+    // NEW: Get booking type for display
+    public function getBookingTypeAttribute()
+    {
+        if ($this->isEvent()) {
+            return 'event';
+        } elseif ($this->isFreeConsultation()) {
+            return 'free_consultation';
+        } else {
+            return 'service';
+        }
     }
 }

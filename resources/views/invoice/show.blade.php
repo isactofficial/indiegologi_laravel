@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-    /* Styling for the user-facing invoice */
+    /* Your existing styles remain the same */
     .section {
         font-family: 'Playfair Display', serif;
         padding: 20px;
@@ -16,7 +16,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         max-width: 800px;
         margin: 40px auto;
-        box-sizing: border-box; 
+        box-sizing: border-box;
     }
 
     .invoice-header {
@@ -67,13 +67,13 @@
 
     .grid-full-span {
         grid-column: 1 / -1;
-        margin-bottom: 10px; /* PERBAIKAN: Tambahkan margin bottom yang cukup */
+        margin-bottom: 10px;
     }
 
     .grid-align-top-left {
         align-self: start;
-        margin-bottom: 8px; /* PERBAIKAN: Ganti margin negatif dengan positif */
-        margin-top: 15px; /* PERBAIKAN: Tambah spacing dari elemen sebelumnya */
+        margin-bottom: 8px;
+        margin-top: 15px;
     }
 
     .title-underline {
@@ -92,60 +92,48 @@
         background-color: #CB2786;
     }
 
-    .invoice-client-info p:first-child {
-        font-weight: bold;
-        font-size: 1.1rem;
-        color: #001f3f;
-    }
-
-    .invoice-client-info  {
-        color: #0F3A77;
-    }
-
-    .invoice-details-info h5 {
-        color: #001f3f;
-        font-weight: bold;
-        margin-bottom: 1rem;
-    }
-
-    .invoice-details-info span {
-        color: #0F3A77;
-    }
-
-    /* PERBAIKAN: Styling khusus untuk div yang berisi list paket konseling */
-    .invoice-client-info .grid-full-span div {
-        padding-left: 10px;
-        line-height: 1.6; /* Increase line height untuk readability */
-        margin-top: 8px; /* Tambah margin top */
-        margin-bottom: 8px; /* Tambah margin bottom */
-    }
-
-    /* === PENGATURAN UTAMA TABEL === */
     .service-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 1rem;
-        table-layout: fixed; /* Kunci agar lebar kolom dipatuhi */
+        table-layout: fixed;
     }
 
     .service-table th,
     .service-table td {
         padding: 16px 8px;
         text-align: left;
-        word-break: break-word; /* Izinkan pematahan kata jika perlu */
-    }
-    
-    .service-table th {
-        white-space: normal; /* Izinkan teks header turun baris */
+        word-break: break-word;
     }
 
-    /* === PENENTUAN LEBAR SETIAP KOLOM (VERSI FINAL) === */
-.service-table th:nth-child(1), .service-table td:nth-child(1) { width: 34%; } /* Deskripsi */
-.service-table th:nth-child(2), .service-table td:nth-child(2) { width: 12%; } 
-.service-table th:nth-child(3), .service-table td:nth-child(3) { width: 22%; } /* Harga Satuan */
-.service-table th:nth-child(4), .service-table td:nth-child(4) { width: 12%; } /* Besaran */
-.service-table th:nth-child(5), .service-table td:nth-child(5) { width: 20%; } /* Total Line */
-/* ================================================ */
+    .service-table th {
+        white-space: normal;
+    }
+
+    .service-table th:nth-child(1),
+    .service-table td:nth-child(1) {
+        width: 34%;
+    }
+
+    .service-table th:nth-child(2),
+    .service-table td:nth-child(2) {
+        width: 12%;
+    }
+
+    .service-table th:nth-child(3),
+    .service-table td:nth-child(3) {
+        width: 22%;
+    }
+
+    .service-table th:nth-child(4),
+    .service-table td:nth-child(4) {
+        width: 12%;
+    }
+
+    .service-table th:nth-child(5),
+    .service-table td:nth-child(5) {
+        width: 20%;
+    }
 
     .service-table thead {
         background-color: #0C2C5A;
@@ -161,23 +149,6 @@
         font-weight: bold;
     }
 
-    .service-hours-row td {
-        padding-top: 2px;
-        padding-bottom: 8px;
-        font-size: 0.9em;
-        color: #555;
-        border-bottom: 1px solid #eee;
-    }
-
-    .service-table tbody tr.service {
-         border-bottom: none;
-    }
-
-    .service-table .discount-row td {
-        background-color: #FFB700;
-        color: white;
-    }
-
     .text-right {
         text-align: right;
     }
@@ -185,7 +156,7 @@
     .service-table th.text-right,
     .service-table td.text-right {
         text-align: right;
-        white-space: nowrap; /* Jaga agar ANGKA tidak turun baris */
+        white-space: nowrap;
     }
 
     .summary-section {
@@ -258,161 +229,192 @@
         }
     }
 
-    /* PERBAIKAN CSS untuk mobile responsive */
+    /* Mobile responsive styles */
     @media (max-width: 768px) {
         .invoice-wrapper {
             padding: 15px;
             margin: 20px auto;
         }
-        
+
         .invoice-top-section {
-            gap: 0.5rem; /* PERBAIKAN: Kurangi gap untuk fit mobile */
-            margin-bottom: 20px;
-            /* Tetap flex-direction row untuk bersebelahan */
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .invoice-client-info,
         .invoice-details-info {
-            width: 48%; /* PERBAIKAN: Kembali ke 48% untuk bersebelahan */
-            padding: 12px; /* PERBAIKAN: Kurangi padding untuk fit mobile */
-            grid-template-columns: 1fr; /* Single column layout */
-            gap: 8px 0; /* PERBAIKAN: Kurangi gap untuk fit mobile */
+            width: 100%;
         }
-
-        /* PERBAIKAN: Khusus untuk bagian Dear/Client Info */
-        .invoice-client-info p {
-            margin: 12px 0; /* PERBAIKAN: Increase margin antar paragraph */
-            line-height: 1.6; /* Improve readability */
-        }
-
-        .invoice-client-info p:first-child {
-            font-size: 1rem;
-            margin-bottom: 15px; /* PERBAIKAN: Tambah spacing setelah title */
-        }
-
-        /* PERBAIKAN: Fix untuk list paket konseling di mobile */
-        .invoice-client-info .grid-full-span {
-            margin-bottom: 12px; /* PERBAIKAN: Lebih besar margin di mobile */
-        }
-
-        .invoice-client-info .grid-align-top-left {
-            margin-top: 20px; /* PERBAIKAN: Lebih besar spacing di mobile */
-            margin-bottom: 10px;
-        }
-
-        .invoice-client-info .grid-full-span div {
-            padding-left: 0;
-            margin: 10px 0; /* PERBAIKAN: Tambah margin di mobile */
-            line-height: 1.7; /* PERBAIKAN: Lebih besar line height di mobile */
-        }
-
-        .invoice-client-info .grid-full-span div p {
-            margin-bottom: 8px; /* PERBAIKAN: Tambah spacing dalam list */
-        }
-
-        /* PERBAIKAN: Improve spacing untuk bullet points di mobile */
-        .invoice-client-info .grid-full-span div div {
-            padding-left: 15px;
-            line-height: 1.5;
-            margin-top: 6px; /* PERBAIKAN: Tambah space di atas bullet points */
-        }
-
-        /* Perbaiki title underline */
-        .title-underline {
-            padding-bottom: 8px;
-        }
-
-        .title-underline::after {
-            width: 45px;
-            height: 2px;
-        }
-
-        /* Service table improvements */
-        .service-table {
-            font-size: 0.75rem;
-            margin-top: 15px;
-        }
-
-        .service-table th,
-        .service-table td {
-            padding: 8px 4px;
-        }
-
-        /* Header improvements */
-        .invoice-header {
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .invoice-logo {
-            font-size: 20px;
-        }
-
-        .invoice-contact-info {
-            font-size: 12px;
-        }
-    }
-
-    /* PERBAIKAN tambahan untuk layar sangat kecil */
-    @media (max-width: 480px) {
-        .invoice-wrapper {
-            padding: 12px;
-            margin: 10px auto;
-        }
-        
-        .invoice-client-info,
-        .invoice-details-info {
-            padding: 12px;
-        }
-
-        /* PERBAIKAN: Lebih besar spacing untuk layar kecil */
-        .invoice-client-info .grid-full-span {
-            margin-bottom: 15px;
-        }
-
-        .invoice-client-info .grid-align-top-left {
-            margin-top: 25px;
-            margin-bottom: 12px;
-        }
-
-        .invoice-client-info .grid-full-span div {
-            margin: 12px 0;
-            line-height: 1.8;
-        }
-
-        .service-table {
-            font-size: 0.7rem;
-        }
-
-        .service-table th,
-        .service-table td {
-            padding: 6px 2px;
-        }
-
-        .invoice-client-info p:first-child {
-            font-size: 0.95rem;
-        }
-
-        /* Responsive column widths untuk table di mobile */
-        .service-table th:nth-child(1), .service-table td:nth-child(1) { width: 40%; }
-        .service-table th:nth-child(2), .service-table td:nth-child(2) { width: 10%; }
-        .service-table th:nth-child(3), .service-table td:nth-child(3) { width: 18%; }
-        .service-table th:nth-child(4), .service-table td:nth-child(4) { width: 10%; }
-        .service-table th:nth-child(5), .service-table td:nth-child(5) { width: 22%; }
     }
 </style>
-    <div class="section container-fluid px-4 py-5">
-        <div class="d-flex justify-content-start mb-4 no-print" style="max-width: 800px; margin: 0 auto;">
-            <a href="{{ route('front.cart.view') }}" class="btn px-4 py-2" style="background-color: #F0F5FF; color: #5B93FF; border-radius: 8px;">
-                <i class="fas fa-arrow-left me-2"></i> Kembali ke Keranjang
-            </a>
-            <a href="{{ route('invoice.download', $consultationBooking->id) }}" class="btn btn-primary px-4 py-2 ms-3">
-                <i class="fas fa-download me-2"></i> Unduh PDF
-            </a>
+
+<div class="section container-fluid px-4 py-5">
+    <div class="d-flex justify-content-start mb-4 no-print">
+        <a href="{{ route('front.cart.view') }}" class="btn px-4 py-2" style="background-color: #F0F5FF; color: #5B93FF; border-radius: 8px;">
+            <i class="fas fa-arrow-left me-2"></i> Kembali ke Keranjang
+        </a>
+        <a href="{{ route('invoice.download', $invoice->id) }}" class="btn btn-primary px-4 py-2 ms-3">
+            <i class="fas fa-download me-2"></i> Unduh PDF
+        </a>
+    </div>
+
+    <div class="invoice-wrapper">
+        {{-- Invoice Header --}}
+        <div class="invoice-header">
+            <div class="invoice-header-details">
+                <div class="invoice-logo"><img style="width: 300px;" src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo"></div>
+                <div class="invoice-contact-info">
+                    Email: temancerita@indiegologi.com<br>
+                    Phone Number: +62 822-2095-5595
+                </div>
+            </div>
         </div>
 
-        <div class="invoice-wrapper">
-            @include('invoice.partials.invoice-content')
+        {{-- Client and Invoice Details --}}
+        <div class="invoice-top-section">
+            <div class="invoice-client-info">
+                <p class="grid-full-span title-underline">Dear</p>
+                <span>Nama</span>
+                <span>: {{ $invoice->user->name ?? 'N/A' }}</span>
+
+                <span>No Hp</span>
+                <span>: {{ optional($invoice->user->profile)->phone_number ?? 'N/A' }}</span>
+
+                @php
+                $allItems = $invoice->getAllItems();
+                @endphp
+
+                @if($allItems->isNotEmpty())
+                <span class="grid-full-span grid-align-top-left">Pesanan:</span>
+                <div class="grid-full-span">
+                    @foreach($allItems as $item)
+                    @if($item['type'] === 'service')
+                    • {{ $item['item']->title }} (Service)<br>
+                    @elseif($item['type'] === 'event')
+                    • {{ $item['item']->title }} (Event - {{ $item['participant_count'] }} peserta)<br>
+                    @endif
+                    @endforeach
+                </div>
+                @endif
+            </div>
+
+            <div class="invoice-details-info">
+                <h5 class="grid-full-span title-underline">Invoice Details</h5>
+                <span>Invoice No</span>
+                <span>: {{ $invoice->invoice_no }}</span>
+                <span>Invoice Date</span>
+                <span>: {{ $invoice->invoice_date->format('d/F/Y') }}</span>
+                <span>Due Date</span>
+                <span>: {{ $invoice->due_date->format('d/F/Y') }}</span>
+                <span>Status</span>
+                <span>: {{ ucfirst($invoice->payment_status) }}</span>
+                <span>Payment Type</span>
+                <span>: {{ $invoice->payment_type == 'dp' ? 'DP (50%)' : 'Pembayaran Penuh' }}</span>
+            </div>
+        </div>
+
+        {{-- Service Table --}}
+        <table class="service-table">
+            <thead>
+                <tr>
+                    <th>Deskripsi</th>
+                    <th class="text-right">Kuantitas</th>
+                    <th class="text-right">Harga</th>
+                    <th class="text-right">Diskon</th>
+                    <th class="text-right">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                $allItems = $invoice->getAllItems();
+                @endphp
+
+                @foreach($allItems as $item)
+                @if($item['type'] === 'service')
+                {{-- Service Item --}}
+                <tr class="service">
+                    <td>{{ $item['item']->title }} (Service)</td>
+                    <td class="text-right">1</td>
+                    <td class="text-right">Rp {{ number_format($item['pivot']->total_price_at_booking, 0, ',', '.') }}</td>
+                    <td class="text-right">
+                        @if($item['pivot']->discount_amount_at_booking > 0)
+                        -Rp {{ number_format($item['pivot']->discount_amount_at_booking, 0, ',', '.') }}
+                        @else
+                        -
+                        @endif
+                    </td>
+                    <td class="text-right">Rp {{ number_format($item['pivot']->final_price_at_booking, 0, ',', '.') }}</td>
+                </tr>
+                @elseif($item['type'] === 'event')
+                {{-- Event Item --}}
+                <tr class="service">
+                    <td>{{ $item['item']->title }} (Event)</td>
+                    <td class="text-right">{{ $item['participant_count'] }} peserta</td>
+                    <td class="text-right">Rp {{ number_format($item['booking']->total_price, 0, ',', '.') }}</td>
+                    <td class="text-right">
+                        @if($item['booking']->discount_amount > 0)
+                        -Rp {{ number_format($item['booking']->discount_amount, 0, ',', '.') }}
+                        @else
+                        -
+                        @endif
+                    </td>
+                    <td class="text-right">Rp {{ number_format($item['booking']->final_price, 0, ',', '.') }}</td>
+                </tr>
+                @endif
+                @endforeach
+            </tbody>
+        </table>
+
+        {{-- Summary Section --}}
+        <div class="summary-section">
+            <div class="summary-line">
+                <span>Sub-Total:</span>
+                <span>Rp {{ number_format($invoice->total_amount + $invoice->auto_discount_amount, 0, ',', '.') }}</span>
+            </div>
+
+            @if ($invoice->auto_discount_amount > 0)
+            <div class="summary-line">
+                <span><b>Total Diskon Item:</b></span>
+                <span><b>-Rp {{ number_format($invoice->auto_discount_amount, 0, ',', '.') }}</b></span>
+            </div>
+            @endif
+
+            <div class="summary-line grand-total">
+                <span>TOTAL KESELURUHAN :</span>
+                <span>Rp {{ number_format($invoice->total_amount, 0, ',', '.') }}</span>
+            </div>
+
+            @if ($invoice->payment_type == 'dp')
+            @php
+            $dpAmount = $invoice->total_amount * 0.5;
+            @endphp
+            <div class="summary-line total-payable">
+                <span>TOTAL BAYAR (DP 50%) :</span>
+                <span>Rp {{ number_format($dpAmount, 0, ',', '.') }}</span>
+            </div>
+            @endif
+        </div>
+
+        {{-- Footer --}}
+        <div class="invoice-footer">
+            <div class="invoice-signature">
+                <p>Dear Customer,</p>
+                <p>Durasi Konseling Sesuai dengan jadwal yang telah disepakati dan apabila melebihi dari jadwal yang telah disepakati akan diberikan charge tambahan</p>
+                <p>Keterlambatan yang dilakukan oleh Client tetap terhitung sebagai durasi konseling</p>
+                <p>reschedule dapat dilakukan selambat lambatnya 24 jam sebelum sesi konseling</p>
+                <p>Sudah Menjadi bagian sejarah dari hidup {{ $invoice->user->name ?? 'Anda' }}, semoga keberuntungan dan kebahagiaan akan mengikuti hidup kita selanjutnya.</p>
+                <p>Salam</p>
+                <p>{{ $adminName ?? 'Melvin' }}<br>Tim Indiegologi</p>
+            </div>
+
+            <div class="payment-info">
+                <h4>Payment Information</h4>
+                <p>Bank SMBC Indonesia - 90110023186</p>
+                <p>Name: Artwira Mahatavirya Satyagasty</p>
+                <p>Please Transfer Payment to the Account above before the due date,</p>
+                <p>And Please Confirm to the following number: 0822 2095 5595</p>
+            </div>
         </div>
     </div>
+</div>
 @endsection

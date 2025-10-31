@@ -26,7 +26,7 @@
             $mainColor = '#0C2C5A';
             $stats = [
                 ['Artikel', $publishedArticles, 'newspaper'],
-                ['Sketsa', $publishedSketches, 'palette'],
+                ['Painting', $publishedSketches, 'palette'],
                 ['Layanan', $totalServices, 'handshake'],
                 ['Pengguna', $totalUsers, 'users']
             ];

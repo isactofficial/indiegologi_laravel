@@ -335,7 +335,7 @@
             } else {
                 container.hide().find('textarea').attr('required', false);
             }
-        });
+        });z
 
         calculatePrices();
     });

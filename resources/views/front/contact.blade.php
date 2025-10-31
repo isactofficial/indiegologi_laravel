@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- Iklan --}}
+    <x-floating-ads
+        topAdImage="assets/img/PROMOTION_WEBSITE.jpg"
+        topAdLink="#"
+        bottomAdImage="assets/img/KONSULTASI_GRATIS.jpg"
+        bottomAdLink="/layanan" />
+
 <section class="py-5 pt-lg-0 mt-5">
     <div class="container">
         {{-- Tombol kembali dengan animasi fade-right --}}
@@ -104,7 +111,7 @@
                             </div>
                         </a>
 
-                        <a href="mailto:indiegologiofficial@gmail.com" class="d-flex align-items-center text-decoration-none p-3 rounded-3 contact-link">
+                        <a href="mailto:temancerita@indiegologi.com" class="d-flex align-items-center text-decoration-none p-3 rounded-3 contact-link">
                             <div class="me-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center" style="background-color: #D6E4FF; width: 50px; height: 50px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#0C2C5A" class="bi bi-envelope" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/></svg>
@@ -112,7 +119,7 @@
                             </div>
                             <div>
                                 <h6 class="fw-bold mb-0" style="color: #0C2C5A;">Email</h6>
-                                <p class="mb-0 text-muted small">indiegologiofficial@gmail.com</p>
+                                <p class="mb-0 text-muted small">temancerita@indiegologi.com</p>
                             </div>
                         </a>
                     </div>
