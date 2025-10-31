@@ -408,14 +408,14 @@
                                                         <div class="col-lg-4 col-md-12">
                                                             <div class="mb-3">
                                                                 {{-- PERUBAHAN LABEL --}}
-                                                                <label class="form-label">Add on durasi</label>
+                                                                <label class="form-label">Add-On (Durasi):</label>
                                                                 <div class="input-group">
                                                                     {{-- PERUBAHAN: value dan min diset ke base_duration --}}
                                                                     <input type="number" class="form-control hours-input"
                                                                            value="{{ $service->base_duration ?? 1 }}"
                                                                            min="{{ $service->base_duration ?? 1 }}"
                                                                            required style="text-align: center;">
-                                                                    <span class="input-group-text">(jam)</span>
+                                                                    <span class="input-group-text">jam</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -440,7 +440,7 @@
                                             {{-- BAGIAN ADD-ON (DROPDOWN REPEATER) --}}
                                             <div class="stagger-item">
                                                 <div class="form-section mb-4">
-                                                    <h6 class="fw-bold mb-3">Layanan Tambahan (Add-On):</h6>
+                                                    <h6 class="fw-bold mb-3">Add-On (Layanan):</h6>
 
                                                     @php
                                                         $availableAddons = [];
