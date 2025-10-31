@@ -150,6 +150,7 @@
                             <th class="py-3">Judul Layanan</th>
                             <th class="py-3">Harga Dasar</th>
                             <th class="py-3">Harga Per Jam</th>
+                            <th class="py-3">Durasi</th> {{-- <-- PERUBAHAN DI SINI --}}
                             <th class="py-3">Status</th>
                             <th class="py-3">Aksi</th>
                         </tr>
@@ -169,6 +170,7 @@
                                 <td class="py-3 fw-semibold" style="color: var(--theme-primary);">{{ $service->title }}</td>
                                 <td class="py-3">Rp {{ number_format($service->price, 0, ',', '.') }}</td>
                                 <td class="py-3">Rp {{ number_format($service->hourly_price, 0, ',', '.') }}</td>
+                                <td class="py-3">{{ $service->base_duration }} Jam</td> {{-- <-- PERUBAHAN DI SINI --}}
                                 <td class="py-3">
                                     @php
                                         $statusClass = 'bg-secondary';
@@ -192,7 +194,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">
+                                {{-- <-- PERUBAHAN DI SINI (colspan 6 -> 7) --}}
+                                <td colspan="7" class="text-center py-4 text-muted">
                                     <i class="fas fa-box-open me-2"></i>Tidak ada layanan yang ditemukan.
                                 </td>
                             </tr>
@@ -216,6 +219,12 @@
                             <div class="service-title">{{ $service->title }}</div>
                             <div class="service-meta">
                                 <span class="service-price">Rp {{ number_format($service->price, 0, ',', '.') }}</span>
+
+                                {{-- <-- PERUBAHAN DI SINI --}}
+                                <span class="service-duration text-muted small">
+                                    <i class="fas fa-clock me-1"></i>{{ $service->base_duration }} Jam
+                                </span>
+
                                 @php
                                     $statusClass = 'bg-secondary';
                                     if ($service->status === 'published') $statusClass = 'bg-success';

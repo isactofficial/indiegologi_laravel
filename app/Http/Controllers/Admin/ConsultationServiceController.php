@@ -7,6 +7,7 @@ use App\Models\ConsultationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Validation\Rule; // <-- TAMBAHKAN INI
 
 class ConsultationServiceController extends Controller
 {
@@ -24,7 +25,9 @@ class ConsultationServiceController extends Controller
      */
     public function create()
     {
-        return view('consultation-services.create');
+        // Ambil semua layanan yang ada untuk opsi add-on
+        $existingServices = ConsultationService::orderBy('title')->get(['id', 'title', 'price']);
+        return view('consultation-services.create', compact('existingServices'));
     }
 
     /**
@@ -36,10 +39,18 @@ class ConsultationServiceController extends Controller
             'title'               => 'required|string|max:255',
             'price'               => 'required|numeric|min:0',
             'hourly_price'        => 'nullable|numeric|min:0',
-            'status'              => 'required|string|in:draft,published,special', // Tambahkan validasi ini
+            'base_duration'       => 'required|integer|min:1', // <-- VALIDASI DURASI
+            'status'              => 'required|string|in:draft,published,special',
             'short_description'   => 'nullable|string',
             'product_description' => 'required|string',
             'thumbnail'           => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+
+            // Validasi Add-on
+            'add_ons'             => 'nullable|array',
+            'add_ons.*.type'      => 'required|string|in:custom,existing',
+            'add_ons.*.title'     => 'nullable|required_if:add_ons.*.type,custom|string|max:255',
+            'add_ons.*.price'     => 'nullable|required_if:add_ons.*.type,custom|numeric|min:0',
+            'add_ons.*.service_id' => 'nullable|required_if:add_ons.*.type,existing|integer|exists:consultation_services,id',
         ]);
 
         $thumbnailPath = null;
@@ -56,15 +67,28 @@ class ConsultationServiceController extends Controller
             $thumbnailPath = 'service-thumbnails/' . $imageName;
         }
 
-        ConsultationService::create([
-            'title'               => $request->title,
-            'price'               => $request->price,
-            'hourly_price'        => $request->hourly_price,
-            'status'              => $request->status, // Simpan status
-            'short_description'   => $request->short_description,
-            'product_description' => $request->product_description,
-            'thumbnail'           => $thumbnailPath,
+        $data = $request->only([
+            'title', 'price', 'hourly_price', 'base_duration', // <-- AMBIL DURASI
+            'status', 'short_description', 'product_description'
         ]);
+        $data['thumbnail'] = $thumbnailPath;
+
+        // Persiapkan data add-ons untuk disimpan sebagai JSON
+        $addOnsData = [];
+        if ($request->has('add_ons')) {
+            foreach ($request->add_ons as $addOn) {
+                $addOnsData[] = [
+                    'type'       => $addOn['type'],
+                    'title'      => $addOn['type'] == 'custom' ? $addOn['title'] : null,
+                    'price'      => $addOn['type'] == 'custom' ? $addOn['price'] : null,
+                    'service_id' => $addOn['type'] == 'existing' ? $addOn['service_id'] : null,
+                ];
+            }
+        }
+
+        $data['add_ons'] = $addOnsData; // Model akan meng-cast ini ke JSON
+
+        ConsultationService::create($data);
 
         return redirect()->route('admin.consultation-services.index')->with('success', 'Layanan konsultasi berhasil ditambahkan!');
     }
@@ -82,7 +106,12 @@ class ConsultationServiceController extends Controller
      */
     public function edit(ConsultationService $consultationService)
     {
-        return view('consultation-services.edit', compact('consultationService'));
+        // Ambil layanan lain, KECUALI layanan yang sedang diedit
+        $existingServices = ConsultationService::where('id', '!=', $consultationService->id)
+                                            ->orderBy('title')
+                                            ->get(['id', 'title', 'price']);
+
+        return view('consultation-services.edit', compact('consultationService', 'existingServices'));
     }
 
     /**
@@ -94,10 +123,25 @@ class ConsultationServiceController extends Controller
             'title'               => 'required|string|max:255',
             'price'               => 'required|numeric|min:0',
             'hourly_price'        => 'nullable|numeric|min:0',
-            'status'              => 'required|string|in:draft,published,special', // Tambahkan validasi ini
+            'base_duration'       => 'required|integer|min:1', // <-- VALIDASI DURASI
+            'status'              => 'required|string|in:draft,published,special',
             'short_description'   => 'nullable|string',
             'product_description' => 'required|string',
             'thumbnail'           => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+
+            // Validasi Add-on
+            'add_ons'             => 'nullable|array',
+            'add_ons.*.type'      => 'required|string|in:custom,existing',
+            'add_ons.*.title'     => 'nullable|required_if:add_ons.*.type,custom|string|max:255',
+            'add_ons.*.price'     => 'nullable|required_if:add_ons.*.type,custom|numeric|min:0',
+            'add_ons.*.service_id' => [
+                'nullable',
+                'required_if:add_ons.*.type,existing',
+                'integer',
+                'exists:consultation_services,id',
+                // Pastikan tidak merujuk ke diri sendiri
+                Rule::notIn([$consultationService->id])
+            ],
         ]);
 
         $thumbnailPath = $consultationService->thumbnail;
@@ -118,15 +162,27 @@ class ConsultationServiceController extends Controller
             $thumbnailPath = 'service-thumbnails/' . $imageName;
         }
 
-        $consultationService->update([
-            'title'               => $request->title,
-            'price'               => $request->price,
-            'hourly_price'        => $request->hourly_price,
-            'status'              => $request->status, // Update status
-            'short_description'   => $request->short_description,
-            'product_description' => $request->product_description,
-            'thumbnail'           => $thumbnailPath,
+        $data = $request->only([
+            'title', 'price', 'hourly_price', 'base_duration', // <-- AMBIL DURASI
+            'status', 'short_description', 'product_description'
         ]);
+        $data['thumbnail'] = $thumbnailPath;
+
+        // Persiapkan data add-ons
+        $addOnsData = [];
+        if ($request->has('add_ons')) {
+            foreach ($request->add_ons as $addOn) {
+                $addOnsData[] = [
+                    'type'       => $addOn['type'],
+                    'title'      => $addOn['type'] == 'custom' ? $addOn['title'] : null,
+                    'price'      => $addOn['type'] == 'custom' ? $addOn['price'] : null,
+                    'service_id' => $addOn['type'] == 'existing' ? $addOn['service_id'] : null,
+                ];
+            }
+        }
+        $data['add_ons'] = $addOnsData; // Model akan meng-cast ini ke JSON
+
+        $consultationService->update($data);
 
         return redirect()->route('admin.consultation-services.index')->with('success', 'Layanan konsultasi berhasil diperbarui!');
     }

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/service-details.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <style>
-        @keyframes fadeInUp{from{opacity:0;transform:translate3d(0,20px,0)}to{opacity:1;transform:translate3d(0,0,0)}}.stagger-item{opacity:0}.accordion-collapse.show .stagger-item{animation:fadeInUp .5s ease-out forwards}.accordion-collapse.show .stagger-item:nth-child(1){animation-delay:.05s}.accordion-collapse.show .stagger-item:nth-child(2){animation-delay:.1s}.accordion-collapse.show .stagger-item:nth-child(3){animation-delay:.15s}.accordion-collapse.show .stagger-item:nth-child(4){animation-delay:.2s}.accordion-collapse.show .stagger-item:nth-child(5){animation-delay:.25s}
+        @keyframes fadeInUp{from{opacity:0;transform:translate3d(0,20px,0)}to{opacity:1;transform:translate3d(0,0,0)}}.stagger-item{opacity:0}.accordion-collapse.show .stagger-item{animation:fadeInUp .5s ease-out forwards}.accordion-collapse.show .stagger-item:nth-child(1){animation-delay:.05s}.accordion-collapse.show .stagger-item:nth-child(2){animation-delay:.1s}.accordion-collapse.show .stagger-item:nth-child(3){animation-delay:.15s}.accordion-collapse.show .stagger-item:nth-child(4){animation-delay:.2s}.accordion-collapse.show .stagger-item:nth-child(5){animation-delay:.25s}.accordion-collapse.show .stagger-item:nth-child(6){animation-delay:.3s} /* Ditambah untuk stagger item baru */
 
         /* Styling khusus untuk konsultasi gratis - highlight effect */
         .free-consultation-highlight {
@@ -146,6 +146,42 @@
 
             .accordion-button .service-header-mobile{display:flex;flex-direction:column;align-items:flex-start;width:100%}.accordion-button .service-header-mobile-top{display:flex;justify-content:space-between;align-items:flex-start;width:100%}.accordion-button .service-header-mobile .service-thumbnail-mobile{width:100%;height:150px;object-fit:cover;border-radius:8px;margin-bottom:1rem}.accordion-button h5{font-size:1.1rem}.accordion-button p{font-size:.85rem}.btn-details-toggle{font-size:0;width:40px;height:40px;padding:0;border-radius:50%;background-color:#f1f3f5;color:var(--indiegologi-primary);display:flex;align-items:center;justify-content:center;border:none;flex-shrink:0}.btn-details-toggle::after{content:'\F285';font-family:'bootstrap-icons';font-size:1rem;transition:transform .3s ease}.accordion-button:not(.collapsed) .btn-details-toggle::after{transform:rotate(90deg)}
         }
+
+        /* CSS untuk Add-On Repeater */
+        .selected-addon-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f1f3f5;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            border: 1px solid #dee2e6;
+        }
+        .selected-addon-item .addon-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .selected-addon-item .addon-name {
+            font-weight: 500;
+        }
+        .selected-addon-item .addon-price {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+        .btn-remove-addon {
+            border: none;
+            background: none;
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 0 0.25rem;
+            line-height: 1;
+        }
+        .btn-remove-addon:hover {
+            color: #a71d2a;
+        }
     </style>
 @endpush
 
@@ -204,7 +240,8 @@
                                                     <div class="row mb-4">
                                                         <div class="col-12">
                                                             <h6 class="fw-bold mb-3">Pilih Jenis Konsultasi Gratis:</h6>
-                                                            @forelse($freeConsultationTypes as $type)
+
+                                                            @forelse($freeConsultationTypes ?? [] as $type)
                                                                 <div class="consultation-type-dropdown" data-type-id="{{ $type->id }}">
                                                                     <div class="form-check">
                                                                         <input class="form-check-input consultation-type-radio" type="radio" name="free_consultation_type" id="type-{{ $type->id }}" value="{{ $type->id }}">
@@ -218,7 +255,8 @@
                                                                     <div class="schedule-options" id="schedule-options-{{ $type->id }}">
                                                                         <h6 class="fw-bold mb-2">Pilih Jadwal:</h6>
                                                                         <div class="schedule-list" data-type-id="{{ $type->id }}">
-                                                                            @foreach($type->availableSchedules as $schedule)
+
+                                                                            @foreach($type->availableSchedules ?? [] as $schedule)
                                                                                 <div class="schedule-card" data-schedule-id="{{ $schedule->id }}">
                                                                                     <input type="radio" name="free_consultation_schedule" value="{{ $schedule->id }}" class="schedule-radio" data-type-id="{{ $type->id }}" data-date="{{ $schedule->scheduled_date }}" data-time="{{ $schedule->scheduled_time->format('H:i') }}">
                                                                                     <strong>{{ $schedule->formatted_date }}</strong> - {{ $schedule->formatted_time }}
@@ -327,7 +365,17 @@
                                 </h2>
                                 <div id="collapse-{{ $service->id }}" class="accordion-collapse collapse" data-bs-parent="#servicesAccordion">
                                     <div class="accordion-body p-4 rounded-4">
-                                        <div class="service-block" data-service-id="{{ $service->id }}">
+
+                                        {{-- =================================== --}}
+                                        {{--      MODIFIKASI DATA UNTUK JS       --}}
+                                        {{-- =================================== --}}
+                                        <div class="service-block"
+                                             data-service-id="{{ $service->id }}"
+                                             data-base-price="{{ $service->price }}"
+                                             data-base-duration="{{ $service->base_duration ?? 1 }}"
+                                             data-hourly-price="{{ $service->hourly_price ?? $service->price }}">
+                                             {{-- Fallback: jika harga per jam tidak diset, gunakan harga dasar sebagai harga per jam --}}
+
                                             <div class="stagger-item">
                                                 <div class="row mb-4">
                                                     <div class="col-12">
@@ -356,12 +404,22 @@
                                                                 <input type="time" class="form-control booked_time-input" required>
                                                             </div>
                                                         </div>
+
                                                         <div class="col-lg-4 col-md-12">
                                                             <div class="mb-3">
-                                                                <label class="form-label">Jumlah Jam</label>
-                                                                <input type="number" class="form-control hours-input" value="1" min="1" required>
+                                                                {{-- PERUBAHAN LABEL --}}
+                                                                <label class="form-label">Add on durasi</label>
+                                                                <div class="input-group">
+                                                                    {{-- PERUBAHAN: value dan min diset ke base_duration --}}
+                                                                    <input type="number" class="form-control hours-input"
+                                                                           value="{{ $service->base_duration ?? 1 }}"
+                                                                           min="{{ $service->base_duration ?? 1 }}"
+                                                                           required style="text-align: center;">
+                                                                    <span class="input-group-text">(jam)</span>
+                                                                </div>
                                                             </div>
                                                         </div>
+
                                                         <div class="col-12">
                                                             <div class="mb-3">
                                                                 <label class="form-label">Pilihan Sesi</label>
@@ -378,6 +436,74 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            {{-- BAGIAN ADD-ON (DROPDOWN REPEATER) --}}
+                                            <div class="stagger-item">
+                                                <div class="form-section mb-4">
+                                                    <h6 class="fw-bold mb-3">Layanan Tambahan (Add-On):</h6>
+
+                                                    @php
+                                                        $availableAddons = [];
+                                                        // Loop dari kolom JSON 'add_ons'
+                                                        foreach($service->add_ons ?? [] as $i => $addon) {
+                                                            $addonName = '';
+                                                            $addonPrice = 0;
+                                                            $addonId = null;
+
+                                                            if ($addon['type'] == 'custom') {
+                                                                $addonName = $addon['title'];
+                                                                $addonPrice = $addon['price'];
+                                                                $addonId = 'custom_' . $i; // ID unik
+
+                                                            } elseif ($addon['type'] == 'existing' && !empty($addon['service_id'])) {
+                                                                // Cari layanan terkait dari $services
+                                                                $relatedService = $services->firstWhere('id', $addon['service_id']);
+                                                                if ($relatedService) {
+                                                                    $addonName = $relatedService->title . ' (Layanan)';
+                                                                    $addonPrice = $relatedService->price;
+                                                                    $addonId = $relatedService->id; // Gunakan ID layanan
+                                                                }
+                                                            }
+
+                                                            if ($addonId) {
+                                                                $availableAddons[] = [
+                                                                    'id' => $addonId,
+                                                                    'name' => $addonName,
+                                                                    'price' => $addonPrice,
+                                                                    'price_formatted' => 'Rp. ' . number_format($addonPrice, 0, ',', '.')
+                                                                ];
+                                                            }
+                                                        }
+                                                    @endphp
+
+                                                    @if(!empty($availableAddons))
+                                                        <div class="selected-addons-container mb-2" id="selected-addons-{{ $service->id }}">
+                                                            </div>
+
+                                                        <div class="input-group addon-controls">
+                                                            <select class="form-select addon-dropdown" id="addon-dropdown-{{ $service->id }}">
+                                                                <option value="">Pilih tambahan...</option>
+                                                                @foreach($availableAddons as $addon)
+                                                                    <option value="{{ $addon['id'] }}" data-price="{{ $addon['price'] }}" data-name="{{ $addon['name'] }}">
+                                                                        {{ $addon['name'] }} (+{{ $addon['price_formatted'] }})
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+
+                                                            {{-- PERUBAHAN STYLE TOMBOL --}}
+                                                            <button class="btn btn-primary btn-add-addon" type="button" data-service-id="{{ $service->id }}">
+                                                                <i class="fas fa-plus"></i>&nbsp;Tambah
+                                                            </button>
+
+                                                        </div>
+                                                    @else
+                                                        <p class="text-muted small">Tidak ada layanan tambahan untuk paket ini.</p>
+                                                    @endif
+
+                                                </div>
+                                            </div>
+                                            {{-- AKHIR BAGIAN ADD-ON --}}
+
 
                                             <div class="stagger-item">
                                                 <div class="form-section contact-options mb-4">
@@ -403,7 +529,10 @@
                                                 <div class="row justify-content-between align-items-start mb-3">
                                                     <div class="col-auto">
                                                         <div class="final-price-display">
-                                                            <span class="final-price">Rp. {{ number_format($service->price, 0, ',', '.') }}</span>
+                                                            {{-- MODIFIKASI: Harga awal adalah harga dasar --}}
+                                                            <span class="final-price" data-base-price="{{ $service->price }}">
+                                                                Rp. {{ number_format($service->price, 0, ',', '.') }}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                     <div class="col-auto">
@@ -500,6 +629,52 @@
                     return 'legacy-free-consultation-' + Date.now();
                 }
 
+                // Helper function to format currency
+                function formatCurrency(value) {
+                    return new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    }).format(value).replace('IDR', 'Rp.');
+                }
+
+                // =================================== --}}
+                //      MODIFIKASI: LOGIKA HARGA BARU    --}}
+                // =================================== --}}
+                function updateServicePrice(block) {
+                    const priceElement = block.find('.final-price');
+
+                    // 1. Ambil data harga dari atribut data-*
+                    const basePrice = parseFloat(block.data('base-price')); // Harga dasar (fixed)
+                    const baseDuration = parseInt(block.data('base-duration'), 10) || 1;
+                    const hourlyPrice = parseFloat(block.data('hourly-price')); // Harga per jam TAMBAHAN
+
+                    if (isNaN(basePrice) || isNaN(hourlyPrice)) {
+                        // Ini adalah konsultasi gratis atau data error, lewati
+                        return;
+                    }
+
+                    // 2. Hitung biaya durasi tambahan
+                    const selectedHours = parseInt(block.find('.hours-input').val(), 10) || baseDuration;
+                    let durationCost = 0;
+
+                    if (selectedHours > baseDuration) {
+                        const extraHours = selectedHours - baseDuration;
+                        durationCost = extraHours * hourlyPrice;
+                    }
+
+                    // 3. Hitung biaya add-on (layanan)
+                    let totalAddonPrice = 0;
+                    block.find('.selected-addon-item').each(function() {
+                        totalAddonPrice += parseFloat($(this).data('price'));
+                    });
+
+                    // 4. Kalkulasi harga final
+                    // Harga Final = Harga Dasar + Biaya Durasi Tambahan + Biaya Add-on Layanan
+                    const finalPrice = basePrice + durationCost + totalAddonPrice;
+                    priceElement.text(formatCurrency(finalPrice));
+                }
+
                 // Free consultation type selection
                 $(document).on('change', '.consultation-type-radio', function() {
                     const typeId = $(this).val();
@@ -589,8 +764,8 @@
                     }
                 });
 
-                // Validate form inputs and enable/disable button for regular services
-                $('.accordion-body').on('input change', '.service-date-picker, .booked_time-input, .hours-input, .session-type-select', function() {
+                // Event listener ini sekarang juga memperbarui harga
+                $('.accordion-body').on('input change', '.service-date-picker, .booked_time-input, .hours-input, .session-type-select, .offline-address-container textarea', function() {
                     const block = $(this).closest('.service-block');
                     const serviceId = block.data('service-id');
 
@@ -603,20 +778,87 @@
                     const sessionType = block.find('.session-type-select').val();
                     const offlineAddress = block.find('.offline-address-container textarea').val();
 
-                    let hoursBooked = 1;
+                    // MODIFIKASI: Validasi berdasarkan 'min'
                     const hoursInput = block.find('.hours-input');
-                    if (hoursInput.length && !hoursInput.prop('readonly')) {
+                    let hoursBooked = 1;
+                    let minHours = 1;
+
+                    if (hoursInput.length) {
                         hoursBooked = parseInt(hoursInput.val(), 10) || 1;
+                        minHours = parseInt(hoursInput.attr('min'), 10) || 1;
                     }
 
-                    let isValid = bookedDate && bookedTime && hoursBooked >= 1;
+                    let isValid = bookedDate && bookedTime && hoursBooked >= minHours;
 
                     if (sessionType === 'Offline' && !offlineAddress.trim()) {
                         isValid = false;
                     }
 
                     block.find('.select-service-btn').prop('disabled', !isValid);
+                    updateServicePrice(block); // Panggil update harga
                 });
+
+                // =================================== //
+                //  LOGIKA ADD-ON DROPDOWN             //
+                // =================================== //
+
+                // 1. Saat tombol "Tambah" di-klik
+                $(document).on('click', '.btn-add-addon', function() {
+                    const serviceId = $(this).data('service-id');
+                    const block = $(this).closest('.service-block');
+                    const dropdown = $('#addon-dropdown-' + serviceId);
+                    const selectedOption = dropdown.find('option:selected');
+
+                    const addonId = selectedOption.val();
+                    const addonName = selectedOption.data('name');
+                    const addonPrice = selectedOption.data('price');
+
+                    if (!addonId) {
+                        return; // Jangan lakukan apa-apa jika "Pilih tambahan..." yang dipilih
+                    }
+
+                    const priceFormatted = formatCurrency(addonPrice);
+
+                    const selectedItemHtml = `
+                        <div class="selected-addon-item" data-addon-id="${addonId}" data-price="${addonPrice}" data-name="${addonName}">
+                            <div class="addon-details">
+                                <span class="addon-name">${addonName}</span>
+                                <span class="addon-price">(+${priceFormatted})</span>
+                            </div>
+                            <button class="btn-remove-addon" data-addon-id="${addonId}" data-service-id="${serviceId}">
+                                &times;
+                            </button>
+                        </div>`;
+
+                    // Tambahkan ke container
+                    $('#selected-addons-' + serviceId).append(selectedItemHtml);
+
+                    // Sembunyikan opsi dari dropdown
+                    selectedOption.hide();
+
+                    // Reset dropdown
+                    dropdown.val('');
+
+                    // Update harga total
+                    updateServicePrice(block);
+                });
+
+                // 2. Saat tombol "Remove" (X) di-klik
+                $(document).on('click', '.btn-remove-addon', function() {
+                    const serviceId = $(this).data('service-id');
+                    const addonId = $(this).data('addon-id');
+                    const block = $(this).closest('.service-block');
+
+                    // Tampilkan kembali opsi di dropdown
+                    $('#addon-dropdown-' + serviceId).find('option[value="' + addonId + '"]').show();
+
+                    // Hapus item dari daftar
+                    $(this).closest('.selected-addon-item').remove();
+
+                    // Update harga total
+                    updateServicePrice(block);
+                });
+
 
                 // Handle service selection/booking
                 $('.select-service-btn').on('click', function() {
@@ -717,7 +959,7 @@
                                 confirmButtonText: 'Lanjutkan',
                                 footer: '<a href="{{ route("login") }}">Login untuk melanjutkan proses booking.</a>'
                             });
-                        @endauth
+                        @endguest
 
                         return;
                     }
@@ -725,6 +967,16 @@
                     // Handle regular services
                     const sessionType = block.find('.session-type-select').val();
                     const offlineAddress = block.find('.offline-address-container textarea').val();
+
+                    // Kumpulkan add-on dari item yang dipilih
+                    const selectedAddons = [];
+                    block.find('.selected-addon-item').each(function() {
+                        selectedAddons.push({
+                            id: $(this).data('addon-id'), // Ini akan jadi 'custom_0' atau 'service_id'
+                            name: $(this).data('name'),
+                            price: $(this).data('price')
+                        });
+                    });
 
                     const formData = {
                         id: serviceId,
@@ -735,6 +987,7 @@
                         offline_address: sessionType === 'Offline' ? offlineAddress : null,
                         contact_preference: block.find(`input[name="contact_preference-${serviceId}"]:checked`).val(),
                         referral_code: block.find('.referral-code-input').val() || null,
+                        addons: selectedAddons, // Kirim data add-on baru
                         _token: '{{ csrf_token() }}'
                     };
 
@@ -759,12 +1012,24 @@
                                 Swal.fire(translations.success, response.message, 'success').then(() => {
                                     // Reset form
                                     block.find('.service-date-picker, .booked_time-input').val('');
-                                    block.find('.hours-input').val('1');
+                                    // Reset durasi ke base duration
+                                    block.find('.hours-input').val(block.data('base-duration') || 1);
                                     block.find('.session-type-select').val('Online');
                                     block.find('.offline-address-container').hide();
                                     block.find('.offline-address-container textarea').val('');
                                     block.find('.referral-code-input').val('');
                                     block.find('.select-service-btn').prop('disabled', true);
+
+                                    // Reset add-on dropdown
+                                    block.find('.selected-addons-container').empty();
+                                    block.find('.addon-dropdown option').show();
+                                    block.find('.addon-dropdown').val('');
+
+                                    // Reset harga ke harga dasar
+                                    const priceElement = block.find('.final-price');
+                                    const basePrice = parseFloat(block.data('base-price'));
+                                    priceElement.text(formatCurrency(basePrice));
+
                                     updateCartCount();
                                 });
                             },
@@ -784,19 +1049,31 @@
                             session_type: formData.session_type,
                             offline_address: formData.offline_address,
                             contact_preference: formData.contact_preference,
-                            referral_code: formData.referral_code
+                            referral_code: formData.referral_code,
+                            addons: selectedAddons // Simpan add-on baru
                         };
                         saveTempCart(tempCart);
                         updateCartCount();
 
                         // Reset form
                         block.find('.service-date-picker, .booked_time-input').val('');
-                        block.find('.hours-input').val('1');
+                        // Reset durasi ke base duration
+                        block.find('.hours-input').val(block.data('base-duration') || 1);
                         block.find('.session-type-select').val('Online');
                         block.find('.offline-address-container').hide();
                         block.find('.offline-address-container textarea').val('');
                         block.find('.referral-code-input').val('');
                         block.find('.select-service-btn').prop('disabled', true);
+
+                        // Reset add-on dropdown
+                        block.find('.selected-addons-container').empty();
+                        block.find('.addon-dropdown option').show();
+                        block.find('.addon-dropdown').val('');
+
+                        // Reset harga ke harga dasar
+                        const priceElement = block.find('.final-price');
+                        const basePrice = parseFloat(block.data('base-price'));
+                        priceElement.text(formatCurrency(basePrice));
 
                         Swal.fire({
                             title: translations.success,
@@ -839,9 +1116,17 @@
                     @endauth
                 });
 
-                // Initially disable all service buttons
+                // Logika inisialisasi tombol dan harga
                 $('.service-block').each(function() {
-                    $(this).find('.select-service-btn').prop('disabled', true);
+                    const serviceId = $(this).data('service-id');
+                    if(serviceId !== 'new-free-consultation') {
+                        // Jalankan validasi awal & update harga untuk layanan berbayar
+                        // Memicu 'change' pada input jam akan otomatis memanggil updateServicePrice
+                        $(this).find('.hours-input').trigger('change');
+                    } else {
+                        // Nonaktifkan tombol free
+                        $(this).find('.select-service-btn').prop('disabled', true);
+                    }
                 });
 
                 // Initialize cart count on page load
