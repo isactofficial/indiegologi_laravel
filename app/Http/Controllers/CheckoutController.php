@@ -14,6 +14,7 @@ use App\Models\Event;
 use App\Models\EventBooking; // ADD THIS
 use App\Models\EventParticipant; // ADD THIS
 use App\Models\BookingService;
+use App\Models\User; // Ditambahkan
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -45,7 +46,7 @@ class CheckoutController extends Controller
             'freeConsultationType',
             'freeConsultationSchedule',
             'event',
-            'participantData' // ADD THIS to load participant data
+            'participantData' // Relasi ke participants
         ])
             ->where('user_id', $user->id)
             ->whereIn('id', $selectedItemIds)
@@ -54,6 +55,37 @@ class CheckoutController extends Controller
         if ($cartItems->isEmpty()) {
             return back()->with('error', 'Item tidak valid.');
         }
+
+        // --- VALIDASI FILTER BARU DITAMBAHKAN DI SINI ---
+        // Ambil tipe item pertama (event atau bukan)
+        $firstItemIsEvent = $cartItems->first()->isEvent(); 
+
+        // Periksa apakah semua item lain memiliki tipe yang sama
+        $allSameType = $cartItems->every(function ($item) use ($firstItemIsEvent) {
+            return $item->isEvent() === $firstItemIsEvent;
+        });
+
+        // Jika tipe campur (mixed), kembalikan error
+        if (!$allSameType) {
+            return back()->with('error', 'Anda hanya dapat checkout layanan dan event secara terpisah. Harap pilih item dari satu kategori saja (layanan atau event).');
+        }
+
+        if ($cartItems->isNotEmpty()) {
+            // Periksa tipe item pertama
+            $firstItemIsEvent = $cartItems->first()->isEvent(); 
+            
+            // Periksa apakah ada item yang tipenya berbeda dari item pertama
+            $isMixed = $cartItems->some(function ($item) use ($firstItemIsEvent) {
+                return $item->isEvent() !== $firstItemIsEvent;
+            });
+
+            if ($isMixed) {
+                // Jika tercampur, kembalikan error
+                return back()->with('error', 'Anda hanya dapat checkout Layanan atau Event dalam satu transaksi, tidak keduanya.');
+            }
+        }
+        // --- AKHIR BLOK VALIDASI FILTER ---
+
 
         DB::beginTransaction();
         try {
@@ -270,13 +302,13 @@ class CheckoutController extends Controller
             // Create invoice
             $invoice = Invoice::create([
                 'user_id'               => $user->id,
-                'invoice_no'            => 'INV-' . strtoupper(Str::random(8)),
+                'invoice_no'            => 'INV-' . strtoupper(Str::random(8)), // Sebaiknya gunakan method generate
                 'invoice_type'          => 'auto',
-                'source_type'           => 'mixed', // or 'event' if only events
+                'source_type'           => $firstItemIsEvent ? 'event' : 'service', // Filter type
                 'invoice_date'          => now(),
                 'due_date'              => now()->addDay(),
                 'subtotal_amount'       => $subtotal,
-                'total_amount'          => $grandTotal,
+                'total_amount'          => $grandTotal, // Ini seharusnya subtotal
                 'paid_amount'           => 0.00,
                 'auto_discount_amount'  => $totalDiscount, // ✅ CORRECT COLUMN NAME
                 'manual_discount_amount' => 0.00,
@@ -411,6 +443,7 @@ class CheckoutController extends Controller
             }
 
             // Remove cart items
+            CartParticipant::whereIn('cart_item_id', $selectedItemIds)->delete(); // Hapus partisipan dulu
             CartItem::whereIn('id', $selectedItemIds)->delete();
 
             DB::commit();
@@ -461,18 +494,34 @@ class CheckoutController extends Controller
         ]);
     }
 
-    // In CheckoutController.php - Replace the updateCartSummary method with this:
-
+    // In CheckoutController.php - GANTI NAMA METHOD dan PERBAIKI PARAMETER
     /**
      * Update cart summary via AJAX
      */
-    public function updateCartSummary(Request $request)
+    public function calculateSummary(Request $request) // NAMA DIGANTI
     {
-        $selectedIds = $request->input('ids', []);
-        $paymentType = $request->input('payment_type', 'full_payment');
+        // PARAMETER DISESUAIKAN DENGAN BLADE
+        $validated = $request->validate([
+            'selected_items' => 'nullable|array',
+            'selected_items.*' => 'exists:cart_items,id',
+            'global_payment_type' => ['required', Rule::in(['full_payment', 'dp'])],
+        ]);
 
+        $selectedIds = $validated['selected_items'] ?? [];
+        $paymentType = $validated['global_payment_type']; // Menggunakan 'global_payment_type'
+        $user = Auth::user();
+
+        if (empty($selectedIds) || !$user) {
+            return response()->json([
+                'subtotal' => '0',
+                'totalDiscount' => '0',
+                'grandTotal' => '0',
+                'totalToPayNow' => '0',
+            ]);
+        }
+        
         $cartItems = CartItem::with(['service', 'referralCode', 'event'])
-            ->where('user_id', Auth::id())
+            ->where('user_id', $user->id) // Scope ke user
             ->whereIn('id', $selectedIds)
             ->get();
 
@@ -513,7 +562,7 @@ class CheckoutController extends Controller
             'subtotal' => number_format($subtotal, 0, ',', '.'),
             'totalDiscount' => number_format($totalDiscount, 0, ',', '.'),
             'grandTotal' => number_format($grandTotal, 0, ',', '.'),
-            'totalToPayNow' => number_format($totalToPayNow, 0, ',', '.')
+            'totalToPayNow' => number_format($totalToPayNow, 0, ',', '.'),
         ]);
     }
 }

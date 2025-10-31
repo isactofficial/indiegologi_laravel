@@ -124,6 +124,7 @@ class EventController extends Controller
             }
 
             // UPDATE cart item creation untuk menyimpan referral_code_id juga
+            // FUNGSI INI SUDAH BENAR DI KODE ANDA
             $cartItem = CartItem::create([
                 'user_id' => Auth::id(),
                 'event_id' => $event->id,
@@ -142,7 +143,7 @@ class EventController extends Controller
                 'referral_code' => $referralCodeToSave, // string code
                 'referral_code_id' => $referralCodeId, // ADD THIS LINE - ID reference
                 'discount_amount' => $discountAmount,
-                'item_type' => 'event'
+                'item_type' => 'event' // <-- INI SUDAH BENAR
             ]);
 
             Log::info('Cart item created for event', [
@@ -322,7 +323,10 @@ class EventController extends Controller
                 'session_type' => $event->session_type,
                 'offline_address' => $event->session_type === 'offline' ? $event->place : null,
                 'contact_preference' => 'chat_and_call',
-                'payment_type' => 'full_payment'
+                'payment_type' => 'full_payment',
+                
+                // ⬇️ TAMBAHKAN BARIS INI (INI YANG HILANG) ⬇️
+                'item_type' => 'event'
             ]);
 
             $cartCount = CartItem::where('user_id', Auth::id())->count();

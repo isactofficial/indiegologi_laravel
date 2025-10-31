@@ -32,6 +32,7 @@
     }
 
     .cart-header .section-title {
+        font-family: var(--font-main);
         font-weight: 700;
         color: var(--brand-primary);
     }
@@ -196,6 +197,35 @@
         box-shadow: 0 7px 20px rgba(12, 44, 90, 0.3);
     }
 
+    /* Style untuk tombol Layanan dan Event */
+    #cart-filter-tabs {
+        gap: 0.75rem;
+    }
+
+    #cart-filter-tabs .nav-link {
+        background-color: transparent;
+        color: var(--brand-primary);
+        border: 1px solid var(--brand-primary);
+        font-weight: 500;
+        border-radius: 6px;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.25s ease;
+    }
+
+    #cart-filter-tabs .nav-link:hover {
+        background-color: #082142;
+        color: var(--brand-surface);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(12, 44, 90, 0.2);
+    }
+
+    #cart-filter-tabs .nav-link.active {
+        background-color: var(--brand-primary);
+        color: var(--brand-surface);
+        border-color: var(--brand-primary);
+        box-shadow: 0 4px 15px rgba(12, 44, 90, 0.2);
+    }
+
     .price-details-list .list-group-item {
         padding: 0.5rem 0;
         border: 0;
@@ -266,12 +296,38 @@
             @csrf
             <div class="row g-4 g-lg-5">
                 <div class="col-lg-7">
+
+                    {{-- 
+                      =================================================
+                      ⬇️ KODE TAB FILTER DITAMBAHKAN DI SINI ⬇️
+                      =================================================
+                    --}}
+                    <ul class="nav nav-pills nav-fill mb-4" id="cart-filter-tabs" role="tablist" data-aos="fade-right">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="filter-service" data-filter="service" type="button" role="tab">
+                                Layanan
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="filter-event" data-filter="event" type="button" role="tab">
+                                Event
+                            </button>
+                        </li>
+                    </ul>
+                    {{-- 
+                      =================================================
+                      ⬆️ BATAS AKHIR KODE TAB FILTER ⬆️
+                      =================================================
+                    --}}
+
+
                     {{-- Select All card --}}
                     <div class="card mb-3 shadow-sm border-0" data-aos="fade-right">
                         <div class="card-body p-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="select-all" checked>
-                                <label class="form-check-label fw-bold" for="select-all" style="color: var(--brand-text);">
+                                {{-- KITA TAMBAHKAN ID DI LABEL INI UNTUK DIUBAH VIA JS --}}
+                                <label class="form-check-label fw-bold" for="select-all" style="color: var(--brand-text);" id="select-all-label">
                                     Pilih Semua Layanan
                                 </label>
                             </div>
@@ -280,16 +336,37 @@
 
                     {{-- Cart Items Loop --}}
                     @foreach ($cartItems as $item)
-                    <div class="card mb-3 cart-item-card" data-service-id="{{ $item->service_id }}" data-aos="fade-right" data-aos-delay="{{ $loop->index * 100 }}">
+                    {{-- 
+                      =================================================
+                      ⬇️ PERUBAHAN KRITIS 1: Tambahkan data-item-type ⬇️
+                      =================================================
+                    --}}
+                    <div class="card mb-3 cart-item-card" 
+                         data-service-id="{{ $item->service_id }}" 
+                         data-aos="fade-right" 
+                         data-aos-delay="{{ $loop->index * 100 }}"
+                         {{-- INI YANG DITAMBAHKAN --}}
+                         data-item-type="{{ $item->isEvent() ? 'event' : 'service' }}"
+                         >
                         <div class="card-body p-4">
                             <div class="row">
                                 {{-- Item Details Column --}}
                                 <div class="col-12 col-md-7 mb-4 mb-md-0">
                                     <div class="d-flex align-items-start">
                                         <div class="form-check me-3 pt-1">
+                                            {{-- 
+                                              =================================================
+                                              ⬇️ PERUBAHAN KRITIS 2: Modifikasi Checkbox ⬇️
+                                              =================================================
+                                            --}}
                                             <input class="form-check-input item-checkbox" type="checkbox"
-                                                name="selected_items[]" value="{{ $item->id }}"
-                                                id="item-{{ $item->id }}" checked>
+                                                {{-- HAPUS: name="selected_items[]" --}}
+                                                value="{{ $item->id }}"
+                                                id="item-{{ $item->id }}"
+                                                checked
+                                                {{-- TAMBAHKAN: data-id agar bisa diambil JS --}}
+                                                data-id="{{ $item->id }}"
+                                                >
                                         </div>
 
                                         <div class="position-relative me-3">
@@ -299,6 +376,7 @@
                                         </div>
 
                                         <div class="flex-grow-1">
+                                            {{-- ... (sisa kode item title tidak berubah) ... --}}
                                             <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">
                                                 {{ $item->getServiceTitle() }}
                                                 @if($item->isFreeConsultation())
@@ -308,7 +386,7 @@
                                                 <span class="badge bg-primary ms-2">EVENT</span>
                                                 @endif
                                             </h5>
-
+                                            {{-- ... (sisa kode item details tidak berubah) ... --}}
                                             <ul class="item-details-list">
                                                 <li><i class="bi bi-calendar-check"></i>{{ $item->booked_date->format('d M Y') }}, {{ $item->booked_time }}</li>
                                                 <li><i class="bi bi-camera-video"></i>{{ $item->session_type }} & {{ $item->contact_preference === 'chat_only' ? 'Chat' : 'Chat & Call' }}</li>
@@ -325,6 +403,7 @@
 
                                 {{-- Pricing Column - SINGLE UNIFIED SECTION --}}
                                 <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
+                                    {{-- ... (sisa kode pricing column tidak berubah) ... --}}
                                     <div class="pricing-section">
                                         @if($item->isFreeConsultation())
                                         {{-- Free consultation pricing --}}
@@ -527,39 +606,114 @@
         // Hapus temp cart untuk user yang sudah login
         localStorage.removeItem('tempCart');
 
-        // ===========================================
-        // ADD THIS FORM SUBMISSION HANDLER HERE
-        // ===========================================
-        $('#cart-form-logged-in').on('submit', function(e) {
-            // e.preventDefault(); // PREVENT FORM SUBMISSION TEMPORARILY
+        // BARU: Variabel untuk menyimpan filter yang aktif
+        let activeFilter = 'service'; // Default filter
 
-            console.log('=== FORM SUBMISSION STARTED ===');
-            console.log('Form submitted');
-            console.log('Selected items:', $('.item-checkbox:checked').length);
-            console.log('Form data:', $(this).serialize());
-            console.log('Form action:', $(this).attr('action'));
-            console.log('Form method:', $(this).attr('method'));
-
-            // Show what would be submitted
-            const selectedItems = [];
-            $('.item-checkbox:checked').each(function() {
-                selectedItems.push($(this).val());
+        // BARU: Fungsi untuk memfilter item di keranjang
+        function filterCartItems() {
+            let totalVisible = 0;
+            
+            // 1. Loop setiap item card
+            $('.cart-item-card').each(function() {
+                const itemType = $(this).data('item-type');
+                
+                if (itemType === activeFilter) {
+                    $(this).show(); // Tampilkan jika cocok dengan filter
+                    totalVisible++;
+                } else {
+                    $(this).hide(); // Sembunyikan jika tidak cocok
+                }
             });
-            console.log('Selected item IDs:', selectedItems);
 
-            // Test if the route exists by making an AJAX call first
-            console.log('Testing route existence...');
+            // 2. Update label "Pilih Semua"
+            if (activeFilter === 'event') {
+                $('#select-all-label').text('Pilih Semua Event');
+            } else {
+                $('#select-all-label').text('Pilih Semua Layanan');
+            }
 
-            // Remove e.preventDefault() after testing to allow normal submission
-            // $(this).unbind('submit').submit(); // Uncomment this to submit after testing
+            // 3. Update status checkbox "Pilih Semua"
+            updateSelectAllCheckbox();
+            
+            // 4. Update ringkasan keranjang
+            updateSummary();
+        }
+
+        // BARU: Helper untuk update checkbox "Pilih Semua"
+        function updateSelectAllCheckbox() {
+            let allVisibleChecked = true;
+            let totalVisible = 0;
+
+            $('.cart-item-card').each(function() {
+                // Hanya periksa item yang terlihat (sesuai filter)
+                if ($(this).data('item-type') === activeFilter) {
+                    totalVisible++;
+                    if (!$(this).find('.item-checkbox').is(':checked')) {
+                        allVisibleChecked = false;
+                    }
+                }
+            });
+
+            // Atur status centang #select-all
+            $('#select-all').prop('checked', totalVisible > 0 && allVisibleChecked);
+        }
+
+        // MODIFIKASI: Form submission handler
+        $('#cart-form-logged-in').on('submit', function(e) {
+            e.preventDefault(); // Hentikan submit otomatis
+
+            const form = $(this);
+            
+            // Hapus input 'selected_items' yang mungkin ada sebelumnya
+            form.find('input[name="selected_items[]"]').remove();
+
+            let selectedIds = [];
+            
+            // Kumpulkan ID HANYA dari item yang terlihat (sesuai filter) dan dicentang
+            $('.item-checkbox:checked').each(function() {
+                const itemCard = $(this).closest('.cart-item-card');
+                
+                // Pastikan item ini sesuai dengan filter yang aktif
+                if (itemCard.data('item-type') === activeFilter) {
+                    selectedIds.push($(this).val()); // Ambil 'value'
+                }
+            });
+
+            if (selectedIds.length === 0) {
+                Swal.fire('Peringatan', 'Pilih setidaknya satu item untuk di-checkout.', 'warning');
+                return; // Hentikan jika tidak ada item
+            }
+
+            // Tambahkan ID yang valid sebagai input tersembunyi ke form
+            selectedIds.forEach(function(id) {
+                form.append(`<input type="hidden" name="selected_items[]" value="${id}">`);
+            });
+
+            // Pastikan global_payment_type ter-update (jika ada)
+            if ($('#payment-type-select').length > 0) {
+                const selectedPaymentType = $('#payment-type-select').val();
+                // Pastikan input 'global_payment_type' ada di form Anda
+                $('#global_payment_type').val(selectedPaymentType);
+            }
+
+            // Submit form secara manual
+            form.get(0).submit();
         });
 
-        // Update ringkasan keranjang
+
+        // MODIFIKASI: Update ringkasan keranjang (agar filter-aware)
         function updateSummary() {
             let selectedIds = [];
+            
+            // MODIFIKASI: Hanya ambil ID item yang tercentang DAN terlihat
             $('.item-checkbox:checked').each(function() {
-                selectedIds.push($(this).val());
+                const itemCard = $(this).closest('.cart-item-card');
+                if (itemCard.data('item-type') === activeFilter) {
+                    selectedIds.push($(this).val());
+                }
             });
+            
+            // Pastikan selector ini ada di HTML Anda
             let selectedPaymentType = $('#payment-type-select').val();
 
             $.ajax({
@@ -584,16 +738,47 @@
             });
         }
 
-        // Event handlers untuk user yang login
-        $('.item-checkbox, #select-all, #payment-type-select').on('change', function() {
-            if ($(this).is('#select-all')) {
-                $('.item-checkbox').prop('checked', this.checked);
-            } else {
-                $('#select-all').prop('checked', $('.item-checkbox:checked').length === $('.item-checkbox').length);
-            }
+        // BARU: Event listener untuk tab filter
+        $('#cart-filter-tabs button').on('click', function() {
+            activeFilter = $(this).data('filter'); // Set filter baru
+
+            // Atur style tombol 'active'
+            $('#cart-filter-tabs button').removeClass('active');
+            $(this).addClass('active');
+
+            // Panggil fungsi filter
+            filterCartItems();
+        });
+
+        // MODIFIKASI: Event handlers untuk checkbox
+        // "Pilih Semua"
+        $('#select-all').on('change', function() {
+            const isChecked = $(this).is(':checked');
+            
+            // Hanya pengaruhi item yang terlihat (sesuai filter)
+            $('.cart-item-card').each(function() {
+                if ($(this).data('item-type') === activeFilter) {
+                    $(this).find('.item-checkbox').prop('checked', isChecked);
+                }
+            });
+            
             updateSummary();
         });
 
+        // Checkbox item individual
+        $('.item-checkbox').on('change', function() {
+            updateSelectAllCheckbox(); // Update "Pilih Semua"
+            updateSummary(); // Update total
+        });
+        
+        // Select tipe pembayaran (jika ada)
+        if ($('#payment-type-select').length > 0) {
+            $('#payment-type-select').on('change', function() {
+                updateSummary();
+            });
+        }
+
+        // KODE ASLI: Tombol Hapus (Ini penting untuk dipertahankan)
         $('.remove-btn').on('click', function() {
             let itemId = $(this).data('id');
             Swal.fire({
@@ -613,10 +798,7 @@
             });
         });
 
-        // Update awal saat halaman dimuat
-        updateSummary();
-
-        // Fix thumbnail konsultasi gratis menjadi biru
+        // KODE ASLI: Fix thumbnail
         function fixFreeConsultationThumbnails() {
             $('.cart-item-card img').each(function() {
                 const $img = $(this);
@@ -636,9 +818,14 @@
         fixFreeConsultationThumbnails();
         setTimeout(fixFreeConsultationThumbnails, 500);
 
+        // MODIFIKASI: Panggil filterItems() saat halaman dimuat
+        // Ini akan otomatis memanggil updateSummary() juga
+        filterCartItems();
+
         @else
         // ===========================================
         // FUNGSI UNTUK GUEST USER (TEMP CART)
+        // (BLOK INI TIDAK SAYA UBAH, SUDAH BENAR)
         // ===========================================
 
         function getTempCart() {
