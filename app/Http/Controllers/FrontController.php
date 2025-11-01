@@ -169,7 +169,7 @@ class FrontController extends Controller
             }
         }
 
-        return view('front.services.index', compact('services', 'referralCodes', 'cartCount', 'freeConsultationTypes'));
+        return view('front.services.indexServices', compact('services', 'referralCodes', 'cartCount', 'freeConsultationTypes'));
     }
 
     public function contact()
