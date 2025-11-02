@@ -302,14 +302,22 @@
                                                     <div class="form-section contact-options mb-4" id="contact-form-section" style="display: none;">
                                                         <div class="col-12">
                                                             <h6 class="fw-bold">Saya bersedia dihubungi via:</h6>
+
+                                                            {{-- =================================== --}}
+                                                            {{-- (MODIFIKASI) Penambahan ID dan FOR --}}
+                                                            {{-- =================================== --}}
                                                             <div class="form-check mb-2">
-                                                                <input class="form-check-input" type="radio" name="contact_preference-new-free-consultation" value="chat_and_call" checked>
-                                                                <label class="form-check-label">Telepon & WhatsApp</label>
+                                                                <input class="form-check-input" type="radio" name="contact_preference-new-free-consultation" value="chat_and_call" checked id="contact-chat-call-free">
+                                                                <label class="form-check-label" for="contact-chat-call-free">Telepon & WhatsApp</label>
                                                             </div>
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="contact_preference-new-free-consultation" value="chat_only">
-                                                                <label class="form-check-label">Hanya WhatsApp</label>
+                                                                <input class="form-check-input" type="radio" name="contact_preference-new-free-consultation" value="chat_only" id="contact-chat-only-free">
+                                                                <label class="form-check-label" for="contact-chat-only-free">Hanya WhatsApp</label>
                                                             </div>
+                                                            {{-- =================================== --}}
+                                                            {{-- AKHIR MODIFIKASI --}}
+                                                            {{-- =================================== --}}
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -567,14 +575,22 @@
                                                 <div class="form-section contact-options mb-4">
                                                     <div class="col-12">
                                                         <h6 class="fw-bold">Saya bersedia dihubungi via:</h6>
+
+                                                        {{-- =================================== --}}
+                                                        {{-- (MODIFIKASI) Penambahan ID dan FOR --}}
+                                                        {{-- =================================== --}}
                                                         <div class="form-check mb-2">
-                                                            <input class="form-check-input" type="radio" name="contact_preference-{{ $service->id }}" value="chat_and_call" checked>
-                                                            <label class="form-check-label">Telepon & WhatsApp</label>
+                                                            <input class="form-check-input" type="radio" name="contact_preference-{{ $service->id }}" value="chat_and_call" checked id="contact-chat-call-{{ $service->id }}">
+                                                            <label class="form-check-label" for="contact-chat-call-{{ $service->id }}">Telepon & WhatsApp</label>
                                                         </div>
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="contact_preference-{{ $service->id }}" value="chat_only">
-                                                            <label class="form-check-label">Hanya WhatsApp</label>
+                                                            <input class="form-check-input" type="radio" name="contact_preference-{{ $service->id }}" value="chat_only" id="contact-chat-only-{{ $service->id }}">
+                                                            <label class="form-check-label" for="contact-chat-only-{{ $service->id }}">Hanya WhatsApp</label>
                                                         </div>
+                                                        {{-- =================================== --}}
+                                                        {{-- AKHIR MODIFIKASI --}}
+                                                        {{-- =================================== --}}
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -1175,7 +1191,7 @@
                             success: (response) => {
                                 Swal.fire(translations.success, response.message, 'success').then(() => {
                                     // (MODIFIKASI) Reset form
-                                    block.find('.service-date-picker, .booked_time-input, .booked_time_end-input').val(''); // Reset jam berakhir
+                                    block.find('.service-date-picker, .booked_time_input, .booked_time_end-input').val(''); // Reset jam berakhir
                                     block.find('.hours-input').val('0'); // Reset ke 0
                                     block.find('.session-type-select').val('Online');
                                     block.find('.offline-address-container').hide();
@@ -1207,7 +1223,7 @@
                         updateCartCount();
 
                         // (MODIFIKASI) Reset form
-                        block.find('.service-date-picker, .booked_time-input, .booked_time_end-input').val(''); // Reset jam berakhir
+                        block.find('.service-date-picker, .booked_time_input, .booked_time_end-input').val(''); // Reset jam berakhir
                         block.find('.hours-input').val('0'); // Reset ke 0
                         block.find('.session-type-select').val('Online');
                         block.find('.offline-address-container').hide();
