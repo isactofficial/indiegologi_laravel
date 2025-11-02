@@ -444,6 +444,16 @@ class FrontController extends Controller
             return response()->json(['success' => false, 'message' => 'Anda harus login untuk menambahkan layanan.'], 401);
         }
 
+        // ✅ VALIDASI: Cek apakah sudah ada item di keranjang
+        $existingCartCount = CartItem::where('user_id', Auth::id())->count();
+        
+        if ($existingCartCount > 0) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Keranjang Anda sudah berisi pesanan. Harap selesaikan pembayaran terlebih dahulu sebelum menambahkan layanan baru.'
+            ], 422);
+        }
+
         // Handle new free consultation system
         if ($request->input('consultation_type') === 'free-consultation-new') {
             $validator = Validator::make($request->all(), [
