@@ -652,7 +652,7 @@
     }
 
     #sketch-gallery-wrapper .sketch-card-brand img {
-        max-height: 55px;
+        max-height: 50px;
         /* logo agak besar */
         width: auto;
         object-fit: contain;

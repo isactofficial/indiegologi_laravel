@@ -49,7 +49,7 @@ class EventController extends Controller
         $validator = Validator::make($request->all(), [
             'participant_count' => 'required|integer|min:1',
             'contact_preference' => 'required|in:chat_only,chat_and_call',
-            'referral_code' => 'nullable|string', // HAPUS: exists:referral_codes,code
+            'referral_code' => 'nullable|string', 
             'participants' => 'required|array|min:1',
             'participants.*.full_name' => 'required|string|max:255',
             'participants.*.phone_number' => 'required|string|max:20',

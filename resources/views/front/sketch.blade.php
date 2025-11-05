@@ -149,7 +149,7 @@
 }
 
 #sketch-list-wrapper .sketch-card-brand img {
-    max-height: 85px;
+    max-height: 50px;
     width: auto;
     object-fit: contain;
     filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.35));
