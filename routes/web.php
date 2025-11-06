@@ -20,6 +20,7 @@ use App\Http\Controllers\GuestEventBookingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Http\Request;
 
 Route::post('/test-simple', function () {
@@ -138,10 +139,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Checkout Route
-    Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
+    Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
 
     // Add this in the authenticated routes section
-    Route::post('/checkout/process', [App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 
     Route::get('/test-checkout-route', function () {
         return response()->json([
