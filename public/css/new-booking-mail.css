@@ -1,0 +1,65 @@
+body,
+table,
+td,
+a {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+table,
+td {
+    mso-table-lspace: 0pt;
+    mso-table-rspace: 0pt;
+    border-collapse: collapse;
+}
+
+img {
+    -ms-interpolation-mode: bicubic;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+    font-family: Arial, sans-serif;
+    color: #333333;
+}
+
+.primary-color {
+    color: #1f3a5f;
+}
+
+@media screen and (max-width: 600px) {
+    .full-width-table {
+        width: 100% !important;
+    }
+
+    .content-padding {
+        padding: 20px !important;
+    }
+
+    .service-cell {
+        display: block;
+        width: 100%;
+        text-align: left !important;
+        padding: 8px 15px !important;
+    }
+
+    .item-price-detail td {
+        display: block;
+        width: 100% !important;
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        text-align: left !important;
+    }
+
+    .stack-cell {
+        display: block !important;
+        width: 100% !important;
+        padding-bottom: 10px !important;
+    }
+    
+    .stack-cell strong {
+        display: inline;
+    }
+}

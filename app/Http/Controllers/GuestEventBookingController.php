@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewGuestEventBookingMail;
 use App\Models\Event;
 use App\Models\EventBooking;
 use App\Models\EventParticipant;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 
 class GuestEventBookingController extends Controller
 {
@@ -129,6 +131,10 @@ class GuestEventBookingController extends Controller
                 'referral_code_id' => $referralCodeId, // Store referral code ID even for guest users
                 'invoice_id' => null // No invoice for guest bookings
             ]);
+
+            // Kirim email ke admin setelah booking berhasil
+            $adminEmail = config('mail.admin_address');
+            Mail::to($adminEmail)->send(new NewGuestEventBookingMail($eventBooking));
 
             // Save participant data
             foreach ($request->participants as $participantData) {
