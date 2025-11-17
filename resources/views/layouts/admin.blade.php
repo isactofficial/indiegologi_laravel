@@ -333,6 +333,9 @@
                     <a href="{{ route('admin.referral-codes.index') }}" class="{{ request()->routeIs('admin.referral-codes.*') ? 'active' : '' }}">
                         <i class="fas fa-tags"></i> Manajemen Referral
                     </a>
+                    <a href="{{ route('admin.free-consultation.types.index') }}" class="{{ request()->routeIs('admin.free-consultation.types.*') ? 'active' : '' }}">
+                        <i class="far fa-handshake"></i> Manajemen Konsultasi Gratis
+                    </a>
                     <a href="{{ route('admin.consultation-services.index') }}" class="{{ request()->routeIs('admin.consultation-services.*') ? 'active' : '' }}">
                         <i class="fas fa-handshake"></i> Manajemen Layanan
                     </a>

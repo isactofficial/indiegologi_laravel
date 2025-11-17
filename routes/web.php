@@ -20,6 +20,7 @@ use App\Http\Controllers\GuestEventBookingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\Admin\FreeConsultationTypeController;
 use Illuminate\Http\Request;
 
 Route::post('/test-simple', function () {
@@ -223,7 +224,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // NEW: Free Consultation Management
     Route::prefix('free-consultation')->name('free-consultation.')->group(function () {
         // Free consultation types management
-        Route::resource('types', App\Http\Controllers\Admin\FreeConsultationTypeController::class);
+        Route::resource('types', FreeConsultationTypeController::class);
 
         // Free consultation schedules management
         Route::resource('schedules', App\Http\Controllers\Admin\FreeConsultationScheduleController::class);
