@@ -21,6 +21,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Admin\FreeConsultationTypeController;
+use App\Http\Controllers\Admin\FreeConsultationScheduleController;
 use Illuminate\Http\Request;
 
 Route::post('/test-simple', function () {
@@ -227,11 +228,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::resource('types', FreeConsultationTypeController::class);
 
         // Free consultation schedules management
-        Route::resource('schedules', App\Http\Controllers\Admin\FreeConsultationScheduleController::class);
+        Route::resource('schedules', FreeConsultationScheduleController::class);
 
         // Bulk operations for schedules
-        Route::post('schedules/bulk-create', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'bulkCreate'])->name('schedules.bulk-create');
-        Route::put('schedules/{schedule}/toggle-availability', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'toggleAvailability'])->name('schedules.toggle-availability');
+        Route::post('schedules/bulk-create', [FreeConsultationScheduleController::class, 'bulkCreate'])->name('schedules.bulk-create');
+        Route::put('schedules/{schedule}/toggle-availability', [FreeConsultationScheduleController::class, 'toggleAvailability'])->name('schedules.toggle-availability');
     });
 
     // Admin can also manage comments

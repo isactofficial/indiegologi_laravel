@@ -310,7 +310,8 @@
                 {{-- [DIUBAH] Struktur header dan logo --}}
                 <div class="sidebar-header d-none d-lg-flex">
                     <div class="logo"><i class="fas fa-layer-group"></i></div>
-                    <h4>Indiegologi</h4>
+                    <a href="/"><h4>Indiegologi</h4></a>
+                    
                 </div>
 
                 <div class="logo-container d-lg-none">
@@ -335,6 +336,9 @@
                     </a>
                     <a href="{{ route('admin.free-consultation.types.index') }}" class="{{ request()->routeIs('admin.free-consultation.types.*') ? 'active' : '' }}">
                         <i class="far fa-handshake"></i> Manajemen Konsultasi Gratis
+                    </a>
+                    <a href="{{ route('admin.free-consultation.schedules.index') }}" class="{{ request()->routeIs('admin.free-consultation.schedules.*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar"></i> Manajemen Jadwal Konsultasi Gratis
                     </a>
                     <a href="{{ route('admin.consultation-services.index') }}" class="{{ request()->routeIs('admin.consultation-services.*') ? 'active' : '' }}">
                         <i class="fas fa-handshake"></i> Manajemen Layanan
