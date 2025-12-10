@@ -349,6 +349,9 @@
                     <a href="{{ route('admin.event-bookings.index') }}" class="{{ request()->routeIs('admin.event-bookings.*') ? 'active' : '' }}">
                         <i class="fas fa-ticket-alt"></i> Manajemen Booking Event
                     </a>
+                    <a href="{{ route('admin.free-consultation-bookings.index') }}" class="{{ request()->routeIs('admin.free-consultation-bookings.*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-check"></i> Manajemen Booking Konsultasi Gratis
+                    </a>
                     <a href="{{ route('admin.consultation-bookings.index') }}" class="{{ request()->routeIs('admin.consultation-bookings.*') ? 'active' : '' }}">
                         <i class="fas fa-calendar-check"></i> Manajemen Booking Konsultasi
                     </a>

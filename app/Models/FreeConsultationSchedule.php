@@ -37,6 +37,11 @@ class FreeConsultationSchedule extends Model
         return $this->hasMany(CartItem::class, 'free_consultation_schedule_id');
     }
 
+    public function bookings()
+    {
+        return $this->hasMany(\App\Models\FreeConsultationBooking::class, 'schedule_id');
+    }
+
     public function bookingServices()
     {
         return $this->hasMany(BookingService::class, 'free_consultation_schedule_id');
