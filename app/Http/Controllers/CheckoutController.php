@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Mail\NewBookingMail;
 use App\Models\CartItem;
 use App\Models\CartParticipant; // ADD THIS
 use App\Models\ConsultationBooking;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -58,7 +60,7 @@ class CheckoutController extends Controller
 
         // --- VALIDASI FILTER BARU DITAMBAHKAN DI SINI ---
         // Ambil tipe item pertama (event atau bukan)
-        $firstItemIsEvent = $cartItems->first()->isEvent(); 
+        $firstItemIsEvent = $cartItems->first()->isEvent();
 
         // Periksa apakah semua item lain memiliki tipe yang sama
         $allSameType = $cartItems->every(function ($item) use ($firstItemIsEvent) {
@@ -72,8 +74,8 @@ class CheckoutController extends Controller
 
         if ($cartItems->isNotEmpty()) {
             // Periksa tipe item pertama
-            $firstItemIsEvent = $cartItems->first()->isEvent(); 
-            
+            $firstItemIsEvent = $cartItems->first()->isEvent();
+
             // Periksa apakah ada item yang tipenya berbeda dari item pertama
             $isMixed = $cartItems->some(function ($item) use ($firstItemIsEvent) {
                 return $item->isEvent() !== $firstItemIsEvent;
@@ -333,6 +335,10 @@ class CheckoutController extends Controller
                 'payment_type'    => $selectedPaymentType,
             ]);
 
+            // Kirim email ke admin setelah booking berhasil
+            $adminEmail = config('mail.admin_address');
+            Mail::to($adminEmail)->send(new NewBookingMail($booking, $invoice));
+
             // Handle service attachments to booking_service table
             foreach ($servicesToAttach as $serviceKey => $pivotData) {
                 // Set the booking_id and invoice_id
@@ -519,7 +525,7 @@ class CheckoutController extends Controller
                 'totalToPayNow' => '0',
             ]);
         }
-        
+
         $cartItems = CartItem::with(['service', 'referralCode', 'event'])
             ->where('user_id', $user->id) // Scope ke user
             ->whereIn('id', $selectedIds)

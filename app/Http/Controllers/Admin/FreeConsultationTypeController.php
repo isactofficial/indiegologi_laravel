@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Models\FreeConsultationType;
+
 class FreeConsultationTypeController extends Controller
 {
     /**
@@ -14,7 +16,8 @@ class FreeConsultationTypeController extends Controller
      */
     public function index()
     {
-        //
+        $consultationType = FreeConsultationType::latest()->paginate(10);
+        return view('free-consultation-services.index', compact('consultationType'));
     }
 
     /**
@@ -24,7 +27,7 @@ class FreeConsultationTypeController extends Controller
      */
     public function create()
     {
-        //
+        return view('free-consultation-services.create');
     }
 
     /**
@@ -35,7 +38,16 @@ class FreeConsultationTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'status' => 'required|in:active,inactive',
+            'description' => 'required|string',
+        ]);
+
+        FreeConsultationType::create($validated);
+
+        return redirect()->route('admin.free-consultation.types.index')
+            ->with('success', 'Consultation type created successfully.');
     }
 
     /**
@@ -44,20 +56,20 @@ class FreeConsultationTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(FreeConsultationType $type)
     {
         //
     }
-
+    
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+    public function edit(FreeConsultationType $type)
     {
-        //
+        return view('free-consultation-services.edit', compact('type'));
     }
 
     /**
@@ -67,9 +79,18 @@ class FreeConsultationTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, FreeConsultationType $type)
     {
-        //
+          $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'status' => 'required|in:active,inactive',
+            'description' => 'required|string',
+        ]);
+
+        $type->update($validated);
+
+        return redirect()->route('admin.free-consultation.types.index')
+            ->with('success', 'Consultation type update successfully.');
     }
 
     /**
@@ -78,8 +99,11 @@ class FreeConsultationTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(FreeConsultationType $type)
     {
-        //
+        $type->delete();
+
+        return redirect()->route('admin.free-consultation.types.index')
+            ->with('success', 'Consultation type deleted successfully.');
     }
 }

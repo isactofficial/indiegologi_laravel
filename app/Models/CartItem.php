@@ -25,6 +25,7 @@ class CartItem extends Model
         'contact_preference',
         'payment_type',
         'referral_code',
+        'addons_data',
         'price',
         'original_price',  // ✅ HARGA ASLI SEBELUM DISKON
         'hourly_price',
@@ -103,15 +104,41 @@ class CartItem extends Model
     public function calculateOriginalSubtotal()
     {
         if ($this->isEvent()) {
-            // Harga dasar × jumlah peserta
             return (float) $this->original_price * (int) $this->participant_count;
         }
 
         if ($this->isFreeConsultation()) {
-            return 0;
+            return 0.00;
         }
 
-        return (float) $this->original_price + ((float) $this->hourly_price * (int) $this->hours);
+        $subtotal = (float) $this->price;
+
+        $baseDuration = $this->service->base_duration ?? 0;
+        $selectedHours = (int) $this->hours;
+        $addOnHours = max(0, $selectedHours - $baseDuration);
+        $durationAddOnCost = (float) $this->hourly_price * $addOnHours;
+
+        $subtotal += $durationAddOnCost;
+
+        $addonTotal = 0.00;
+        
+        try {
+            $addons = json_decode($this->addons_data, true);
+
+            if (is_array($addons)) {
+                foreach ($addons as $addon) {
+                    // Pastikan key 'price' dan 'quantity' ada
+                    $price = (float) ($addon['price'] ?? 0);
+                    $quantity = (int) ($addon['quantity'] ?? 0);
+                    $addonTotal += $price * $quantity;
+                }
+            }
+        } catch (\Exception $e) {
+            //
+        }
+
+        $finalOriginalSubtotal = $subtotal + $addonTotal;
+        return $finalOriginalSubtotal;
     }
 
     public function calculateFinalPrice()

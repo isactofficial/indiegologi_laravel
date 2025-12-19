@@ -567,6 +567,7 @@
                                 <a class="nav-link dropdown-toggle fs-5" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Profil"><i class="bi bi-person-circle"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDropdown">
                                     <li><a class="dropdown-item" href="{{ route('profile.index') }}">Profil Saya</a></li>
+                                    <li><a class="dropdown-item" href="/admin/dashboard">Dashboard</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>

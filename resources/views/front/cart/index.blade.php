@@ -231,6 +231,13 @@
         border: 0;
         background-color: transparent;
     }
+    
+    /* Make the subtotal line stand out a little more */
+    .price-details-list .list-group-item.subtotal-row {
+        margin-top: 0.5rem;
+        padding-top: 0.75rem;
+        border-top: 1px dashed var(--brand-border);
+    }
 
     /* Style untuk thumbnail konsultasi gratis */
     .cart-item-card img[alt*="Konsultasi Gratis"] {
@@ -297,11 +304,6 @@
             <div class="row g-4 g-lg-5">
                 <div class="col-lg-7">
 
-                    {{-- 
-                      =================================================
-                      ⬇️ KODE TAB FILTER DITAMBAHKAN DI SINI ⬇️
-                      =================================================
-                    --}}
                     <ul class="nav nav-pills nav-fill mb-4" id="cart-filter-tabs" role="tablist" data-aos="fade-right">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="filter-service" data-filter="service" type="button" role="tab">
@@ -314,19 +316,12 @@
                             </button>
                         </li>
                     </ul>
-                    {{-- 
-                      =================================================
-                      ⬆️ BATAS AKHIR KODE TAB FILTER ⬆️
-                      =================================================
-                    --}}
-
 
                     {{-- Select All card --}}
                     <div class="card mb-3 shadow-sm border-0" data-aos="fade-right">
                         <div class="card-body p-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="select-all" checked>
-                                {{-- KITA TAMBAHKAN ID DI LABEL INI UNTUK DIUBAH VIA JS --}}
                                 <label class="form-check-label fw-bold" for="select-all" style="color: var(--brand-text);" id="select-all-label">
                                     Pilih Semua Layanan
                                 </label>
@@ -336,16 +331,10 @@
 
                     {{-- Cart Items Loop --}}
                     @foreach ($cartItems as $item)
-                    {{-- 
-                      =================================================
-                      ⬇️ PERUBAHAN KRITIS 1: Tambahkan data-item-type ⬇️
-                      =================================================
-                    --}}
                     <div class="card mb-3 cart-item-card" 
                          data-service-id="{{ $item->service_id }}" 
                          data-aos="fade-right" 
                          data-aos-delay="{{ $loop->index * 100 }}"
-                         {{-- INI YANG DITAMBAHKAN --}}
                          data-item-type="{{ $item->isEvent() ? 'event' : 'service' }}"
                          >
                         <div class="card-body p-4">
@@ -354,17 +343,10 @@
                                 <div class="col-12 col-md-7 mb-4 mb-md-0">
                                     <div class="d-flex align-items-start">
                                         <div class="form-check me-3 pt-1">
-                                            {{-- 
-                                              =================================================
-                                              ⬇️ PERUBAHAN KRITIS 2: Modifikasi Checkbox ⬇️
-                                              =================================================
-                                            --}}
                                             <input class="form-check-input item-checkbox" type="checkbox"
-                                                {{-- HAPUS: name="selected_items[]" --}}
                                                 value="{{ $item->id }}"
                                                 id="item-{{ $item->id }}"
                                                 checked
-                                                {{-- TAMBAHKAN: data-id agar bisa diambil JS --}}
                                                 data-id="{{ $item->id }}"
                                                 >
                                         </div>
@@ -376,7 +358,6 @@
                                         </div>
 
                                         <div class="flex-grow-1">
-                                            {{-- ... (sisa kode item title tidak berubah) ... --}}
                                             <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">
                                                 {{ $item->getServiceTitle() }}
                                                 @if($item->isFreeConsultation())
@@ -386,7 +367,6 @@
                                                 <span class="badge bg-primary ms-2">EVENT</span>
                                                 @endif
                                             </h5>
-                                            {{-- ... (sisa kode item details tidak berubah) ... --}}
                                             <ul class="item-details-list">
                                                 <li><i class="bi bi-calendar-check"></i>{{ $item->booked_date->format('d M Y') }}, {{ $item->booked_time }}</li>
                                                 <li><i class="bi bi-camera-video"></i>{{ $item->session_type }} & {{ $item->contact_preference === 'chat_only' ? 'Chat' : 'Chat & Call' }}</li>
@@ -397,13 +377,19 @@
                                                 <li><i class="bi bi-people"></i>{{ $item->participant_count }} Peserta</li>
                                                 @endif
                                             </ul>
+                                            
+                                            {{-- 
+                                              =================================================
+                                              KODE ADD-ONS DI SINI DIHAPUS SESUAI PERMINTAAN
+                                              =================================================
+                                            --}}
+
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- Pricing Column - SINGLE UNIFIED SECTION --}}
                                 <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
-                                    {{-- ... (sisa kode pricing column tidak berubah) ... --}}
                                     <div class="pricing-section">
                                         @if($item->isFreeConsultation())
                                         {{-- Free consultation pricing --}}
@@ -467,22 +453,40 @@
                                         </div>
 
                                         @else
-                                        {{-- Regular service pricing --}}
+                                        {{-- Regular service pricing (MODIFIED FOR ADDON ALIGNMENT) --}}
                                         <div>
+                                            @php
+                                                $addons = json_decode($item->addons_data, true);
+                                                $addonPriceTotal = 0;
+                                            @endphp
+                                            
                                             <ul class="list-group list-group-flush price-details-list small">
                                                 <li class="list-group-item d-flex justify-content-between">
                                                     <span class="text-muted">Harga Dasar:</span>
                                                     <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
                                                 </li>
-                                                @if ($item->hours > 0)
+                                                
+                                                @if ($item->hours > 0 && $item->service->base_duration < $item->hours)
+                                                @php $addOnDuration = $item->hours - $item->service->base_duration @endphp
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
-                                                    <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
+                                                    <span class="text-muted">Add-on Durasi ({{ $addOnDuration }} jam):</span>
+                                                    <span class="text-muted">Rp {{ number_format($item->hourly_price * $addOnDuration, 0, ',', '.') }}</span>
                                                 </li>
                                                 @endif
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Subtotal:</span>
-                                                    <span class="text-muted">Rp {{ number_format($item->calculateOriginalSubtotal(), 0, ',', '.') }}</span>
+
+                                                @if (!empty($addons))
+                                                    @foreach($addons as $addon)
+                                                    @php $currentAddonTotal = $addon['price'] * $addon['quantity']; @endphp
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span class="text-muted">{{ $addon['name'] }} (x{{ $addon['quantity'] }}):</span>
+                                                        <span class="text-muted">Rp {{ number_format($currentAddonTotal, 0, ',', '.') }}</span>
+                                                    </li>
+                                                    @endforeach
+                                                @endif
+
+                                                <li class="list-group-item d-flex justify-content-between subtotal-row">
+                                                    <span class="fw-bold">Subtotal:</span>
+                                                    <span class="fw-bold">Rp {{ number_format($item->calculateOriginalSubtotal(), 0, ',', '.') }}</span>
                                                 </li>
                                                 @php $itemDiscount = $item->calculateOriginalSubtotal() - $item->calculateFinalPrice(); @endphp
                                                 @if ($itemDiscount > 0)
@@ -692,8 +696,7 @@
             // Pastikan global_payment_type ter-update (jika ada)
             if ($('#payment-type-select').length > 0) {
                 const selectedPaymentType = $('#payment-type-select').val();
-                // Pastikan input 'global_payment_type' ada di form Anda
-                $('#global_payment_type').val(selectedPaymentType);
+                // Karena kita menggunakan `name="global_payment_type"` di `<select>`, ini sudah benar.
             }
 
             // Submit form secara manual
@@ -825,7 +828,6 @@
         @else
         // ===========================================
         // FUNGSI UNTUK GUEST USER (TEMP CART)
-        // (BLOK INI TIDAK SAYA UBAH, SUDAH BENAR)
         // ===========================================
 
         function getTempCart() {
@@ -896,7 +898,18 @@
                 }
 
                 const hours = parseInt(item.hours) || 1;
-                const itemSubtotal = basePrice + (hourlyPrice * hours);
+                const baseDuration = (pricingData[id] ? pricingData[id].base_duration : 0);
+                const durationAddOnPrice = hourlyPrice * Math.max(0, hours - baseDuration);
+
+                // Calculate addon price total for guest user
+                let guestAddonPriceTotal = 0;
+                if (item.addons && Array.isArray(item.addons)) {
+                    item.addons.forEach(addon => {
+                        guestAddonPriceTotal += (addon.price * addon.quantity);
+                    });
+                }
+                
+                const itemSubtotal = basePrice + durationAddOnPrice + guestAddonPriceTotal;
                 const discountAmount = 0;
                 const finalItemPrice = itemSubtotal - discountAmount;
 
@@ -956,27 +969,45 @@
 
             Object.entries(cartItems).forEach(([serviceId, item], index) => {
                 const isFree = isFreeConsultation(serviceId, item);
-                let serviceTitle, serviceThumbnail;
+                let serviceTitle, serviceThumbnail, baseDuration;
                 let basePrice = 0,
                     hourlyPrice = 0;
 
                 if (isFree) {
                     serviceTitle = "Konsultasi Gratis";
                     serviceThumbnail = `https://placehold.co/60x60/0C2C5A/FFFFFF?text=GRATIS`;
+
                 } else if (pricingData[serviceId]) {
                     const details = pricingData[serviceId];
                     serviceTitle = details.title;
+                    baseDuration = details.base_duration;
                     serviceThumbnail = details.thumbnail || 'https://placehold.co/60x60/cccccc/ffffff?text=No+Image';
                     basePrice = parseFloat(details.price) || 0;
                     hourlyPrice = parseFloat(details.hourly_price) || 0;
+
                 } else {
                     serviceTitle = "Layanan Tidak Tersedia";
                     serviceThumbnail = 'https://placehold.co/60x60/dc3545/ffffff?text=Error';
                 }
 
                 const hours = parseInt(item.hours) || 1;
-                const itemSubtotal = isFree ? 0 : basePrice + (hourlyPrice * hours);
-                const finalItemPrice = itemSubtotal;
+                const durationAddOn = Math.max(0, hours - baseDuration);
+                const durationAddOnPrice = hourlyPrice * durationAddOn;
+
+                // --- GUEST ADDONS HANDLING ---
+                const guestAddons = item.addons || [];
+                let guestAddonsHtml = ''; // Removed to align with user request
+                let guestAddonPriceTotal = 0;
+                
+                if (guestAddons.length > 0 && !isFree) {
+                    guestAddons.forEach(addon => {
+                        guestAddonPriceTotal += (addon.price * addon.quantity);
+                    });
+                }
+
+                const guestTotalItemSubtotal = basePrice + durationAddOnPrice + guestAddonPriceTotal;
+                const finalItemPrice = guestTotalItemSubtotal;
+
 
                 const displayDate = item.booked_date ? new Date(item.booked_date).toLocaleDateString('id-ID', {
                     day: 'numeric',
@@ -1041,8 +1072,16 @@
                                             <div>
                                                 <ul class="list-group list-group-flush price-details-list small">
                                                     <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Harga Dasar:</span><span class="text-muted">Rp ${basePrice.toLocaleString('id-ID')}</span></li>
-                                                    ${hourlyPrice > 0 && hours > 0 ? `<li class="list-group-item d-flex justify-content-between"><span class="text-muted">Per Jam (${hours} jam):</span><span class="text-muted">Rp ${(hourlyPrice * hours).toLocaleString('id-ID')}</span></li>` : ''}
-                                                    <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Subtotal:</span><span class="text-muted">Rp ${itemSubtotal.toLocaleString('id-ID')}</span></li>
+                                                    ${durationAddOn > 0 ? `<li class="list-group-item d-flex justify-content-between"><span class="text-muted">Add-on Durasi (${durationAddOn} jam):</span><span class="text-muted">Rp ${durationAddOnPrice.toLocaleString('id-ID')}</span></li>` : ''}
+                                                    
+                                                    ${guestAddons.map(addon => `
+                                                        <li class="list-group-item d-flex justify-content-between">
+                                                            <span class="text-muted">${addon.name} (x${addon.quantity}):</span>
+                                                            <span class="text-muted">Rp ${(addon.price * addon.quantity).toLocaleString('id-ID')}</span>
+                                                        </li>
+                                                    `).join('')}
+
+                                                    <li class="list-group-item d-flex justify-content-between subtotal-row"><span class="fw-bold">Subtotal:</span><span class="fw-bold">Rp ${guestTotalItemSubtotal.toLocaleString('id-ID')}</span></li>
                                                 </ul>
                                                 <hr class="my-2" style="border-color: var(--brand-border);">
                                                 <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">

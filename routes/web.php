@@ -1,26 +1,30 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\FrontController;
-use App\Http\Controllers\Auth\PasswordController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\FrontController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\Admin\SketchController;
-use App\Http\Controllers\Admin\ReferralCodeController;
-use App\Http\Controllers\Admin\ConsultationServiceController;
-use App\Http\Controllers\Admin\ConsultationBookingController;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\GuestEventBookingController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\OnboardingController;
-use App\Http\Controllers\ChatbotController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Admin\ReferralCodeController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\FreeConsultationBookController;
+use App\Http\Controllers\Admin\ConsultationBookingController;
+use App\Http\Controllers\Admin\ConsultationServiceController;
+use App\Http\Controllers\Admin\FreeConsultationTypeController;
+use App\Http\Controllers\Admin\FreeConsultationScheduleController;
+use App\Http\Controllers\Admin\FreeConsultationBookingController;
 
 Route::post('/test-simple', function () {
     return response()->json(['status' => 'OK', 'message' => 'Simple test works']);
@@ -58,6 +62,9 @@ Route::get('/articles/{article:slug}', [FrontController::class, 'showArticle'])-
 // Layanan routes - FIXED: Keep original route name for backward compatibility
 Route::get('/layanan', [FrontController::class, 'layanan'])->name('front.layanan')->middleware('track.views:layanan');
 Route::get('/layanan/{service}', [FrontController::class, 'showLayanan'])->name('layanan.show');
+// Route::get('/layanan/konsultasi-gratis', [FreeConsultationBookController::class, 'book'])->name('free-consultation.book');
+
+
 
 // Contact route
 Route::get('/contact', [FrontController::class, 'contact'])->name('front.contact')->middleware('track.views:contact');
@@ -122,6 +129,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/articles/{article:slug}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+    Route::get('/konsultasi/gratis', [FreeConsultationBookController::class, 'showForm'])
+        ->name('front.free.booking.form');
+
+    // 2. Route untuk memproses data form dan menyimpan booking (POST)
+    // Ini adalah route yang dipanggil saat user menekan tombol "Konfirmasi Booking Gratis"
+    Route::post('/konfirmasi-booking-gratis', [FreeConsultationBookController::class, 'confirmBooking'])
+        ->name('front.free.booking.confirm');
 
     // User Profile management
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -199,6 +214,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('referral-codes', ReferralCodeController::class);
     Route::patch('/referral-codes/{referralCode}/toggle-status', [ReferralCodeController::class, 'toggleStatus'])->name('referral-codes.toggle-status');
 
+    // Free Consultation Booking management
+    Route::resource('free-consultation-bookings', FreeConsultationBookingController::class);
+
     // Consultation Booking management
     Route::resource('consultation-bookings', ConsultationBookingController::class);
     Route::get('consultation-bookings/{consultationBooking}/download-pdf', [ConsultationBookingController::class, 'downloadPdf'])->name('consultation-bookings.download-pdf');
@@ -223,14 +241,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // NEW: Free Consultation Management
     Route::prefix('free-consultation')->name('free-consultation.')->group(function () {
         // Free consultation types management
-        Route::resource('types', App\Http\Controllers\Admin\FreeConsultationTypeController::class);
+        Route::resource('types', FreeConsultationTypeController::class);
 
         // Free consultation schedules management
-        Route::resource('schedules', App\Http\Controllers\Admin\FreeConsultationScheduleController::class);
+        Route::resource('schedules', FreeConsultationScheduleController::class);
 
         // Bulk operations for schedules
-        Route::post('schedules/bulk-create', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'bulkCreate'])->name('schedules.bulk-create');
-        Route::put('schedules/{schedule}/toggle-availability', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'toggleAvailability'])->name('schedules.toggle-availability');
+        Route::post('schedules/bulk-create', [FreeConsultationScheduleController::class, 'bulkCreate'])->name('schedules.bulk-create');
+        Route::put('schedules/{schedule}/toggle-availability', [FreeConsultationScheduleController::class, 'toggleAvailability'])->name('schedules.toggle-availability');
     });
 
     // Admin can also manage comments

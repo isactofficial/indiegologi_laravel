@@ -219,6 +219,7 @@ class FrontController extends Controller
                 if ($service) {
                     $pricing[$serviceId] = [
                         'title' => $service->title,
+                        'base_duration' => $service->base_duration,
                         'price' => (float) $service->price,
                         'hourly_price' => (float) ($service->hourly_price ?? 0),
                         'thumbnail' => $service->thumbnail ? asset('storage/' . $service->thumbnail) : 'https://placehold.co/60x60/cccccc/ffffff?text=No+Image'
@@ -519,7 +520,8 @@ class FrontController extends Controller
                     'offline_address' => $validatedData['offline_address'] ?? null,
                     'contact_preference' => $validatedData['contact_preference'],
                     'referral_code' => null,
-                    'payment_type' => 'full_payment'
+                    'payment_type' => 'full_payment',
+                    'addons_data' => null, // Konsultasi gratis tidak memiliki add-ons
                 ]);
 
                 // Reserve the schedule slot
@@ -601,7 +603,8 @@ class FrontController extends Controller
                     'offline_address' => $validatedData['offline_address'] ?? null,
                     'contact_preference' => $validatedData['contact_preference'],
                     'referral_code' => null,
-                    'payment_type' => 'full_payment'
+                    'payment_type' => 'full_payment',
+                    'addons_data' => null, // Konsultasi gratis tidak memiliki add-ons
                 ]);
 
                 $cartCount = CartItem::where('user_id', $user->id)->count();
@@ -639,6 +642,12 @@ class FrontController extends Controller
             'offline_address' => 'required_if:session_type,Offline|nullable|string',
             'referral_code' => 'nullable|string|exists:referral_codes,code',
             'contact_preference' => 'required|string|in:chat_only,chat_and_call',
+            // VALIDASI TAMBAHAN UNTUK ADDONS
+            'addons' => 'nullable|array',
+            'addons.*.id' => 'required|string',
+            'addons.*.name' => 'required|string',
+            'addons.*.price' => 'required|numeric',
+            'addons.*.quantity' => 'required|integer|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -650,6 +659,15 @@ class FrontController extends Controller
         }
 
         $validatedData = $validator->validated();
+
+        // PROSES DATA ADDONS
+        $addonsData = $validatedData['addons'] ?? [];
+        $addonsJson = null;
+
+        if (!empty($addonsData)) {
+            // Konversi array addons menjadi JSON string untuk disimpan
+            $addonsJson = json_encode($addonsData);
+        }
 
         try {
             $service = ConsultationService::find($validatedData['id']);
@@ -671,7 +689,9 @@ class FrontController extends Controller
                     'offline_address' => $validatedData['offline_address'] ?? null,
                     'contact_preference' => $validatedData['contact_preference'],
                     'referral_code' => $validatedData['referral_code'] ?? null,
-                    'payment_type' => 'full_payment'
+                    'payment_type' => 'full_payment',
+                    // TAMBAHKAN KOLOM ADDONS_DATA
+                    'addons_data' => $addonsJson,
                 ]
             );
 
@@ -680,7 +700,8 @@ class FrontController extends Controller
             Log::info('Service added to cart for user: ' . $user->id, [
                 'service_id' => $service->id,
                 'service_title' => $service->title,
-                'hours' => $validatedData['hours']
+                'hours' => $validatedData['hours'],
+                'addons_data' => $addonsJson,
             ]);
 
             return response()->json([
@@ -742,7 +763,8 @@ class FrontController extends Controller
                                 'offline_address' => $itemData['offline_address'] ?? null,
                                 'contact_preference' => $itemData['contact_preference'],
                                 'referral_code' => null,
-                                'payment_type' => 'full_payment'
+                                'payment_type' => 'full_payment',
+                                'addons_data' => null, // Konsultasi gratis tidak memiliki add-ons
                             ]);
                             $transferredCount++;
                         }
@@ -750,6 +772,15 @@ class FrontController extends Controller
                         // Handle regular services
                         $service = ConsultationService::find($serviceId);
                         if ($service) {
+                            
+                            // PROSES DATA ADDONS DARI TEMP CART
+                            $tempAddonsData = $itemData['addons'] ?? [];
+                            $tempAddonsJson = null;
+
+                            if (!empty($tempAddonsData)) {
+                                $tempAddonsJson = json_encode($tempAddonsData);
+                            }
+
                             CartItem::updateOrCreate(
                                 [
                                     'user_id' => $user->id,
@@ -766,7 +797,9 @@ class FrontController extends Controller
                                     'offline_address' => $itemData['offline_address'] ?? null,
                                     'contact_preference' => $itemData['contact_preference'],
                                     'referral_code' => $itemData['referral_code'] ?? null,
-                                    'payment_type' => 'full_payment'
+                                    'payment_type' => 'full_payment',
+                                    // TAMBAHKAN KOLOM ADDONS_DATA
+                                    'addons_data' => $tempAddonsJson,
                                 ]
                             );
                             $transferredCount++;
