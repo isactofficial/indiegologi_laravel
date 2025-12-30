@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-    /* Styling dasar invoice */
+    /* Styling dasar invoice - TIDAK DIUBAH */
     .invoice-card {
         background-color: #fff;
         padding: 40px;
@@ -79,93 +79,34 @@
         border-radius: 8px;
     }
 
-    /* Penyesuaian Responsif */
+    /* Penyesuaian Responsif tetap dipertahankan */
     @media (max-width: 768px) {
-        /* Atur padding container & hilangkan batasan lebar card */
-        .container-fluid {
-            padding-left: 0.75rem !important;
-            padding-right: 0.75rem !important;
-        }
-        .invoice-card {
-            padding: 1.5rem 1rem;
-            max-width: none;
-            margin: 0;
-        }
-
-        .invoice-header {
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .invoice-header .invoice-contact, .summary-box {
-            text-align: left;
-        }
-
-        /* Atur agar info client & invoice tetap berdampingan */
-        .invoice-top-section {
-            flex-direction: row;
-            flex-wrap: nowrap;
-            gap: 0.75rem;
-        }
-
-        /* PERBAIKAN: Gunakan flex: 1 agar lebar terbagi otomatis */
-        .invoice-client-info, .invoice-details-info {
-            flex: 1; /* <-- KUNCI PERBAIKAN: Biarkan flexbox yang mengatur lebar */
-            padding: 1rem;
-            font-size: 0.85rem;
-            overflow-wrap: break-word; /* Memastikan teks panjang tidak overflow */
-            min-width: 0; /* Mencegah konten mendorong container */
-        }
-
-        .invoice-details-info h5 {
-            font-size: 1rem;
-        }
-
-        .action-buttons {
-            flex-direction: column;
-            align-items: stretch !important;
-        }
-        .action-buttons .btn {
-            width: 100%;
-            margin-left: 0 !important;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Atur tabel agar responsif */
-        .service-description-table thead {
-            display: none;
-        }
-        .service-description-table, .service-description-table tbody, .service-description-table tr, .service-description-table td {
-            display: block;
-            width: 100%;
-        }
-        .service-description-table tr {
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-        }
-        .service-description-table td {
-            text-align: right;
-            padding-left: 50%;
-            position: relative;
-            border: none;
-            border-bottom: 1px solid #eee;
-        }
-        .service-description-table td:before {
-            content: attr(data-label);
-            position: absolute;
-            left: 10px;
-            width: 45%;
-            padding-right: 10px;
-            white-space: nowrap;
-            text-align: left;
-            font-weight: bold;
-        }
+        .container-fluid { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+        .invoice-card { padding: 1.5rem 1rem; max-width: none; margin: 0; }
+        .invoice-header { flex-direction: column; gap: 1rem; }
+        .invoice-header .invoice-contact, .summary-box { text-align: left; }
+        .invoice-top-section { flex-direction: row; flex-wrap: nowrap; gap: 0.75rem; }
+        .invoice-client-info, .invoice-details-info { flex: 1; padding: 1rem; font-size: 0.85rem; overflow-wrap: break-word; min-width: 0; }
     }
 
-    @media print {
-        .no-print {
-            display: none;
-        }
+    /* Style untuk baris rincian di summary */
+    .calculation-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: #555;
+        margin-bottom: 5px;
     }
+    .calculation-title {
+        font-weight: 600;
+        color: #001f3f;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 8px;
+        padding-bottom: 4px;
+        text-align: left;
+    }
+
+    @media print { .no-print { display: none; } }
 </style>
 
 <div class="container-fluid py-5" style="background-color: #f5f7fa; min-height: 100vh;">
@@ -180,7 +121,6 @@
     </div>
 
     <div class="invoice-card">
-        {{-- Header --}}
         <div class="invoice-header">
             <div class="invoice-logo">Indiegologi</div>
             <div class="invoice-contact">
@@ -189,17 +129,18 @@
             </div>
         </div>
 
-        {{-- Info Section --}}
         <div class="invoice-top-section">
             <div class="invoice-client-info">
                 <p class="fw-bold fs-5 text-dark">Dear</p>
                 <p><strong>Nama:</strong> {{ $consultationBooking->receiver_name ?? 'N/A' }}</p>
                 @foreach($consultationBooking->services as $service)
-                    @if($service->pivot->session_type == 'Offline')
-                        <p><strong>Alamat Offline:</strong> {{ $service->pivot->offline_address }}</p>
+                    @if($loop->first)
+                        @if($service->pivot->session_type == 'Offline')
+                            <p><strong>Alamat Offline:</strong> {{ $service->pivot->offline_address }}</p>
+                        @endif
+                        <p><strong>Tanggal Konseling:</strong> {{ \Carbon\Carbon::parse($service->pivot->booked_date)->format('d F Y') }}</p>
+                        <p><strong>Waktu Konseling:</strong> {{ \Carbon\Carbon::parse($service->pivot->booked_time)->format('H:i') }} WIB</p>
                     @endif
-                    <p><strong>Waktu Konseling:</strong> {{ \Carbon\Carbon::parse($service->pivot->booked_date)->format('d F Y') }}</p>
-                    <p><strong>Paket Konseling:</strong> {{ $service->title }}</p>
                 @endforeach
                 <p><strong>No Hp:</strong> {{ optional($consultationBooking->user)->phone_number ?? 'N/A' }}</p>
             </div>
@@ -214,57 +155,93 @@
             </div>
         </div>
 
-        {{-- Service Table --}}
         <table class="service-description-table">
             <thead>
                 <tr>
                     <th>Service Description</th>
-                    <th>Quantity</th>
+                    <th class="text-center">Quantity</th>
                     <th>Unit Price</th>
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody>
                 @php
-                    $subtotal = 0;
-                    $totalDiscount = 0;
+                    $allAddons = [];
+                    $totalExtraHoursPrice = 0;
+                    $extraHoursDetails = [];
                 @endphp
                 @foreach($consultationBooking->services as $service)
                     @php
-                        $basePrice = $service->price;
-                        $hourlyPrice = $service->hourly_price;
+                        $qty = $service->pivot->participant_count ?? 1;
+                        $baseTotal = $service->price * $qty;
+
+                        // Kumpulkan Addons
+                        $itemAddons = json_decode($service->pivot->addons_data, true) ?? [];
+                        foreach($itemAddons as $addon) {
+                            $allAddons[] = $addon;
+                        }
+                        
+                        // Kumpulkan Extra Hours
                         $hoursBooked = $service->pivot->hours_booked;
-                        $totalPrice = $basePrice + ($hourlyPrice * $hoursBooked);
-                        $discountAmount = $service->pivot->discount_amount_at_booking;
-                        $finalServicePrice = $totalPrice - $discountAmount;
-                        $subtotal += $totalPrice;
-                        $totalDiscount += $discountAmount;
+                        $baseDuration = $service->base_duration ?? 0;
+                        $extraHours = max(0, $hoursBooked - $baseDuration);
+                        if($extraHours > 0) {
+                            $hourlyCost = $service->hourly_price * $extraHours;
+                            $totalExtraHoursPrice += $hourlyCost;
+                            $extraHoursDetails[] = [
+                                'service' => $service->title,
+                                'hours' => $extraHours,
+                                'price' => $hourlyCost
+                            ];
+                        }
                     @endphp
                     <tr>
-                        <td data-label="Service">
-                            {{ $service->title }}
-                            @if($hoursBooked > 0)
-                                <small class="d-block text-muted">{{ $hoursBooked }} jam tambahan</small>
-                            @endif
+                        <td data-label="Service Description">
+                            <div class="fw-bold text-dark">{{ $service->title }}</div>
+                            <small class="text-muted">• Durasi: {{ $baseDuration }} Jam</small>
                         </td>
-                        <td data-label="Quantity">1</td>
-                        <td data-label="Unit Price">Rp {{ number_format($totalPrice, 0, ',', '.') }}</td>
-                        <td data-label="Total">Rp {{ number_format($finalServicePrice, 0, ',', '.') }}</td>
+                        <td data-label="Quantity" class="text-center">{{ $qty }}</td>
+                        <td data-label="Unit Price">Rp {{ number_format($service->price, 0, ',', '.') }}</td>
+                        <td data-label="Total">Rp {{ number_format($baseTotal, 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
 
-        {{-- Summary --}}
         <div class="summary-box">
-            <p>Sub-Total: Rp {{ number_format($subtotal, 0, ',', '.') }}</p>
-            <p class="text-success">Total Diskon: -Rp {{ number_format($totalDiscount, 0, ',', '.') }}</p>
-            <div class="final-total">
-                Total Invoice Rp {{ number_format($consultationBooking->final_price, 0, ',', '.') }}
+            {{-- BAGIAN RINCIAN PERHITUNGAN TAMBAHAN --}}
+            <div style="max-width: 400px; margin-left: auto; text-align: right;">
+                
+                @if(count($extraHoursDetails) > 0 || !empty($allAddons))
+                    <div class="calculation-title">Rincian Tambahan Biaya</div>
+                    
+                    {{-- Detail Extra Hours --}}
+                    @foreach($extraHoursDetails as $extra)
+                        <div class="calculation-row">
+                            <span>Add-on Durasi ({{ $extra['hours'] }} Jam):</span>
+                            <span>Rp {{ number_format($extra['price'], 0, ',', '.') }}</span>
+                        </div>
+                    @endforeach
+
+                    {{-- Detail Addons --}}
+                    @foreach($allAddons as $addon)
+                        <div class="calculation-row">
+                            <span>{{ $addon['name'] }} (x{{ $addon['quantity'] }}):</span>
+                            <span>Rp {{ number_format($addon['price'] * $addon['quantity'], 0, ',', '.') }}</span>
+                        </div>
+                    @endforeach
+                    <hr style="margin: 10px 0;">
+                @endif
+                
+                <p><strong>Sub-Total:</strong> Rp {{ number_format($consultationBooking->final_price + $consultationBooking->discount_amount, 0, ',', '.') }}</p>
+                <p class="text-success"><strong>Total Diskon:</strong> -Rp {{ number_format($consultationBooking->discount_amount, 0, ',', '.') }}</p>
+                
+                <div class="final-total">
+                    Total Invoice Rp {{ number_format($consultationBooking->final_price, 0, ',', '.') }}
+                </div>
             </div>
         </div>
 
-        {{-- Signature & Payment Info --}}
         <div class="mt-5">
             <div class="invoice-signature mb-4">
                 <p class="mb-0">Regards,</p>

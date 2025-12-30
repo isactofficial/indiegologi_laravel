@@ -258,7 +258,7 @@ class CheckoutController extends Controller
                 // Handle regular services
                 if (!$item->service) continue;
 
-                $itemPrice = $item->price + ($item->hourly_price * $item->hours);
+                $itemPrice = $item->calculateOriginalSubtotal();
                 $subtotal += $itemPrice;
 
                 if ($item->referralCode) {
@@ -295,6 +295,7 @@ class CheckoutController extends Controller
                     'free_consultation_schedule_id' => null,
                     'contact_preference'         => $item->contact_preference,
                     'user_id'                    => $user->id,
+                    'addons_data'                => $item->addons_data,
                 ];
             }
 

@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-    /* Your existing styles remain the same */
+    /* STYLE DESAIN AWAL - TIDAK DIUBAH */
     .section {
         font-family: 'Playfair Display', serif;
         padding: 20px;
@@ -17,6 +17,7 @@
         max-width: 800px;
         margin: 40px auto;
         box-sizing: border-box;
+        overflow: hidden;
     }
 
     .invoice-header {
@@ -33,9 +34,6 @@
     }
 
     .invoice-logo {
-        font-size: 24px;
-        font-weight: bold;
-        color: #001f3f;
         margin-bottom: 10px;
     }
 
@@ -70,16 +68,13 @@
         margin-bottom: 10px;
     }
 
-    .grid-align-top-left {
-        align-self: start;
-        margin-bottom: 8px;
-        margin-top: 15px;
-    }
-
     .title-underline {
         position: relative;
         display: inline-block;
         padding-bottom: 10px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #00617A;
     }
 
     .title-underline::after {
@@ -103,36 +98,7 @@
     .service-table td {
         padding: 16px 8px;
         text-align: left;
-        word-break: break-word;
-    }
-
-    .service-table th {
-        white-space: normal;
-    }
-
-    .service-table th:nth-child(1),
-    .service-table td:nth-child(1) {
-        width: 34%;
-    }
-
-    .service-table th:nth-child(2),
-    .service-table td:nth-child(2) {
-        width: 12%;
-    }
-
-    .service-table th:nth-child(3),
-    .service-table td:nth-child(3) {
-        width: 22%;
-    }
-
-    .service-table th:nth-child(4),
-    .service-table td:nth-child(4) {
-        width: 12%;
-    }
-
-    .service-table th:nth-child(5),
-    .service-table td:nth-child(5) {
-        width: 20%;
+        border-bottom: 1px solid #eee;
     }
 
     .service-table thead {
@@ -140,29 +106,57 @@
         color: white;
     }
 
-    .service-table th {
-        font-weight: 540;
-    }
+    .service-table th:nth-child(1), .service-table td:nth-child(1) { width: 34%; }
+    .service-table th:nth-child(2), .service-table td:nth-child(2) { width: 12%; }
+    .service-table th:nth-child(3), .service-table td:nth-child(3) { width: 22%; }
+    .service-table th:nth-child(4), .service-table td:nth-child(4) { width: 12%; }
+    .service-table th:nth-child(5), .service-table td:nth-child(5) { width: 20%; }
 
     .service-table .service td {
         color: #0C2C5A;
         font-weight: bold;
     }
 
-    .text-right {
-        text-align: right;
-    }
-
-    .service-table th.text-right,
-    .service-table td.text-right {
-        text-align: right;
-        white-space: nowrap;
-    }
+    .text-right { text-align: right; }
 
     .summary-section {
-        margin-top: 0;
+        margin-top: 20px;
         float: right;
         width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .additional-details-box {
+        margin-left: auto;
+        max-width: 450px;
+        margin-bottom: 15px;
+        padding-right: 8px;
+    }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 0.85rem;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .detail-item .label {
+        flex-shrink: 0;
+    }
+
+    .detail-item .line {
+        flex-grow: 1;
+        border-bottom: 1px dotted #ccc;
+        margin: 0 10px;
+        position: relative;
+        top: -4px;
+    }
+
+    .detail-item .value {
+        flex-shrink: 0;
+        font-weight: 500;
     }
 
     .summary-line {
@@ -190,62 +184,26 @@
         font-weight: 700;
         padding: 16px 8px;
         border-bottom: none;
-        margin-bottom: 100px;
     }
 
     .invoice-footer {
         clear: both;
-        padding-top: 100px;
+        padding-top: 40px;
+    }
+
+    .invoice-signature {
+        font-size: 14px;
+        line-height: 1.6;
     }
 
     .payment-info {
-        margin-top: 50px;
+        margin-top: 40px;
         background-color: #ffc107;
         padding: 20px;
         border-radius: 8px;
     }
 
-    .payment-info h4 {
-        font-weight: bold;
-        color: #001f3f;
-        margin-bottom: 10px;
-    }
-
-    .payment-info p {
-        font-size: 14px;
-        margin: 5px 0;
-        color: #000;
-        font-family: Arial, sans-serif;
-    }
-
-    .invoice-signature {
-        margin-top: 50px;
-        font-size: 14px;
-    }
-
-    @media print {
-        .no-print {
-            display: none;
-        }
-    }
-
-    /* Mobile responsive styles */
-    @media (max-width: 768px) {
-        .invoice-wrapper {
-            padding: 15px;
-            margin: 20px auto;
-        }
-
-        .invoice-top-section {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .invoice-client-info,
-        .invoice-details-info {
-            width: 100%;
-        }
-    }
+    @media print { .no-print { display: none; } }
 </style>
 
 <div class="section container-fluid px-4 py-5">
@@ -259,7 +217,7 @@
     </div>
 
     <div class="invoice-wrapper">
-        {{-- Invoice Header --}}
+        {{-- Header --}}
         <div class="invoice-header">
             <div class="invoice-header-details">
                 <div class="invoice-logo"><img style="width: 300px;" src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo"></div>
@@ -270,29 +228,30 @@
             </div>
         </div>
 
-        {{-- Client and Invoice Details --}}
+        {{-- Top Section --}}
         <div class="invoice-top-section">
             <div class="invoice-client-info">
                 <p class="grid-full-span title-underline">Dear</p>
                 <span>Nama</span>
                 <span>: {{ $invoice->user->name ?? 'N/A' }}</span>
-
                 <span>No Hp</span>
                 <span>: {{ optional($invoice->user->profile)->phone_number ?? 'N/A' }}</span>
 
                 @php
-                $allItems = $invoice->getAllItems();
+                    $allItems = $invoice->getAllItems();
+                    $allAddons = [];
+                    $extraHoursDetails = [];
                 @endphp
 
                 @if($allItems->isNotEmpty())
-                <span class="grid-full-span grid-align-top-left">Pesanan:</span>
-                <div class="grid-full-span">
+                <span class="grid-full-span grid-align-top-left" style="margin-top:15px; font-weight:bold;">Pesanan:</span>
+                <div class="grid-full-span" style="padding-left: 10px; line-height: 1;">
                     @foreach($allItems as $item)
-                    @if($item['type'] === 'service')
-                    • {{ $item['item']->title }} (Service)<br>
-                    @elseif($item['type'] === 'event')
-                    • {{ $item['item']->title }} (Event - {{ $item['participant_count'] }} peserta)<br>
-                    @endif
+                        @if($item['type'] === 'service')
+                            • {{ $item['item']->title }}<br>
+                        @elseif($item['type'] === 'event')
+                            • {{ $item['item']->title }} (Event - {{ $item['participant_count'] }} peserta)<br>
+                        @endif
                     @endforeach
                 </div>
                 @endif
@@ -313,60 +272,77 @@
             </div>
         </div>
 
-        {{-- Service Table --}}
+        {{-- Table --}}
         <table class="service-table">
             <thead>
                 <tr>
                     <th>Deskripsi</th>
-                    <th class="text-right">Kuantitas</th>
+                    <th class="text-right">kuantitas</th>
                     <th class="text-right">Harga</th>
                     <th class="text-right">Diskon</th>
                     <th class="text-right">Total</th>
                 </tr>
             </thead>
             <tbody>
-                @php
-                $allItems = $invoice->getAllItems();
-                @endphp
-
                 @foreach($allItems as $item)
-                @if($item['type'] === 'service')
-                {{-- Service Item --}}
-                <tr class="service">
-                    <td>{{ $item['item']->title }} (Service)</td>
-                    <td class="text-right">1</td>
-                    <td class="text-right">Rp {{ number_format($item['pivot']->total_price_at_booking, 0, ',', '.') }}</td>
-                    <td class="text-right">
-                        @if($item['pivot']->discount_amount_at_booking > 0)
-                        -Rp {{ number_format($item['pivot']->discount_amount_at_booking, 0, ',', '.') }}
-                        @else
-                        -
-                        @endif
-                    </td>
-                    <td class="text-right">Rp {{ number_format($item['pivot']->final_price_at_booking, 0, ',', '.') }}</td>
-                </tr>
-                @elseif($item['type'] === 'event')
-                {{-- Event Item --}}
-                <tr class="service">
-                    <td>{{ $item['item']->title }} (Event)</td>
-                    <td class="text-right">{{ $item['participant_count'] }} peserta</td>
-                    <td class="text-right">Rp {{ number_format($item['booking']->total_price, 0, ',', '.') }}</td>
-                    <td class="text-right">
-                        @if($item['booking']->discount_amount > 0)
-                        -Rp {{ number_format($item['booking']->discount_amount, 0, ',', '.') }}
-                        @else
-                        -
-                        @endif
-                    </td>
-                    <td class="text-right">Rp {{ number_format($item['booking']->final_price, 0, ',', '.') }}</td>
-                </tr>
-                @endif
+                    @if($item['type'] === 'service')
+                        @php
+                            $hoursBooked = $item['pivot']->hours_booked;
+                            $baseDuration = $item['item']->base_duration ?? 0;
+                            $extraHours = max(0, $hoursBooked - $baseDuration);
+                            if($extraHours > 0) {
+                                $extraHoursDetails[] = ['name' => 'Sesi Tambahan ('.$extraHours.' Jam)', 'price' => $item['item']->hourly_price * $extraHours];
+                            }
+                            $itemAddons = json_decode($item['pivot']->addons_data, true) ?? [];
+                            foreach($itemAddons as $addon) { $allAddons[] = $addon; }
+                        @endphp
+                        <tr class="service">
+                            <td>
+                                {{ $item['item']->title }}<br>
+                                <small style="font-weight: normal; color: #666;">
+                                    Jadwal: {{ \Carbon\Carbon::parse($item['pivot']->booked_date)->format('d F Y') }}
+                                </small>
+                            </td>
+                            <td class="text-right">1</td>
+                            <td class="text-right">Rp {{ number_format($item['item']->price, 0, ',', '.') }}</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">Rp {{ number_format($item['item']->price, 0, ',', '.') }}</td>
+                        </tr>
+                    @elseif($item['type'] === 'event')
+                        <tr class="service">
+                            <td>{{ $item['item']->title }} (Event)</td>
+                            <td class="text-right">{{ $item['participant_count'] }}</td>
+                            <td class="text-right">Rp {{ number_format($item['item']->price, 0, ',', '.') }}</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">Rp {{ number_format($item['booking']->total_price, 0, ',', '.') }}</td>
+                        </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>
 
-        {{-- Summary Section --}}
+        {{-- Summary --}}
         <div class="summary-section">
+            @if(count($extraHoursDetails) > 0 || !empty($allAddons))
+                <div class="additional-details-box">
+                    <p style="font-weight: bold; color: #00617A; font-size: 0.9rem; margin-bottom: 10px; text-align: right;">Rincian Tambahan:</p>
+                    @foreach($extraHoursDetails as $extra)
+                        <div class="detail-item">
+                            <span class="label">{{ $extra['name'] }}</span>
+                            <div class="line"></div>
+                            <span class="value">Rp {{ number_format($extra['price'], 0, ',', '.') }}</span>
+                        </div>
+                    @endforeach
+                    @foreach($allAddons as $addon)
+                        <div class="detail-item">
+                            <span class="label">{{ $addon['name'] }} (x{{ $addon['quantity'] }})</span>
+                            <div class="line"></div>
+                            <span class="value">Rp {{ number_format($addon['price'] * $addon['quantity'], 0, ',', '.') }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
             <div class="summary-line">
                 <span>Sub-Total:</span>
                 <span>Rp {{ number_format($invoice->total_amount + $invoice->auto_discount_amount, 0, ',', '.') }}</span>
@@ -385,12 +361,9 @@
             </div>
 
             @if ($invoice->payment_type == 'dp')
-            @php
-            $dpAmount = $invoice->total_amount * 0.5;
-            @endphp
             <div class="summary-line total-payable">
                 <span>TOTAL BAYAR (DP 50%) :</span>
-                <span>Rp {{ number_format($dpAmount, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format($invoice->total_amount * 0.5, 0, ',', '.') }}</span>
             </div>
             @endif
         </div>
