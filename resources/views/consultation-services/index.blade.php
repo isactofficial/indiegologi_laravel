@@ -116,7 +116,7 @@
                         <i class="fas fa-handshake fs-2" style="color: var(--theme-primary);"></i>
                     </div>
                     <div>
-                        <h2 class="fs-3 fw-bold mb-1" style="color: var(--theme-primary);">Manajemen Layanan</h2>
+                        <h2 class="fs-3 fw-bold mb-1" style="color: var(--theme-primary);">Manajemen Layanan Konsultasi</h2>
                         <p class="text-muted mb-0">Kelola semua layanan konsultasi yang tersedia.</p>
                     </div>
                 </div>

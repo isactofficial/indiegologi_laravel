@@ -23,10 +23,10 @@
                     <div class="d-flex align-items-center">
                         <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
                             style="width: 70px; height: 70px; background-color: rgba(12, 44, 90, 0.1);">
-                            <i class="far fa-handshake fs-2" style="color: #f4b704;"></i>
+                            <i class="fas fa-hand-holding-heart fs-2" style="color: #f4b704;"></i>
                         </div>
                         <div>
-                            <h2 class="fs-3 fw-bold mb-1" style="color: #f4b704;">Edit Layanan</h2>
+                            <h2 class="fs-3 fw-bold mb-1" style="color: #f4b704;">Edit Layanan Konsultasi Gratis</h2>
                             <p class="text-muted mb-0">Perbarui detail layanan di bawah ini.</p>
                         </div>
                     </div>
@@ -66,6 +66,24 @@
                             @enderror
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="base_price" class="form-label text-secondary fw-medium">Harga Original (Base Price)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-secondary border-end-0">Rp</span>
+                                <input type="number" id="base_price" name="base_price"
+                                    class="form-control border-start-0 @error('base_price') is-invalid @enderror" 
+                                    value="{{ old('base_price', $type->base_price) }}" 
+                                    placeholder="Contoh: 50000"
+                                    step="0.01">
+                            </div>
+                            @error('base_price')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
                     <div class="col-12 mb-4">
                         <label for="description" class="form-label text-secondary fw-medium">Deskripsi Layanan</label>
                         <textarea id="description" name="description"
@@ -75,6 +93,7 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
+                    
                     <div class="d-flex justify-content-start mt-4 form-actions">
                         <button type="submit" class="btn btn-success px-4 py-2">Update Layanan</button>
                         <a href="{{ route('admin.free-consultation.types.index') }}"

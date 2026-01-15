@@ -180,7 +180,7 @@
                             <i class="fas fa-calendar-alt fs-2" style="color: var(--theme-primary);"></i>
                         </div>
                         <div>
-                            <h2 class="fs-3 fw-bold mb-1" style="color: var(--theme-primary);">Manajemen Booking Konsultasi
+                            <h2 class="fs-3 fw-bold mb-1" style="color: var(--theme-primary);">Manajemen Booking Konsultasi Gratis
                             </h2>
                             <p class="text-muted mb-0">Kelola semua booking konsultasi dari klien Anda.</p>
                         </div>

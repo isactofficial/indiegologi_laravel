@@ -23,10 +23,10 @@
                     <div class="d-flex align-items-center">
                         <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
                             style="width: 70px; height: 70px; background-color: rgba(12, 44, 90, 0.1);">
-                            <i class="far fa-handshake fs-2" style="color: #0C2C5A;"></i>
+                            <i class="fas fa-hand-holding-heart fs-2" style="color: #0C2C5A;"></i>
                         </div>
                         <div>
-                            <h2 class="fs-3 fw-bold mb-1" style="color: #0C2C5A;">Tambah Layanan Baru</h2>
+                            <h2 class="fs-3 fw-bold mb-1" style="color: #0C2C5A;">Tambah Layanan Konsultasi Gratis Baru</h2>
                             <p class="text-muted mb-0">Isi detail layanan di bawah ini.</p>
                         </div>
                     </div>
@@ -55,14 +55,30 @@
                             <select id="status" name="status" class="form-select @error('status') is-invalid @enderror"
                                 required>
                                 <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive
-                                </option>
+                                <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                             </select>
                             @error('status')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="base_price" class="form-label text-secondary fw-medium">Harga Original</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="number" id="base_price" name="base_price"
+                                    class="form-control @error('base_price') is-invalid @enderror" 
+                                    value="{{ old('base_price') }}"
+                                    step="0.01">
+                            </div>
+                            @error('base_price')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
                     <div class="col-12 mb-4">
                         <label for="description" class="form-label text-secondary fw-medium">Deskripsi Layanan</label>
                         <textarea id="description" name="description"
@@ -72,6 +88,7 @@
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
+                    
                     <div class="d-flex justify-content-start mt-4 form-actions">
                         <button type="submit" class="btn btn-success px-4 py-2">Simpan Layanan</button>
                         <a href="{{ route('admin.free-consultation.types.index') }}"

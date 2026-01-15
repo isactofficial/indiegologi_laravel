@@ -95,7 +95,7 @@ class FreeConsultationBookingController extends Controller
             }
         }
 
-        return redirect()->route('admin.free-consultation-bookings.index')
+        return redirect()->route('admin.free-consultation-bookings.update', $freeConsultationBooking)
             ->with('success', 'Status kehadiran berhasil diperbarui!');
     }
 

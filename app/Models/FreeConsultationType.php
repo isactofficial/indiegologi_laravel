@@ -12,6 +12,7 @@ class FreeConsultationType extends Model
     protected $fillable = [
         'name',
         'description',
+        'base_price',
         'status',
     ];
 

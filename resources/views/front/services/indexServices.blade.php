@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="{{ asset('css/service-details.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <style>
+        :root {
+            --indiegologi-primary: #0c2c5a;
+        }
+
         /* Tetap mempertahankan styling yang sudah ada */
         @keyframes fadeInUp{from{opacity:0;transform:translate3d(0,20px,0)}to{opacity:1;transform:translate3d(0,0,0)}}.stagger-item{opacity:0}.accordion-collapse.show .stagger-item{animation:fadeInUp .5s ease-out forwards}.accordion-collapse.show .stagger-item:nth-child(1){animation-delay:.05s}.accordion-collapse.show .stagger-item:nth-child(2){animation-delay:.1s}.accordion-collapse.show .stagger-item:nth-child(3){animation-delay:.15s}.accordion-collapse.show .stagger-item:nth-child(4){animation-delay:.2s}.accordion-collapse.show .stagger-item:nth-child(5){animation-delay:.25s}.accordion-collapse.show .stagger-item:nth-child(6){animation-delay:.3s}
 
@@ -32,6 +36,34 @@
         .free-consultation-highlight .accordion-button p {
             font-size: 1.1rem !important;
             color: #6c757d !important;
+        }
+
+        /* UI Diskon 100% untuk Konsultasi Gratis */
+        .price-discount-tag {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        .original-price {
+            text-decoration: line-through;
+            color: #adb5bd;
+            font-size: 1rem;
+        }
+        .discounted-price {
+            color: #28a745;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .percent-badge {
+            background: #ffc107;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         /* Tombol "Dapatkan Sekarang" yang telah diperbaiki */
@@ -103,9 +135,9 @@
             border-radius: 6px;
             padding: 0.75rem;
             margin-bottom: 0.5rem;
-            cursor: pointer; /* Menandakan ini interaktif */
+            cursor: pointer;
             transition: all 0.3s ease;
-            position: relative; /* Untuk menempatkan hidden radio button */
+            position: relative;
         }
 
         .schedule-card:hover {
@@ -118,9 +150,9 @@
             background: #e3f2fd;
         }
 
-        /* Sembunyikan radio button bawaan, kita akan menggunakan klik pada .schedule-card */
+        /* Sembunyikan radio button bawaan */
         .schedule-card input[type="radio"] {
-            position: absolute; /* Sembunyikan dari tata letak */
+            position: absolute;
             opacity: 0;
             cursor: pointer;
             height: 0;
@@ -140,7 +172,6 @@
                 font-size: 1.3rem !important;
             }
 
-            /* Tombol "Dapatkan Sekarang" versi mobile */
             .free-consultation-highlight .btn-get-now {
                 width: 100%;
                 margin-top: 1rem;
@@ -227,7 +258,7 @@
                                                 <div class="d-flex align-items-center service-info-wrapper">
                                                     <img src="https://placehold.co/120x120/FFB700/ffffff?text=Gratis" alt="Konsultasi Gratis" class="rounded-3 me-4 d-none d-md-block" style="width:120px;height:120px;object-fit:cover;border: 3px solid #FFB700;">
                                                     <div>
-                                                        <h5 class="fw-bold mb-2">Konsultasi Gratis</h5>
+                                                        <h5 class="fw-bold mb-1">Konsultasi Gratis</h5>
                                                         <p class="text-muted mb-0">Pilih jenis konsultasi gratis sesuai kebutuhan Anda.</p>
                                                     </div>
                                                 </div>
@@ -250,14 +281,27 @@
 
                                                             @forelse($freeConsultationTypes ?? [] as $type)
                                                                 <div class="consultation-type-dropdown" data-type-id="{{ $type->id }}" data-type-name="{{ $type->name }}">
-                                                                    <div class="form-check">
-                                                                        {{-- Radio button disembunyikan dan dipicu oleh klik pada dropdown --}}
-                                                                        <input class="form-check-input consultation-type-radio" type="radio" name="free_consultation_type" id="type-{{ $type->id }}" value="{{ $type->id }}">
-                                                                        <label class="form-check-label fw-bold" for="type-{{ $type->id }}">
-                                                                            {{ $type->name }}
-                                                                        </label>
+                                                                    <div class="d-flex justify-content-between align-items-start">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input consultation-type-radio" type="radio" name="free_consultation_type" id="type-{{ $type->id }}" value="{{ $type->id }}">
+                                                                            <label class="form-check-label fw-bold" for="type-{{ $type->id }}">
+                                                                                {{ $type->name }}
+                                                                            </label>
+                                                                        </div>
+                                                                        
+                                                                        {{-- Harga Coret per Tipe --}}
+                                                                        <div class="text-end">
+                                                                            <div class="price-discount-tag justify-content-end">
+                                                                                <span class="original-price" style="font-size: 0.85rem;">
+                                                                                    Rp. {{ number_format($type->base_price ?? 250000, 0, ',', '.') }}
+                                                                                </span>
+                                                                                <span class="percent-badge text-white" style="font-size: 0.7rem;">DISKON 100%</span>
+                                                                            </div>
+                                                                            <span class="discounted-price" style="font-size: 0.95rem;">FREE</span>
+                                                                        </div>
                                                                     </div>
-                                                                    <p class="mb-2 mt-2 text-muted">{{ $type->description }}</p>
+
+                                                                    <p class="mb-2 mt-2 text-muted small">{{ $type->description }}</p>
 
                                                                     {{-- Schedule Options --}}
                                                                     <div class="schedule-options" id="schedule-options-{{ $type->id }}">
@@ -265,18 +309,16 @@
                                                                         <div class="schedule-list" data-type-id="{{ $type->id }}">
 
                                                                             @foreach($type->availableSchedules ?? [] as $schedule)
-                                                                                {{-- MODIFIKASI: Menghapus input radio button bawaan, menggunakan klik pada card --}}
                                                                                 <div class="schedule-card"
                                                                                      data-schedule-id="{{ $schedule->id }}"
                                                                                      data-date="{{ $schedule->scheduled_date }}"
                                                                                      data-time="{{ $schedule->scheduled_time->format('H:i') }}"
                                                                                      data-type-id="{{ $type->id }}"
                                                                                      data-type-name="{{ $type->name }}"
+                                                                                     data-base-price="{{ $type->base_price ?? 250000}}"
                                                                                      data-schedule-name="{{ $schedule->formatted_date }} - {{ $schedule->formatted_time }}">
-                                                                                    {{-- Input radio button tetap ada, tetapi tersembunyi, agar nilai bisa diambil --}}
                                                                                     <input type="radio" name="free_consultation_schedule" value="{{ $schedule->id }}" class="schedule-radio" id="schedule-{{ $schedule->id }}">
-                                                                                    <strong>{{ $schedule->formatted_date }}</strong> - {{ $schedule->formatted_time }}
-                                                                                    {{-- <small class="text-muted d-block">Sisa slot: {{ $schedule->max_participants - $schedule->current_bookings }}</small> --}}
+                                                                                    <strong>{{ $schedule->formatted_date }}</strong> - {{ $schedule->formatted_time }} (+7 GMT/WIB)
                                                                                 </div>
                                                                             @endforeach
                                                                         </div>
@@ -288,9 +330,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                {{-- Hapus section additional-form-section, contact-form-section, divider-section, dan booking-section --}}
-                                                {{-- Karena semua akan dipindahkan ke halaman baru --}}
 
                                             </div>
                                         </div>
@@ -369,13 +408,13 @@
                                                         </div>
                                                         <div class="col-lg-4 col-md-12">
                                                             <div class="mb-3">
-                                                                <label class="form-label">Jam Mulai:</label>
+                                                                <label class="form-label">Jam Mulai (+7 GMT/WIB):</label>
                                                                 <input type="time" class="form-control booked_time-input" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 col-md-12">
                                                             <div class="mb-3">
-                                                                <label class="form-label">Jam Berakhir:</label>
+                                                                <label class="form-label">Jam Berakhir (+7 GMT/WIB):</label>
                                                                 <input type="time" class="form-control booked_time_end-input" readonly disabled style="background-color: #e9ecef;">
                                                             </div>
                                                         </div>
@@ -677,7 +716,7 @@
                 }
 
                 // ===================================
-                // LOGIKA BARU KONSULTASI GRATIS
+                // LOGIKA KONSULTASI GRATIS
                 // ===================================
 
                 // 1. Pemilihan Jenis Konsultasi (untuk menampilkan jadwal)
@@ -708,7 +747,7 @@
                     const scheduleName = $(this).data('schedule-name');
                     const bookedDate = $(this).data('date');
                     const bookedTime = $(this).data('time');
-                    const maxSlot = $(this).find('small').text();
+                    const basePrice = $(this).data('base-price');
 
                     // Set radio button tersembunyi
                     $(this).find('.schedule-radio').prop('checked', true);
@@ -727,7 +766,7 @@
                         booked_date: bookedDate,
                         booked_time: bookedTime,
                         schedule_display: scheduleName,
-                        price: 0,
+                        base_price: basePrice,
                         // Data form yang akan diisi di halaman berikutnya:
                         session_type: 'Online',
                         offline_address: null,
@@ -746,10 +785,10 @@
                         showCancelButton: true,
                         confirmButtonText: 'Lanjutkan Pendaftaran',
                         cancelButtonText: 'Kembali',
+                        confirmButtonColor: '#0c2c5a',
                         reverseButtons: true
                     }).then((result) => {
                         if (result.isConfirmed) {
-   
                             window.location.href = '{{ route('front.free.booking.form') }}';
                         }
                     });
@@ -836,35 +875,24 @@
                         }
                     }
 
-                    let selectedItemHtml = '';
-
-                    if (addonType === 'painting') {
-                        selectedItemHtml = `
-                            <div class="selected-addon-item" data-addon-id="${addonId}" data-price="${addonPrice}" data-name="${addonName}">
-                                <div class="addon-details">
-                                    <span class="addon-name">${addonName}</span>
-                                    <span class="addon-price" data-unit-price="${addonPrice}">(+${priceFormatted})</span>
-                                </div>
-                                <div class="d-flex align-items-center">
+                    let selectedItemHtml = `
+                        <div class="selected-addon-item" data-addon-id="${addonId}" data-price="${addonPrice}" data-name="${addonName}">
+                            <div class="addon-details">
+                                <span class="addon-name">${addonName}</span>
+                                <span class="addon-price" data-unit-price="${addonPrice}">(+${priceFormatted})</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                ${addonType === 'painting' ? `
                                     <span class="me-2 text-muted" style="font-size: 0.85rem;">Jumlah:</span>
                                     <input type="number" class="form-control form-control-sm addon-quantity-input" value="1" min="1" style="width: 60px; text-align: center;">
-                                    <button class="btn-remove-addon" data-addon-id="${addonId}" data-service-id="${serviceId}" data-type="${addonType}">
-                                        &times;
-                                    </button>
-                                </div>
-                            </div>`;
-
-                    } else {
-                        selectedItemHtml = `
-                            <div class="selected-addon-item" data-addon-id="${addonId}" data-price="${addonPrice}" data-name="${addonName}">
-                                <div class="addon-details">
-                                    <span class="addon-name">${addonName}</span>
-                                    <span class="addon-price">(+${priceFormatted})</span>
-                                </div>
+                                ` : ''}
                                 <button class="btn-remove-addon" data-addon-id="${addonId}" data-service-id="${serviceId}" data-type="${addonType}">
                                     &times;
                                 </button>
-                            </div>`;
+                            </div>
+                        </div>`;
+
+                    if (addonType !== 'painting') {
                         selectedOption.hide();
                     }
 
@@ -976,20 +1004,7 @@
                             data: finalData,
                             success: (response) => {
                                 Swal.fire(translations.success, response.message, 'success').then(() => {
-                                    block.find('.service-date-picker, .booked_time_input, .booked_time_end-input').val('');
-                                    block.find('.hours-input').val('0');
-                                    block.find('.session-type-select').val('Online');
-                                    block.find('.offline-address-container').hide();
-                                    block.find('.offline-address-container textarea').val('');
-                                    block.find('.referral-code-input').val('');
-                                    block.find('.select-service-btn').prop('disabled', true);
-                                    block.find('.selected-addons-container').empty();
-                                    block.find('.addon-dropdown option').show();
-                                    block.find('.addon-dropdown').val('');
-                                    const priceElement = block.find('.final-price');
-                                    const basePrice = parseFloat(block.data('base-price'));
-                                    priceElement.text(formatCurrency(basePrice));
-                                    updateCartCount();
+                                    location.reload();
                                 });
                             },
                             error: (response) => {
@@ -1006,20 +1021,6 @@
                         saveTempCart(tempCart);
                         updateCartCount();
 
-                        block.find('.service-date-picker, .booked_time_input, .booked_time_end-input').val('');
-                        block.find('.hours-input').val('0');
-                        block.find('.session-type-select').val('Online');
-                        block.find('.offline-address-container').hide();
-                        block.find('.offline-address-container textarea').val('');
-                        block.find('.referral-code-input').val('');
-                        block.find('.select-service-btn').prop('disabled', true);
-                        block.find('.selected-addons-container').empty();
-                        block.find('.addon-dropdown option').show();
-                        block.find('.addon-dropdown').val('');
-                        const priceElement = block.find('.final-price');
-                        const basePrice = parseFloat(block.data('base-price'));
-                        priceElement.text(formatCurrency(basePrice));
-
                         Swal.fire({
                             title: translations.success,
                             text: "Layanan berhasil ditambahkan ke keranjang!",
@@ -1030,9 +1031,8 @@
                     @endauth
                 });
 
-                // Handle referral code application - Simple validation without AJAX (tidak berubah)
+                // Handle referral code application
                 $('.apply-referral-btn').on('click', function() {
-                    const serviceId = $(this).data('service-id');
                     const block = $(this).closest('.service-block');
                     const referralCode = block.find('.referral-code-input').val().trim();
 
@@ -1050,7 +1050,8 @@
                             title: translations.success,
                             text: `Kode referral "${referralCode}" akan diterapkan saat checkout.`,
                             icon: 'success',
-                            confirmButtonText: 'OK'
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#0c2c5a'
                         });
 
                         $(this).text('Diterapkan').addClass('btn-success').removeClass('btn-outline-primary');
@@ -1064,7 +1065,6 @@
                     if(serviceId !== 'new-free-consultation') {
                         $(this).find('.hours-input').trigger('change');
                     }
-                    // Tombol free consultation tidak perlu dinonaktifkan di sini karena logika redirect sudah diubah
                 });
 
                 updateCartCount();

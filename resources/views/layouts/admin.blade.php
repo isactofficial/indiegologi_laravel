@@ -33,7 +33,36 @@
             --active-text: var(--primary-color);
             --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
             --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            --sidebar-width: 280px;
+            --sidebar-width: 300px;
+        }
+
+        /* --- Kustomisasi Scrollbar Elegan --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+            border: 2px solid #f1f1f1;
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: rgba(12, 44, 90, 0.2);
         }
 
         body {
@@ -54,15 +83,11 @@
             height: 100vh;
             background-color: var(--bg-sidebar);
             box-shadow: var(--shadow-md);
-            /* Sedikit pertebal shadow */
-            padding-top: 20px;
-            overflow-y: auto;
             flex-shrink: 0;
             position: fixed;
             left: 0;
             top: 0;
             z-index: 1045;
-            /* Naikkan z-index */
             transition: all 0.3s ease;
         }
 
@@ -70,17 +95,77 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            position: relative;
-            padding-bottom: 80px;
+            overflow-y: hidden;
         }
 
-        .sidebar h4 {
+        .sidebar-header {
+            padding: 25px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .sidebar-header .logo {
+            width: 45px;
+            height: 45px;
+            background-color: var(--active-bg);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            border: 1px solid rgba(12, 44, 90, 0.2);
+        }
+
+        .sidebar-header .logo i {
+            font-size: 22px;
+            color: var(--primary-color);
+        }
+
+        .sidebar-header h4 {
+            font-size: 1.25rem;
             font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e9ecef;
-            text-align: center;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .sidebar-scroll {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        /* --- Collapsible Group Styling --- */
+        .nav-group {
+            margin-bottom: 5px;
+        }
+
+        .nav-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-group-header:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-group-header i.chevron {
+            font-size: 0.7rem;
+            transition: transform 0.3s;
+        }
+
+        .nav-group-header[aria-expanded="true"] i.chevron {
+            transform: rotate(180deg);
         }
 
         .sidebar a {
@@ -88,16 +173,19 @@
             display: flex;
             align-items: center;
             color: var(--text-dark);
-            padding: 12px 20px;
-            margin: 8px 15px;
+            padding: 10px 20px;
+            margin: 2px 15px 2px 30px; /* Menjorok ke dalam */
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             border-radius: 10px;
+            font-size: 0.85rem;
         }
 
         .sidebar a i {
-            margin-right: 10px;
-            font-size: 18px;
+            margin-right: 12px;
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
         }
 
         .sidebar a:not(.active):hover {
@@ -113,6 +201,39 @@
             box-shadow: 0 4px 12px rgba(12, 44, 90, 0.3);
         }
 
+        .sidebar-footer {
+            padding: 20px 15px;
+            border-top: 1px solid #f1f1f1;
+            background-color: var(--bg-sidebar);
+            margin-top: auto;
+        }
+
+        .btn-logout {
+            width: 100%;
+            background-color: #fff;
+            border: 1.5px solid #dc3545;
+            padding: 12px;
+            border-radius: 10px;
+            color: #dc3545;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn-logout:hover {
+            background-color: #dc3545;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+        }
+
+        .btn-logout i {
+            margin-right: 8px;
+        }
+
         .main-content-wrapper {
             margin-left: var(--sidebar-width);
             flex-grow: 1;
@@ -126,62 +247,7 @@
             background-color: #FFFFFF;
             border-radius: 15px;
             box-shadow: var(--shadow-sm);
-        }
-
-        .btn-logout {
-            bottom: 20px;
-            left: 15px;
-            right: 15px;
-            position: absolute;
-            width: calc(100% - 30px);
-            background-color: #fff;
-            border: 1px solid var(--primary-color);
-            padding: 12px 20px;
-            border-radius: 10px;
-            color: var(--primary-color);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
-
-        .btn-logout:hover {
-            background-color: rgba(12, 44, 90, 0.05);
-            box-shadow: 0 2px 8px rgba(12, 44, 90, 0.2);
-        }
-
-        .btn-logout i {
-            margin-right: 8px;
-        }
-
-        .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 0 20px;
-        }
-
-        .logo-container .logo {
-            width: 60px;
-            height: 60px;
-            background-color: var(--active-bg);
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-            border: 1px solid rgba(12, 44, 90, 0.2);
-        }
-
-        .logo-container .logo i {
-            font-size: 30px;
-            color: var(--primary-color);
-        }
-
-        .nav-links {
-            flex-grow: 1;
+            min-height: calc(100vh - 40px);
         }
 
         .mobile-header {
@@ -191,6 +257,8 @@
             box-shadow: var(--shadow-sm);
             margin-bottom: 20px;
             border-radius: 10px;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .mobile-header .menu-toggle {
@@ -200,45 +268,12 @@
             color: var(--primary-color);
         }
 
-        /* --- PERUBAHAN CSS DIMULAI DI SINI --- */
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            margin-bottom: 20px;
-        }
-
-        .sidebar-header .logo {
-            width: 50px;
-            height: 50px;
-            background-color: var(--active-bg);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(12, 44, 90, 0.2);
-        }
-
-        .sidebar-header .logo i {
-            font-size: 24px;
-            color: var(--primary-color);
-        }
-
-        .sidebar-header h4 {
-            font-size: 1.2rem;
-            margin: 0;
-            padding: 0;
-            border: none;
-        }
-
         .btn-close-sidebar {
             background: none;
             border: none;
             font-size: 24px;
             color: var(--text-muted);
             display: none;
-            /* Sembunyi di desktop */
         }
 
         .sidebar-overlay {
@@ -250,15 +285,11 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 1040;
             display: none;
-            /* Sembunyi secara default */
         }
 
         .sidebar-overlay.active {
             display: block;
-            /* Tampil saat sidebar aktif */
         }
-
-        /* --- AKHIR PERUBAHAN CSS --- */
 
         @media (max-width: 992px) {
             .sidebar {
@@ -278,22 +309,12 @@
                 display: flex;
             }
 
-            .sidebar-header {
-                display: none;
-            }
-
-            /* Sembunyikan header desktop di mobile */
-            .logo-container {
-                position: relative;
-            }
-
-            /* Tambahkan ini */
             .btn-close-sidebar {
-                /* Tampilkan tombol close di mobile */
                 display: block;
                 position: absolute;
-                top: 5px;
-                right: 15px;
+                top: 20px;
+                right: 20px;
+                z-index: 1050;
             }
         }
     </style>
@@ -301,80 +322,146 @@
 
 <body>
 
-    {{-- [BARU] Tambahkan div untuk overlay --}}
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <div class="wrapper" id="wrapper">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-content">
-                {{-- [DIUBAH] Struktur header dan logo --}}
-                <div class="sidebar-header d-none d-lg-flex">
+                <button class="btn-close-sidebar" id="close-sidebar"><i class="fas fa-times"></i></button>
+
+                <!-- Sidebar Header -->
+                <div class="sidebar-header">
                     <div class="logo"><i class="fas fa-layer-group"></i></div>
-                    <a href="/"><h4>Indiegologi</h4></a>
+                    <a href="/" style="text-decoration: none;"><h4>Indiegologi</h4></a>
+                </div>
+
+                <!-- Nav Links with Collapsible Dropdowns -->
+                <div class="sidebar-scroll">
                     
+                    <!-- Group: Utama -->
+                    <div class="nav-group">
+                        <div class="nav-group-header" data-bs-toggle="collapse" data-bs-target="#groupUtama" aria-expanded="true">
+                            <span>Utama</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="collapse show" id="groupUtama">
+                            <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                                <i class="fas fa-th-large"></i> Dashboard
+                            </a>
+                            <a href="{{ url('/') }}" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Lihat Situs
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Group: Manajemen Konten -->
+                    <div class="nav-group">
+                        <div class="nav-group-header" data-bs-toggle="collapse" data-bs-target="#groupKonten" aria-expanded="true">
+                            <span>Manajemen Konten</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="collapse show" id="groupKonten">
+                            <a href="{{ route('admin.articles.index') }}" class="{{ request()->routeIs('admin.articles.index') ? 'active' : '' }}">
+                                <i class="fas fa-file-alt"></i> Artikel
+                            </a>
+                            <a href="{{ route('admin.sketches.index') }}" class="{{ request()->routeIs('admin.sketches.*') ? 'active' : '' }}">
+                                <i class="fas fa-paint-brush"></i> Painting & Karakter
+                            </a>
+                            <a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
+                                <i class="fas fa-comment-dots"></i> Testimoni
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Group: Layanan & Promo -->
+                    <div class="nav-group">
+                        <div class="nav-group-header" data-bs-toggle="collapse" data-bs-target="#groupLayanan" aria-expanded="true">
+                            <span>Layanan & Promo</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="collapse show" id="groupLayanan">
+                            <a href="{{ route('admin.consultation-services.index') }}" class="{{ request()->routeIs('admin.consultation-services.*') ? 'active' : '' }}">
+                                <i class="fas fa-handshake"></i> Layanan Konsultasi
+                            </a>
+                            <a href="{{ route('admin.free-consultation.types.index') }}" class="{{ request()->routeIs('admin.free-consultation.types.*') ? 'active' : '' }}">
+                                <i class="fas fa-hand-holding-heart"></i> Tipe Konsultasi Gratis
+                            </a>
+                            <a href="{{ route('admin.free-consultation.schedules.index') }}" class="{{ request()->routeIs('admin.free-consultation.schedules.*') ? 'active' : '' }}">
+                                <i class="fas fa-clock"></i> Jadwal Gratis
+                            </a>
+                            <a href="{{ route('admin.referral-codes.index') }}" class="{{ request()->routeIs('admin.referral-codes.*') ? 'active' : '' }}">
+                                <i class="fas fa-tags"></i> Kode Referral
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Group: Pemesanan -->
+                    <div class="nav-group">
+                        <div class="nav-group-header" data-bs-toggle="collapse" data-bs-target="#groupPemesanan" aria-expanded="true">
+                            <span>Pemesanan</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="collapse show" id="groupPemesanan">
+                            <a href="{{ route('admin.consultation-bookings.index') }}" class="{{ request()->routeIs('admin.consultation-bookings.*') ? 'active' : '' }}">
+                                <i class="fas fa-file-invoice-dollar"></i> Booking Layanan
+                            </a>
+                            <a href="{{ route('admin.free-consultation-bookings.index') }}" class="{{ request()->routeIs('admin.free-consultation-bookings.*') ? 'active' : '' }}">
+                                <i class="fas fa-calendar-check"></i> Booking Gratis
+                            </a>
+                            <a href="{{ route('admin.event-bookings.index') }}" class="{{ request()->routeIs('admin.event-bookings.*') ? 'active' : '' }}">
+                                <i class="fas fa-ticket-alt"></i> Booking Event
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Group: Agenda -->
+                    <div class="nav-group">
+                        <div class="nav-group-header" data-bs-toggle="collapse" data-bs-target="#groupAgenda" aria-expanded="true">
+                            <span>Agenda</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="collapse show" id="groupAgenda">
+                            <a href="{{ route('admin.events.index') }}" class="{{ request()->routeIs('admin.events.*') ? 'active' : '' }}">
+                                <i class="fas fa-calendar-alt"></i> Manajemen Event
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Group: Sistem -->
+                    <div class="nav-group">
+                        <div class="nav-group-header" data-bs-toggle="collapse" data-bs-target="#groupSistem" aria-expanded="true">
+                            <span>Sistem</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="collapse show" id="groupSistem">
+                            <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                                <i class="fas fa-user-circle"></i> Profil
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="logo-container d-lg-none">
-                    <div class="logo"><i class="fas fa-layer-group"></i></div>
-                    <h4>Indiegologi</h4>
-                    {{-- [BARU] Tombol close untuk mobile --}}
-                    <button class="btn-close-sidebar" id="close-sidebar"><i class="fas fa-times"></i></button>
+                <!-- Fixed Logout Footer -->
+                <div class="sidebar-footer">
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Keluar Sistem
+                        </button>
+                    </form>
                 </div>
-
-                <div class="nav-links">
-                    <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a href="{{ route('admin.articles.index') }}" class="{{ request()->routeIs('admin.articles.index') ? 'active' : '' }}">
-                        <i class="fas fa-file-alt"></i> Manajemen Artikel
-                    </a>
-                    <a href="{{ route('admin.sketches.index') }}" class="{{ request()->routeIs('admin.sketches.*') ? 'active' : '' }}">
-                        <i class="fas fa-palette"></i> Manajemen Painting
-                    </a>
-                    <a href="{{ route('admin.referral-codes.index') }}" class="{{ request()->routeIs('admin.referral-codes.*') ? 'active' : '' }}">
-                        <i class="fas fa-tags"></i> Manajemen Referral
-                    </a>
-                    <a href="{{ route('admin.free-consultation.types.index') }}" class="{{ request()->routeIs('admin.free-consultation.types.*') ? 'active' : '' }}">
-                        <i class="far fa-handshake"></i> Manajemen Konsultasi Gratis
-                    </a>
-                    <a href="{{ route('admin.free-consultation.schedules.index') }}" class="{{ request()->routeIs('admin.free-consultation.schedules.*') ? 'active' : '' }}">
-                        <i class="fas fa-calendar"></i> Manajemen Jadwal Konsultasi Gratis
-                    </a>
-                    <a href="{{ route('admin.consultation-services.index') }}" class="{{ request()->routeIs('admin.consultation-services.*') ? 'active' : '' }}">
-                        <i class="fas fa-handshake"></i> Manajemen Layanan
-                    </a>
-                    <a href="{{ route('admin.events.index') }}" class="{{ request()->routeIs('admin.events.*') ? 'active' : '' }}">
-                        <i class="fas fa-calendar-alt"></i> Manajemen Events
-                    </a>
-                    <a href="{{ route('admin.event-bookings.index') }}" class="{{ request()->routeIs('admin.event-bookings.*') ? 'active' : '' }}">
-                        <i class="fas fa-ticket-alt"></i> Manajemen Booking Event
-                    </a>
-                    <a href="{{ route('admin.free-consultation-bookings.index') }}" class="{{ request()->routeIs('admin.free-consultation-bookings.*') ? 'active' : '' }}">
-                        <i class="fas fa-calendar-check"></i> Manajemen Booking Konsultasi Gratis
-                    </a>
-                    <a href="{{ route('admin.consultation-bookings.index') }}" class="{{ request()->routeIs('admin.consultation-bookings.*') ? 'active' : '' }}">
-                        <i class="fas fa-calendar-check"></i> Manajemen Booking Konsultasi
-                    </a>
-                    <a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
-                        <i class="fas fa-comments"></i> Manajemen Testimoni
-                    </a>
-                    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
-                        <i class="fas fa-user-circle"></i> Profil
-                    </a>
-                </div>
-
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                </form>
             </div>
         </div>
 
+        <!-- Main Content Area -->
         <div class="main-content-wrapper">
             <div class="mobile-header">
                 <button class="menu-toggle" id="menu-toggle">
                     <i class="fas fa-bars"></i>
                 </button>
+                <div class="fw-bold" style="color: var(--primary-color)">Indiegologi Admin</div>
+                <div style="width: 24px;"></div>
             </div>
 
             <div class="content">
@@ -385,7 +472,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    {{-- [DIUBAH] Skrip JavaScript --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
