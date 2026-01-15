@@ -197,13 +197,8 @@
                                     </span>
                                 </td>
                                 <td class="py-3">
-                                    @php
-                                        // Ambil tanggal booking terawal dari layanan di pivot
-                                        $firstService = optional($booking->services)->filter(fn($s) => !empty($s->pivot->booked_date))
-                                            ->sortBy(fn($s) => $s->pivot->booked_date)
-                                            ->first();
-                                    @endphp
-                                    {{ $firstService && $firstService->pivot->booked_date ? $firstService->pivot->booked_date->format('d M Y') : '-' }}
+                                    
+                                    {{ $booking->created_at->format('d M Y') }}
                                 </td>
                                 {{-- PERBAIKAN: Mengembalikan 4 tombol aksi untuk Desktop --}}
                                 <td class="py-3">

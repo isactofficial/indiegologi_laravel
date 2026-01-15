@@ -21,9 +21,6 @@
                         <a href="{{ route('admin.consultation-bookings.index') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i> Kembali
                         </a>
-                        <a href="#" class="btn btn-primary">
-                            <i class="fas fa-edit me-2"></i> Edit Status
-                        </a>
                     </div>
                 </div>
             </div>
@@ -41,7 +38,7 @@
                             <h5 class="fw-bold mb-3">Informasi Jadwal</h5>
                             @if ($freeConsultationBooking->schedule)
                             <div class="mb-3">
-                                <strong>Tipe Konsultasi:</strong> 
+                                <strong>Konsultasi:</strong> 
                                 {{ $freeConsultationBooking->schedule->type->name ?? 'N/A' }}
                             </div>
                             <div class="mb-3">

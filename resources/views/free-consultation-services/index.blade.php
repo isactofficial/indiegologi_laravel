@@ -39,7 +39,7 @@
                 <div class="d-flex align-items-center">
                     <div class="d-flex justify-content-center align-items-center rounded-circle me-4"
                          style="width: 70px; height: 70px; background-color: rgba(12, 44, 90, 0.1);">
-                        <i class="far fa-handshake fs-2" style="color: var(--theme-primary);"></i>
+                        <i class="fas fa-hand-holding-heart fs-2" style="color: var(--theme-primary);"></i>
                     </div>
                     <div>
                         <h2 class="fs-3 fw-bold mb-1" style="color: var(--theme-primary);">Manajemen Konsultasi Gratis</h2>
@@ -75,6 +75,7 @@
                             <th class="py-3">Nama Layanan</th>
                             <th class="py-3">Status</th>
                             <th class="py-3">Deskripsi</th>
+                            <th class="py-3">Harga Original</th>
                             <th class="py-3">Terakhir Diubah</th>
                             <th class="py-3">Aksi</th>
                         </tr>
@@ -92,6 +93,7 @@
                                     <span class="badge {{ $statusClass }}">{{ ucfirst($type->status) }}</span>
                                 </td>
                                 <td class="py-3 pe-3 w-50">{!! $type->description !!}</td>
+                                <td class="py-3">Rp {{ number_format($type->base_price, 0, ',', '.') }}</td>
                                 <td class="py-3">
                                     <p class="text-muted">{{ $type->updated_at->format('d M Y | H:i') }}</p>
                                 </td>

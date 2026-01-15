@@ -970,7 +970,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(12, 44, 90, 0.8);
+        background-color: #0C2C5A;
         z-index: 1;
     }
 

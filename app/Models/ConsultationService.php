@@ -13,19 +13,19 @@ class ConsultationService extends Model
         'title',
         'price',
         'hourly_price',
-        'base_duration', // <-- TAMBAHKAN INI
+        'base_duration',
         'status',
         'short_description',
         'product_description',
         'thumbnail',
-        'add_ons', // <-- TAMBAHKAN INI
+        'add_ons',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'hourly_price' => 'decimal:2',
-        'base_duration' => 'integer', // <-- TAMBAHKAN INI
-        'add_ons' => 'array', // <-- TAMBAHKAN INI
+        'base_duration' => 'integer',
+        'add_ons' => 'array',
     ];
 
 

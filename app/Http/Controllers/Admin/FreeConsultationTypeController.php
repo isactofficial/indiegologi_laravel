@@ -41,6 +41,7 @@ class FreeConsultationTypeController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'status' => 'required|in:active,inactive',
+            'base_price' => 'nullable|numeric|min:0',
             'description' => 'required|string',
         ]);
 
@@ -84,6 +85,7 @@ class FreeConsultationTypeController extends Controller
           $validated = $request->validate([
             'name' => 'required|string|max:255',
             'status' => 'required|in:active,inactive',
+            'base_price' => 'nullable|numeric|min:0',
             'description' => 'required|string',
         ]);
 

@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        :root {
+            --indiegologi-primary: #0c2c5a;
+        }
 
         .participant-form {
             background: #f8f9fa;
@@ -21,7 +24,7 @@
         }
 
         .participant-form:hover {
-            border-color: #4c51bf;
+            border-color: var(--indiegologi-primary);
             background: #e3f2fd;
         }
         
@@ -34,6 +37,7 @@
             border-bottom: 1px solid #dee2e6;
         }
 
+        /* Gaya original Ringkasan Pesanan */
         .price-summary {
             background: white;
             border-radius: 8px;
@@ -52,18 +56,45 @@
         }
 
         .btn-primary-custom {
-            background-color: #4c51bf;
-            border-color: #4c51bf;
+            background-color: var(--indiegologi-primary);
+            border-color: var(--indiegologi-primary);
             transition: all 0.2s;
             color: white; 
         }
         .btn-primary-custom:hover {
-            background-color: #3f448c;
-            border-color: #3f448c;
+            background-color: #081d3d;
+            border-color: #081d3d;
+            color: white;
         }
         
         .form-section h5 {
             font-weight: 600;
+        }
+
+        /* Detail Tambahan untuk Diskon */
+        .price-discount-tag {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .original-price {
+            font-family: 'Poppins', sans-serif !important;
+            text-decoration: line-through;
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+        .discounted-price {
+            color: #28a745;
+            font-weight: 700;
+        }
+        .percent-badge {
+            font-family: 'Poppins', sans-serif !important;
+            background: #ffc107;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
         }
     </style>
 @endpush
@@ -83,13 +114,10 @@
 
             {{-- Ringkasan Jadwal --}}
             <div class="form-section mb-4 participant-form" id="consultation-summary-box">
-                <h4 id="consultation-title">Memuat Jenis Konsultasi...</h4>
+                <h4 id="consultation-title" style="color: var(--indiegologi-primary);">Memuat Jenis Konsultasi...</h4>
                 <p class="text-muted mb-0" id="schedule-display">
                     <i class="bi bi-calendar-event"></i> Tanggal dan Waktu: Memuat... |
                     <i class="bi bi-check-circle-fill text-success"></i> Sesi: Online/Offline
-                </p>
-                <p class="text-muted mb-0 mt-2 text-primary fw-bold">
-                    <i class="bi bi-tag-fill"></i> Biaya: GRATIS
                 </p>
             </div>
 
@@ -167,7 +195,6 @@
                             <label class="form-label">Alamat untuk Sesi Offline *</label>
                             <textarea class="form-control" name="offline_address" id="offline_address" rows="3" 
                                 placeholder="Masukkan alamat lengkap untuk sesi offline"></textarea>
-                            <div class="invalid-feedback" id="offline-address-error">Alamat wajib diisi untuk sesi Offline.</div>
                         </div>
                     </div>
                 </div>
@@ -186,8 +213,8 @@
 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="button" class="btn btn-secondary me-md-2" onclick="window.location.href='{{ route('front.layanan') }}'">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-primary-custom" id="submitBtn">
-                        <i class="bi bi-check-circle"></i> Konfirmasi Booking Gratis
+                    <button type="submit" class="btn btn-primary-custom" id="submitBtn">
+                        <i class="bi bi-check-circle"></i> Konfirmasi Booking
                     </button>
                 </div>
             </form>
@@ -195,20 +222,33 @@
 
         <div class="col-lg-4">
             <div class="price-summary">
-                <h5>Ringkasan Pesanan</h5>
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Harga per sesi:</span>
-                    <span class="text-success fw-bold">GRATIS</span>
+                <h5 style="color: var(--indiegologi-primary); font-weight: 700;">Ringkasan Pesanan</h5>
+                <hr>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Harga per sesi:</span>
+                    <div class="price-discount-tag text-end">
+                        <span class="original-price" id="summaryOriginalPrice">Rp 0</span>
+                        <span class="discounted-price">FREE</span>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Jumlah peserta:</span>
-                    <span id="summaryParticipantCount">1</span>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Status Promo:</span>
+                    <span class="percent-badge text-white">DISKON 100%</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Jumlah peserta:</span>
+                    <span id="summaryParticipantCount" class="fw-bold">1</span>
                 </div>
                 <div class="price-breakdown mt-3 pt-3 border-top">
                     <div class="d-flex justify-content-between mb-2">
-                        <strong>Total Pembayaran:</strong>
-                        <strong id="totalAmount" class="text-success">Rp 0</strong>
+                        <strong class="text-dark">Total Pembayaran:</strong>
+                        <strong id="totalAmount" class="text-success fs-5">Rp 0</strong>
                     </div>
+                </div>
+                <div class="mt-4 p-2 rounded-2" style="background-color: #e8f5e9; border: 1px solid #c8e6c9;">
+                    <p class="mb-0 small text-success fw-bold text-center">
+                        <i class="bi bi-shield-check"></i> Pendaftaran gratis. Aman tanpa perlu memasukkan data perbankan atau pembayaran apa pun.
+                    </p>
                 </div>
             </div>
         </div>
@@ -217,7 +257,6 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -229,9 +268,17 @@
         const offlineAddressTextarea = document.getElementById('offline_address');
         const participantCount = document.getElementById('participantCount');
         const participantForms = document.getElementById('participantForms');
-        const offlineAddressError = document.getElementById('offline-address-error');
         
         let bookingData = null;
+
+        // Fungsi pembantu format rupiah
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value).replace('IDR', 'Rp');
+        }
         
         // --- Load Data dari LocalStorage ---
         try {
@@ -239,46 +286,37 @@
             if (!dataString) throw new Error('No booking data found.');
             bookingData = JSON.parse(dataString);
             
-            // Isi data tampilan
-            const serviceName = bookingData.service_name ? bookingData.service_name.replace('Pilih Jadwal: ', '') : 'Memuat Jenis Konsultasi...';
+            // Isi data tampilan teks
+            const serviceName = bookingData.service_name ? bookingData.service_name.replace('Konsultasi Gratis: ', '') : 'Memuat Jenis Konsultasi...';
             document.getElementById('consultation-title').textContent = serviceName;
             document.getElementById('schedule-display').innerHTML = 
                 `<i class="bi bi-calendar-event"></i> ${bookingData.schedule_display} | 
                  <i class="bi bi-check-circle-fill text-success"></i> Sesi: ${bookingData.session_type}`;
             
+            // SINKRONISASI HARGA CORET (Base Price)
+            if(bookingData.base_price) {
+                document.getElementById('summaryOriginalPrice').textContent = formatCurrency(bookingData.base_price);
+            }
+
             // Isi hidden inputs
             document.getElementById('free_consultation_type_id').value = bookingData.free_consultation_type_id;
             document.getElementById('free_consultation_schedule_id').value = bookingData.free_consultation_schedule_id;
             document.getElementById('booked_date').value = bookingData.booked_date;
             document.getElementById('booked_time').value = bookingData.booked_time;
 
-            // Set default pilihan sesi dan alamat jika ada
-            sessionTypeSelect.value = bookingData.session_type;
-            // Panggil listener untuk inisialisasi tampilan alamat
+            // Set default pilihan sesi
+            sessionTypeSelect.value = bookingData.session_type || 'Online';
             handleSessionTypeToggle();
-
-            if (bookingData.offline_address) {
-                offlineAddressTextarea.value = bookingData.offline_address;
-            }
 
         } catch (error) {
             console.error("Error loading booking data:", error);
-            Swal.fire({
-                title: 'Error',
-                text: 'Jadwal konsultasi belum dipilih. Kembali ke halaman layanan.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                // Redirect jika data tidak ada
-                window.location.href = '{{ route('front.layanan') }}';
-            });
+            window.location.href = '{{ route('front.layanan') }}';
             return;
         }
         
         // --- Logika Update Price Summary ---
         function updatePriceSummary() {
             const count = parseInt(participantCount.value) || 1;
-            // Update UI elements
             document.getElementById('summaryParticipantCount').textContent = count;
             document.getElementById('totalAmount').textContent = 'Rp 0';
         }
@@ -288,10 +326,8 @@
             const count = parseInt(participantCount.value) || 1;
             participantForms.innerHTML = '';
             
-            // Hanya generate form jika count > 1 (karena peserta 1 adalah data pemesan)
             if (count > 1) {
                 for (let i = 1; i < count; i++) {
-                    // Menggunakan index i untuk participants[i] agar berurut dari 1-4 di array backend
                     const formHtml = `
                         <div class="participant-form">
                             <div class="participant-form-header">
@@ -303,14 +339,12 @@
                                     <div class="mb-3">
                                         <label class="form-label">Nama Lengkap *</label>
                                         <input type="text" name="participants[${i}][full_name]" class="form-control" required placeholder="Masukkan nama lengkap">
-                                        <div class="invalid-feedback">Nama lengkap wajib diisi.</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label">Nomor Telepon *</label>
                                         <input type="tel" name="participants[${i}][phone_number]" class="form-control" required placeholder="Contoh: 081234567890">
-                                        <div class="invalid-feedback">Nomor telepon wajib diisi.</div>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -328,128 +362,55 @@
             updatePriceSummary();
         }
 
-        // Event listener untuk perubahan jumlah peserta
         participantCount.addEventListener('change', generateParticipantForms);
         
-        // --- Logika Session Type Toggle ---
         function handleSessionTypeToggle() {
             if (sessionTypeSelect.value === 'Offline') {
                 offlineAddressContainer.style.display = 'block';
-                // HTML5 required akan ditambahkan/dihapus di client side validation sebelum submit
-                offlineAddressTextarea.setAttribute('required', true); 
-                offlineAddressTextarea.classList.remove('is-invalid');
+                offlineAddressTextarea.setAttribute('required', true);
             } else {
                 offlineAddressContainer.style.display = 'none';
                 offlineAddressTextarea.removeAttribute('required');
-                offlineAddressTextarea.classList.remove('is-invalid');
                 offlineAddressTextarea.value = '';
             }
-            // Update data di LocalStorage agar konsisten
             if(bookingData) {
                 bookingData.session_type = sessionTypeSelect.value;
-                localStorage.setItem(freeBookingDataKey, JSON.stringify(bookingData));
+                document.getElementById('schedule-display').innerHTML = 
+                    `<i class="bi bi-calendar-event"></i> ${bookingData.schedule_display} | 
+                     <i class="bi bi-check-circle-fill text-success"></i> Sesi: ${sessionTypeSelect.value}`;
             }
         }
         sessionTypeSelect.addEventListener('change', handleSessionTypeToggle);
 
-        // --- Fungsi Reset Validasi ---
-        function resetValidationClasses() {
-            form.querySelectorAll('.is-invalid').forEach(el => {
-                el.classList.remove('is-invalid');
-            });
-        }
-
-        // --- Form Submission (Menggunakan AJAX POST) ---
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            resetValidationClasses(); // Bersihkan class error
-
             const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memproses...';
 
-            // 1. Validasi Sesi Offline
-            let isValid = true;
-            if (sessionTypeSelect.value === 'Offline' && !offlineAddressTextarea.value.trim()) {
-                offlineAddressTextarea.classList.add('is-invalid');
-                isValid = false;
-            }
-            
-            // 2. Validasi Peserta Dinamis (Nama & Nomor Telepon)
-            const participantInputs = participantForms.querySelectorAll('input[required]');
-            participantInputs.forEach(input => {
-                if (!input.value.trim()) {
-                    isValid = false;
-                    input.classList.add('is-invalid');
-                }
-            });
-
-            if (!isValid) {
-                 submitBtn.disabled = false;
-                 submitBtn.innerHTML = originalText;
-                 return Swal.fire('Data Belum Lengkap', 'Harap lengkapi semua isian yang wajib diisi (bertanda *).', 'error');
-            }
-
-
-            // 3. Kirim data ke Controller
             fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
-            .then(response => {
-                // Tangani response non-JSON (misalnya error 500)
-                if (!response.ok) {
-                    return response.json().catch(() => {
-                        throw new Error(`Server responded with status ${response.status}.`);
-                    });
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     Swal.fire({
                         title: 'Berhasil!',
                         text: data.message,
                         icon: 'success',
-                        confirmButtonText: 'Selesai'
+                        confirmButtonColor: '#0c2c5a'
                     }).then(() => {
                         localStorage.removeItem(freeBookingDataKey);
                         window.location.href = '{{ route("front.layanan") }}';
                     });
                 } else {
-                    let errorMessage = data.message || 'Terjadi kesalahan saat mengkonfirmasi booking.';
-                    
-                    if (data.errors) {
-                        // Fokus pada error validasi dari server
-                        errorMessage = 'Terjadi kesalahan validasi. Harap periksa kembali form Anda.';
-                        for (const field in data.errors) {
-                            const inputElement = document.querySelector(`[name="${field}"]`);
-                            if (inputElement) {
-                                inputElement.classList.add('is-invalid');
-                            }
-                            // Khusus untuk nested array validation
-                            if (field.startsWith('participants')) {
-                                const parts = field.split('.'); // participants.1.full_name
-                                if (parts.length > 2) {
-                                    const participantIndex = parts[1];
-                                    const fieldName = parts[2];
-                                    const nestedInput = document.querySelector(`input[name="participants[${participantIndex}][${fieldName}]"]`);
-                                    if (nestedInput) {
-                                        nestedInput.classList.add('is-invalid');
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    Swal.fire('Gagal!', errorMessage, 'error');
+                    Swal.fire('Gagal!', data.message || 'Terjadi kesalahan.', 'error');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                Swal.fire('Error!', 'Terjadi kesalahan jaringan atau server saat booking. Detail: ' + error.message, 'error');
+                Swal.fire('Error!', 'Terjadi kesalahan server.', 'error');
             })
             .finally(() => {
                 submitBtn.disabled = false;
@@ -457,9 +418,7 @@
             });
         });
 
-        // Initialize form generation and summary
         generateParticipantForms();
-        updatePriceSummary();
     });
 </script>
 @endpush

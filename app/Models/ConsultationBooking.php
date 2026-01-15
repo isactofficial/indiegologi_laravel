@@ -53,7 +53,7 @@ class ConsultationBooking extends Model
                 'booked_time',
                 'session_type',
                 'offline_address',
-
+                'addons_data',
                 'invoice_id'
             ])
             ->withTimestamps();
