@@ -8,15 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('booking_service', function (Blueprint $table) {
-            $table->integer('hours_booked')->default(1)->after('booked_time');
-        });
+        if (Schema::hasTable('booking_service')) {
+            Schema::table('booking_service', function (Blueprint $table) {
+                $table->integer('hours_booked')->default(1)->after('booked_time');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('booking_service', function (Blueprint $table) {
-            $table->dropColumn('hours_booked');
-        });
+        if (Schema::hasTable('booking_service')) {
+            Schema::table('booking_service', function (Blueprint $table) {
+                $table->dropColumn('hours_booked');
+            });
+        }
     }
 };

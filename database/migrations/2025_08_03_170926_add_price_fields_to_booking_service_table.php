@@ -12,18 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('booking_service', function (Blueprint $table) {
-            $table->decimal('total_price_at_booking', 10, 2)->after('service_id')->nullable();
-            $table->decimal('discount_amount_at_booking', 10, 2)->nullable()->after('total_price_at_booking');
-            $table->decimal('final_price_at_booking', 10, 2)->nullable()->after('discount_amount_at_booking');
-            $table->foreignId('referral_code_id')->nullable()->constrained('referral_codes')->onDelete('set null')->after('final_price_at_booking');
-            // Jika Anda belum memiliki hours_booked, tambahkan di sini juga
-            // $table->integer('hours_booked')->default(1)->after('booked_time');
-            // Jika Anda belum memiliki session_type, tambahkan di sini juga
-            // $table->enum('session_type', ['Online', 'Offline'])->default('Online')->after('booked_time');
-            // Jika Anda belum memiliki offline_address, tambahkan di sini juga
-            // $table->string('offline_address')->nullable()->after('session_type');
-        });
+        if (Schema::hasTable('booking_service')) {
+            Schema::table('booking_service', function (Blueprint $table) {
+                $table->decimal('total_price_at_booking', 10, 2)->after('service_id')->nullable();
+                $table->decimal('discount_amount_at_booking', 10, 2)->nullable()->after('total_price_at_booking');
+                $table->decimal('final_price_at_booking', 10, 2)->nullable()->after('discount_amount_at_booking');
+                $table->foreignId('referral_code_id')->nullable()->constrained('referral_codes')->onDelete('set null')->after('final_price_at_booking');
+            });
+        }
     }
 
     /**
@@ -31,9 +27,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('booking_service', function (Blueprint $table) {
-            $table->dropForeign(['referral_code_id']); // Hapus foreign key terlebih dahulu
-            $table->dropColumn(['total_price_at_booking', 'discount_amount_at_booking', 'final_price_at_booking', 'referral_code_id']);
-        });
+        if (Schema::hasTable('booking_service')) {
+            Schema::table('booking_service', function (Blueprint $table) {
+                $table->dropForeign(['referral_code_id']);
+                $table->dropColumn(['total_price_at_booking', 'discount_amount_at_booking', 'final_price_at_booking', 'referral_code_id']);
+            });
+        }
     }
 };

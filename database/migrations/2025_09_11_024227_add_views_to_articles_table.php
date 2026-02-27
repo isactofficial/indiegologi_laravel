@@ -8,15 +8,19 @@ class AddViewsToArticlesTable extends Migration
 {
     public function up()
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->unsignedBigInteger('views')->default(0)->after('status');
-        });
+        if (! Schema::hasColumn('articles', 'views')) {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->unsignedBigInteger('views')->default(0)->after('status');
+            });
+        }
     }
 
     public function down()
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->dropColumn('views');
-        });
+        if (Schema::hasColumn('articles', 'views')) {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->dropColumn('views');
+            });
+        }
     }
 }

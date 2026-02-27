@@ -8,10 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('tournaments', function (Blueprint $table) {
-            // This line assumes 'title' column exists. It does, based on your model.
-            $table->string('slug')->unique()->after('title');
-        });
+        if (Schema::hasTable('tournaments')) {
+            Schema::table('tournaments', function (Blueprint $table) {
+                $table->string('slug')->unique()->after('title');
+            });
+        }
     }
 
     public function down(): void

@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('user_profiles', function (Blueprint $table) {
-            // Menambahkan kolom 'description' sebagai tipe TEXT, nullable, setelah kolom 'social_media'
-            $table->text('description')->nullable()->after('social_media');
-        });
+        if (Schema::hasTable('user_profiles')) {
+            Schema::table('user_profiles', function (Blueprint $table) {
+                $table->text('description')->nullable()->after('social_media');
+            });
+        }
     }
 
     /**
@@ -22,10 +23,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('user_profiles', function (Blueprint $table) {
-            // Menghapus kolom 'description' jika migrasi di-rollback
-            $table->dropColumn('description');
-        });
+        if (Schema::hasTable('user_profiles')) {
+            Schema::table('user_profiles', function (Blueprint $table) {
+                $table->dropColumn('description');
+            });
+        }
     }
 };
 

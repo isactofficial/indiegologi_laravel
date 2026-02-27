@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tournament_registrations', function (Blueprint $table) {
-            // Tambahkan kolom user_id, unsigned big integer karena akan menjadi foreign key
-            // nullable() jika pendaftaran bisa tanpa user login (tidak disarankan untuk kasus ini)
-            // after('team_id') untuk posisi kolom yang logis
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->after('team_id');
-        });
+        if (Schema::hasTable('tournament_registrations')) {
+            Schema::table('tournament_registrations', function (Blueprint $table) {
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->after('team_id');
+            });
+        }
     }
 
     /**
@@ -24,11 +23,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tournament_registrations', function (Blueprint $table) {
-            // Hapus foreign key constraint terlebih dahulu
-            $table->dropForeign(['user_id']);
-            // Kemudian hapus kolom
-            $table->dropColumn('user_id');
-        });
+        if (Schema::hasTable('tournament_registrations')) {
+            Schema::table('tournament_registrations', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+                $table->dropColumn('user_id');
+            });
+        }
     }
 };

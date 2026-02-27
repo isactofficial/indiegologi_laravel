@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('booking_service', function (Blueprint $table) {
-            // Tambahkan kolom ini
-            $table->json('addons_data')->nullable()->after('offline_address');
-        });
+        if (Schema::hasTable('booking_service')) {
+            Schema::table('booking_service', function (Blueprint $table) {
+                $table->json('addons_data')->nullable()->after('offline_address');
+            });
+        }
     }
 
     /**
@@ -22,9 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('booking_service', function (Blueprint $table) {
-            // Untuk rollback jika terjadi kesalahan
-            $table->dropColumn('addons_data');
-        });
+        if (Schema::hasTable('booking_service')) {
+            Schema::table('booking_service', function (Blueprint $table) {
+                $table->dropColumn('addons_data');
+            });
+        }
     }
 };

@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('galleries', function (Blueprint $table) {
-            // Menambahkan kolom 'slug' dengan tipe string, harus unik, dan ditempatkan setelah kolom 'title'
-            $table->string('slug')->unique()->after('title');
-        });
+        if (Schema::hasTable('galleries')) {
+            Schema::table('galleries', function (Blueprint $table) {
+                $table->string('slug')->unique()->after('title');
+            });
+        }
     }
 
     /**
@@ -22,9 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('galleries', function (Blueprint $table) {
-            // Menghapus kolom 'slug' jika migrasi di-rollback
-            $table->dropColumn('slug');
-        });
+        if (Schema::hasTable('galleries')) {
+            Schema::table('galleries', function (Blueprint $table) {
+                $table->dropColumn('slug');
+            });
+        }
     }
 };

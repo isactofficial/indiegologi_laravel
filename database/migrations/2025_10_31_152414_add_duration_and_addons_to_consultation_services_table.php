@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('consultation_services', function (Blueprint $table) {
-            $table->integer('base_duration')->nullable()->after('hourly_price'); // <-- UNTUK DURASI DASAR
-        });
+        if (Schema::hasTable('consultation_services')) {
+            Schema::table('consultation_services', function (Blueprint $table) {
+                $table->integer('base_duration')->nullable()->after('hourly_price');
+            });
+        }
     }
 
     /**
@@ -25,8 +27,12 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('consultation_services', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasTable('consultation_services')) {
+            Schema::table('consultation_services', function (Blueprint $table) {
+                if (Schema::hasColumn('consultation_services', 'base_duration')) {
+                    $table->dropColumn('base_duration');
+                }
+            });
+        }
     }
 };

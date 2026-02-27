@@ -10,9 +10,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('consultation_services', function (Blueprint $table) {
-            $table->decimal('hourly_price', 10, 2)->nullable()->after('price');
-        });
+        if (Schema::hasTable('consultation_services')) {
+            Schema::table('consultation_services', function (Blueprint $table) {
+                $table->decimal('hourly_price', 10, 2)->nullable()->after('price');
+            });
+        }
     }
 
     /**
@@ -20,8 +22,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('consultation_services', function (Blueprint $table) {
-            $table->dropColumn('hourly_price');
-        });
+        if (Schema::hasTable('consultation_services')) {
+            Schema::table('consultation_services', function (Blueprint $table) {
+                $table->dropColumn('hourly_price');
+            });
+        }
     }
 };

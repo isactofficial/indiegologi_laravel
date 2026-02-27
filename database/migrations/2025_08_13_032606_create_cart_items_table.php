@@ -13,12 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
+        if (! Schema::hasTable('consultation_services')) {
+            return;
+        }
+
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('service_id')->constrained('consultation_services')->onDelete('cascade');
-            $table->integer('quantity')->default(1); // Jika sebuah layanan bisa dipesan > 1 kali
-            $table->decimal('price', 10, 2); // Harga layanan saat ditambahkan
+            $table->integer('quantity')->default(1);
+            $table->decimal('price', 10, 2);
             $table->timestamps();
         });
     }

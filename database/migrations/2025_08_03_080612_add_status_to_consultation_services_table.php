@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('consultation_services', function (Blueprint $table) {
-            $table->string('status')->default('draft')->after('short_description');
-        });
+        if (Schema::hasTable('consultation_services')) {
+            Schema::table('consultation_services', function (Blueprint $table) {
+                $table->string('status')->default('draft')->after('short_description');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('consultation_services', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        if (Schema::hasTable('consultation_services')) {
+            Schema::table('consultation_services', function (Blueprint $table) {
+                $table->dropColumn('status');
+            });
+        }
     }
 };

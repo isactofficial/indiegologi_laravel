@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('user_profiles', function (Blueprint $table) {
-            // Tambahkan kolom zodiac setelah kolom birthdate
-            $table->string('zodiac', 20)->nullable()->after('birthdate');
-            // Tambahkan kolom shio_element setelah kolom zodiac
-            $table->string('shio_element', 50)->nullable()->after('zodiac');
-        });
+        if (Schema::hasTable('user_profiles')) {
+            Schema::table('user_profiles', function (Blueprint $table) {
+                $table->string('zodiac', 20)->nullable()->after('birthdate');
+                $table->string('shio_element', 50)->nullable()->after('zodiac');
+            });
+        }
     }
 
     /**
@@ -28,9 +28,11 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('user_profiles', function (Blueprint $table) {
-            $table->dropColumn('zodiac');
-            $table->dropColumn('shio_element');
-        });
+        if (Schema::hasTable('user_profiles')) {
+            Schema::table('user_profiles', function (Blueprint $table) {
+                $table->dropColumn('zodiac');
+                $table->dropColumn('shio_element');
+            });
+        }
     }
 };

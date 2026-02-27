@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('consultation_services')) {
+            return;
+        }
+
         // Ubah kolom 'status' menjadi ENUM
         Schema::table('consultation_services', function (Blueprint $table) {
             $table->dropColumn('status');
@@ -26,6 +30,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('consultation_services')) {
+            return;
+        }
+
         // Balikkan kolom 'status' ke tipe string (opsional, tergantung kebutuhan)
         Schema::table('consultation_services', function (Blueprint $table) {
             $table->dropColumn('status');

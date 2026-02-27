@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('consultation_services', function (Blueprint $table) {
-            $table->text('add_ons')->nullable()->after('thumbnail'); // Menambah kolom 'add_ons'
-        });
+        if (Schema::hasTable('consultation_services')) {
+            Schema::table('consultation_services', function (Blueprint $table) {
+                $table->text('add_ons')->nullable()->after('thumbnail');
+            });
+        }
     }
 
     /**
@@ -25,8 +27,12 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('consultation_services', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasTable('consultation_services')) {
+            Schema::table('consultation_services', function (Blueprint $table) {
+                if (Schema::hasColumn('consultation_services', 'add_ons')) {
+                    $table->dropColumn('add_ons');
+                }
+            });
+        }
     }
 };
