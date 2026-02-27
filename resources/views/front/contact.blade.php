@@ -10,15 +10,8 @@
 
 <section class="py-5 pt-lg-0 mt-5">
     <div class="container">
-        {{-- Tombol kembali dengan animasi fade-right --}}
-        <div class="d-flex justify-content-between pt-5" data-aos="fade-right">
-            <a href="{{ route('front.index') }}" class="btn px-4 py-2"
-                style="background-color: #D6E4FF; color: #0C2C5A; border-radius: 8px;">
-                <i class="fas fa-arrow-left me-2"></i> Kembali
-            </a>
-        </div>
         {{-- Header dengan animasi fade-down --}}
-        <div class="text-center mb-5 p-4 rounded-4" data-aos="fade-down">
+        <div class="text-center mb-5 p-4 rounded-4 pt-5" data-aos="fade-down">
             <h1 class="fw-bold mb-3 article-text" style="color: #0C2C5A;">Mari Terhubung dengan Indiegologi</h1>
             <p class="text-muted w-75 mx-auto article-text">Punya pertanyaan, ide kolaborasi, atau ingin berbagi cerita? Tim Indiegologi siap melayani Anda. Kami adalah ruang aman untuk eksplorasi diri, dengan visi holistik untuk kesejahteraan mental Anda.</p>
         </div>
@@ -96,7 +89,6 @@
                             </div>
                         </a>
 
-                        {{-- ===== PERUBAHAN DI SINI ===== --}}
                         <a href="https://wa.me/6282220955595" target="_blank" class="d-flex align-items-center text-decoration-none p-3 rounded-3 contact-link">
                             <div class="me-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center" style="background-color: #D6E4FF; width: 50px; height: 50px;">
@@ -131,17 +123,15 @@
 @endsection
 
 @push('styles')
-{{-- STYLE UNTUK ANIMASI AOS --}}
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
 <style>
-/* Custom hover effects */
 .hover-link:hover {
     opacity: 1 !important;
     transition: all 0.3s ease;
 }
 .contact-link:hover {
-    background-color: #f8f9fa; /* Light grey for a subtle hover */
+    background-color: #f8f9fa;
 }
 .hover-card:hover {
     transform: translateY(-3px);
@@ -156,7 +146,6 @@
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(12, 44, 90, 0.3);
 }
-/* Smooth transitions */
 .form-control, .btn, a {
     transition: all 0.3s ease;
 }
@@ -164,7 +153,6 @@
 @endpush
 
 @push('scripts')
-{{-- SCRIPT UNTUK ANIMASI AOS --}}
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
     AOS.init({
