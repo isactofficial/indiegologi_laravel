@@ -444,16 +444,6 @@ class FrontController extends Controller
             return response()->json(['success' => false, 'message' => 'Anda harus login untuk menambahkan layanan.'], 401);
         }
 
-        // ✅ VALIDASI: Cek apakah sudah ada item di keranjang
-        $existingCartCount = CartItem::where('user_id', Auth::id())->count();
-        
-        if ($existingCartCount > 0) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'Keranjang Anda sudah berisi pesanan. Harap selesaikan pembayaran terlebih dahulu sebelum menambahkan layanan baru.'
-            ], 422);
-        }
-
         // Handle new free consultation system
         if ($request->input('consultation_type') === 'free-consultation-new') {
             $validator = Validator::make($request->all(), [
@@ -659,14 +649,14 @@ class FrontController extends Controller
                 [
                     'user_id' => $user->id,
                     'service_id' => $service->id,
+                    'booked_date' => $validatedData['booked_date'],
+                    'booked_time' => $validatedData['booked_time'],
                 ],
                 [
                     'price' => $service->price,
                     'hourly_price' => $service->hourly_price ?? 0,
                     'quantity' => 1,
                     'hours' => (int)$validatedData['hours'],
-                    'booked_date' => $validatedData['booked_date'],
-                    'booked_time' => $validatedData['booked_time'],
                     'session_type' => $validatedData['session_type'],
                     'offline_address' => $validatedData['offline_address'] ?? null,
                     'contact_preference' => $validatedData['contact_preference'],
@@ -754,14 +744,14 @@ class FrontController extends Controller
                                 [
                                     'user_id' => $user->id,
                                     'service_id' => $service->id,
+                                    'booked_date' => $itemData['booked_date'],
+                                    'booked_time' => $itemData['booked_time'],
                                 ],
                                 [
                                     'price' => $service->price,
                                     'hourly_price' => $service->hourly_price ?? 0,
                                     'quantity' => 1,
                                     'hours' => (int)($itemData['hours'] ?? 1),
-                                    'booked_date' => $itemData['booked_date'],
-                                    'booked_time' => $itemData['booked_time'],
                                     'session_type' => $itemData['session_type'],
                                     'offline_address' => $itemData['offline_address'] ?? null,
                                     'contact_preference' => $itemData['contact_preference'],
@@ -860,16 +850,28 @@ class FrontController extends Controller
         $grandTotal = $subtotal - $totalDiscount;
         $totalToPayNow = $grandTotal; // Default to full payment
 
+        // Group cart items for grouped layout
+        $groupedItems = $cartItems->groupBy(function ($item) {
+            if ($item->isEvent()) {
+                return 'event_' . $item->event_id;
+            } elseif ($item->isNewFreeConsultation()) {
+                return 'free_' . $item->free_consultation_type_id;
+            } elseif ($item->isLegacyFreeConsultation()) {
+                return 'legacy_free';
+            } else {
+                return 'service_' . ($item->service_id ?? 'unknown');
+            }
+        });
+
         Log::info('Cart view loaded', [
             'user_id' => $user->id,
             'item_count' => $cartItems->count(),
-            'subtotal' => $subtotal,
-            'total_discount' => $totalDiscount,
-            'grand_total' => $grandTotal
+            'grouped_count' => $groupedItems->count()
         ]);
 
         return view('front.cart.index', [
-            'cartItems' => $cartItems,
+            'cartItems' => $cartItems, // Keep for full list if needed
+            'groupedItems' => $groupedItems, // Added for grouped display
             'subtotal' => number_format($subtotal, 0, ',', '.'),
             'totalDiscount' => number_format($totalDiscount, 0, ',', '.'),
             'grandTotal' => number_format($grandTotal, 0, ',', '.'),

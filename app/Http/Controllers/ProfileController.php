@@ -249,10 +249,13 @@ class ProfileController extends Controller
             'name' => 'required|string|max:255',
             'birthdate' => 'nullable|date',
             'gender' => 'nullable|string|in:male,female,other',
-            'phone_number' => 'nullable|string|max:20',
+            'phone_number' => 'nullable|numeric|digits_between:8,15',
             'social_media' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:500',
             'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'phone_number.numeric' => 'Nomor telepon harus berupa angka.',
+            'phone_number.digits_between' => 'Nomor telepon harus terdiri dari 8 hingga 15 digit.',
         ]);
 
         // Update user basic info

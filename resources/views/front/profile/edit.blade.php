@@ -267,8 +267,13 @@
             <!-- Phone Number -->
             <div class="mb-3">
                 <label for="phone_number" class="form-label">Nomor Telepon</label>
-                <input type="text" name="phone_number" id="phone_number"
-                    value="{{ old('phone_number', optional($user->profile)->phone_number ?? '') }}" class="form-control">
+                <input type="tel" name="phone_number" id="phone_number"
+                    value="{{ old('phone_number', optional($user->profile)->phone_number ?? '') }}" 
+                    class="form-control"
+                    pattern="[0-9]*"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                    placeholder="Contoh: 08123456789">
+                <small class="text-muted">Hanya masukkan angka saja.</small>
             </div>
 
             <!-- Social Media -->
