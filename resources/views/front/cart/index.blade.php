@@ -335,17 +335,17 @@
                     </div>
 
                     {{-- Cart Items Loop --}}
-                    @foreach ($cartItems as $item)
-                    {{-- 
-                      =================================================
-                      ⬇️ PERUBAHAN KRITIS 1: Tambahkan data-item-type ⬇️
-                      =================================================
-                    --}}
+                    @foreach ($groupedItems as $groupKey => $group)
+                    @php 
+                        $item = $group->first(); 
+                        $groupTotalFinal = $group->sum(fn($i) => $i->calculateFinalPrice());
+                        $groupTotalOriginal = $group->sum(fn($i) => $i->calculateOriginalSubtotal());
+                        $groupIds = $group->pluck('id')->implode(',');
+                    @endphp
                     <div class="card mb-3 cart-item-card" 
                          data-service-id="{{ $item->service_id }}" 
                          data-aos="fade-right" 
                          data-aos-delay="{{ $loop->index * 100 }}"
-                         {{-- INI YANG DITAMBAHKAN --}}
                          data-item-type="{{ $item->isEvent() ? 'event' : 'service' }}"
                          >
                         <div class="card-body p-4">
@@ -354,18 +354,11 @@
                                 <div class="col-12 col-md-7 mb-4 mb-md-0">
                                     <div class="d-flex align-items-start">
                                         <div class="form-check me-3 pt-1">
-                                            {{-- 
-                                              =================================================
-                                              ⬇️ PERUBAHAN KRITIS 2: Modifikasi Checkbox ⬇️
-                                              =================================================
-                                            --}}
                                             <input class="form-check-input item-checkbox" type="checkbox"
-                                                {{-- HAPUS: name="selected_items[]" --}}
-                                                value="{{ $item->id }}"
-                                                id="item-{{ $item->id }}"
+                                                value="{{ $groupIds }}"
+                                                id="group-{{ $groupKey }}"
                                                 checked
-                                                {{-- TAMBAHKAN: data-id agar bisa diambil JS --}}
-                                                data-id="{{ $item->id }}"
+                                                data-id="{{ $groupIds }}"
                                                 >
                                         </div>
 
@@ -376,7 +369,6 @@
                                         </div>
 
                                         <div class="flex-grow-1">
-                                            {{-- ... (sisa kode item title tidak berubah) ... --}}
                                             <h5 class="fw-bold mb-2 fs-6" style="color: var(--brand-text);">
                                                 {{ $item->getServiceTitle() }}
                                                 @if($item->isFreeConsultation())
@@ -385,130 +377,71 @@
                                                 @if($item->isEvent())
                                                 <span class="badge bg-primary ms-2">EVENT</span>
                                                 @endif
+                                                @if($group->count() > 1)
+                                                <span class="badge bg-info ms-2">{{ $group->count() }} Sesi</span>
+                                                @endif
                                             </h5>
-                                            {{-- ... (sisa kode item details tidak berubah) ... --}}
-                                            <ul class="item-details-list">
-                                                <li><i class="bi bi-calendar-check"></i>{{ $item->booked_date->format('d M Y') }}, {{ $item->booked_time }}</li>
-                                                <li><i class="bi bi-camera-video"></i>{{ $item->session_type }} & {{ $item->contact_preference === 'chat_only' ? 'Chat' : 'Chat & Call' }}</li>
-                                                @if($item->offline_address)
-                                                <li><i class="bi bi-geo-alt"></i>{{ $item->offline_address }}</li>
-                                                @endif
-                                                @if($item->isEvent())
-                                                <li><i class="bi bi-people"></i>{{ $item->participant_count }} Peserta</li>
-                                                @endif
-                                            </ul>
+                                            
+                                            <div class="group-schedules mt-3">
+                                                <p class="small text-muted mb-1 fw-bold">Jadwal Sesi:</p>
+                                                @foreach($group as $session)
+                                                <ul class="item-details-list {{ !$loop->first ? 'mt-2 pt-2 border-top' : '' }}">
+                                                    <li>
+                                                        <i class="bi bi-calendar-check"></i>
+                                                        {{ $session->booked_date->format('d M Y') }}, {{ $session->booked_time }}
+                                                        @if($group->count() > 1)
+                                                        <button type="button" class="btn btn-link btn-sm text-danger p-0 ms-2 remove-individual-btn" data-id="{{ $session->id }}" title="Hapus sesi ini">
+                                                            <i class="bi bi-x-circle"></i>
+                                                        </button>
+                                                        @endif
+                                                    </li>
+                                                    <li><i class="bi bi-camera-video"></i>{{ $session->session_type }} & {{ $session->contact_preference === 'chat_only' ? 'Chat' : 'Chat & Call' }}</li>
+                                                    @if($session->offline_address)
+                                                    <li><i class="bi bi-geo-alt"></i>{{ $session->offline_address }}</li>
+                                                    @endif
+                                                    @if($session->isEvent())
+                                                    <li><i class="bi bi-people"></i>{{ $session->participant_count }} Peserta</li>
+                                                    @endif
+                                                </ul>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {{-- Pricing Column - SINGLE UNIFIED SECTION --}}
+                                {{-- Pricing Column --}}
                                 <div class="col-12 col-md-5 border-md-start ps-md-4 mt-4 mt-md-0 pt-4 pt-md-0 border-top border-md-0">
-                                    {{-- ... (sisa kode pricing column tidak berubah) ... --}}
                                     <div class="pricing-section">
-                                        @if($item->isFreeConsultation())
-                                        {{-- Free consultation pricing --}}
                                         <div>
                                             <ul class="list-group list-group-flush price-details-list small">
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Harga Dasar:</span>
-                                                    <span class="fw-bold" style="color: var(--brand-primary);">GRATIS</span>
+                                                    <span class="text-muted">Total Subtotal ({{ $group->count() }} Sesi):</span>
+                                                    <span class="text-muted">Rp {{ number_format($groupTotalOriginal, 0, ',', '.') }}</span>
                                                 </li>
+                                                @php $groupDiscount = $groupTotalOriginal - $groupTotalFinal; @endphp
+                                                @if ($groupDiscount > 0)
                                                 <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Durasi:</span>
-                                                    <span class="text-muted">1 Jam</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Sesi:</span>
-                                                    <span class="text-muted">{{ $item->session_type }}</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Subtotal:</span>
-                                                    <span style="color: var(--brand-primary);">Rp 0</span>
-                                                </li>
-                                            </ul>
-
-                                            <div class="free-consultation-spacer"></div>
-
-                                            <hr class="my-2" style="border-color: var(--brand-border);">
-                                            <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                <span>Total Item:</span>
-                                                <span>Rp 0</span>
-                                            </p>
-                                        </div>
-
-                                        @elseif($item->isEvent())
-                                        {{-- Event pricing --}}
-                                        <div>
-                                            <ul class="list-group list-group-flush price-details-list small">
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Harga per peserta:</span>
-                                                    <span class="text-muted">Rp {{ number_format($item->original_price, 0, ',', '.') }}</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Jumlah peserta:</span>
-                                                    <span class="text-muted">{{ $item->participant_count }}</span>
-                                                </li>
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Subtotal:</span>
-                                                    <span class="text-muted">Rp {{ number_format($item->calculateOriginalSubtotal(), 0, ',', '.') }}</span>
-                                                </li>
-                                                @if ($item->getDiscountAmount() > 0)
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span style="color: var(--brand-danger);">Diskon @if($item->referralCode)({{ $item->referralCode->discount_percentage }}%)@endif:</span>
-                                                    <span style="color: var(--brand-danger);">- Rp {{ number_format($item->getDiscountAmount(), 0, ',', '.') }}</span>
+                                                    <span style="color: var(--brand-danger);">Total Diskon:</span>
+                                                    <span style="color: var(--brand-danger);">- Rp {{ number_format($groupDiscount, 0, ',', '.') }}</span>
                                                 </li>
                                                 @endif
                                             </ul>
                                             <hr class="my-2" style="border-color: var(--brand-border);">
                                             <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
                                                 <span>Total Item:</span>
-                                                <span>Rp {{ number_format($item->calculateFinalPrice(), 0, ',', '.') }}</span>
+                                                <span>Rp {{ number_format($groupTotalFinal, 0, ',', '.') }}</span>
                                             </p>
                                         </div>
-
-                                        @else
-                                        {{-- Regular service pricing --}}
-                                        <div>
-                                            <ul class="list-group list-group-flush price-details-list small">
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Harga Dasar:</span>
-                                                    <span class="text-muted">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
-                                                </li>
-                                                @if ($item->hours > 0)
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Per Jam ({{ $item->hours }} jam):</span>
-                                                    <span class="text-muted">Rp {{ number_format($item->hourly_price * $item->hours, 0, ',', '.') }}</span>
-                                                </li>
-                                                @endif
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span class="text-muted">Subtotal:</span>
-                                                    <span class="text-muted">Rp {{ number_format($item->calculateOriginalSubtotal(), 0, ',', '.') }}</span>
-                                                </li>
-                                                @php $itemDiscount = $item->calculateOriginalSubtotal() - $item->calculateFinalPrice(); @endphp
-                                                @if ($itemDiscount > 0)
-                                                <li class="list-group-item d-flex justify-content-between">
-                                                    <span style="color: var(--brand-danger);">Diskon:</span>
-                                                    <span style="color: var(--brand-danger);">- Rp {{ number_format($itemDiscount, 0, ',', '.') }}</span>
-                                                </li>
-                                                @endif
-                                            </ul>
-                                            <hr class="my-2" style="border-color: var(--brand-border);">
-                                            <p class="fw-bold mb-3 d-flex justify-content-between fs-6" style="color: var(--brand-primary);">
-                                                <span>Total Item:</span>
-                                                <span>Rp {{ number_format($item->calculateFinalPrice(), 0, ',', '.') }}</span>
-                                            </p>
-                                        </div>
-                                        @endif
 
                                         {{-- Action Buttons --}}
                                         <div class="cart-item-actions">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 @if(!$item->isFreeConsultation())
-                                                <a href="{{ $item->isEvent() ? route('front.events.index') : route('front.layanan') }}" class="btn btn-brand-outline">Pesan Lagi</a>
+                                                <a href="{{ $item->isEvent() ? route('front.events.index') : route('front.layanan') }}" class="btn btn-brand-outline">Tambah Sesi</a>
                                                 @else
                                                 <span class="text-muted small">Konsultasi Gratis</span>
                                                 @endif
-                                                <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $item->id }}" title="Hapus item">
+                                                <button type="button" class="btn btn-link p-0 remove-btn" data-id="{{ $groupIds }}" title="Hapus semua sesi">
                                                     <i class="bi bi-trash3-fill fs-5"></i>
                                                 </button>
                                             </div>
@@ -675,7 +608,12 @@
                 
                 // Pastikan item ini sesuai dengan filter yang aktif
                 if (itemCard.data('item-type') === activeFilter) {
-                    selectedIds.push($(this).val()); // Ambil 'value'
+                    const val = $(this).val();
+                     if (val.includes(',')) {
+                        val.split(',').forEach(id => selectedIds.push(id));
+                    } else {
+                        selectedIds.push(val);
+                    }
                 }
             });
 
@@ -709,7 +647,12 @@
             $('.item-checkbox:checked').each(function() {
                 const itemCard = $(this).closest('.cart-item-card');
                 if (itemCard.data('item-type') === activeFilter) {
-                    selectedIds.push($(this).val());
+                    const val = $(this).val();
+                    if (val.includes(',')) {
+                        val.split(',').forEach(id => selectedIds.push(id));
+                    } else {
+                        selectedIds.push(val);
+                    }
                 }
             });
             
@@ -779,11 +722,15 @@
         }
 
         // KODE ASLI: Tombol Hapus (Ini penting untuk dipertahankan)
-        $('.remove-btn').on('click', function() {
+        $(document).on('click', '.remove-btn, .remove-individual-btn', function() {
             let itemId = $(this).data('id');
+            let isIndividual = $(this).hasClass('remove-individual-btn');
+            
             Swal.fire({
-                title: 'Hapus Item?',
-                text: "Apakah Anda yakin ingin menghapus item ini dari keranjang?",
+                title: isIndividual ? 'Hapus Sesi?' : 'Hapus Semua Sesi?',
+                text: isIndividual 
+                    ? "Apakah Anda yakin ingin menghapus sesi ini?" 
+                    : "Apakah Anda yakin ingin menghapus semua sesi untuk layanan ini dari keranjang?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',

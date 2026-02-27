@@ -141,7 +141,7 @@ class CheckoutController extends Controller
                         }
                     }
 
-                    $serviceKey = 'event-' . $item->event_id;
+                    $serviceKey = 'event-' . $item->id;
 
                     $servicesToAttach[$serviceKey] = [
                         'booking_id' => null,
@@ -164,8 +164,9 @@ class CheckoutController extends Controller
                     ];
 
                     // Track event for participant count update and booking creation
-                    $eventsToUpdate[$item->event_id] = [
+                    $eventsToUpdate[$item->id] = [
                         'event' => $item->event,
+                        'event_id' => $item->event_id,
                         'participant_count' => $participantCount,
                         'cart_item_id' => $item->id,
                         'subtotal' => $itemSubtotal,
@@ -175,7 +176,7 @@ class CheckoutController extends Controller
                     ];
 
                     // Save participant data for later
-                    $eventParticipantsData[$item->event_id] = $item->participantData;
+                    $eventParticipantsData[$item->id] = $item->participantData;
 
                     Log::info('Event processed in checkout', [
                         'cart_item_id' => $item->id,
@@ -276,7 +277,9 @@ class CheckoutController extends Controller
                     }
                 }
 
-                $servicesToAttach[$item->service_id] = [
+                $serviceKey = 'service-' . $item->id;
+
+                $servicesToAttach[$serviceKey] = [
                     'booking_id' => null,
                     'service_id' => $item->service_id,
                     'total_price_at_booking'     => $itemPrice,
@@ -367,9 +370,10 @@ class CheckoutController extends Controller
 
             // NEW: Create event bookings and participants (AFTER invoice and booking are created)
             if (!empty($eventsToUpdate)) {
-                foreach ($eventsToUpdate as $eventId => $data) {
+                foreach ($eventsToUpdate as $currentKey => $data) {
                     try {
                         $event = $data['event'];
+                        $eventId = $data['event_id'];
                         $participantCount = $data['participant_count'];
                         $cartItemId = $data['cart_item_id'];
 
@@ -396,8 +400,8 @@ class CheckoutController extends Controller
                         ]);
 
                         // Save individual participants to event_participants table
-                        if (isset($eventParticipantsData[$eventId])) {
-                            foreach ($eventParticipantsData[$eventId] as $participant) {
+                        if (isset($eventParticipantsData[$currentKey])) {
+                            foreach ($eventParticipantsData[$currentKey] as $participant) {
                                 EventParticipant::create([
                                     'event_booking_id' => $eventBooking->id,
                                     'full_name' => $participant->full_name,
