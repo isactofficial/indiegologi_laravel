@@ -20,7 +20,14 @@ class CommentController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->back()->with('success', 'Komentar berhasil ditambahkan');
+        return response()->json([
+            'success' => true,
+            'comment' => [
+                'id'        => $comment->id,
+                'content'   => $comment->content,
+                'user_name' => Auth::user()->name,
+            ]
+        ]);
     }
 
     public function update(Request $request, Comment $comment)
@@ -31,19 +38,16 @@ class CommentController extends Controller
             'content' => 'required|string|max:1000',
         ]);
 
-        $comment->update([
-            'content' => $request->content,
-        ]);
+        $comment->update(['content' => $request->content]);
 
-        return redirect()->back()->with('success', 'Komentar berhasil diperbarui');
+        return response()->json(['success' => true]);
     }
 
     public function destroy(Comment $comment)
     {
         $this->authorize('delete', $comment);
-
         $comment->delete();
 
-        return redirect()->back()->with('success', 'Komentar berhasil dihapus');
+        return response()->json(['success' => true]);
     }
-} 
+}

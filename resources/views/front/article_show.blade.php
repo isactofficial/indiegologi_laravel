@@ -2,11 +2,9 @@
 
 @section('content')
 
-{{-- The main container now has a fade-in animation --}}
 <div class="container py-5 mt-5 pt-lg-0" data-aos="fade-in">
     <div class="row justify-content-center">
         <div class="col-lg-12 pt-5">
-            {{-- Back button with a fade-right animation --}}
             <div class="d-flex justify-content-between mb-4 mt-4" data-aos="fade-right">
                 <a href="{{ route('front.articles') }}" class="btn px-4 py-2" style="background-color: #e3e9f4; color: #0C2C5A; border-radius: 8px;">
                     <i class="fas fa-arrow-left me-2"></i>Kembali
@@ -14,7 +12,6 @@
             </div>
 
             <div class="mb-4">
-                {{-- Meta info (badge and date) with fade-down animation --}}
                 <div class="d-flex justify-content-between align-items-start mb-3" data-aos="fade-down">
                     <span class="badge rounded-pill px-3 py-2"
                           style="background-color: {{ $article->status == 'Published' ? '#D6E4FF' : '#f5f5f5' }};
@@ -26,10 +23,8 @@
                     </div>
                 </div>
 
-                {{-- Article title with fade-down animation --}}
                 <h1 class="fw-bold mb-3 article-text" style="color: #0C2C5A;" data-aos="fade-down" data-aos-delay="100">{{ $article->title }}</h1>
 
-                {{-- Author info with fade-down animation --}}
                 <div class="d-flex align-items-center mb-4" data-aos="fade-down" data-aos-delay="200">
                     <div class="d-flex justify-content-center align-items-center rounded-circle me-3" style="width: 40px; height: 40px; background-color: #D6E4FF;">
                         <i class="fas fa-user" style="color: #0C2C5A;"></i>
@@ -40,7 +35,6 @@
                     </div>
                 </div>
 
-                {{-- Thumbnail image with a zoom-in animation --}}
                 @if($article->thumbnail)
                 <div class="text-center my-4" data-aos="zoom-in-up" data-aos-delay="300">
                     <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail" class="img-fluid mx-auto d-block" style="max-width: 100%; height: auto; border-radius: 16px;">
@@ -49,7 +43,6 @@
             </div>
 
             <div class="mb-4">
-                {{-- Article description with a fade-up animation --}}
                 <div class="article-description mb-4" data-aos="fade-up">
                     <div class="p-3 rounded-3" style="background-color: #F8FAFD;">
                         <p class="lead mb-0" style="color: #5F738C;">{{ $article->description }}</p>
@@ -59,7 +52,6 @@
                 @if($article->subheadings->count())
                 <div class="article-content">
                     @foreach($article->subheadings as $subheading)
-                    {{-- Each subheading section has a staggered fade-up animation --}}
                     <div class="subheading-section mb-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                         <h3 class="fw-bold mb-3 article-text" style="color: #0C2C5A; padding-bottom: 10px; border-bottom: 2px solid #e3e9f4;">
                             {{ $subheading->title }}
@@ -75,22 +67,22 @@
                 @endif
             </div>
 
-            {{-- Comments section card with a fade-up animation --}}
+            {{-- Comments Section --}}
             <div class="card border-0 rounded-4 shadow-sm mb-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="card-body p-4">
-                    <h3 class="fw-bold fs-5 mb-4 article-text" style="color: #0C2C5A;">Komentar ({{ $article->comments->count() }})</h3>
+                    <h3 class="fw-bold fs-5 mb-4 article-text" style="color: #0C2C5A;">
+                        Komentar (<span id="comment-count">{{ $article->comments->count() }}</span>)
+                    </h3>
 
                     @auth
-                        <form action="{{ route('comments.store', $article->id) }}" method="POST" class="mb-4">
+                        <form id="comment-form" class="mb-4">
                             @csrf
                             <div class="form-group">
-                                <textarea name="content" rows="3" class="form-control @error('content') is-invalid @enderror"
+                                <textarea id="comment-input" name="content" rows="3" class="form-control"
                                           placeholder="Tulis komentar Anda..." style="border-color: #0C2C5A;"></textarea>
-                                @error('content')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <div id="comment-error" class="text-danger small mt-1 d-none"></div>
                             </div>
-                            <button type="submit" class="btn btn-primary mt-2" style="background-color: #0C2C5A; border-color: #0C2C5A;">
+                            <button type="submit" id="comment-submit" class="btn btn-primary mt-2" style="background-color: #0C2C5A; border-color: #0C2C5A;">
                                 <i class="fas fa-paper-plane me-2"></i>Kirim Komentar
                             </button>
                         </form>
@@ -101,10 +93,9 @@
                         </div>
                     @endauth
 
-                    <div class="comments-list">
+                    <div class="comments-list" id="comments-list">
                         @forelse($article->comments()->with('user')->latest()->get() as $comment)
-                            {{-- Each comment has a subtle fade-up animation --}}
-                            <div class="comment-item border-bottom py-3" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 5) * 50 }}">
+                            <div class="comment-item border-bottom py-3" id="comment-{{ $comment->id }}">
                                 <div class="d-flex align-items-start">
                                     <div class="d-flex justify-content-center align-items-center rounded-circle me-3" style="width: 40px; height: 40px; background-color: #D6E4FF;">
                                         <i class="fas fa-user" style="color: #0C2C5A;"></i>
@@ -114,7 +105,7 @@
                                             <h6 class="mb-0 fw-medium" style="color: #0C2C5A;">{{ $comment->user->name }}</h6>
                                             <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
                                         </div>
-                                        <p class="mb-2" style="color: #5F738C;">{{ $comment->content }}</p>
+                                        <p class="mb-2 comment-content" style="color: #5F738C;">{{ $comment->content }}</p>
 
                                         @auth
                                             @if(auth()->id() === $comment->user_id)
@@ -122,19 +113,13 @@
                                                     <button class="btn btn-sm btn-link edit-comment"
                                                             data-comment-id="{{ $comment->id }}"
                                                             data-content="{{ $comment->content }}"
-                                                            data-save-text="Save"
-                                                            data-cancel-text="Batal"
                                                             style="color: #0C2C5A;">
                                                         <i class="fas fa-edit"></i> Edit
                                                     </button>
-                                                    <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-link text-danger"
-                                                                onclick="return confirm('Apakah Anda yakin ingin menghapus komentar ini?')">
-                                                            <i class="fas fa-trash"></i> Hapus
-                                                        </button>
-                                                    </form>
+                                                    <button class="btn btn-sm btn-link text-danger delete-comment"
+                                                            data-comment-id="{{ $comment->id }}">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
                                                 </div>
                                             @endif
                                         @endauth
@@ -142,7 +127,7 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="text-center py-4" data-aos="zoom-in">
+                            <div class="text-center py-4" id="no-comments">
                                 <p class="text-muted mb-0 article-text">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
                             </div>
                         @endforelse
@@ -156,10 +141,7 @@
 @endsection
 
 @push('styles')
-{{-- STYLE UNTUK ANIMASI AOS --}}
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-
-{{-- Your existing styles remain unchanged --}}
 <style>
     .article-content h3 { font-size: 1.5rem; }
     .article-content p { font-size: 1.05rem; }
@@ -177,64 +159,211 @@
 @endpush
 
 @push('scripts')
-<script>
-    document.querySelectorAll('.edit-comment').forEach(button => {
-        button.addEventListener('click', function() {
-            const commentId = this.dataset.commentId;
-            const content = this.dataset.content;
-
-            const saveText = this.dataset.saveText;
-            const cancelText = this.dataset.cancelText;
-
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/comments/${commentId}`;
-            form.innerHTML = `
-                @csrf
-                @method('PUT')
-                <div class="form-group">
-                    <textarea name="content" rows="3" class="form-control">${content}</textarea>
-                </div>
-                <div class="mt-2">
-                    <button type="submit" class="btn btn-primary btn-sm">${saveText}</button>
-                    <button type="button" class="btn btn-secondary btn-sm cancel-edit">${cancelText}</button>
-                </div>
-            `;
-
-            const commentContentContainer = this.closest('.comment-item').querySelector('p');
-            const originalContent = commentContentContainer.cloneNode(true);
-            commentContentContainer.replaceWith(form);
-
-            form.querySelector('.cancel-edit').addEventListener('click', () => {
-                form.replaceWith(originalContent);
-            });
-        });
-    });
-</script>
-
-{{-- SCRIPT UNTUK ANIMASI AOS --}}
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-    AOS.init({
-        duration: 900,
-        easing: 'ease-in-out-sine',
-        once: false,
-        offset: 120,
-    });
+    AOS.init({ duration: 900, easing: 'ease-in-out-sine', once: false, offset: 120 });
 
     let lastScrollTop = 0;
     const allAosElements = document.querySelectorAll('[data-aos]');
-
     window.addEventListener('scroll', function() {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         if (scrollTop < lastScrollTop) {
-            allAosElements.forEach(function(element) {
-                if (element.getBoundingClientRect().top > window.innerHeight) {
-                    element.classList.remove('aos-animate');
-                }
+            allAosElements.forEach(el => {
+                if (el.getBoundingClientRect().top > window.innerHeight) el.classList.remove('aos-animate');
             });
         }
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    }, false);
+    });
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const commentStoreUrl = '{{ route("comments.store", $article->slug) }}';
+
+    // ===== KIRIM KOMENTAR =====
+    const commentForm = document.getElementById('comment-form');
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const input = document.getElementById('comment-input');
+            const errorEl = document.getElementById('comment-error');
+            const submitBtn = document.getElementById('comment-submit');
+            const content = input.value.trim();
+
+            errorEl.classList.add('d-none');
+
+            if (!content) {
+                errorEl.textContent = 'Komentar tidak boleh kosong.';
+                errorEl.classList.remove('d-none');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+
+            fetch(commentStoreUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ content })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const noComments = document.getElementById('no-comments');
+                    if (noComments) noComments.remove();
+
+                    const commentsList = document.getElementById('comments-list');
+                    const newComment = document.createElement('div');
+                    newComment.classList.add('comment-item', 'border-bottom', 'py-3');
+                    newComment.id = `comment-${data.comment.id}`;
+                    newComment.innerHTML = `
+                        <div class="d-flex align-items-start">
+                            <div class="d-flex justify-content-center align-items-center rounded-circle me-3" style="width: 40px; height: 40px; background-color: #D6E4FF;">
+                                <i class="fas fa-user" style="color: #0C2C5A;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="mb-0 fw-medium" style="color: #0C2C5A;">${data.comment.user_name}</h6>
+                                    <small class="text-muted">Baru saja</small>
+                                </div>
+                                <p class="mb-2 comment-content" style="color: #5F738C;">${data.comment.content}</p>
+                                <div class="comment-actions">
+                                    <button class="btn btn-sm btn-link edit-comment"
+                                            data-comment-id="${data.comment.id}"
+                                            data-content="${data.comment.content}"
+                                            style="color: #0C2C5A;">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-link text-danger delete-comment"
+                                            data-comment-id="${data.comment.id}">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    commentsList.prepend(newComment);
+
+                    const countEl = document.getElementById('comment-count');
+                    countEl.textContent = parseInt(countEl.textContent) + 1;
+
+                    input.value = '';
+                    attachCommentEvents(newComment);
+                } else {
+                    errorEl.textContent = data.message || 'Terjadi kesalahan.';
+                    errorEl.classList.remove('d-none');
+                }
+            })
+            .catch(() => {
+                errorEl.textContent = 'Gagal mengirim komentar. Coba lagi.';
+                errorEl.classList.remove('d-none');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Kirim Komentar';
+            });
+        });
+    }
+
+    // ===== EDIT & HAPUS KOMENTAR =====
+    function attachCommentEvents(container) {
+        // Edit
+        const editBtn = container.querySelector('.edit-comment');
+        if (editBtn) {
+            editBtn.addEventListener('click', function() {
+                const commentId = this.dataset.commentId;
+                const content = this.dataset.content;
+                const commentItem = document.getElementById(`comment-${commentId}`);
+                const contentEl = commentItem.querySelector('.comment-content');
+                const actionsEl = commentItem.querySelector('.comment-actions');
+
+                const editForm = document.createElement('div');
+                editForm.innerHTML = `
+                    <div class="form-group">
+                        <textarea class="form-control edit-textarea" rows="3" style="border-color: #0C2C5A;">${content}</textarea>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-primary btn-sm save-edit" style="background-color: #0C2C5A; border-color: #0C2C5A;">Simpan</button>
+                        <button class="btn btn-secondary btn-sm cancel-edit ms-1">Batal</button>
+                    </div>
+                `;
+
+                contentEl.replaceWith(editForm);
+                actionsEl.style.display = 'none';
+
+                editForm.querySelector('.cancel-edit').addEventListener('click', () => {
+                    editForm.replaceWith(contentEl);
+                    actionsEl.style.display = '';
+                });
+
+                editForm.querySelector('.save-edit').addEventListener('click', () => {
+                    const newContent = editForm.querySelector('.edit-textarea').value.trim();
+                    if (!newContent) return;
+
+                    fetch(`/comments/${commentId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'X-HTTP-Method-Override': 'PUT',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ content: newContent })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            contentEl.textContent = newContent;
+                            editBtn.dataset.content = newContent;
+                            editForm.replaceWith(contentEl);
+                            actionsEl.style.display = '';
+                        }
+                    });
+                });
+            });
+        }
+
+        // Hapus
+        const deleteBtn = container.querySelector('.delete-comment');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function() {
+                const commentId = this.dataset.commentId;
+                if (!confirm('Apakah Anda yakin ingin menghapus komentar ini?')) return;
+
+                fetch(`/comments/${commentId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-HTTP-Method-Override': 'DELETE',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`comment-${commentId}`).remove();
+                        const countEl = document.getElementById('comment-count');
+                        const newCount = parseInt(countEl.textContent) - 1;
+                        countEl.textContent = newCount;
+
+                        if (newCount === 0) {
+                            document.getElementById('comments-list').innerHTML = `
+                                <div class="text-center py-4" id="no-comments">
+                                    <p class="text-muted mb-0 article-text">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    // Attach events ke komentar yang sudah ada
+    document.querySelectorAll('.comment-item').forEach(item => attachCommentEvents(item));
 </script>
 @endpush

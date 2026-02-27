@@ -10,10 +10,10 @@
                     dan intuisi.
                 </p>
                 <div style="margin-top: 1rem;">
-                    {{-- Ikon ditautkan ke URL yang sesuai --}}
                     <a href="https://www.instagram.com/indiegologi/" target="_blank" style="margin-right: 10px; color: white;"><i class="bi bi-instagram"></i></a>
                     <a href="https://wa.me/6282220955595" target="_blank" style="margin-right: 10px; color: white;"><i class="bi bi-whatsapp"></i></a>
                     <a href="mailto:temancerita@indiegologi.com" style="margin-right: 10px; color: white;"><i class="bi bi-envelope"></i></a>
+                    <a href="https://www.linkedin.com/company/indiegologi" target="_blank" style="margin-right: 10px; color: white;"><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
 
@@ -53,7 +53,6 @@
 
             <div class="col-md-4" style="flex: 1; min-width: 200px;">
                 <h6 style="font-weight: bold; margin-bottom: 1rem;">Kontak</h6>
-                {{-- Informasi kontak diperbarui dengan link WhatsApp --}}
                 <p style="margin-bottom: 0.3rem;">
                     <a href="https://wa.me/6282220955595" target="_blank" style="color: white; text-decoration: none;">
                         +62 822-2095-5595
