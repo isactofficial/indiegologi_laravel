@@ -271,6 +271,7 @@ Route::get('/sketch/{sketch:slug}', [FrontController::class, 'sketchShow'])->nam
 
 // Google OAuth routes
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::post('auth/google/redirect', [App\Http\Controllers\Auth\GoogleController::class, 'prepareAndRedirect'])->name('auth.google.redirect');
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
 
 // User profile route for admin

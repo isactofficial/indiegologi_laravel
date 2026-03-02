@@ -15,8 +15,11 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
+use App\Traits\HandlesCartTransfer;
+
 class AuthController extends Controller
 {
+    use HandlesCartTransfer;
     public function showLogin()
     {
         return view('auth.login');
@@ -34,7 +37,7 @@ class AuthController extends Controller
             $user = Auth::user();
 
             // Transfer temp cart data after successful login
-            $this->transferTempCartData($request, $user);
+            $this->transferTempCartDataFromRequest($request, $user);
 
             if ($user->isAdmin()) {
                 return redirect()->intended(route('admin.dashboard'));
@@ -54,146 +57,9 @@ class AuthController extends Controller
     /**
      * Enhanced temp cart data transfer with support for new free consultation system
      */
-    private function transferTempCartData(Request $request, User $user)
+    private function transferTempCartDataFromRequest(Request $request, User $user)
     {
-        $tempCartData = $request->input('temp_cart_data');
-        
-        if (!$tempCartData) {
-            return;
-        }
-
-        try {
-            $tempCartItems = json_decode($tempCartData, true);
-            
-            if (!is_array($tempCartItems) || empty($tempCartItems)) {
-                return;
-            }
-
-            foreach ($tempCartItems as $serviceId => $item) {
-                try {
-                    // Handle new free consultation system
-                    if (isset($item['consultation_type']) && $item['consultation_type'] === 'free-consultation-new') {
-                        $typeId = $item['free_consultation_type_id'];
-                        $scheduleId = $item['free_consultation_schedule_id'];
-
-                        // Check if user already has this type of consultation in cart
-                        $existingCartItem = CartItem::where('user_id', $user->id)
-                            ->where('free_consultation_type_id', $typeId)
-                            ->first();
-
-                        if (!$existingCartItem) {
-                            // Verify schedule still exists and is available
-                            $schedule = FreeConsultationSchedule::where('id', $scheduleId)
-                                ->where('type_id', $typeId)
-                                ->first();
-
-                            if ($schedule && $schedule->isAvailable()) {
-                                CartItem::create([
-                                    'user_id' => $user->id,
-                                    'service_id' => null,
-                                    'free_consultation_type_id' => $typeId,
-                                    'free_consultation_schedule_id' => $scheduleId,
-                                    'price' => 0,
-                                    'hourly_price' => 0,
-                                    'quantity' => 1,
-                                    'hours' => 1,
-                                    'booked_date' => $schedule->scheduled_date,
-                                    'booked_time' => $schedule->scheduled_time,
-                                    'session_type' => $item['session_type'] ?? 'Online',
-                                    'offline_address' => $item['offline_address'] ?? null,
-                                    'contact_preference' => $item['contact_preference'] ?? 'chat_and_call',
-                                    'referral_code' => null,
-                                    'payment_type' => 'full_payment'
-                                ]);
-
-                                // Reserve the schedule slot
-                                $schedule->incrementBooking();
-
-                                Log::info('New free consultation transferred to cart for user: ' . $user->id, [
-                                    'type_id' => $typeId,
-                                    'schedule_id' => $scheduleId
-                                ]);
-                            } else {
-                                Log::warning('Free consultation schedule no longer available during transfer', [
-                                    'user_id' => $user->id,
-                                    'schedule_id' => $scheduleId,
-                                    'type_id' => $typeId
-                                ]);
-                            }
-                        }
-                    }
-                    // Handle legacy free consultation
-                    elseif ($serviceId === 'free-consultation') {
-                        // Check if user already has free consultation
-                        $existing = CartItem::where('user_id', $user->id)
-                            ->where('service_id', 'free-consultation')
-                            ->first();
-                        
-                        if (!$existing) {
-                            CartItem::create([
-                                'user_id' => $user->id,
-                                'service_id' => 'free-consultation',
-                                'price' => 0,
-                                'hourly_price' => 0,
-                                'quantity' => 1,
-                                'hours' => 1,
-                                'booked_date' => $item['booked_date'] ?? null,
-                                'booked_time' => $item['booked_time'] ?? null,
-                                'session_type' => $item['session_type'] ?? 'Online',
-                                'offline_address' => $item['offline_address'] ?? null,
-                                'contact_preference' => $item['contact_preference'] ?? 'chat_and_call',
-                                'referral_code' => null,
-                                'payment_type' => 'full_payment'
-                            ]);
-
-                            Log::info('Legacy free consultation transferred to cart for user: ' . $user->id);
-                        }
-                    } 
-                    // Handle regular services
-                    else {
-                        $service = ConsultationService::find($serviceId);
-                        
-                        if ($service) {
-                            CartItem::updateOrCreate(
-                                [
-                                    'user_id' => $user->id, 
-                                    'service_id' => $service->id
-                                ],
-                                [
-                                    'price' => $service->price,
-                                    'hourly_price' => $service->hourly_price ?? 0,
-                                    'quantity' => 1,
-                                    'hours' => (int)($item['hours'] ?? 1),
-                                    'booked_date' => $item['booked_date'] ?? null,
-                                    'booked_time' => $item['booked_time'] ?? null,
-                                    'session_type' => $item['session_type'] ?? 'Online',
-                                    'offline_address' => $item['offline_address'] ?? null,
-                                    'contact_preference' => $item['contact_preference'] ?? 'chat_and_call',
-                                    'referral_code' => $item['referral_code'] ?? null,
-                                    'payment_type' => 'full_payment'
-                                ]
-                            );
-
-                            Log::info('Regular service transferred to cart: ' . $service->title . ' for user: ' . $user->id);
-                        }
-                    }
-                } catch (\Exception $itemException) {
-                    Log::error('Failed to transfer individual cart item: ' . $itemException->getMessage(), [
-                        'service_id' => $serviceId,
-                        'user_id' => $user->id,
-                        'item_data' => $item
-                    ]);
-                }
-            }
-
-            Log::info('Temp cart transfer completed for user: ' . $user->id);
-
-        } catch (\Exception $e) {
-            Log::error('Failed to move temp cart data to database after login: ' . $e->getMessage(), [
-                'user_id' => $user->id,
-                'temp_cart_data' => $tempCartData
-            ]);
-        }
+        $this->transferTempCartData($request->input('temp_cart_data'), $user);
     }
 
     public function showRegister()
@@ -242,7 +108,7 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Transfer temp cart for new users too
-        $this->transferTempCartData($request, $user);
+        $this->transferTempCartDataFromRequest($request, $user);
 
         if ($user->onboarding_completed_at === null) {
             return redirect()->route('onboarding.start');
