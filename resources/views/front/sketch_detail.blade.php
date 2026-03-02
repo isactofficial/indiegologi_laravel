@@ -69,6 +69,20 @@
         line-height: 1.8;
         color: #343a40;
     }
+    .sketch-image-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        background-color: #f8f9fa;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    .sketch-image-wrapper img {
+        max-width: 100%;
+        height: auto;
+        max-height: 700px;
+        object-fit: contain;
+    }
 </style>
 @endpush
 
@@ -99,8 +113,11 @@
         </div>
 
     {{-- Gambar Painting --}}
-    <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="img-fluid rounded-4 shadow-sm my-4"
-             style="width: 100%; max-height: 500px; object-fit: cover;" data-aos="zoom-in-up" data-aos-delay="200">
+    <div class="sketch-image-wrapper my-4" 
+    data-aos="zoom-in-up" 
+    data-aos-delay="200">
+        <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="img-fluid rounded-4 shadow-sm">
+    </div>
 
         {{-- Konten Painting --}}
         <div class="article-content" data-aos="fade-up" data-aos-delay="300">
