@@ -33,7 +33,24 @@ class EmailVerificationController extends Controller
             ], 422);
         }
 
-        // Generate OTP
+        // Check if there's already a valid OTP for this email
+        $existingVerification = EmailVerification::where('email', $request->email)
+            ->where('is_verified', false)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if ($existingVerification) {
+            // If valid OTP already exists, just return success without generating new one
+            session(['verification_email' => $request->email]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Kode OTP telah dikirim ke email Anda. Berlaku 60 detik.',
+                'expires_in' => 60,
+                'otp' => $existingVerification->otp, // For testing only - remove in production!
+            ]);
+        }
+
+        // Generate new OTP
         $otp = EmailVerification::generateOtp($request->email);
 
         // Try to send email, but don't fail if email service is not configured
@@ -105,8 +122,12 @@ class EmailVerificationController extends Controller
             'name' => 'required|string|max:255',
             'birthdate' => 'required|date',
             'gender' => 'required|string|in:male,female,other',
-            'phone_number' => 'required|string|max:15',
+            'phone_number' => 'required|regex:/^[0-9]+$/|min:8|max:15',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'phone_number.regex' => 'Nomor telepon hanya boleh berisi angka.',
+            'phone_number.min' => 'Nomor telepon minimal 8 digit.',
+            'phone_number.max' => 'Nomor telepon maksimal 15 digit.',
         ]);
 
         if ($validator->fails()) {
@@ -116,36 +137,88 @@ class EmailVerificationController extends Controller
             ], 422);
         }
 
-        // Create user
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $email,
-            'password' => Hash::make($request->password),
-            'role' => 'reader',
-        ]);
+        // Create user and profile
+        try {
+            // Check if email already exists
+            if (User::where('email', $email)->exists()) {
+                // Clear session as email is already registered
+                session()->forget('verification_email');
+                session()->forget('otp_verified');
+                
+                \Illuminate\Support\Facades\Log::warning('Registration attempt with already registered email', [
+                    'email' => $email,
+                    'ip' => $request->ip()
+                ]);
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email ini sudah terdaftar. Silakan masuk dengan akun Anda atau gunakan email lain untuk registrasi baru.',
+                    'error_code' => 'email_already_registered'
+                ], 422);
+            }
 
-        // Create user profile
-        UserProfile::create([
-            'user_id' => $user->id,
-            'name' => $request->name,
-            'email' => $email,
-            'birthdate' => $request->birthdate,
-            'gender' => $request->gender,
-            'phone_number' => $request->phone_number,
-        ]);
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $email,
+                'password' => Hash::make($request->password),
+                'role' => 'reader',
+            ]);
 
-        // Clear session
-        session()->forget('verification_email');
-        session()->forget('otp_verified');
+            // Update user profile with full data (created by observer with minimal data)
+            UserProfile::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'name' => $request->name,
+                    'email' => $email,
+                    'birthdate' => $request->birthdate,
+                    'gender' => $request->gender,
+                    'phone_number' => $request->phone_number,
+                ]
+            );
 
-        // Login the user
-        auth()->login($user);
+            // Clear session
+            session()->forget('verification_email');
+            session()->forget('otp_verified');
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Registrasi berhasil! Mengalihkan...',
-            'redirect' => route('onboarding.start'),
-        ]);
+            // Login the user
+            auth()->login($user);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Registrasi berhasil! Mengalihkan...',
+                'redirect' => route('onboarding.start'),
+            ]);
+        } catch (\Exception $e) {
+            // Log error with full details for debugging
+            \Illuminate\Support\Facades\Log::error('Registration failed: ' . $e->getMessage(), [
+                'email' => $email,
+                'exception_class' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Determine if this is a database error
+            $message = 'Terjadi kesalahan saat membuat akun. Silakan coba lagi atau hubungi support.';
+            $httpCode = 500;
+            
+            // Check for specific database errors
+            if ($e instanceof \Illuminate\Database\QueryException) {
+                if (str_contains($e->getMessage(), 'Duplicate')) {
+                    $message = 'Data pengguna sudah ada dalam sistem. Silakan gunakan email atau data lain yang berbeda.';
+                } elseif (str_contains($e->getMessage(), 'Integrity constraint')) {
+                    $message = 'Terjadi kesalahan validasi data. Pastikan semua data sudah lengkap dan benar.';
+                }
+            }
+            
+            return response()->json([
+                'success' => false,
+                'message' => $message,
+                'error_code' => 'registration_failed',
+                // Only show detailed error in development
+                'debug' => config('app.debug') ? $e->getMessage() : null
+            ], $httpCode);
+        }
     }
 
     /**
@@ -162,16 +235,7 @@ class EmailVerificationController extends Controller
             ], 422);
         }
 
-        // Check if email is still available
-        if (User::where('email', $email)->exists()) {
-            session()->forget('verification_email');
-            return response()->json([
-                'success' => false,
-                'message' => 'Email sudah terdaftar. Silakan login atau gunakan email lain.',
-            ], 422);
-        }
-
-        // Generate new OTP
+        // Generate new OTP for resend
         $otp = EmailVerification::generateOtp($email);
 
         try {
@@ -184,6 +248,7 @@ class EmailVerificationController extends Controller
             'success' => true,
             'message' => 'Kode OTP baru telah dikirim. Berlaku 60 detik.',
             'expires_in' => 60,
+            'otp' => $otp, // For testing only
         ]);
     }
 }

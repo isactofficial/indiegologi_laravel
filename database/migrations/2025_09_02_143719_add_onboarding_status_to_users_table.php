@@ -9,7 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('onboarding_completed_at')->nullable();
+            if (!Schema::hasColumn('users', 'onboarding_completed_at')) {
+                $table->timestamp('onboarding_completed_at')->nullable();
+            }
         });
     }
 

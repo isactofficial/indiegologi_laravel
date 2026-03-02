@@ -13,18 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('consultation_services')) {
-            return;
+        if (!Schema::hasTable('cart_items')) {
+            Schema::create('cart_items', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+                $table->foreignId('service_id')->constrained('consultation_services')->onDelete('cascade');
+                $table->integer('quantity')->default(1);
+                $table->decimal('price', 10, 2);
+                $table->timestamps();
+            });
         }
-
-        Schema::create('cart_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('service_id')->constrained('consultation_services')->onDelete('cascade');
-            $table->integer('quantity')->default(1);
-            $table->decimal('price', 10, 2);
-            $table->timestamps();
-        });
     }
 
     /**

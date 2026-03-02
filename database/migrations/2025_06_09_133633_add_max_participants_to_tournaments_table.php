@@ -13,7 +13,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('tournaments')) {
             Schema::table('tournaments', function (Blueprint $table) {
-                $table->integer('max_participants')->after('prize_total')->nullable();
+                if (!Schema::hasColumn('tournaments', 'max_participants')) {
+                    $table->integer('max_participants')->after('prize_total')->nullable();
+                }
             });
         }
     }

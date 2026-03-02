@@ -10,7 +10,9 @@ class AddMaxParticipantsToTournamentsTable extends Migration
     {
         if (Schema::hasTable('tournaments')) {
             Schema::table('tournaments', function (Blueprint $table) {
-                $table->unsignedInteger('max_participants')->nullable()->after('contact_person');
+                if (!Schema::hasColumn('tournaments', 'max_participants')) {
+                    $table->unsignedInteger('max_participants')->nullable()->after('contact_person');
+                }
             });
         }
     }

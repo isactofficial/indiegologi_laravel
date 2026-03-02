@@ -13,9 +13,15 @@ return new class extends Migration
     {
         if (Schema::hasTable('tournaments')) {
             Schema::table('tournaments', function (Blueprint $table) {
-                $table->dateTime('event_start')->nullable()->after('status');
-                $table->dateTime('event_end')->nullable()->after('event_start');
-                $table->enum('visibility_status', ['Draft', 'Published'])->default('Draft')->after('event_end');
+                if (!Schema::hasColumn('tournaments', 'event_start')) {
+                    $table->dateTime('event_start')->nullable()->after('status');
+                }
+                if (!Schema::hasColumn('tournaments', 'event_end')) {
+                    $table->dateTime('event_end')->nullable()->after('event_start');
+                }
+                if (!Schema::hasColumn('tournaments', 'visibility_status')) {
+                    $table->enum('visibility_status', ['Draft', 'Published'])->default('Draft')->after('event_end');
+                }
             });
         }
     }

@@ -12,11 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('articles', function (Blueprint $table) {
-            // Tambahkan kolom 'slug' setelah kolom 'title'
-            // 'string' untuk tipe data teks
-            // 'unique' untuk memastikan setiap slug adalah unik (penting untuk URL)
-            // 'nullable' jika Anda ingin memperbolehkan slug kosong pada awalnya (tidak disarankan untuk slug URL)
-            $table->string('slug')->unique()->after('title');
+            if (!Schema::hasColumn('articles', 'slug')) {
+                $table->string('slug')->unique()->after('title');
+            }
         });
     }
 

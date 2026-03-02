@@ -13,7 +13,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('consultation_services')) {
             Schema::table('consultation_services', function (Blueprint $table) {
-                $table->string('status')->default('draft')->after('short_description');
+                if (!Schema::hasColumn('consultation_services', 'status')) {
+                    $table->string('status')->default('draft')->after('short_description');
+                }
             });
         }
     }

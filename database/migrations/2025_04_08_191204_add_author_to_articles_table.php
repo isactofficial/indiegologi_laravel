@@ -8,7 +8,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('articles', function (Blueprint $table) {
-            $table->string('author')->nullable()->after('title'); // atau sesuaikan dengan kolom sebelumnya
+            if (!Schema::hasColumn('articles', 'author')) {
+                $table->string('author')->nullable()->after('title');
+            }
         });
     }
 

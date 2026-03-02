@@ -10,7 +10,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('tournaments')) {
             Schema::table('tournaments', function (Blueprint $table) {
-                $table->string('slug')->unique()->after('title');
+                if (!Schema::hasColumn('tournaments', 'slug')) {
+                    $table->string('slug')->unique()->after('title');
+                }
             });
         }
     }

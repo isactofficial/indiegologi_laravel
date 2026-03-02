@@ -15,7 +15,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('consultation_services')) {
             Schema::table('consultation_services', function (Blueprint $table) {
-                $table->integer('base_duration')->nullable()->after('hourly_price');
+                if (!Schema::hasColumn('consultation_services', 'base_duration')) {
+                    $table->integer('base_duration')->nullable()->after('hourly_price');
+                }
             });
         }
     }

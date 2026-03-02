@@ -48,4 +48,35 @@ class Article extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    /**
+     * Get the full URL for the article's thumbnail image.
+     *
+     * @return string
+     */
+    public function getThumbnailUrlAttribute()
+    {
+        if ($this->thumbnail) {
+            // If it's already a full URL, return as is
+            if (filter_var($this->thumbnail, FILTER_VALIDATE_URL)) {
+                return $this->thumbnail;
+            }
+            
+            // If it's already prefixed with 'storage/', use directly
+            if (str_starts_with($this->thumbnail, 'storage/')) {
+                return asset($this->thumbnail);
+            }
+            
+            // If it's a storage file path without 'storage/' prefix (e.g., 'thumbnails/...')
+            // Add storage/ prefix to make it accessible through the public symlink
+            if (str_starts_with($this->thumbnail, 'thumbnails/') || 
+                str_starts_with($this->thumbnail, 'articles/')) {
+                return asset('storage/' . $this->thumbnail);
+            }
+            
+            // For legacy paths, use directly
+            return asset($this->thumbnail);
+        }
+        return asset('assets/default-thumbnail.jpg');
+    }
 }

@@ -86,14 +86,25 @@ class Testimonial extends Model
     public function getImageUrlAttribute()
     {
         if ($this->image) {
+            // If it's already a full URL, return as is
             if (filter_var($this->image, FILTER_VALIDATE_URL)) {
                 return $this->image;
             }
-            // Check if it's a storage path (starts with storage/)
+            
+            // If it's already prefixed with 'storage/', use directly
             if (str_starts_with($this->image, 'storage/')) {
                 return asset($this->image);
             }
-            // For paths like 'assets/testimoni/Wira.jpeg', use directly
+            
+            // If it's a storage file path without 'storage/' prefix (e.g., 'testimonials/...')
+            // Add storage/ prefix to make it accessible through the public symlink
+            if (str_starts_with($this->image, 'testimonials/') || 
+                str_starts_with($this->image, 'articles/') ||
+                str_starts_with($this->image, 'sketches/')) {
+                return asset('storage/' . $this->image);
+            }
+            
+            // For legacy paths like 'assets/testimoni/Wira.jpeg', use directly
             return asset($this->image);
         }
         return asset('assets/testimoni/default-avatar.jpg');

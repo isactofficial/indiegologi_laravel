@@ -295,7 +295,7 @@
                                         <span class="input-group-text">
                                             <i class="fas fa-envelope"></i>
                                         </span>
-                                        <input type="email" name="email" id="email" required
+                                        <input type="email" name="email_temp" id="email" required
                                                class="form-control border-start-0"
                                                placeholder="nama@email.com">
                                     </div>
@@ -397,7 +397,9 @@
                                         </span>
                                         <input type="tel" name="phone_number" id="phone_number" required
                                                class="form-control border-start-0"
-                                               placeholder="Contoh: 081234567890" value="{{ old('phone_number') }}">
+                                               placeholder="Contoh: 081234567890" value="{{ old('phone_number') }}"
+                                               pattern="[0-9]*"
+                                               oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                     </div>
                                 </div>
 
@@ -558,7 +560,27 @@
                         startCountdown();
                         otpInput.focus();
                     } else {
-                        showError(data.message);
+                        // Handle specific error cases
+                        if (response.status === 422 && data.message && data.message.includes('sudah terdaftar')) {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Email Sudah Terdaftar',
+                                html: `<div class="text-start">
+                                    <p>${data.message}</p>
+                                    <p class="text-muted mt-3">Silakan masuk dengan akun Anda atau gunakan email lain.</p>
+                                </div>`,
+                                showCancelButton: true,
+                                confirmButtonText: 'Ke Halaman Login',
+                                cancelButtonText: 'Gunakan Email Lain',
+                                confirmButtonColor: '#0C2C5A',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '{{ route("login") }}';
+                                }
+                            });
+                        } else {
+                            showError(data.message);
+                        }
                         sendOtpBtn.disabled = false;
                         sendOtpBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Kirim Kode OTP';
                     }
@@ -603,6 +625,16 @@
                 const email = emailInput.value.trim();
                 const otp = otpInput.value.trim();
 
+                if (!email) {
+                    showError('Silakan masukkan email terlebih dahulu.');
+                    return;
+                }
+
+                if (!otp || otp.length !== 6) {
+                    showError('Silakan masukkan kode OTP 6 digit.');
+                    return;
+                }
+
                 verifyOtpBtn.disabled = true;
                 verifyOtpBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Memverifikasi...';
 
@@ -630,9 +662,16 @@
                     if (data.success) {
                         isOtpVerified = true;
                         clearInterval(countdownInterval);
+                        
+                        // Ensure email is set to hidden input
+                        regEmail.value = email;
+                        
+                        // Show registration form
                         stepOtp.style.display = 'none';
                         stepRegister.style.display = 'block';
-                        regEmail.value = email;
+                        
+                        // Focus on name input
+                        document.getElementById('reg-name').focus();
                         
                         showSuccess('Email berhasil diverifikasi!');
                     } else {
@@ -641,6 +680,7 @@
                         verifyOtpBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i> Verifikasi';
                     }
                 } catch (error) {
+                    console.error('OTP verification error:', error);
                     showError('Terjadi kesalahan. Silakan coba lagi.');
                     verifyOtpBtn.disabled = false;
                     verifyOtpBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i> Verifikasi';
@@ -739,6 +779,16 @@
 
                     const formData = new FormData(this);
                     
+                    // Debug: ensure email is set
+                    const emailValue = formData.get('email');
+                    if (!emailValue) {
+                        showError('Email tidak ditemukan. Silakan ulangi verifikasi OTP.');
+                        return;
+                    }
+                    
+                    registerBtn.disabled = true;
+                    registerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Mendaftar...';
+
                     try {
                         const response = await fetch('{{ route("verification.verify-and-register") }}', {
                             method: 'POST',
@@ -747,7 +797,7 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             body: JSON.stringify({
-                                email: formData.get('email'),
+                                email: emailValue,
                                 otp: 'verified',
                                 name: formData.get('name'),
                                 birthdate: formData.get('birthdate'),
@@ -766,10 +816,63 @@
                                 window.location.href = data.redirect || '/';
                             }, 1500);
                         } else {
-                            showError(data.message || 'Registrasi gagal.');
+                            // Handle specific error cases
+                            if (data.error_code === 'email_already_registered') {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Email Sudah Terdaftar',
+                                    html: `<div class="text-start">
+                                        <p>${data.message}</p>
+                                        <p class="text-muted mt-3">Pilih salah satu opsi di bawah:</p>
+                                    </div>`,
+                                    showDenyButton: true,
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Ke Halaman Login',
+                                    denyButtonText: 'Gunakan Email Lain',
+                                    cancelButtonText: 'Batal',
+                                    confirmButtonColor: '#0C2C5A',
+                                    denyButtonColor: '#6c757d',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = '{{ route("login") }}';
+                                    } else if (result.isDenied) {
+                                        // Reset to step email
+                                        isOtpVerified = false;
+                                        emailInput.value = '';
+                                        otpInput.value = '';
+                                        document.querySelectorAll('input[name="name"], input[name="birthdate"], input[name="gender"], input[name="phone_number"], input[name="password"], input[name="password_confirmation"]').forEach(el => el.value = '');
+                                        stepRegister.style.display = 'none';
+                                        stepOtp.style.display = 'none';
+                                        stepEmail.style.display = 'block';
+                                        emailInput.focus();
+                                    }
+                                });
+                            } else if (data.error_code === 'registration_failed') {
+                                // Show registration error with debug info if available
+                                let errorHtml = `<div class="text-start">
+                                    <p>${data.message}</p>`;
+                                if (data.debug) {
+                                    errorHtml += `<p class="text-danger small mt-2"><strong>Debug:</strong> ${data.debug}</p>`;
+                                }
+                                errorHtml += `<p class="text-muted small mt-2">Jika masalah terus berlanjut, silakan hubungi customer support.</p></div>`;
+                                
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal Membuat Akun',
+                                    html: errorHtml,
+                                    confirmButtonColor: '#0C2C5A'
+                                });
+                            } else {
+                                showError(data.message || 'Registrasi gagal.');
+                            }
+                            registerBtn.disabled = false;
+                            registerBtn.innerHTML = '<i class="fas fa-user-plus me-2"></i> Daftar Akun';
                         }
                     } catch (error) {
+                        console.error('Registration error:', error);
                         showError('Terjadi kesalahan. Silakan coba lagi.');
+                        registerBtn.disabled = false;
+                        registerBtn.innerHTML = '<i class="fas fa-user-plus me-2"></i> Daftar Akun';
                     }
                 });
             }

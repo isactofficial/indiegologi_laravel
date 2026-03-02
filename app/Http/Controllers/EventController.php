@@ -52,7 +52,7 @@ class EventController extends Controller
             'referral_code' => 'nullable|string', 
             'participants' => 'required|array|min:1',
             'participants.*.full_name' => 'required|string|max:255',
-            'participants.*.phone_number' => 'required|string|max:20',
+            'participants.*.phone_number' => 'required|numeric|digits_between:8,20',
             'participants.*.email' => 'nullable|email|max:255'
         ]);
 
@@ -232,7 +232,7 @@ class EventController extends Controller
             'contact_preference' => 'required|in:chat_only,chat_and_call',
             'participants' => 'required|array|min:1|max:',
             'participants.*.full_name' => 'required|string|max:255',
-            'participants.*.phone_number' => 'required|string|max:20',
+            'participants.*.phone_number' => 'required|numeric|digits_between:8,20',
             'participants.*.email' => 'nullable|email|max:255'
         ]);
 

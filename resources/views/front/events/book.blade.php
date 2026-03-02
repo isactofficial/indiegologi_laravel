@@ -250,7 +250,9 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Nomor Telepon *</label>
-                                    <input type="tel" name="participants[${i}][phone_number]" class="form-control" required placeholder="Contoh: 081234567890">
+                                    <input type="tel" name="participants[${i}][phone_number]" class="form-control" required placeholder="Contoh: 081234567890"
+                                           pattern="[0-9]*"
+                                           oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                 </div>
                             </div>
                             <div class="col-12">

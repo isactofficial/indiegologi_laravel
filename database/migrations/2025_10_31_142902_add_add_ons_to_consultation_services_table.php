@@ -15,7 +15,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('consultation_services')) {
             Schema::table('consultation_services', function (Blueprint $table) {
-                $table->text('add_ons')->nullable()->after('thumbnail');
+                if (!Schema::hasColumn('consultation_services', 'add_ons')) {
+                    $table->text('add_ons')->nullable()->after('thumbnail');
+                }
             });
         }
     }

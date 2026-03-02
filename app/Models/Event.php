@@ -99,4 +99,34 @@ class Event extends Model
         return \Carbon\Carbon::parse($this->event_date->format('Y-m-d') . ' ' . $this->event_time)
                             ->format('l, j F Y \\a\\t H:i');
     }
+
+    /**
+     * Get the full URL for the event's thumbnail image.
+     *
+     * @return string
+     */
+    public function getThumbnailUrlAttribute()
+    {
+        if ($this->thumbnail) {
+            // If it's already a full URL, return as is
+            if (filter_var($this->thumbnail, FILTER_VALIDATE_URL)) {
+                return $this->thumbnail;
+            }
+            
+            // If it's already prefixed with 'storage/', use directly
+            if (str_starts_with($this->thumbnail, 'storage/')) {
+                return asset($this->thumbnail);
+            }
+            
+            // If it's a storage file path without 'storage/' prefix (e.g., 'event-thumbnails/...')
+            // Add storage/ prefix to make it accessible through the public symlink
+            if (str_starts_with($this->thumbnail, 'event-thumbnails/')) {
+                return asset('storage/' . $this->thumbnail);
+            }
+            
+            // For legacy paths, use directly
+            return asset($this->thumbnail);
+        }
+        return asset('assets/default-thumbnail.jpg');
+    }
 }
