@@ -258,22 +258,22 @@ class CheckoutController extends Controller
                 if (!$item->service) continue;
 
                 $itemPrice = $item->price + ($item->hourly_price * $item->hours);
+                $itemDiscount = 0;       // ← RESET per item
+                $referralIdToSave = null; // ← RESET per item
                 $subtotal += $itemPrice;
 
                 if ($item->referralCode) {
                     $code = $item->referralCode;
-                    $isValid = !$code->valid_until || (new \DateTime($code->valid_until)) > (new \DateTime());
-                    $hasUses = !$code->max_uses || $code->current_uses < $code->max_uses;
 
-                    if ($isValid && $hasUses) {
-                        $itemDiscount = $itemPrice * ($code->discount_percentage / 100);
+                    if ($code->isValid()) {
+                        $itemDiscount = $code->calculateDiscount($itemPrice);
                         $totalDiscount += $itemDiscount;
                         $referralIdToSave = $code->id;
                         if (!in_array($referralIdToSave, $usedReferralCodeIds)) {
                             $usedReferralCodeIds[] = $referralIdToSave;
                         }
                     } else {
-                        Log::warning("Referral code {$code->code} for cart item {$item->id} is invalid at checkout.");
+                        Log::warning("Referral code {$code->code} for cart item {$item->id} is no longer valid at checkout.");
                     }
                 }
 

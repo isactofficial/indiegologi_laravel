@@ -645,6 +645,16 @@ class FrontController extends Controller
             $service = ConsultationService::find($validatedData['id']);
             $user = Auth::user();
 
+            // Pre-calculate discount from referral code (if any)
+            $discountAmount = 0;
+            if (!empty($validatedData['referral_code'])) {
+                $referralCodeModel = \App\Models\ReferralCode::where('code', $validatedData['referral_code'])->first();
+                if ($referralCodeModel && $referralCodeModel->isValid()) {
+                    $itemBasePrice = $service->price + (($service->hourly_price ?? 0) * (int)$validatedData['hours']);
+                    $discountAmount = $referralCodeModel->calculateDiscount($itemBasePrice);
+                }
+            }
+
             CartItem::updateOrCreate(
                 [
                     'user_id' => $user->id,
@@ -654,7 +664,9 @@ class FrontController extends Controller
                 ],
                 [
                     'price' => $service->price,
+                    'original_price' => $service->price, // ← store base price for cart calculations
                     'hourly_price' => $service->hourly_price ?? 0,
+                    'discount_amount' => $discountAmount, // ← store pre-calculated discount
                     'quantity' => 1,
                     'hours' => (int)$validatedData['hours'],
                     'session_type' => $validatedData['session_type'],

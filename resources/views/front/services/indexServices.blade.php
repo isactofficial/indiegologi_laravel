@@ -620,6 +620,7 @@
                                                         <input type="text" class="form-control referral-code-input" placeholder="Masukkan kode referral">
                                                         <button class="btn apply-referral-btn" type="button" data-service-id="{{ $service->id }}">Apply</button>
                                                     </div>
+                                                    <div class="referral-message mt-2 small" style="display: none;"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1154,7 +1155,12 @@
                     const booked_date = block.find('.service-date-picker').val();
                     const booked_time = block.find('.booked_time-input').val();
                     const contact_preference = block.find(`input[name="contact_preference-${serviceId}"]:checked`).val();
-                    const referral_code = block.find('.referral-code-input').val() || null;
+                    const referral_input = block.find('.referral-code-input').val();
+                    const applyBtn = block.find('.apply-referral-btn');
+                    if (referral_input && referral_input.trim() !== "" && !applyBtn.hasClass('btn-success')) {
+                        return Swal.fire('Referral Code Belum Diterapkan', 'Harap klik "Apply" terlebih dahulu atau hapus kode jika tidak ingin menggunakannya.', 'warning');
+                    }
+                    const referral_code = applyBtn.hasClass('btn-success') ? referral_input : null;
 
                     // 2. Validasi data
                     if (!booked_date || !booked_time) {
@@ -1164,7 +1170,7 @@
                         return Swal.fire(translations.info, 'Harap masukkan alamat untuk sesi Offline.', 'info');
                     }
                     if (!contact_preference) {
-                        return Swal.fire(translations.failure, translations.validation_fails, 'error');
+                        return Swal.fire(translations.failure, 'Harap pilih preferensi kontak.', 'error');
                     }
 
                     // 3. Siapkan data untuk dikirim
@@ -1191,12 +1197,15 @@
                             success: (response) => {
                                 Swal.fire(translations.success, response.message, 'success').then(() => {
                                     // (MODIFIKASI) Reset form
-                                    block.find('.service-date-picker, .booked_time_input, .booked_time_end-input').val(''); // Reset jam berakhir
-                                    block.find('.hours-input').val('0'); // Reset ke 0
+                                    block.find('.service-date-picker, .booked_time_input, .booked_time_end-input').val('');
+                                    block.find('.hours-input').val('0');
                                     block.find('.session-type-select').val('Online');
                                     block.find('.offline-address-container').hide();
                                     block.find('.offline-address-container textarea').val('');
-                                    block.find('.referral-code-input').val('');
+                                    // Reset referral code UI
+                                    block.find('.referral-code-input').val('').prop('readonly', false).removeClass('is-valid is-invalid');
+                                    block.find('.apply-referral-btn').text('Apply').removeClass('btn-success').addClass('btn-outline-primary');
+                                    block.find('.referral-message').hide().text('').removeClass('text-success text-danger');
                                     block.find('.select-service-btn').prop('disabled', true);
                                     block.find('.selected-addons-container').empty();
                                     block.find('.addon-dropdown option').show();
@@ -1223,12 +1232,15 @@
                         updateCartCount();
 
                         // (MODIFIKASI) Reset form
-                        block.find('.service-date-picker, .booked_time_input, .booked_time_end-input').val(''); // Reset jam berakhir
-                        block.find('.hours-input').val('0'); // Reset ke 0
+                        block.find('.service-date-picker, .booked_time_input, .booked_time_end-input').val('');
+                        block.find('.hours-input').val('0');
                         block.find('.session-type-select').val('Online');
                         block.find('.offline-address-container').hide();
                         block.find('.offline-address-container textarea').val('');
-                        block.find('.referral-code-input').val('');
+                        // Reset referral code UI
+                        block.find('.referral-code-input').val('').prop('readonly', false).removeClass('is-valid is-invalid');
+                        block.find('.apply-referral-btn').text('Apply').removeClass('btn-success').addClass('btn-outline-primary');
+                        block.find('.referral-message').hide().text('').removeClass('text-success text-danger');
                         block.find('.select-service-btn').prop('disabled', true);
                         block.find('.selected-addons-container').empty();
                         block.find('.addon-dropdown option').show();
@@ -1247,36 +1259,75 @@
                     @endauth
                 });
 
-                // Handle referral code application - Simple validation without AJAX
+                // Handle referral code application - With confirmation + AJAX validation
                 $('.apply-referral-btn').on('click', function() {
-                    const serviceId = $(this).data('service-id');
                     const block = $(this).closest('.service-block');
                     const referralCode = block.find('.referral-code-input').val().trim();
+                    const applyBtn = $(this);
+                    const messageDiv = block.find('.referral-message');
+                    const basePrice = parseFloat(block.find('.final-price').data('base-price')) || 0;
 
                     if (!referralCode) {
                         return Swal.fire(translations.info, 'Masukkan kode referral terlebih dahulu.', 'info');
                     }
 
-                    // For guest users, just show info message
-                    @guest
-                        Swal.fire(translations.info, 'Kode referral akan divalidasi saat checkout. Silakan login untuk melanjutkan.', 'info');
+                    // If already applied, do nothing (no Batal needed)
+                    if (applyBtn.hasClass('btn-success')) {
                         return;
-                    @endguest
+                    }
 
-                    // For authenticated users, just show confirmation
-                    @auth
-                        Swal.fire({
-                            title: translations.success,
-                            text: `Kode referral "${referralCode}" akan diterapkan saat checkout.`,
-                            icon: 'success',
-                            confirmButtonText: 'OK'
+                    // Show confirmation popup first
+                    Swal.fire({
+                        title: 'Terapkan Kode Referral?',
+                        html: `Apakah Anda yakin ingin menggunakan kode <strong>${referralCode}</strong>?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Terapkan',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (!result.isConfirmed) return;
+
+                        // Show loading state
+                        applyBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+                        $.ajax({
+                            url: '{{ route("referral.validate") }}',
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                code: referralCode,
+                                total_amount: basePrice
+                            },
+                            success: function(response) {
+                                applyBtn.prop('disabled', false).html('Apply');
+
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: translations.success,
+                                        text: response.message,
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    });
+                                    applyBtn.text('Diterapkan ✓').addClass('btn-success').removeClass('btn-outline-primary');
+                                    block.find('.referral-code-input').prop('readonly', true).addClass('is-valid').removeClass('is-invalid');
+                                    messageDiv.text('Kode referral berhasil diterapkan! Diskon akan dihitung saat checkout.').addClass('text-success').removeClass('text-danger').show();
+                                } else {
+                                    Swal.fire(translations.failure, response.message, 'error');
+                                    block.find('.referral-code-input').addClass('is-invalid');
+                                    messageDiv.text(response.message).addClass('text-danger').removeClass('text-success').show();
+                                }
+                            },
+                            error: function(xhr) {
+                                applyBtn.prop('disabled', false).html('Apply');
+                                const msg = xhr.responseJSON?.message || 'Gagal memvalidasi kode referral.';
+                                Swal.fire(translations.failure, msg, 'error');
+                                block.find('.referral-code-input').addClass('is-invalid');
+                                messageDiv.text(msg).addClass('text-danger').removeClass('text-success').show();
+                            }
                         });
-
-                        // Change button text to indicate code is applied
-                        $(this).text('Diterapkan').addClass('btn-success').removeClass('btn-outline-primary');
-                        block.find('.referral-code-input').prop('readonly', true);
-                    @endauth
+                    });
                 });
+
 
                 // Logika inisialisasi tombol dan harga
                 $('.service-block').each(function() {
