@@ -113,6 +113,11 @@ Route::post('forgot-password', [ResetPasswordController::class, 'sendResetLinkEm
 Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+// Email Verification OTP Routes
+Route::post('/verification/send-otp', [App\Http\Controllers\Auth\EmailVerificationController::class, 'sendOtp'])->name('verification.send-otp');
+Route::post('/verification/verify-and-register', [App\Http\Controllers\Auth\EmailVerificationController::class, 'verifyAndRegister'])->name('verification.verify-and-register');
+Route::post('/verification/resend-otp', [App\Http\Controllers\Auth\EmailVerificationController::class, 'resendOtp'])->name('verification.resend-otp');
+
 // ======================================================================
 // Rute Pengguna yang Diautentikasi
 // ======================================================================

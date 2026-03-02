@@ -89,7 +89,12 @@ class Testimonial extends Model
             if (filter_var($this->image, FILTER_VALIDATE_URL)) {
                 return $this->image;
             }
-            return asset('storage/' . $this->image);
+            // Check if it's a storage path (starts with storage/)
+            if (str_starts_with($this->image, 'storage/')) {
+                return asset($this->image);
+            }
+            // For paths like 'assets/testimoni/Wira.jpeg', use directly
+            return asset($this->image);
         }
         return asset('assets/testimoni/default-avatar.jpg');
     }

@@ -12,15 +12,15 @@
     <style>
         /* Indiegologi Brand Colors */
         :root {
-            --indiegologi-primary: #0C2C5A; /* Biru Tua - Classy, Pointed */
-            --indiegologi-accent: #F4B704; /* Emas - Memorable */
+            --indiegologi-primary: #0C2C5A;
+            --indiegologi-accent: #F4B704;
             --indiegologi-light-bg: #F5F7FA;
             --indiegologi-dark-text: #212529;
             --indiegologi-light-text: #ffffff;
             --indiegologi-muted-text: #6c757d;
-            --strength-weak: #dc3545;     /* Merah untuk password lemah */
-            --strength-medium: #ffc107;   /* Kuning untuk cukup kuat */
-            --strength-strong: #28a745;   /* Hijau untuk kuat */
+            --strength-weak: #dc3545;
+            --strength-medium: #ffc107;
+            --strength-strong: #28a745;
         }
 
         body {
@@ -118,7 +118,6 @@
             letter-spacing: 0.03em;
         }
 
-        /* Gaya untuk tombol saat dinonaktifkan */
         .btn-primary:disabled {
             background-color: #e9ecef;
             color: #6c757d;
@@ -197,7 +196,6 @@
             color: inherit;
         }
 
-        /* [ANIMASI] CSS untuk animasi staggered fade-in */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -209,10 +207,9 @@
             }
         }
         .animate-item {
-            opacity: 0; /* Sembunyikan elemen secara default */
+            opacity: 0;
             animation: fadeInUp 0.6s ease-out forwards;
         }
-        /* Memberi jeda (delay) yang berbeda pada setiap elemen */
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
@@ -228,25 +225,21 @@
         .delay-13 { animation-delay: 1.3s; }
         .delay-14 { animation-delay: 1.4s; }
 
-
-        /* Styling untuk feedback password */
         .password-feedback {
             font-size: 0.8rem;
             font-weight: 500;
             margin-top: 5px;
-            height: 1.2rem; /* Reserve space to prevent layout shift */
+            height: 1.2rem;
         }
         .password-feedback.weak { color: var(--strength-weak); }
         .password-feedback.medium { color: var(--strength-medium); }
         .password-feedback.strong { color: var(--strength-strong); }
 
-        /* Styling untuk petunjuk password */
         .password-clue {
             font-size: 0.8rem;
             color: var(--indiegologi-muted-text);
         }
 
-        /* Responsive adjustments */
         @media (max-width: 576px) {
             .card-body {
                 padding: 1.5rem;
@@ -282,7 +275,7 @@
                                 <i class="fas fa-hand-holding-heart logo-icon"></i>
                             </div>
                             <h1 class="h3 fw-bold mb-1">Mari Berbagi Ide di Indiegologi!</h1>
-                            <p class="text-muted mb-0">Daftar untuk mulai **mewujudkan ide kreatif** bersama kami.</p>
+                            <p class="text-muted mb-0">Daftar untuk mulai mewujudkan ide kreatif bersama kami.</p>
                         </div>
 
                         @if($errors->any())
@@ -291,103 +284,159 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('register') }}" id="register-form">
+                        <form method="POST" action="{{ route('verification.verify-and-register') }}" id="register-form">
                             @csrf
-                            <input type="hidden" name="temp_cart_data" class="temp-cart-input">
-
-                            <div class="mb-3 animate-item delay-4">
-                                <label for="name" class="form-label">Nama Lengkap</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-user"></i>
-                                    </span>
-                                    <input type="text" name="name" id="name" required
-                                           class="form-control border-start-0"
-                                           placeholder="Masukkan nama lengkap Anda" value="{{ old('name') }}">
+                            
+                            <!-- Step 1: Email Input -->
+                            <div id="step-email">
+                                <div class="mb-3 animate-item delay-5">
+                                    <label for="email" class="form-label">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                        <input type="email" name="email" id="email" required
+                                               class="form-control border-start-0"
+                                               placeholder="nama@email.com">
+                                    </div>
+                                    <small class="text-muted">Kami akan mengirim kode verifikasi ke email ini.</small>
                                 </div>
+
+                                <button type="button" id="send-otp-btn" class="btn btn-primary w-100 mb-4 animate-item delay-6">
+                                    <i class="fas fa-paper-plane me-2"></i> Kirim Kode OTP
+                                </button>
                             </div>
 
-                            <div class="mb-3 animate-item delay-5">
-                                <label for="email" class="form-label">Email</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-envelope"></i>
-                                    </span>
-                                    <input type="email" name="email" id="email" required
-                                           class="form-control border-start-0"
-                                           placeholder="nama@indiegologi.com" value="{{ old('email') }}">
+                            <!-- Step 2: OTP Verification -->
+                            <div id="step-otp" style="display: none;">
+                                <div class="text-center mb-4">
+                                    <div class="otp-icon mb-3">
+                                        <i class="fas fa-envelope-open-text" style="font-size: 3rem; color: var(--indiegologi-primary);"></i>
+                                    </div>
+                                    <h5>Cek Email Anda</h5>
+                                    <p class="text-muted small">Kami telah mengirim kode verifikasi ke<br><strong id="display-email"></strong></p>
                                 </div>
+
+                                <div class="mb-3 animate-item">
+                                    <label for="otp" class="form-label">Masukkan Kode OTP</label>
+                                    <div class="input-group justify-content-center">
+                                        <input type="text" name="otp" id="otp" required
+                                               class="form-control text-center"
+                                               style="letter-spacing: 8px; font-size: 1.5rem; max-width: 200px;"
+                                               placeholder="------" maxlength="6">
+                                    </div>
+                                    <div id="otp-timer" class="text-center mt-2 text-danger">
+                                        <i class="fas fa-clock me-1"></i> <span id="countdown">60</span> detik
+                                    </div>
+                                </div>
+
+                                <button type="button" id="verify-otp-btn" class="btn btn-primary w-100 mb-2" disabled>
+                                    <i class="fas fa-check-circle me-2"></i> Verifikasi
+                                </button>
+
+                                <button type="button" id="resend-otp-btn" class="btn btn-outline-secondary w-100 mb-4" disabled>
+                                    <i class="fas fa-redo me-2"></i> Kirim Ulang OTP
+                                </button>
                             </div>
 
-                            <div class="mb-3 animate-item delay-6">
-                                <label for="birthdate" class="form-label">Tanggal Lahir</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </span>
-                                    <input type="date" name="birthdate" id="birthdate" required
-                                           class="form-control border-start-0" value="{{ old('birthdate') }}">
+                            <!-- Step 3: Registration Form -->
+                            <div id="step-register" style="display: none;">
+                                <div class="text-center mb-4">
+                                    <div class="success-icon mb-3">
+                                        <i class="fas fa-check-circle" style="font-size: 3rem; color: #28a745;"></i>
+                                    </div>
+                                    <h5>Email Terverifikasi!</h5>
+                                    <p class="text-muted small">Lanjutkan mengisi data registrasi</p>
                                 </div>
-                            </div>
 
-                            <div class="mb-3 animate-item delay-7">
-                                <label for="gender" class="form-label">Jenis Kelamin</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-venus-mars"></i>
-                                    </span>
-                                    <select name="gender" id="gender" required class="form-select border-start-0">
-                                        <option value="" disabled selected>Pilih jenis kelamin Anda</option>
-                                        <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Laki-laki</option>
-                                        <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Perempuan</option>
-                                        <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Lainnya</option>
-                                    </select>
+                                <div class="mb-3 animate-item delay-4">
+                                    <label for="name" class="form-label">Nama Lengkap</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                        <input type="text" name="name" id="reg-name" required
+                                               class="form-control border-start-0"
+                                               placeholder="Masukkan nama lengkap Anda" value="{{ old('name') }}">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="mb-3 animate-item delay-8">
-                                <label for="phone_number" class="form-label">Nomor Telepon</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-phone"></i>
-                                    </span>
-                                    <input type="tel" name="phone_number" id="phone_number" required
-                                           class="form-control border-start-0"
-                                           placeholder="Contoh: 081234567890" value="{{ old('phone_number') }}">
-                                </div>
-                            </div>
+                                <input type="hidden" name="email" id="reg-email">
 
-                            <div class="mb-2 animate-item delay-9">
-                                <label for="password" class="form-label">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-lock"></i>
-                                    </span>
-                                    <input type="password" name="password" id="password" required
-                                           class="form-control border-start-0"
-                                           placeholder="Masukkan password Anda">
+                                <div class="mb-3 animate-item delay-6">
+                                    <label for="birthdate" class="form-label">Tanggal Lahir</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <input type="date" name="birthdate" id="birthdate" required
+                                               class="form-control border-start-0" value="{{ old('birthdate') }}">
+                                    </div>
                                 </div>
-                                <div class="form-text password-clue">
-                                    Minimal 2 jenis karakter (huruf, angka, simbol).
-                                </div>
-                                <div id="password-strength-status" class="password-feedback"></div>
-                            </div>
 
-                            <div class="mb-4 animate-item delay-10">
-                                <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-lock"></i>
-                                    </span>
-                                    <input type="password" name="password_confirmation" id="password_confirmation" required
-                                           class="form-control border-start-0"
-                                           placeholder="Ulangi password Anda">
+                                <div class="mb-3 animate-item delay-7">
+                                    <label for="gender" class="form-label">Jenis Kelamin</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-venus-mars"></i>
+                                        </span>
+                                        <select name="gender" id="gender" required class="form-select border-start-0">
+                                            <option value="" disabled selected>Pilih jenis kelamin Anda</option>
+                                            <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Laki-laki</option>
+                                            <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Perempuan</option>
+                                            <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Lainnya</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <button type="submit" id="register-btn" class="btn btn-primary w-100 mb-4 animate-item delay-11" disabled>
-                                <i class="fas fa-user-plus me-2"></i> Daftar Akun
-                            </button>
+                                <div class="mb-3 animate-item delay-8">
+                                    <label for="phone_number" class="form-label">Nomor Telepon</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-phone"></i>
+                                        </span>
+                                        <input type="tel" name="phone_number" id="phone_number" required
+                                               class="form-control border-start-0"
+                                               placeholder="Contoh: 081234567890" value="{{ old('phone_number') }}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-2 animate-item delay-9">
+                                    <label for="password" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                        <input type="text" name="password" id="reg-password" required
+                                               class="form-control border-start-0"
+                                               placeholder="Masukkan password Anda" autocomplete="new-password">
+                                        <button class="btn btn-outline-secondary border-start-0" type="button" id="toggle-password">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="form-text password-clue">
+                                        Minimal 8 karakter dengan kombinasi huruf, angka, simbol.
+                                    </div>
+                                    <div id="password-strength-status" class="password-feedback"></div>
+                                </div>
+
+                                <div class="mb-4 animate-item delay-10">
+                                    <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                        <input type="password" name="password_confirmation" id="password_confirmation" required
+                                               class="form-control border-start-0"
+                                               placeholder="Ulangi password Anda" autocomplete="new-password">
+                                    </div>
+                                </div>
+
+                                <button type="submit" id="register-btn" class="btn btn-primary w-100 mb-4 animate-item delay-11">
+                                    <i class="fas fa-user-plus me-2"></i> Daftar Akun
+                                </button>
+                            </div>
+                        </form>
 
                             <div class="text-center text-muted mb-4 animate-item delay-12">
                                 Sudah punya akun? <a href="{{ route('login') }}" class="text-decoration-none fw-medium text-primary">Masuk di sini</a>
@@ -409,14 +458,14 @@
                                             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                                         </svg>
                                         <span class="ms-2">Google</span>
-                                    </button>
-                                </form>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="text-center mt-3 animate-item delay-14">
-                            <a href="{{ route('front.index') }}" class="btn btn-back w-100">
-                                <i class="fas fa-arrow-left me-2"></i> Kembali ke Beranda
-                            </a>
+                            <div class="text-center mt-3 animate-item delay-14">
+                                <a href="{{ route('front.index') }}" class="btn btn-back w-100">
+                                    <i class="fas fa-arrow-left me-2"></i> Kembali ke Beranda
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -425,94 +474,310 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const passwordInput = document.getElementById('password');
+            const emailInput = document.getElementById('email');
+            const sendOtpBtn = document.getElementById('send-otp-btn');
+            const stepEmail = document.getElementById('step-email');
+            const stepOtp = document.getElementById('step-otp');
+            const stepRegister = document.getElementById('step-register');
+            const displayEmail = document.getElementById('display-email');
+            const otpInput = document.getElementById('otp');
+            const verifyOtpBtn = document.getElementById('verify-otp-btn');
+            const resendOtpBtn = document.getElementById('resend-otp-btn');
+            const countdownEl = document.getElementById('countdown');
+            const registerForm = document.getElementById('register-form');
+            const passwordInput = document.getElementById('reg-password');
             const strengthStatus = document.getElementById('password-strength-status');
             const registerBtn = document.getElementById('register-btn');
-            const googleRegisterForm = document.getElementById('google-register-form');
+            const regEmail = document.getElementById('reg-email');
+            
+            let countdownInterval;
+            let isOtpVerified = false;
 
-            function getTempCart() {
-                try {
-                    const tempCart = localStorage.getItem('tempCart');
-                    return tempCart ? JSON.parse(tempCart) : {};
-                } catch (error) {
-                    console.error('Error getting temp cart:', error);
-                    return {};
-                }
-            }
-
-            function populateCartInputs() {
-                const tempCart = getTempCart();
-                if (Object.keys(tempCart).length > 0) {
-                    const tempCartData = JSON.stringify(tempCart);
-                    document.querySelectorAll('.temp-cart-input').forEach(input => {
-                        input.value = tempCartData;
-                    });
-                    return true;
-                }
-                return false;
-            }
-
-            if (googleRegisterForm) {
-                googleRegisterForm.addEventListener('submit', function() {
-                    populateCartInputs();
+            function showError(message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: message,
+                    confirmButtonColor: '#0C2C5A'
                 });
             }
 
-            const registerForm = document.getElementById('register-form');
-            if (registerForm) {
-                registerForm.addEventListener('submit', function() {
-                    populateCartInputs();
+            function showSuccess(message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: message,
+                    confirmButtonColor: '#28a745',
+                    timer: 2000,
+                    showConfirmButton: false
                 });
             }
 
-            passwordInput.addEventListener('keyup', function() {
-                const password = this.value;
-                let score = 0;
-                let feedbackText = '';
-
-                strengthStatus.classList.remove('weak', 'medium', 'strong');
-
-                if (password.length < 8) {
-                    feedbackText = 'Minimal 8 karakter.';
-                    strengthStatus.classList.add('weak');
-                    registerBtn.disabled = true;
-                } else if (/\s/.test(password)) {
-                    feedbackText = 'Password tidak boleh mengandung spasi.';
-                    strengthStatus.classList.add('weak');
-                    registerBtn.disabled = true;
+            // Toggle password visibility
+            document.getElementById('toggle-password').addEventListener('click', function() {
+                const passwordInput = document.getElementById('reg-password');
+                const icon = this.querySelector('i');
+                if (passwordInput.type === 'text') {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
                 } else {
-                    if (/[a-z]/.test(password)) score++;
-                    if (/[A-Z]/.test(password)) score++;
-                    if (/[0-9]/.test(password)) score++;
-                    if (/[^a-zA-Z0-9]/.test(password)) score++;
-
-                    switch (score) {
-                        case 1:
-                            feedbackText = 'Password lemah';
-                            strengthStatus.classList.add('weak');
-                            registerBtn.disabled = true;
-                            break;
-                        case 2:
-                            feedbackText = 'Password cukup kuat';
-                            strengthStatus.classList.add('medium');
-                            registerBtn.disabled = false;
-                            break;
-                        case 3:
-                        case 4:
-                            feedbackText = 'Password kuat';
-                            strengthStatus.classList.add('strong');
-                            registerBtn.disabled = false;
-                            break;
-                        default:
-                            feedbackText = '';
-                            registerBtn.disabled = true;
-                            break;
-                    }
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
                 }
-                strengthStatus.textContent = feedbackText;
             });
+
+            // Send OTP
+            sendOtpBtn.addEventListener('click', async function() {
+                const email = emailInput.value.trim();
+                
+                if (!email || !email.includes('@')) {
+                    showError('Silakan masukkan email yang valid.');
+                    return;
+                }
+
+                sendOtpBtn.disabled = true;
+                sendOtpBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Mengirim...';
+
+                try {
+                    const response = await fetch('{{ route("verification.send-otp") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ email: email })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showSuccess(data.message);
+                        displayEmail.textContent = email;
+                        stepEmail.style.display = 'none';
+                        stepOtp.style.display = 'block';
+                        startCountdown();
+                        otpInput.focus();
+                    } else {
+                        showError(data.message);
+                        sendOtpBtn.disabled = false;
+                        sendOtpBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Kirim Kode OTP';
+                    }
+                } catch (error) {
+                    showError('Terjadi kesalahan. Silakan coba lagi.');
+                    sendOtpBtn.disabled = false;
+                    sendOtpBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Kirim Kode OTP';
+                }
+            });
+
+            // Start countdown timer
+            function startCountdown() {
+                let seconds = 60;
+                countdownEl.textContent = seconds;
+                resendOtpBtn.disabled = true;
+                verifyOtpBtn.disabled = true;
+
+                clearInterval(countdownInterval);
+                countdownInterval = setInterval(() => {
+                    seconds--;
+                    countdownEl.textContent = seconds;
+
+                    if (seconds <= 0) {
+                        clearInterval(countdownInterval);
+                        resendOtpBtn.disabled = false;
+                        resendOtpBtn.innerHTML = '<i class="fas fa-redo me-2"></i> Kirim Ulang OTP';
+                    }
+                }, 1000);
+            }
+
+            // OTP input - enable verify button when 6 digits
+            otpInput.addEventListener('input', function() {
+                if (this.value.length === 6) {
+                    verifyOtpBtn.disabled = false;
+                } else {
+                    verifyOtpBtn.disabled = true;
+                }
+            });
+
+            // Verify OTP
+            verifyOtpBtn.addEventListener('click', async function() {
+                const email = emailInput.value.trim();
+                const otp = otpInput.value.trim();
+
+                verifyOtpBtn.disabled = true;
+                verifyOtpBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Memverifikasi...';
+
+                try {
+                    const response = await fetch('{{ route("verification.verify-and-register") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            otp: otp,
+                            name: '',
+                            birthdate: '',
+                            gender: '',
+                            phone_number: '',
+                            password: '',
+                            password_confirmation: ''
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        isOtpVerified = true;
+                        clearInterval(countdownInterval);
+                        stepOtp.style.display = 'none';
+                        stepRegister.style.display = 'block';
+                        regEmail.value = email;
+                        
+                        showSuccess('Email berhasil diverifikasi!');
+                    } else {
+                        showError(data.message || 'Kode OTP tidak valid.');
+                        verifyOtpBtn.disabled = false;
+                        verifyOtpBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i> Verifikasi';
+                    }
+                } catch (error) {
+                    showError('Terjadi kesalahan. Silakan coba lagi.');
+                    verifyOtpBtn.disabled = false;
+                    verifyOtpBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i> Verifikasi';
+                }
+            });
+
+            // Resend OTP
+            resendOtpBtn.addEventListener('click', async function() {
+                const email = emailInput.value.trim();
+
+                resendOtpBtn.disabled = true;
+                resendOtpBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Mengirim...';
+
+                try {
+                    const response = await fetch('{{ route("verification.resend-otp") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showSuccess(data.message);
+                        otpInput.value = '';
+                        verifyOtpBtn.disabled = true;
+                        startCountdown();
+                        resendOtpBtn.innerHTML = '<i class="fas fa-redo me-2"></i> Kirim Ulang OTP';
+                    } else {
+                        showError(data.message);
+                        resendOtpBtn.disabled = false;
+                        resendOtpBtn.innerHTML = '<i class="fas fa-redo me-2"></i> Kirim Ulang OTP';
+                    }
+                } catch (error) {
+                    showError('Terjadi kesalahan. Silakan coba lagi.');
+                    resendOtpBtn.disabled = false;
+                    resendOtpBtn.innerHTML = '<i class="fas fa-redo me-2"></i> Kirim Ulang OTP';
+                }
+            });
+
+            // Password strength checker
+            if (passwordInput) {
+                passwordInput.addEventListener('keyup', function() {
+                    const password = this.value;
+                    let score = 0;
+                    let feedbackText = '';
+
+                    strengthStatus.classList.remove('weak', 'medium', 'strong');
+
+                    if (password.length < 8) {
+                        feedbackText = 'Minimal 8 karakter.';
+                        strengthStatus.classList.add('weak');
+                    } else if (/\s/.test(password)) {
+                        feedbackText = 'Password tidak boleh mengandung spasi.';
+                        strengthStatus.classList.add('weak');
+                    } else {
+                        if (/[a-z]/.test(password)) score++;
+                        if (/[A-Z]/.test(password)) score++;
+                        if (/[0-9]/.test(password)) score++;
+                        if (/[^a-zA-Z0-9]/.test(password)) score++;
+
+                        switch (score) {
+                            case 1:
+                                feedbackText = 'Password lemah';
+                                strengthStatus.classList.add('weak');
+                                break;
+                            case 2:
+                                feedbackText = 'Password cukup kuat';
+                                strengthStatus.classList.add('medium');
+                                break;
+                            case 3:
+                            case 4:
+                                feedbackText = 'Password kuat';
+                                strengthStatus.classList.add('strong');
+                                break;
+                            default:
+                                feedbackText = '';
+                                break;
+                        }
+                    }
+                    strengthStatus.textContent = feedbackText;
+                });
+            }
+
+            // Form submit
+            if (registerForm) {
+                registerForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    if (!isOtpVerified) {
+                        showError('Silakan verifikasi email terlebih dahulu.');
+                        return;
+                    }
+
+                    const formData = new FormData(this);
+                    
+                    try {
+                        const response = await fetch('{{ route("verification.verify-and-register") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                email: formData.get('email'),
+                                otp: 'verified',
+                                name: formData.get('name'),
+                                birthdate: formData.get('birthdate'),
+                                gender: formData.get('gender'),
+                                phone_number: formData.get('phone_number'),
+                                password: formData.get('password'),
+                                password_confirmation: formData.get('password_confirmation')
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            showSuccess(data.message);
+                            setTimeout(() => {
+                                window.location.href = data.redirect || '/';
+                            }, 1500);
+                        } else {
+                            showError(data.message || 'Registrasi gagal.');
+                        }
+                    } catch (error) {
+                        showError('Terjadi kesalahan. Silakan coba lagi.');
+                    }
+                });
+            }
         });
     </script>
 </body>
