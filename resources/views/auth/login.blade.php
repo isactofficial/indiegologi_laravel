@@ -319,17 +319,20 @@
                                 </span>
                             </button>
                         </div>
-                        
-                        <div class="text-center text-muted mb-4 animate-item delay-5">
-                            Belum punya akun?
-                            <a href="{{ route('register') }}" class="text-decoration-none fw-medium text-primary">Daftar di sini</a>
-                        </div>
-
-                        </div>
                     </form>
 
-                    <div class="text-center animate-item delay-6">
-                        <p class="text-muted mb-3">Atau masuk dengan</p>
+                    <div class="text-center text-muted mb-4 animate-item delay-5">
+                        Belum punya akun?
+                        <a href="{{ route('register') }}" class="text-decoration-none fw-medium text-primary">Daftar di sini</a>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-4 animate-item delay-6">
+                        <hr class="flex-grow-1">
+                        <span class="px-3 text-muted small">atau masuk dengan</span>
+                        <hr class="flex-grow-1">
+                    </div>
+
+                    <div class="animate-item delay-6">
                         <div class="social-login">
                             <form action="{{ route('auth.google.redirect') }}" method="POST" id="google-login-form">
                                 @csrf
@@ -346,6 +349,7 @@
                             </form>
                         </div>
                     </div>
+
                     <div class="text-center mt-3 animate-item delay-7">
                         <a href="{{ route('front.index') }}" class="btn btn-back w-100">
                             <i class="fas fa-arrow-left me-2"></i> Kembali ke Beranda
