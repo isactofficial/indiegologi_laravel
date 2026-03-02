@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('articles', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Penulis artikel
-            $table->string('title');
-            $table->text('description')->nullable(); // Deskripsi umum artikel
-            $table->string('thumbnail')->nullable(); // Gambar utama artikel
-            $table->enum('status', ['Draft', 'Published'])->default('Draft'); // Status artikel
-            $table->unsignedBigInteger('views')->default(0); // Jumlah view
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('articles')) {
+            Schema::create('articles', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Penulis artikel
+                $table->string('title');
+                $table->text('description')->nullable(); // Deskripsi umum artikel
+                $table->string('thumbnail')->nullable(); // Gambar utama artikel
+                $table->enum('status', ['Draft', 'Published'])->default('Draft'); // Status artikel
+                $table->unsignedBigInteger('views')->default(0); // Jumlah view
+                $table->timestamps();
+            });
+        }
     }
 
     /**

@@ -39,11 +39,11 @@ class GuestEventBookingController extends Controller
             'contact_preference' => 'required|in:chat_only,chat_and_call',
             'referral_code' => 'nullable|string',
             'guest_name' => 'required|string|max:255',
-            'guest_phone' => 'required|string|max:20',
+            'guest_phone' => 'required|numeric|digits_between:8,20',
             'guest_email' => 'required|email|max:255',
             'participants' => 'required|array|min:1|max:' . $event->spots_left,
             'participants.*.full_name' => 'required|string|max:255',
-            'participants.*.phone_number' => 'required|string|max:20',
+            'participants.*.phone_number' => 'required|numeric|digits_between:8,20',
             'participants.*.email' => 'nullable|email|max:255'
         ], [
             'participant_count.max' => 'Jumlah peserta melebihi kuota yang tersedia. Sisa slot: ' . $event->spots_left,

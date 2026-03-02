@@ -13,7 +13,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('galleries')) {
             Schema::table('galleries', function (Blueprint $table) {
-                $table->string('slug')->unique()->after('title');
+                if (!Schema::hasColumn('galleries', 'slug')) {
+                    $table->string('slug')->unique()->after('title');
+                }
             });
         }
     }

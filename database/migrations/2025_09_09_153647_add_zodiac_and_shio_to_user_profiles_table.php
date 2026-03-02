@@ -15,8 +15,12 @@ return new class extends Migration
     {
         if (Schema::hasTable('user_profiles')) {
             Schema::table('user_profiles', function (Blueprint $table) {
-                $table->string('zodiac', 20)->nullable()->after('birthdate');
-                $table->string('shio_element', 50)->nullable()->after('zodiac');
+                if (!Schema::hasColumn('user_profiles', 'zodiac')) {
+                    $table->string('zodiac', 20)->nullable()->after('birthdate');
+                }
+                if (!Schema::hasColumn('user_profiles', 'shio_element')) {
+                    $table->string('shio_element', 50)->nullable()->after('zodiac');
+                }
             });
         }
     }

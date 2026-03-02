@@ -13,7 +13,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('tournament_registrations')) {
             Schema::table('tournament_registrations', function (Blueprint $table) {
-                $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->after('team_id');
+                if (!Schema::hasColumn('tournament_registrations', 'user_id')) {
+                    $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->after('team_id');
+                }
             });
         }
     }

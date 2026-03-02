@@ -80,7 +80,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'birthdate' => 'required|date',
             'gender' => 'required|string|in:male,female,other',
-            'phone_number' => 'required|string|max:15',
+            'phone_number' => 'required|numeric|digits_between:8,15',
             'password' => 'required|string|min:8|confirmed',
         ]);
 

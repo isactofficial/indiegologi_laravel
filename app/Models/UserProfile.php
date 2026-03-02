@@ -162,4 +162,35 @@ class UserProfile extends Model
             return null;
         }
     }
+
+    /**
+     * Get the full URL for the user's profile photo.
+     *
+     * @return string
+     */
+    public function getProfilePhotoUrlAttribute()
+    {
+        if ($this->profile_photo) {
+            // If it's already a full URL, return as is
+            if (filter_var($this->profile_photo, FILTER_VALIDATE_URL)) {
+                return $this->profile_photo;
+            }
+            
+            // If it's already prefixed with 'storage/', use directly
+            if (str_starts_with($this->profile_photo, 'storage/')) {
+                return asset($this->profile_photo);
+            }
+            
+            // If it's a storage file path without 'storage/' prefix
+            // Add storage/ prefix to make it accessible through the public symlink
+            if (str_starts_with($this->profile_photo, 'user-profiles/') || 
+                str_starts_with($this->profile_photo, 'profiles/')) {
+                return asset('storage/' . $this->profile_photo);
+            }
+            
+            // For legacy paths, use directly
+            return asset($this->profile_photo);
+        }
+        return asset('assets/default-avatar.jpg');
+    }
 }

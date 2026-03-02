@@ -10,7 +10,9 @@ class AddOrderNumberToSponsorsTable extends Migration
     {
         if (Schema::hasTable('sponsors')) {
             Schema::table('sponsors', function (Blueprint $table) {
-                $table->unsignedInteger('order_number')->nullable()->after('sponsor_size');
+                if (!Schema::hasColumn('sponsors', 'order_number')) {
+                    $table->unsignedInteger('order_number')->nullable()->after('sponsor_size');
+                }
             });
         }
     }

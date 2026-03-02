@@ -10,7 +10,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('booking_service')) {
             Schema::table('booking_service', function (Blueprint $table) {
-                $table->integer('hours_booked')->default(1)->after('booked_time');
+                if (!Schema::hasColumn('booking_service', 'hours_booked')) {
+                    $table->integer('hours_booked')->default(1)->after('booked_time');
+                }
             });
         }
     }

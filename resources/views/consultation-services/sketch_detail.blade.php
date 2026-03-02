@@ -17,13 +17,12 @@
     {{-- Informasi Tanggal --}}
     <div class="text-muted mb-4 d-flex align-items-center gap-2">
         <span>Published</span>
-        {{-- Tanggal akan otomatis diterjemahkan oleh Carbon/Laravel --}}
         <span>{{ $sketch->created_at->format('d F Y') }}</span>
     </div>
 
     {{-- Gambar Sketsa --}}
     <img src="{{ asset('storage/' . $sketch->thumbnail) }}" alt="{{ $sketch->title }}" class="img-fluid rounded mb-4"
-         style="width: 100%; max-height: 600px; object-fit: cover;">
+         style="width: 100%; max-height: 600px; object-fit: contain;">
 
     {{-- Deskripsi (Konten Dinamis - Tidak Diterjemahkan) --}}
     <div style="background-color: #0C2C5A; color: white; padding: 16px; border-radius: 4px;">

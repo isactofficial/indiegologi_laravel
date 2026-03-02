@@ -12,7 +12,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('consultation_services')) {
             Schema::table('consultation_services', function (Blueprint $table) {
-                $table->decimal('hourly_price', 10, 2)->nullable()->after('price');
+                if (!Schema::hasColumn('consultation_services', 'hourly_price')) {
+                    $table->decimal('hourly_price', 10, 2)->nullable()->after('price');
+                }
             });
         }
     }
