@@ -253,7 +253,7 @@
                             <i class="fas fa-heart logo-icon"></i>
                         </div>
                         <h1 class="h3 fw-bold mb-1">Selamat Datang di Indiegologi</h1>
-                        <p class="text-muted mb-0">Masuk ke akun Anda dan <strong style="color: red;">mulai kembangkan ide brilian</strong>!</p>
+                        <p class="text-muted mb-0">Masuk ke akun Anda dan <strong style="color: #666;">mulai kembangkan ide brilian</strong>!</p>
                     </div>
 
                     <!-- Cart notification (will be shown by JavaScript if cart has items) -->
