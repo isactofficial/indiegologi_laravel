@@ -18,3 +18,4 @@ yarn-error.log
 /.vscode
 /storage/app/private/
 docker-compose.yml
+*.zip

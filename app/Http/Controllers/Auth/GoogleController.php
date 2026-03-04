@@ -34,6 +34,12 @@ class GoogleController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
             
+            \Log::info('Google OAuth callback received', [
+                'google_email' => $googleUser->email,
+                'google_id' => $googleUser->id,
+                'google_name' => $googleUser->name
+            ]);
+            
             // 1. Try to find user by google_id
             $user = User::where('google_id', $googleUser->id)->first();
 
@@ -42,20 +48,48 @@ class GoogleController extends Controller
                 $user = User::where('email', $googleUser->email)->first();
                 
                 if ($user) {
+                    \Log::info('Google Login - Updating existing user with google_id', [
+                        'user_id' => $user->id,
+                        'email' => $user->email
+                    ]);
+                    
                     // Update existing user with google_id
                     $user->update([
                         'google_id' => $googleUser->id,
                     ]);
                 } else {
                     // 3. Create new user if not found by either
+                    \Log::info('Google Login - Creating new user account', [
+                        'google_email' => $googleUser->email,
+                        'google_id' => $googleUser->id
+                    ]);
+                    
                     $user = User::create([
-                        'name' => $googleUser->name,
+                        'name' => $googleUser->name ?? 'Google User',
                         'email' => $googleUser->email,
                         'google_id' => $googleUser->id,
-                        'password' => bcrypt(str()->random(16)),
-                        'role' => 'user'
+                        'password' => null, // OAuth users don't need password
+                        'role' => 'reader'
                     ]);
+                    
+                    \Log::info('Google Login - New user created successfully', [
+                        'user_id' => $user->id,
+                        'email' => $user->email
+                    ]);
+                    
+                    // Ensure UserProfile is created
+                    $user->profile()->updateOrCreate(
+                        ['user_id' => $user->id],
+                        [
+                            'name' => $googleUser->name ?? 'Google User',
+                            'email' => $googleUser->email,
+                        ]
+                    );
                 }
+            } else {
+                \Log::info('Google Login - User found by google_id', [
+                    'user_id' => $user->id
+                ]);
             }
 
             Auth::login($user);
@@ -70,10 +104,13 @@ class GoogleController extends Controller
 
         } catch (Exception $e) {
             \Log::error('Google Login Error: ' . $e->getMessage(), [
-                'exception' => $e
+                'exception' => $e,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
             ]);
             
-            return redirect()->route('login')->with('error', 'Gagal masuk dengan Google. Pastikan konfigurasi sudah benar.');
+            return redirect()->route('login')->with('error', 'Gagal masuk dengan Google. ' . ($e->getMessage() ?? 'Pastikan konfigurasi sudah benar.'));
         }
     }
 }
