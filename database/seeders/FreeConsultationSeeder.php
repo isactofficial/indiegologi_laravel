@@ -13,6 +13,12 @@ class FreeConsultationSeeder extends Seeder
 {
     public function run()
     {
+        // Check if data already exists (from migration) to avoid duplicates
+        if (FreeConsultationType::count() > 0) {
+            $this->command->info('Free consultation data already exists. Skipping seeder...');
+            return;
+        }
+
         // Create consultation types
         $types = [
             [

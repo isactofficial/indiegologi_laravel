@@ -70,8 +70,13 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             position: relative;
-            padding-bottom: 80px;
+        }
+
+        .sidebar-menu {
+            flex-grow: 1;
+            overflow-y: auto;
         }
 
         .sidebar h4 {
@@ -128,12 +133,13 @@
             box-shadow: var(--shadow-sm);
         }
 
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+
         .btn-logout {
-            bottom: 20px;
-            left: 15px;
-            right: 15px;
-            position: absolute;
-            width: calc(100% - 30px);
+            width: 100%;
             background-color: #fff;
             border: 1px solid var(--primary-color);
             padding: 12px 20px;
@@ -320,43 +326,61 @@
                     <button class="btn-close-sidebar" id="close-sidebar"><i class="fas fa-times"></i></button>
                 </div>
 
-                <div class="nav-links">
-                    <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a href="{{ route('admin.articles.index') }}" class="{{ request()->routeIs('admin.articles.index') ? 'active' : '' }}">
-                        <i class="fas fa-file-alt"></i> Manajemen Artikel
-                    </a>
-                    <a href="{{ route('admin.sketches.index') }}" class="{{ request()->routeIs('admin.sketches.*') ? 'active' : '' }}">
-                        <i class="fas fa-palette"></i> Manajemen Painting
-                    </a>
-                    <a href="{{ route('admin.referral-codes.index') }}" class="{{ request()->routeIs('admin.referral-codes.*') ? 'active' : '' }}">
-                        <i class="fas fa-tags"></i> Manajemen Referral
-                    </a>
-                    <a href="{{ route('admin.consultation-services.index') }}" class="{{ request()->routeIs('admin.consultation-services.*') ? 'active' : '' }}">
-                        <i class="fas fa-handshake"></i> Manajemen Layanan
-                    </a>
-                    <a href="{{ route('admin.events.index') }}" class="{{ request()->routeIs('admin.events.*') ? 'active' : '' }}">
-                        <i class="fas fa-calendar-alt"></i> Manajemen Events
-                    </a>
-                    <a href="{{ route('admin.event-bookings.index') }}" class="{{ request()->routeIs('admin.event-bookings.*') ? 'active' : '' }}">
-                        <i class="fas fa-ticket-alt"></i> Manajemen Booking Event
-                    </a>
-                    <a href="{{ route('admin.consultation-bookings.index') }}" class="{{ request()->routeIs('admin.consultation-bookings.*') ? 'active' : '' }}">
-                        <i class="fas fa-calendar-check"></i> Manajemen Booking Konsultasi
-                    </a>
-                    <a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
-                        <i class="fas fa-comments"></i> Manajemen Testimoni
-                    </a>
-                    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
-                        <i class="fas fa-user-circle"></i> Profil
-                    </a>
+                <div class="sidebar-menu">
+                    <div class="nav-links">
+                        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                        <a href="{{ route('admin.articles.index') }}" class="{{ request()->routeIs('admin.articles.index') ? 'active' : '' }}">
+                            <i class="fas fa-file-alt"></i> Manajemen Artikel
+                        </a>
+                        <a href="{{ route('admin.sketches.index') }}" class="{{ request()->routeIs('admin.sketches.*') ? 'active' : '' }}">
+                            <i class="fas fa-palette"></i> Manajemen Painting
+                        </a>
+                        <a href="{{ route('admin.referral-codes.index') }}" class="{{ request()->routeIs('admin.referral-codes.*') ? 'active' : '' }}">
+                            <i class="fas fa-tags"></i> Manajemen Referral
+                        </a>
+                        <a href="{{ route('admin.consultation-services.index') }}" class="{{ request()->routeIs('admin.consultation-services.*') ? 'active' : '' }}">
+                            <i class="fas fa-handshake"></i> Manajemen Layanan
+                        </a>
+                        <a href="{{ route('admin.events.index') }}" class="{{ request()->routeIs('admin.events.*') ? 'active' : '' }}">
+                            <i class="fas fa-calendar-alt"></i> Manajemen Events
+                        </a>
+                        <a href="{{ route('admin.event-bookings.index') }}" class="{{ request()->routeIs('admin.event-bookings.*') ? 'active' : '' }}">
+                            <i class="fas fa-ticket-alt"></i> Manajemen Booking Event
+                        </a>
+                        <a href="{{ route('admin.consultation-bookings.index') }}" class="{{ request()->routeIs('admin.consultation-bookings.*') ? 'active' : '' }}">
+                            <i class="fas fa-calendar-check"></i> Manajemen Booking Konsultasi
+                        </a>
+                        
+                        {{-- Menu Dropdown untuk Konsultasi Gratis --}}
+                        <a href="#" class="{{ request()->routeIs('admin.free-consultation.*') ? 'active' : '' }}" data-bs-toggle="collapse" data-bs-target="#freeConsultationMenu">
+                            <i class="fas fa-gift"></i> Konsultasi Gratis <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <div class="collapse {{ request()->routeIs('admin.free-consultation.*') ? 'show' : '' }}" id="freeConsultationMenu">
+                            <a href="{{ route('admin.free-consultation.types.index') }}" class="{{ request()->routeIs('admin.free-consultation.types.*') ? 'active' : '' }}" style="padding-left: 50px;">
+                                <i class="fas fa-list"></i> Jenis Konsultasi
+                            </a>
+                            <a href="{{ route('admin.free-consultation.schedules.index') }}" class="{{ request()->routeIs('admin.free-consultation.schedules.*') ? 'active' : '' }}" style="padding-left: 50px;">
+                                <i class="fas fa-calendar-alt"></i> Jadwal Konsultasi
+                            </a>
+                        </div>
+                        
+                        <a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
+                            <i class="fas fa-comments"></i> Manajemen Testimoni
+                        </a>
+                        <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                            <i class="fas fa-user-circle"></i> Profil
+                        </a>
+                    </div>
                 </div>
 
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                </form>
+                <div class="sidebar-footer">
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </form>
+                </div>
             </div>
         </div>
 
