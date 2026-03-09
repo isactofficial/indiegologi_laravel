@@ -156,7 +156,7 @@
 
         .row-discount td {
             text-align: right;
-            background-color: #FFB700;
+            background-color: #f8cd60;
             color: #0C2C5A;
             font-weight: bold;
             padding: 12px 10px;

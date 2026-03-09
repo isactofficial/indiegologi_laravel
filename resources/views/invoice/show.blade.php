@@ -175,7 +175,7 @@
     }
 
     .row-discount td {
-        background-color: #FFB700;
+        background-color: #f8cd60;
         color: #0C2C5A;
         font-weight: 700;
         padding: 12px 10px;
