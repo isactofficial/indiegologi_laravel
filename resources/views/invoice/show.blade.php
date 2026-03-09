@@ -1,250 +1,253 @@
 @extends('layouts.app')
 
 @section('content')
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=EB+Garamond:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
-    /* Your existing styles remain the same */
     .section {
-        font-family: 'Playfair Display', serif;
+        font-family: 'EB Garamond', 'Times New Roman', serif;
         padding: 20px;
         background-color: #f5f7fa;
     }
 
     .invoice-wrapper {
         background-color: #fff;
-        padding: 40px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        max-width: 800px;
+        padding: 40px 50px;
+        max-width: 860px;
         margin: 40px auto;
         box-sizing: border-box;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
     }
 
+    /* ── HEADER ── */
     .invoice-header {
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-start;
-        border-bottom: 1px solid #ddd;
+        text-align: right;
+        border-bottom: 1px solid #ccc;
         padding-bottom: 20px;
         margin-bottom: 30px;
     }
 
-    .invoice-header-details {
-        text-align: right;
+    .invoice-brand {
+        font-family: 'Playfair Display', serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: #0C2C5A;
+        letter-spacing: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
     }
 
-    .invoice-logo {
-        font-size: 24px;
-        font-weight: bold;
-        color: #001f3f;
-        margin-bottom: 10px;
+    .invoice-brand .key-icon {
+        font-size: 18px;
+        color: #0C2C5A;
     }
 
     .invoice-contact-info {
-        font-size: 14px;
-        color: #333;
-        line-height: 1.5;
+        font-size: 13px;
+        color: #444;
+        line-height: 1.7;
+        margin-top: 6px;
     }
 
+    /* ── TOP TWO COLUMNS ── */
     .invoice-top-section {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        gap: 1.5rem;
+        gap: 20px;
         margin-bottom: 30px;
     }
 
     .invoice-client-info,
     .invoice-details-info {
         background-color: #f3faff;
-        padding: 20px;
-        border-radius: 10px;
+        padding: 18px 20px;
+        border-radius: 8px;
         width: 48%;
+        box-sizing: border-box;
+        font-size: 13.5px;
+        color: #0F3A77;
+        line-height: 1.8;
+    }
+
+    .box-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #00617A;
+        display: inline-block;
+        padding-bottom: 6px;
+        margin-bottom: 12px;
+        border-bottom: 2.5px solid #CB2786;
+    }
+
+    .info-grid {
         display: grid;
         grid-template-columns: max-content 1fr;
-        gap: 8px 10px;
-        align-items: center;
+        gap: 2px 10px;
     }
 
-    .grid-full-span {
-        grid-column: 1 / -1;
-        margin-bottom: 10px;
-    }
+    .info-grid .label { font-weight: 600; white-space: nowrap; }
+    .info-grid .value { color: #0F3A77; }
 
-    .grid-align-top-left {
-        align-self: start;
-        margin-bottom: 8px;
-        margin-top: 15px;
-    }
-
-    .title-underline {
-        position: relative;
-        display: inline-block;
-        padding-bottom: 10px;
-    }
-
-    .title-underline::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 57px;
-        height: 2.5px;
-        background-color: #CB2786;
-    }
-
+    /* ── SERVICE TABLE ── */
     .service-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 1rem;
-        table-layout: fixed;
+        font-size: 13.5px;
+        margin-bottom: 0;
     }
 
-    .service-table th,
-    .service-table td {
-        padding: 16px 8px;
-        text-align: left;
-        word-break: break-word;
-    }
-
-    .service-table th {
-        white-space: normal;
-    }
-
-    .service-table th:nth-child(1),
-    .service-table td:nth-child(1) {
-        width: 34%;
-    }
-
-    .service-table th:nth-child(2),
-    .service-table td:nth-child(2) {
-        width: 12%;
-    }
-
-    .service-table th:nth-child(3),
-    .service-table td:nth-child(3) {
-        width: 22%;
-    }
-
-    .service-table th:nth-child(4),
-    .service-table td:nth-child(4) {
-        width: 12%;
-    }
-
-    .service-table th:nth-child(5),
-    .service-table td:nth-child(5) {
-        width: 20%;
-    }
-
-    .service-table thead {
+    .service-table thead tr {
         background-color: #0C2C5A;
-        color: white;
+        color: #fff;
     }
 
-    .service-table th {
-        font-weight: 540;
+    .service-table thead th {
+        padding: 12px 10px;
+        font-weight: 600;
+        font-family: 'Playfair Display', serif;
+        letter-spacing: 0.3px;
     }
 
-    .service-table .service td {
+    .service-table thead th:first-child { text-align: left; }
+    .service-table thead th:not(:first-child) { text-align: right; }
+
+    .service-table tbody td {
+        padding: 10px 10px;
+        vertical-align: top;
+        border-bottom: 1px solid #f0f0f0;
         color: #0C2C5A;
-        font-weight: bold;
     }
 
-    .text-right {
-        text-align: right;
+    .service-table tbody td:first-child { text-align: left; }
+    .service-table tbody td:not(:first-child) { text-align: right; }
+
+    /* Main service row */
+    .row-main td { font-weight: 700; }
+    .row-main .sub-desc {
+        font-weight: 400;
+        font-size: 11.5px;
+        color: #555;
+        display: block;
+        margin-top: 2px;
     }
 
-    .service-table th.text-right,
-    .service-table td.text-right {
-        text-align: right;
-        white-space: nowrap;
-    }
-
-    .summary-section {
-        margin-top: 0;
-        float: right;
-        width: 100%;
-    }
-
-    .summary-line {
-        display: flex;
-        justify-content: flex-end;
-        padding: 8px;
-        border-bottom: 3px solid #eee;
-    }
-
-    .summary-line span:first-child {
-        margin-right: 40px;
-    }
-
-    .summary-line.grand-total {
-        background-color: #FFB700;
+    /* Add-on section label */
+    .row-addon-header td {
         font-weight: 700;
         color: #0C2C5A;
-        padding: 16px 8px;
-        border-bottom: none;
+        padding-top: 14px;
+        padding-bottom: 6px;
+        border-bottom: 1.5px solid #ccc;
     }
 
-    .summary-line.total-payable {
+    /* Add-on item rows */
+    .row-addon td {
+        padding-left: 20px;
+        font-weight: 600;
+        color: #0C2C5A;
+    }
+
+    .row-addon .sub-desc {
+        font-weight: 400;
+        font-size: 11.5px;
+        color: #777;
+        display: block;
+    }
+
+    /* ── SUMMARY ROWS ── */
+    .summary-row td {
+        padding: 8px 10px;
+        text-align: right;
+        font-size: 13.5px;
+        color: #333;
+        border: none;
+    }
+
+    .summary-row td:first-child { text-align: right; }
+
+    .row-subtotal td {
+        border-top: 1px solid #ddd;
+        padding-top: 12px;
+    }
+
+    .row-discount td {
+        background-color: #FFB700;
+        color: #0C2C5A;
+        font-weight: 700;
+        padding: 12px 10px;
+    }
+
+    .row-total td {
         background-color: #0C2C5A;
         color: #fff;
         font-weight: 700;
-        padding: 16px 8px;
-        border-bottom: none;
-        margin-bottom: 100px;
+        padding: 12px 10px;
     }
 
-    .invoice-footer {
-        clear: both;
-        padding-top: 100px;
+    .row-dp td {
+        background-color: #0C2C5A;
+        color: #fff;
+        font-weight: 700;
+        padding: 12px 10px;
     }
+
+    /* ── FOOTER ── */
+    .invoice-footer {
+        margin-top: 35px;
+    }
+
+    .invoice-signature {
+        font-size: 13.5px;
+        line-height: 1.8;
+        color: #222;
+    }
+
+    .invoice-signature p { margin: 4px 0; }
 
     .payment-info {
-        margin-top: 50px;
-        background-color: #ffc107;
-        padding: 20px;
-        border-radius: 8px;
+        margin-top: 40px;
+        background-color: #FFC107;
+        padding: 20px 25px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
     }
 
-    .payment-info h4 {
-        font-weight: bold;
+    .payment-info-left h4 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
         color: #001f3f;
-        margin-bottom: 10px;
+        font-size: 20px;
+        margin: 0 0 10px 0;
     }
 
-    .payment-info p {
-        font-size: 14px;
-        margin: 5px 0;
+    .payment-info-left p {
+        font-size: 13px;
+        margin: 3px 0;
         color: #000;
         font-family: Arial, sans-serif;
     }
 
-    .invoice-signature {
-        margin-top: 50px;
-        font-size: 14px;
+    .payment-info-right {
+        font-size: 12px;
+        color: #001f3f;
+        text-align: right;
+        white-space: nowrap;
+        font-family: Arial, sans-serif;
     }
 
-    @media print {
-        .no-print {
-            display: none;
-        }
-    }
+    @media print { .no-print { display: none; } }
 
-    /* Mobile responsive styles */
     @media (max-width: 768px) {
-        .invoice-wrapper {
-            padding: 15px;
-            margin: 20px auto;
-        }
-
-        .invoice-top-section {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .invoice-client-info,
-        .invoice-details-info {
-            width: 100%;
-        }
+        .invoice-wrapper { padding: 15px; margin: 20px auto; }
+        .invoice-top-section { flex-direction: column; }
+        .invoice-client-info, .invoice-details-info { width: 100%; }
+        .payment-info { flex-direction: column; gap: 10px; }
     }
 </style>
 
@@ -259,162 +262,209 @@
     </div>
 
     <div class="invoice-wrapper">
-        {{-- Invoice Header --}}
+
+        {{-- ── HEADER ── --}}
         <div class="invoice-header">
             <div class="invoice-header-details">
                 <div class="invoice-logo"><img style="width: 300px;" src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo"></div>
                 <div class="invoice-contact-info">
                     Email: temancerita@indiegologi.com<br>
-                    Phone Number: +62 822-2095-5595
+                    Phone Number: +62 822-2095-5595<br>
+                    Website: indiegologi.com
                 </div>
             </div>
         </div>
 
-        {{-- Client and Invoice Details --}}
+        {{-- ── TWO-COLUMN CLIENT + INVOICE DETAILS ── --}}
         <div class="invoice-top-section">
             <div class="invoice-client-info">
-                <p class="grid-full-span title-underline">Dear</p>
-                <span>Nama</span>
-                <span>: {{ $invoice->user->name ?? 'N/A' }}</span>
+                <div class="box-title">Dear</div>
+                @php $allItems = $invoice->getAllItems(); @endphp
+                <div class="info-grid">
+                    <span class="label">Nama</span>
+                    <span class="value">: {{ $invoice->user->name ?? 'N/A' }}</span>
 
-                <span>No Hp</span>
-                <span>: {{ optional($invoice->user->profile)->phone_number ?? 'N/A' }}</span>
+                    @php
+                        $booking = $invoice->consultationBooking ?? null;
+                        $firstService = $allItems->where('type', 'service')->first();
+                    @endphp
 
-                @php
-                $allItems = $invoice->getAllItems();
-                @endphp
-
-                @if($allItems->isNotEmpty())
-                <span class="grid-full-span grid-align-top-left">Pesanan:</span>
-                <div class="grid-full-span">
-                    @foreach($allItems as $item)
-                    @if($item['type'] === 'service')
-                    • {{ $item['item']->title }} (Service)<br>
-                    @elseif($item['type'] === 'event')
-                    • {{ $item['item']->title }} (Event - {{ $item['participant_count'] }} peserta)<br>
+                    @if($booking && $booking->booking_date)
+                    <span class="label">Waktu Konseling</span>
+                    <span class="value">: {{ $booking->booking_date->format('d F Y') }}</span>
                     @endif
-                    @endforeach
+
+                    @if($firstService)
+                    <span class="label">Paket Konseling</span>
+                    <span class="value">: {{ $firstService['item']->title }}</span>
+                    @endif
+
+                    <span class="label">No Hp</span>
+                    <span class="value">: {{ optional($invoice->user->profile)->phone_number ?? 'N/A' }}</span>
+
+                    @if($booking && $booking->session_type)
+                    <span class="label">Session</span>
+                    <span class="value">: {{ ucfirst($booking->session_type) }}</span>
+                    @endif
                 </div>
-                @endif
             </div>
 
             <div class="invoice-details-info">
-                <h5 class="grid-full-span title-underline">Invoice Details</h5>
-                <span>Invoice No</span>
-                <span>: {{ $invoice->invoice_no }}</span>
-                <span>Invoice Date</span>
-                <span>: {{ $invoice->invoice_date->format('d/F/Y') }}</span>
-                <span>Due Date</span>
-                <span>: {{ $invoice->due_date->format('d/F/Y') }}</span>
-                <span>Status</span>
-                <span>: {{ ucfirst($invoice->payment_status) }}</span>
-                <span>Payment Type</span>
-                <span>: {{ $invoice->payment_type == 'dp' ? 'DP (50%)' : 'Pembayaran Penuh' }}</span>
+                <div class="box-title">Invoice Details</div>
+                <div class="info-grid">
+                    <span class="label">Invoice No</span>
+                    <span class="value">: {{ $invoice->invoice_no ?? 'N/A' }}</span>
+
+                    <span class="label">Invoice Date</span>
+                    <span class="value">: {{ $invoice->invoice_date->format('d/F/Y') }}</span>
+
+                    <span class="label">Due Date</span>
+                    <span class="value">: {{ $invoice->due_date->format('d/F/Y') }}</span>
+
+                    <span class="label">Status</span>
+                    <span class="value">: {{ ucfirst($invoice->payment_status ?? 'N/A') }}</span>
+
+                    <span class="label">Payment Type</span>
+                    <span class="value">:
+                        @if($invoice->payment_type == 'dp') DP (50%)
+                        @else Transfer
+                        @endif
+                    </span>
+                </div>
             </div>
         </div>
 
-        {{-- Service Table --}}
+        {{-- ── SERVICE TABLE ── --}}
         <table class="service-table">
             <thead>
                 <tr>
-                    <th>Deskripsi</th>
-                    <th class="text-right">Kuantitas</th>
-                    <th class="text-right">Harga</th>
-                    <th class="text-right">Diskon</th>
-                    <th class="text-right">Total</th>
+                    <th style="width:38%">Service Description</th>
+                    <th style="width:12%">Quantity</th>
+                    <th style="width:18%">Unit Price</th>
+                    <th style="width:12%">Amount</th>
+                    <th style="width:20%">Total Line</th>
                 </tr>
             </thead>
             <tbody>
                 @php
-                $allItems = $invoice->getAllItems();
+                    $allItems = $invoice->getAllItems();
+                    $mainService = $allItems->where('type', 'service')->first();
+                    $addonServices = $allItems->where('type', 'service')->skip(1);
+                    $eventItems = $allItems->where('type', 'event');
                 @endphp
 
-                @foreach($allItems as $item)
-                @if($item['type'] === 'service')
-                {{-- Service Item --}}
-                <tr class="service">
-                    <td>{{ $item['item']->title }} (Service)</td>
-                    <td class="text-right">1</td>
-                    <td class="text-right">Rp {{ number_format($item['pivot']->total_price_at_booking, 0, ',', '.') }}</td>
-                    <td class="text-right">
-                        @if($item['pivot']->discount_amount_at_booking > 0)
-                        -Rp {{ number_format($item['pivot']->discount_amount_at_booking, 0, ',', '.') }}
-                        @else
-                        -
+                {{-- Main service --}}
+                @if($mainService)
+                <tr class="row-main">
+                    <td>
+                        {{ $mainService['item']->title }}
+                        @if(isset($mainService['item']->duration))
+                        <span class="sub-desc">{{ $mainService['item']->duration }} Hours Packet</span>
                         @endif
                     </td>
-                    <td class="text-right">Rp {{ number_format($item['pivot']->final_price_at_booking, 0, ',', '.') }}</td>
-                </tr>
-                @elseif($item['type'] === 'event')
-                {{-- Event Item --}}
-                <tr class="service">
-                    <td>{{ $item['item']->title }} (Event)</td>
-                    <td class="text-right">{{ $item['participant_count'] }} peserta</td>
-                    <td class="text-right">Rp {{ number_format($item['booking']->total_price, 0, ',', '.') }}</td>
-                    <td class="text-right">
-                        @if($item['booking']->discount_amount > 0)
-                        -Rp {{ number_format($item['booking']->discount_amount, 0, ',', '.') }}
-                        @else
-                        -
-                        @endif
-                    </td>
-                    <td class="text-right">Rp {{ number_format($item['booking']->final_price, 0, ',', '.') }}</td>
+                    <td>1</td>
+                    <td>Rp {{ number_format($mainService['pivot']->total_price_at_booking, 0, ',', '.') }}</td>
+                    <td></td>
+                    <td>Rp {{ number_format($mainService['pivot']->final_price_at_booking, 0, ',', '.') }}</td>
                 </tr>
                 @endif
+
+                {{-- Add Ons header --}}
+                @if($addonServices->isNotEmpty() || $eventItems->isNotEmpty())
+                <tr class="row-addon-header">
+                    <td colspan="5">Add On</td>
+                </tr>
+                @endif
+
+                {{-- Addon services --}}
+                @foreach($addonServices as $item)
+                <tr class="row-addon">
+                    <td>
+                        {{ $item['item']->title }}
+                        @if(isset($item['item']->subtitle))
+                        <span class="sub-desc">{{ $item['item']->subtitle }}</span>
+                        @endif
+                    </td>
+                    <td>1</td>
+                    <td>Rp {{ number_format($item['pivot']->total_price_at_booking, 0, ',', '.') }}</td>
+                    <td></td>
+                    <td>Rp {{ number_format($item['pivot']->final_price_at_booking, 0, ',', '.') }}</td>
+                </tr>
+                @endforeach
+
+                {{-- Event items as addons --}}
+                @foreach($eventItems as $item)
+                <tr class="row-addon">
+                    <td>
+                        {{ $item['item']->title }}
+                        <span class="sub-desc">Event</span>
+                    </td>
+                    <td>{{ $item['participant_count'] }} peserta</td>
+                    <td>Rp {{ number_format($item['booking']->total_price, 0, ',', '.') }}</td>
+                    <td></td>
+                    <td>Rp {{ number_format($item['booking']->final_price, 0, ',', '.') }}</td>
+                </tr>
                 @endforeach
             </tbody>
+
+            {{-- Summary rows inside tfoot --}}
+            <tfoot>
+                <tr class="summary-row row-subtotal">
+                    <td colspan="4" style="text-align:right; font-weight:600; color:#333;">Sub-Total:</td>
+                    <td style="text-align:right; font-weight:600; color:#333;">
+                        Rp {{ number_format($invoice->total_amount + $invoice->auto_discount_amount, 0, ',', '.') }}
+                    </td>
+                </tr>
+
+                @if($invoice->auto_discount_amount > 0)
+                <tr class="row-discount">
+                    <td colspan="4" style="text-align:right;">Total Discount:</td>
+                    <td style="text-align:right;">-Rp {{ number_format($invoice->auto_discount_amount, 0, ',', '.') }}</td>
+                </tr>
+                @endif
+
+                <tr class="row-total">
+                    <td colspan="4" style="text-align:right;">Total Invoice</td>
+                    <td style="text-align:right;">Rp {{ number_format($invoice->total_amount, 0, ',', '.') }}</td>
+                </tr>
+
+                @if($invoice->payment_type == 'dp')
+                @php $dpAmount = $invoice->total_amount * 0.5; @endphp
+                <tr class="row-dp">
+                    <td colspan="4" style="text-align:right;">Total Bayar (DP 50%)</td>
+                    <td style="text-align:right;">Rp {{ number_format($dpAmount, 0, ',', '.') }}</td>
+                </tr>
+                @endif
+            </tfoot>
         </table>
 
-        {{-- Summary Section --}}
-        <div class="summary-section">
-            <div class="summary-line">
-                <span>Sub-Total:</span>
-                <span>Rp {{ number_format($invoice->total_amount + $invoice->auto_discount_amount, 0, ',', '.') }}</span>
-            </div>
-
-            @if ($invoice->auto_discount_amount > 0)
-            <div class="summary-line">
-                <span><b>Total Diskon Item:</b></span>
-                <span><b>-Rp {{ number_format($invoice->auto_discount_amount, 0, ',', '.') }}</b></span>
-            </div>
-            @endif
-
-            <div class="summary-line grand-total">
-                <span>TOTAL KESELURUHAN :</span>
-                <span>Rp {{ number_format($invoice->total_amount, 0, ',', '.') }}</span>
-            </div>
-
-            @if ($invoice->payment_type == 'dp')
-            @php
-            $dpAmount = $invoice->total_amount * 0.5;
-            @endphp
-            <div class="summary-line total-payable">
-                <span>TOTAL BAYAR (DP 50%) :</span>
-                <span>Rp {{ number_format($dpAmount, 0, ',', '.') }}</span>
-            </div>
-            @endif
-        </div>
-
-        {{-- Footer --}}
+        {{-- ── FOOTER ── --}}
         <div class="invoice-footer">
             <div class="invoice-signature">
-                <p>Dear Customer,</p>
-                <p>Durasi Konseling Sesuai dengan jadwal yang telah disepakati dan apabila melebihi dari jadwal yang telah disepakati akan diberikan charge tambahan</p>
-                <p>Keterlambatan yang dilakukan oleh Client tetap terhitung sebagai durasi konseling</p>
-                <p>reschedule dapat dilakukan selambat lambatnya 24 jam sebelum sesi konseling</p>
-                <p>Sudah Menjadi bagian sejarah dari hidup {{ $invoice->user->name ?? 'Anda' }}, semoga keberuntungan dan kebahagiaan akan mengikuti hidup kita selanjutnya.</p>
-                <p>Salam</p>
-                <p>{{ $adminName ?? 'Melvin' }}<br>Tim Indiegologi</p>
+                <p><b>Dear Customer,</b></p>
+                <p>Durasi Konseling Sesuai dengan jadwal yang telah disepakati dan apabila melebihi dari jadwal yang telah disepakati akan diberikan charge tambahan.</p>
+                <p>Keterlambatan yang dilakukan oleh Client tetap terhitung sebagai durasi konseling.</p>
+                <p>Reschedule dapat dilakukan selambat-lambatnya 24 jam sebelum sesi konseling.</p>
+                <p style="margin-top: 12px;">Sudah Menjadi bagian sejarah dari hidup {{ $invoice->user->name ?? 'Anda' }}, semoga keberuntungan dan kebahagiaan akan mengikuti hidup kita selanjutnya.</p>
+                <p style="margin-top: 20px;">Regard,</p>
+                <br>
+                <p>{{ $adminName ?? 'Admin Indiegologi' }}<br>Indiegologi Team</p>
             </div>
 
             <div class="payment-info">
-                <h4>Payment Information</h4>
-                <p>Bank SMBC Indonesia - 90110023186</p>
-                <p>Name: Artwira Mahatavirya Satyagasty</p>
-                <p>Please Transfer Payment to the Account above before the due date,</p>
-                <p>And Please Confirm to the following number: 0822 2095 5595</p>
+                <div class="payment-info-left">
+                    <h4>Payment Information</h4>
+                    <p>Bank SMBC Indonesia - 90110023186</p>
+                    <p>Name : Artwira Mahatavirya Satyagasty</p>
+                    <p>Please transfer payment to the account above before the due date,</p>
+                    <p>and please confirm to the following number : 0822 2095 5595</p>
+                </div>
+                <div class="payment-info-right">
+                    {{ $invoice->user->name ?? 'Customer' }}'s Invoice – Page 1 of 1
+                </div>
             </div>
         </div>
+
     </div>
 </div>
 @endsection

@@ -369,6 +369,9 @@
                         <a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
                             <i class="fas fa-comments"></i> Manajemen Testimoni
                         </a>
+                        <a href="{{ route('admin.manual-invoices.index') }}" class="{{ request()->routeIs('admin.manual-invoices.*') ? 'active' : '' }}">
+                            <i class="fas fa-file-invoice"></i> Invoice Manual
+                        </a>
                         <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
                             <i class="fas fa-user-circle"></i> Profil
                         </a>

@@ -20,6 +20,7 @@ use App\Http\Controllers\GuestEventBookingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\Admin\ManualInvoiceController;
 use Illuminate\Http\Request;
 
 Route::post('/test-simple', function () {
@@ -237,6 +238,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::post('schedules/bulk-create', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'bulkCreate'])->name('schedules.bulk-create');
         Route::put('schedules/{schedule}/toggle-availability', [App\Http\Controllers\Admin\FreeConsultationScheduleController::class, 'toggleAvailability'])->name('schedules.toggle-availability');
     });
+
+    // Manual Invoice Management
+    Route::resource('manual-invoices', ManualInvoiceController::class);
+    Route::get('/manual-invoices/{manualInvoice}/preview-pdf', [ManualInvoiceController::class, 'previewPdf'])->name('manual-invoices.preview-pdf');
+    Route::get('/manual-invoices/{manualInvoice}/download-pdf', [ManualInvoiceController::class, 'downloadPdf'])->name('manual-invoices.download-pdf');
 
     // Admin can also manage comments
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('admin.admin.comments.destroy');
