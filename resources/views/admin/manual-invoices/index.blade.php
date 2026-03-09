@@ -60,11 +60,16 @@
                         </td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
+                                <a href="{{ route('admin.manual-invoices.show', $invoice->id) }}" 
+                                   class="btn btn-sm btn-outline-info"
+                                   title="Lihat Invoice">
+                                    <i class="fas fa-eye"></i>
+                                </a>
                                 <a href="{{ route('admin.manual-invoices.preview-pdf', $invoice->id) }}" 
                                    target="_blank" 
                                    class="btn btn-sm btn-outline-primary"
                                    title="Preview PDF">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="fas fa-file-pdf"></i>
                                 </a>
                                 <a href="{{ route('admin.manual-invoices.download-pdf', $invoice->id) }}" 
                                    class="btn btn-sm btn-outline-success"
@@ -100,7 +105,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
 </div>
 
 @if($invoices->hasPages())
@@ -109,4 +113,3 @@
 </div>
 @endif
 @endsection
-

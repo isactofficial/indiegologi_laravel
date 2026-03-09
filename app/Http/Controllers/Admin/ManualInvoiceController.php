@@ -287,4 +287,16 @@ class ManualInvoiceController extends Controller
 
         return $pdf->stream('invoice-' . str_replace('/', '-', $manualInvoice->invoice_no) . '.pdf');
     }
+
+    /**
+     * Show manual invoice preview page.
+     */
+    public function show(ManualInvoice $manualInvoice)
+    {
+        $manualInvoice->load('items');
+        
+        return view('admin.manual-invoices.show', [
+            'invoice' => $manualInvoice,
+        ]);
+    }
 }

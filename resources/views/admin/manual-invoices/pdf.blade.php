@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>Invoice #{{ $invoice->invoice_no }}</title>
     <style>
-        @page { margin: 30px 35px; }
+        @page {
+            margin: 30px 35px;
+        }
 
         body {
             font-family: 'Times New Roman', Times, serif;
@@ -13,54 +15,84 @@
             background: #fff;
         }
 
-        table { width: 100%; border-collapse: collapse; }
-        p { margin: 4px 0; line-height: 1.6; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
+        p {
+            margin: 4px 0;
+            line-height: 1.7;
+        }
+
+        /* ── HEADER ── */
         .invoice-header {
             text-align: right;
             border-bottom: 1px solid #ccc;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-
-        .invoice-logo img {
-            width: 300px;
-            height: auto;
+            padding-bottom: 14px;
+            margin-bottom: 22px;
         }
 
         .invoice-contact {
-            font-size: 13px;
+            font-size: 12px;
             color: #444;
-            line-height: 1.7;
-            margin-top: 8px;
+            line-height: 1.9;
+            margin-top: 6px;
         }
 
-        .top-table { margin-bottom: 30px; }
+        /* ── TWO-COLUMN INFO BOXES ── */
+        .top-table {
+            margin-bottom: 22px;
+            border-spacing: 0;
+        }
 
         .info-box {
             background-color: #f3faff;
-            padding: 18px 20px;
-            border-radius: 8px;
+            padding: 14px 16px;
+            border-radius: 6px;
             vertical-align: top;
             width: 48%;
-            font-size: 13.5px;
-            color: #0F3A77;
+        }
+
+        .spacer-col {
+            width: 4%;
         }
 
         .box-title {
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: bold;
             color: #00617A;
             border-bottom: 2.5px solid #CB2786;
             display: inline-block;
-            padding-bottom: 6px;
-            margin-bottom: 12px;
+            padding-bottom: 5px;
+            margin-top: 0;
+            margin-bottom: 10px;
         }
 
-        .info-row-label { font-weight: 600; color: #0F3A77; white-space: nowrap; padding-right: 6px; }
-        .info-row-value { color: #0F3A77; }
+        .info-inner {
+            width: 100%;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
 
-        .service-table { margin-top: 0; }
+        .info-inner td {
+            padding: 3px 0;
+            color: #0F3A77;
+            vertical-align: top;
+        }
+
+        .lbl {
+            font-weight: bold;
+            white-space: nowrap;
+            padding-right: 8px;
+            width: 1%;
+        }
+
+        /* ── SERVICE TABLE ── */
+        .service-table {
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
 
         .service-table thead tr {
             background-color: #0C2C5A;
@@ -69,39 +101,54 @@
 
         .service-table thead th {
             padding: 12px 10px;
-            font-weight: 600;
+            font-weight: bold;
             font-size: 13px;
+            text-align: right;
         }
 
-        .service-table th:first-child,
-        .service-table td:first-child { text-align: left; }
-
-        .service-table th:not(:first-child),
-        .service-table td:not(:first-child) { text-align: right; }
+        .service-table thead th:first-child {
+            text-align: left;
+        }
 
         .service-table tbody td {
             padding: 10px 10px;
             vertical-align: top;
             color: #0C2C5A;
             border-bottom: 1px solid #f0f0f0;
+            text-align: right;
         }
 
-        .main-title { font-weight: 700; }
-        .sub-desc { font-size: 11.5px; color: #555; font-weight: normal; }
+        .service-table tbody td:first-child {
+            text-align: left;
+        }
+
+        .main-title {
+            font-weight: bold;
+        }
+
+        .sub-desc {
+            font-size: 10.5px;
+            color: #666;
+            font-weight: normal;
+        }
 
         .addon-header td {
-            font-weight: 700;
+            font-weight: bold;
             color: #0C2C5A;
-            padding-top: 14px;
-            padding-bottom: 6px;
-            border-bottom: 1.5px solid #ccc;
+            padding: 12px 10px 6px;
+            border-bottom: 1px solid #bbb;
+            text-align: left;
         }
 
-        .addon-row td { padding-left: 20px; font-weight: 600; }
+        .addon-row td {
+            padding-left: 20px;
+            font-weight: bold;
+        }
 
+        /* ── SUMMARY ROWS ── */
         .row-subtotal td {
             text-align: right;
-            padding: 12px 10px 8px;
+            padding: 10px 10px 8px;
             border-top: 1.5px solid #ddd;
             font-weight: 600;
             color: #333;
@@ -111,7 +158,7 @@
             text-align: right;
             background-color: #FFB700;
             color: #0C2C5A;
-            font-weight: 700;
+            font-weight: bold;
             padding: 12px 10px;
         }
 
@@ -119,7 +166,7 @@
             text-align: right;
             background-color: #0C2C5A;
             color: #fff;
-            font-weight: 700;
+            font-weight: bold;
             padding: 12px 10px;
         }
 
@@ -127,148 +174,136 @@
             text-align: right;
             background-color: #0C2C5A;
             color: #fff;
-            font-weight: 700;
+            font-weight: bold;
             padding: 12px 10px;
         }
 
+        /* ── FOOTER ── */
         .footer-signature {
-            margin-top: 35px;
-            font-size: 13.5px;
+            margin-top: 30px;
+            font-size: 13px;
             line-height: 1.8;
             color: #222;
-            text-align: left;
         }
 
         .payment-info {
-            margin-top: 40px;
+            margin-top: 30px;
             background-color: #FFC107;
-            padding: 20px 25px;
+            padding: 16px 20px;
             border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .payment-info-inner {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
         }
 
         .payment-title {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: bold;
             color: #001f3f;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            display: block;
         }
 
-        .payment-details { font-size: 13px; color: #000; line-height: 1.8; }
+        .payment-details {
+            font-size: 12px;
+            color: #000;
+            line-height: 1.9;
+            font-family: Arial, sans-serif;
+        }
 
         .payment-page-num {
-            font-size: 12px;
+            font-size: 11px;
             color: #001f3f;
             text-align: right;
             vertical-align: bottom;
-            white-space: nowrap;
+            font-family: Arial, sans-serif;
         }
 
-        .avoid-break { page-break-inside: avoid; }
+        .avoid-break {
+            page-break-inside: avoid;
+        }
     </style>
 </head>
 <body>
-<div style="max-width: 800px; margin: 0 auto;">
+<div style="max-width: 780px; margin: 0 auto;">
 
-    {{-- HEADER --}}
+    {{-- ── HEADER ── --}}
     <div class="invoice-header avoid-break">
-        <div class="invoice-logo">
-            <img src="{{ asset('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo">
-        </div>
+        <img style="width: 280px;" src="{{ public_path('assets/img/logo_revisi_2.png') }}" alt="Indiegologi Logo">
         <div class="invoice-contact">
             Email: {{ $invoice->company_email ?? 'temancerita@indiegologi.com' }}<br>
             Phone Number: {{ $invoice->company_phone ?? '+62 822-2095-5595' }}<br>
             Website: {{ $invoice->company_website ?? 'indiegologi.com' }}
         </div>
+    </div>
 
-    {{-- TWO-COLUMN: CLIENT + INVOICE DETAILS --}}
+    {{-- ── TWO-COLUMN: DEAR + INVOICE DETAILS ── --}}
     <table class="top-table avoid-break">
         <tr>
+            {{-- LEFT: Dear / Client Info --}}
             <td class="info-box">
                 <div class="box-title">Dear</div>
-                <table style="width:100%; border-spacing: 0;">
+                <table class="info-inner">
                     <tr>
-                        <td class="info-row-label">Nama</td>
-                        <td class="info-row-value">: {{ $invoice->client_name }}</td>
+                        <td class="lbl">Nama</td>
+                        <td>: {{ $invoice->client_name }}</td>
                     </tr>
                     @if($invoice->counseling_date)
                     <tr>
-                        <td class="info-row-label">Waktu Konseling</td>
-                        <td class="info-row-value">: {{ $invoice->counseling_date }}</td>
+                        <td class="lbl">Waktu Konseling</td>
+                        <td>: {{ $invoice->counseling_date }}</td>
                     </tr>
                     @endif
                     @if($invoice->package)
                     <tr>
-                        <td class="info-row-label">Paket Konseling</td>
-                        <td class="info-row-value">: {{ $invoice->package }}</td>
-                    </tr>
-                    @endif
-                    @if($invoice->client_phone)
-                    <tr>
-                        <td class="info-row-label">No Hp</td>
-                        <td class="info-row-value">: {{ $invoice->client_phone }}</td>
-                    </tr>
-                    @endif
-                    @if($invoice->client_email)
-                    <tr>
-                        <td class="info-row-label">Email</td>
-                        <td class="info-row-value">: {{ $invoice->client_email }}</td>
+                        <td class="lbl">Paket Konseling</td>
+                        <td>: {{ $invoice->package }}</td>
                     </tr>
                     @endif
                     <tr>
-                        <td class="info-row-label">Session</td>
-                        <td class="info-row-value">: {{ $invoice->session_type ?? 'Offline' }}</td>
+                        <td class="lbl">No Hp</td>
+                        <td>: {{ $invoice->client_phone ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Session</td>
+                        <td>: {{ $invoice->session_type ?? 'Offline' }}</td>
                     </tr>
                 </table>
             </td>
 
-            <td style="width:4%;"></td>
+            <td class="spacer-col"></td>
 
+            {{-- RIGHT: Invoice Details --}}
             <td class="info-box">
                 <div class="box-title">Invoice Details</div>
-                <table style="width:100%; border-spacing: 0;">
+                <table class="info-inner">
                     <tr>
-                        <td class="info-row-label">Invoice No</td>
-                        <td class="info-row-value">: {{ $invoice->invoice_no }}</td>
+                        <td class="lbl">Invoice No</td>
+                        <td>: {{ $invoice->invoice_no }}</td>
                     </tr>
                     <tr>
-                        <td class="info-row-label">Invoice Date</td>
-                        <td class="info-row-value">: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d/F/Y') }}</td>
+                        <td class="lbl">Invoice Date</td>
+                        <td>: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d/F/Y') }}</td>
                     </tr>
                     <tr>
-                        <td class="info-row-label">Due Date</td>
-                        <td class="info-row-value">: {{ \Carbon\Carbon::parse($invoice->due_date)->format('d/F/Y') }}</td>
+                        <td class="lbl">Due Date</td>
+                        <td>: {{ \Carbon\Carbon::parse($invoice->due_date)->format('d/F/Y') }}</td>
                     </tr>
                     <tr>
-                        <td class="info-row-label">Status</td>
-                        <td class="info-row-value">: {{ ucfirst($invoice->status ?? 'Unpaid') }}</td>
+                        <td class="lbl">Status</td>
+                        <td>: {{ ucfirst($invoice->status ?? 'Unpaid') }}</td>
                     </tr>
                     <tr>
-                        <td class="info-row-label">Payment Type</td>
-                        <td class="info-row-value">:
-                            @if($invoice->payment_type == 'dp') DP (50%)
-                            @else {{ $invoice->payment_type ?? 'Transfer' }}
-                            @endif
-                        </td>
+                        <td class="lbl">Payment Type</td>
+                        <td>: @if($invoice->payment_type == 'dp') DP (50%) @else {{ $invoice->payment_type ?? 'Transfer' }} @endif</td>
                     </tr>
                 </table>
             </td>
         </tr>
     </table>
 
-    {{-- SERVICE TABLE --}}
+    {{-- ── SERVICE TABLE ── --}}
     @php
-        $mainItems = $invoice->items->where('is_addon', false);
+        $mainItems  = $invoice->items->where('is_addon', false);
         $addonItems = $invoice->items->where('is_addon', true);
-        $hasAddons = $addonItems->isNotEmpty();
+        $hasAddons  = $addonItems->isNotEmpty();
     @endphp
 
     <table class="service-table avoid-break">
@@ -347,7 +382,7 @@
         </tfoot>
     </table>
 
-    {{-- FOOTER --}}
+    {{-- ── FOOTER ── --}}
     <div class="footer-signature avoid-break">
         <p><b>Dear Customer,</b></p>
         <p>Durasi Konseling Sesuai dengan jadwal yang telah disepakati dan apabila melebihi dari jadwal yang telah disepakati akan diberikan charge tambahan.</p>
@@ -359,19 +394,26 @@
         <p>{{ $invoice->signed_by ?? 'Vernandika Stanley Hansen' }}<br>{{ $invoice->signed_title ?? 'Indiegologi Team' }}</p>
     </div>
 
+    {{-- ── PAYMENT INFO ── --}}
     <div class="payment-info avoid-break">
-        <div class="payment-info-inner">
-            <div style="vertical-align:top;">
-                <div class="payment-title">Payment Information</div>
-                <div class="payment-details">
-                    {{ $invoice->bank_name ?? 'Bank SMBC Indonesia' }} - {{ $invoice->bank_account ?? '90110023186' }}<br>
-                    Name : {{ $invoice->account_name ?? 'Artwira Mahatavirya Satyagasty' }}<br>
-                    Please transfer payment to the account above before the due date,<br>
-                    and please confirm to the following number : {{ $invoice->confirm_number ?? '0822 2095 5595' }}
-                </div>
-            <div class="payment-page-num" style="width:200px; vertical-align:bottom;">
-                {{ $invoice->client_name }}'s Invoice - Page 1 of 1
-            </div>
+        <table style="width:100%; border-collapse:collapse;">
+            <tr>
+                <td style="vertical-align:top;">
+                    <span class="payment-title">Payment Information</span>
+                    <div class="payment-details">
+                        {{ $invoice->bank_name ?? 'Bank SMBC Indonesia' }} - {{ $invoice->bank_account ?? '90110023186' }}<br>
+                        Name : {{ $invoice->account_name ?? 'Artwira Mahatavirya Satyagasty' }}<br>
+                        Please transfer payment to the account above before the due date,<br>
+                        and please confirm to the following number : {{ $invoice->confirm_number ?? '0822 2095 5595' }}
+                    </div>
+                </td>
+                <td class="payment-page-num" style="width: 180px; vertical-align:bottom;">
+                    {{ $invoice->client_name }}'s Invoice – Page 1 of 1
+                </td>
+            </tr>
+        </table>
     </div>
+
+</div>
 </body>
 </html>
