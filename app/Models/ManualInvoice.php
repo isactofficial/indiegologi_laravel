@@ -58,14 +58,28 @@ class ManualInvoice extends Model
      */
     public function calculateTotals()
     {
-        $subtotal = $this->items->sum(function($item) {
-            return $item->quantity * $item->unit_price;
-        });
+        $subtotal = 0;
+        $totalDiscount = 0;
+        
+        foreach ($this->items as $item) {
+            $lineTotal = $item->quantity * $item->unit_price;
+            $subtotal += $lineTotal;
+            $totalDiscount += ($item->discount_amount ?? 0);
+        }
 
         $this->subtotal_amount = $subtotal;
-        $this->total_amount = $subtotal - ($this->discount_amount ?? 0);
+        $this->discount_amount = $totalDiscount;
+        $this->total_amount = $subtotal - $totalDiscount;
         
         return $this;
+    }
+
+    /**
+     * Get total discount from items
+     */
+    public function getTotalItemDiscountAttribute()
+    {
+        return $this->items->sum('discount_amount') ?? 0;
     }
 
     /**

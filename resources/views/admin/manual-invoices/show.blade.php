@@ -152,8 +152,17 @@
         padding-top: 12px;
     }
 
+    /* Spacer row between summary blocks */
+    .row-spacer td {
+        padding: 3px 0 !important;
+        border: none !important;
+        background: transparent !important;
+        line-height: 0;
+        font-size: 0;
+    }
+
     .row-discount td {
-        background-color: #f8cd60;
+        background-color: #FFC107;
         color: #0C2C5A;
         font-weight: 700;
         padding: 12px 10px;
@@ -330,8 +339,17 @@
                     <td>{{ $item->quantity }}</td>
                     <td>Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                     <td></td>
-                    <td>Rp {{ number_format($item->quantity * $item->unit_price, 0, ',', '.') }}</td>
+                    <td>Rp {{ number_format(($item->quantity * $item->unit_price) - ($item->discount_amount ?? 0), 0, ',', '.') }}</td>
                 </tr>
+                @if($item->discount_amount > 0)
+                <tr class="row-discount-item">
+                    <td colspan="1" style="text-align:left; padding-left: 20px; font-size: 12px; background-color: rgba(255, 193, 7, 0.3);">Diskon:</td>
+                    <td style="text-align:right; color: #d32f2f; font-size: 12px; background-color: rgba(255, 193, 7, 0.3);">-Rp {{ number_format($item->discount_amount, 0, ',', '.') }}</td>
+                    <td style="background-color: rgba(255, 193, 7, 0.3);"></td>
+                    <td style="background-color: rgba(255, 193, 7, 0.3);"></td>
+                    <td style="background-color: rgba(255, 193, 7, 0.3);"></td>
+                </tr>
+                @endif
                 @endforeach
 
                 @if($hasAddons)
@@ -351,12 +369,22 @@
                     <td>{{ $item->quantity }}</td>
                     <td>Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                     <td></td>
-                    <td>Rp {{ number_format($item->quantity * $item->unit_price, 0, ',', '.') }}</td>
+                    <td>Rp {{ number_format(($item->quantity * $item->unit_price) - ($item->discount_amount ?? 0), 0, ',', '.') }}</td>
                 </tr>
+                @if($item->discount_amount > 0)
+                <tr class="row-discount-item">
+                    <td colspan="1" style="text-align:left; padding-left: 20px; font-size: 12px; background-color: rgba(255, 193, 7, 0.3);">Diskon:</td>
+                    <td style="text-align:right; color: #d32f2f; font-size: 12px; background-color: rgba(255, 193, 7, 0.3);">-Rp {{ number_format($item->discount_amount, 0, ',', '.') }}</td>
+                    <td style="background-color: rgba(255, 193, 7, 0.3);"></td>
+                    <td style="background-color: rgba(255, 193, 7, 0.3);"></td>
+                    <td style="background-color: rgba(255, 193, 7, 0.3);"></td>
+                </tr>
+                @endif
                 @endforeach
             </tbody>
 
             <tfoot>
+                {{-- Sub-Total --}}
                 <tr class="summary-row row-subtotal">
                     <td colspan="4" style="text-align:right; font-weight:600; color:#333;">Sub-Total:</td>
                     <td style="text-align:right; font-weight:600; color:#333;">
@@ -365,10 +393,16 @@
                 </tr>
 
                 @if($invoice->discount_amount > 0)
+                {{-- Spacer between Sub-Total and Discount --}}
+                <tr class="row-spacer"><td colspan="5"></td></tr>
+
                 <tr class="row-discount">
                     <td colspan="4" style="text-align:right;">Total Discount:</td>
                     <td style="text-align:right;">-Rp {{ number_format($invoice->discount_amount, 0, ',', '.') }}</td>
                 </tr>
+
+                {{-- Spacer between Discount and Total Invoice --}}
+                <tr class="row-spacer"><td colspan="5"></td></tr>
                 @endif
 
                 <tr class="row-total">

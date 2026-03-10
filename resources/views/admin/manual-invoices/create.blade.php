@@ -281,15 +281,19 @@ function addItem(isAddon) {
                     </div>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label">Jumlah</label>
                         <input type="number" name="items[${itemIndex}][quantity]" class="form-control item-quantity" value="1" min="1" onchange="calculateTotals()">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label">Harga Satuan (Rp)</label>
                         <input type="number" name="items[${itemIndex}][unit_price]" class="form-control item-price" value="0" min="0" onchange="calculateTotals()">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label class="form-label">Diskon (Rp)</label>
+                        <input type="number" name="items[${itemIndex}][discount_amount]" class="form-control item-discount" value="0" min="0" onchange="calculateTotals()">
+                    </div>
+                    <div class="col-md-3">
                         <label class="form-label">Total</label>
                         <input type="text" class="form-control item-total" value="Rp 0" readonly>
                         <input type="hidden" name="items[${itemIndex}][is_addon]" value="${isAddon ? '1' : '0'}">
@@ -311,21 +315,26 @@ function removeItem(index) {
 
 function calculateTotals() {
     let subtotal = 0;
+    let totalItemDiscount = 0;
     
     document.querySelectorAll('.item-card').forEach(card => {
         const quantity = parseFloat(card.querySelector('.item-quantity').value) || 0;
         const unitPrice = parseFloat(card.querySelector('.item-price').value) || 0;
+        const itemDiscount = parseFloat(card.querySelector('.item-discount').value) || 0;
         const lineTotal = quantity * unitPrice;
+        const lineTotalAfterDiscount = lineTotal - itemDiscount;
         
-        card.querySelector('.item-total').value = formatCurrency(lineTotal);
+        card.querySelector('.item-total').value = formatCurrency(lineTotalAfterDiscount);
         subtotal += lineTotal;
+        totalItemDiscount += itemDiscount;
     });
     
-    const discount = parseFloat(document.getElementById('discountAmount').value) || 0;
-    const total = Math.max(0, subtotal - discount);
+    // Total discount = item discounts (now calculated from items)
+    const totalDiscount = totalItemDiscount;
+    const total = Math.max(0, subtotal - totalDiscount);
     
     document.getElementById('summary-subtotal').textContent = formatCurrency(subtotal);
-    document.getElementById('summary-discount').textContent = '- ' + formatCurrency(discount);
+    document.getElementById('summary-discount').textContent = '- ' + formatCurrency(totalDiscount);
     document.getElementById('summary-total').textContent = formatCurrency(total);
 }
 

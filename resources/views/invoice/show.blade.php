@@ -158,6 +158,11 @@
         display: block;
     }
 
+    .row-discount-item td {
+        background-color: rgba(255, 193, 7, 0.3);
+        font-size: 12px;
+    }
+
     /* ── SUMMARY ROWS ── */
     .summary-row td {
         padding: 8px 10px;
@@ -174,8 +179,17 @@
         padding-top: 12px;
     }
 
+    /* Spacer row between summary blocks */
+    .row-spacer td {
+        padding: 3px 0 !important;
+        border: none !important;
+        background: transparent !important;
+        line-height: 0;
+        font-size: 0;
+    }
+
     .row-discount td {
-        background-color: #f8cd60;
+        background-color: #FFC107;
         color: #0C2C5A;
         font-weight: 700;
         padding: 12px 10px;
@@ -367,6 +381,14 @@
                     <td></td>
                     <td>Rp {{ number_format($mainService['pivot']->final_price_at_booking, 0, ',', '.') }}</td>
                 </tr>
+                @php $mainDiscount = $mainService['pivot']->total_price_at_booking - $mainService['pivot']->final_price_at_booking; @endphp
+                @if($mainDiscount > 0)
+                <tr class="row-discount-item">
+                    <td colspan="3" style="text-align:right; padding-left: 20px;">Diskon:</td>
+                    <td style="text-align:right; color: #d32f2f;">-Rp {{ number_format($mainDiscount, 0, ',', '.') }}</td>
+                    <td></td>
+                </tr>
+                @endif
                 @endif
 
                 {{-- Add Ons header --}}
@@ -390,6 +412,14 @@
                     <td></td>
                     <td>Rp {{ number_format($item['pivot']->final_price_at_booking, 0, ',', '.') }}</td>
                 </tr>
+                @php $addonDiscount = $item['pivot']->total_price_at_booking - $item['pivot']->final_price_at_booking; @endphp
+                @if($addonDiscount > 0)
+                <tr class="row-discount-item">
+                    <td colspan="3" style="text-align:right; padding-left: 20px;">Diskon:</td>
+                    <td style="text-align:right; color: #d32f2f;">-Rp {{ number_format($addonDiscount, 0, ',', '.') }}</td>
+                    <td></td>
+                </tr>
+                @endif
                 @endforeach
 
                 {{-- Event items as addons --}}
@@ -407,8 +437,8 @@
                 @endforeach
             </tbody>
 
-            {{-- Summary rows inside tfoot --}}
             <tfoot>
+                {{-- Sub-Total --}}
                 <tr class="summary-row row-subtotal">
                     <td colspan="4" style="text-align:right; font-weight:600; color:#333;">Sub-Total:</td>
                     <td style="text-align:right; font-weight:600; color:#333;">
@@ -417,10 +447,16 @@
                 </tr>
 
                 @if($invoice->auto_discount_amount > 0)
+                {{-- Spacer between Sub-Total and Discount --}}
+                <tr class="row-spacer"><td colspan="5"></td></tr>
+
                 <tr class="row-discount">
                     <td colspan="4" style="text-align:right;">Total Discount:</td>
                     <td style="text-align:right;">-Rp {{ number_format($invoice->auto_discount_amount, 0, ',', '.') }}</td>
                 </tr>
+
+                {{-- Spacer between Discount and Total Invoice --}}
+                <tr class="row-spacer"><td colspan="5"></td></tr>
                 @endif
 
                 <tr class="row-total">

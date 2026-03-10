@@ -108,9 +108,12 @@ class ManualInvoiceController extends Controller
 
             // Create items
             $subtotal = 0;
+            $totalDiscount = 0;
             foreach ($request->items as $itemData) {
                 $lineTotal = $itemData['quantity'] * $itemData['unit_price'];
+                $itemDiscount = $itemData['discount_amount'] ?? 0;
                 $subtotal += $lineTotal;
+                $totalDiscount += $itemDiscount;
 
                 ManualInvoiceItem::create([
                     'manual_invoice_id' => $invoice->id,
@@ -118,6 +121,7 @@ class ManualInvoiceController extends Controller
                     'subtitle' => $itemData['subtitle'] ?? null,
                     'quantity' => $itemData['quantity'],
                     'unit_price' => $itemData['unit_price'],
+                    'discount_amount' => $itemDiscount,
                     'is_addon' => isset($itemData['is_addon']) && $itemData['is_addon'] == '1',
                 ]);
             }
@@ -125,7 +129,8 @@ class ManualInvoiceController extends Controller
             // Update totals
             $invoice->update([
                 'subtotal_amount' => $subtotal,
-                'total_amount' => $subtotal - ($request->discount_amount ?? 0),
+                'discount_amount' => $totalDiscount,
+                'total_amount' => $subtotal - $totalDiscount,
             ]);
 
             DB::commit();
@@ -205,9 +210,12 @@ class ManualInvoiceController extends Controller
             $manualInvoice->items()->delete();
 
             $subtotal = 0;
+            $totalDiscount = 0;
             foreach ($request->items as $itemData) {
                 $lineTotal = $itemData['quantity'] * $itemData['unit_price'];
+                $itemDiscount = $itemData['discount_amount'] ?? 0;
                 $subtotal += $lineTotal;
+                $totalDiscount += $itemDiscount;
 
                 ManualInvoiceItem::create([
                     'manual_invoice_id' => $manualInvoice->id,
@@ -215,6 +223,7 @@ class ManualInvoiceController extends Controller
                     'subtitle' => $itemData['subtitle'] ?? null,
                     'quantity' => $itemData['quantity'],
                     'unit_price' => $itemData['unit_price'],
+                    'discount_amount' => $itemDiscount,
                     'is_addon' => isset($itemData['is_addon']) && $itemData['is_addon'] == '1',
                 ]);
             }
@@ -222,7 +231,8 @@ class ManualInvoiceController extends Controller
             // Update totals
             $manualInvoice->update([
                 'subtotal_amount' => $subtotal,
-                'total_amount' => $subtotal - ($request->discount_amount ?? 0),
+                'discount_amount' => $totalDiscount,
+                'total_amount' => $subtotal - $totalDiscount,
             ]);
 
             DB::commit();
